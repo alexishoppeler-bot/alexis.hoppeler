@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apparier - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/apparier.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🔗</div>
+          <h1>Apparier</h1>
+          <p>Associez chaque element avec la bonne reponse.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiCorrect">0</div>
+            <div class="kpi-label">Paires trouvées</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiErrors">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiXP">0</div>
+            <div class="kpi-label">XP gagnés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiAccuracy">—</div>
+            <div class="kpi-label">Précision</div>
+          </div>
+        </div>
+
+        <!-- Quick Play Toggle (Phase 5) -->
+        <div class="quick-play-toggle fade-up delay-1" style="display:flex;gap:8px;justify-content:center;margin-bottom:24px;">
+          <button id="btnModeComplete" class="btn btn-secondary btn-sm active" type="button">Session complète</button>
+          <button id="btnModeQuick" class="btn btn-secondary btn-sm" type="button">Rapide (5 questions)</button>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="match-zone">
+            <div class="quiz-top">
+              <div class="quiz-progress-label">Progression <strong id="roundNum">1</strong> / <strong id="roundTotal">4</strong></div>
+              <span id="roundCategory" class="badge badge-purple"></span>
+            </div>
+            <div class="series-progress">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text2);margin-bottom:6px;">
+                <span>Progression de l'exercice</span>
+                <span id="prog-pct">0%</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            </div>
+
+            <div class="feedback-row">
+              <span class="feedback-msg" id="feedbackMsg"></span>
+            </div>
+
+            <div class="pairs-wrapper">
+              <div class="pairs-grid" id="pairsGrid">
+                <div>
+                  <div class="column-label">Termes</div>
+                  <div class="items-col" id="colLeft"></div>
+                </div>
+                <div>
+                  <div class="column-label">Définitions</div>
+                  <div class="items-col" id="colRight"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-row" style="margin-top:8px;">
+              <button class="btn btn-secondary btn-sm" id="btnShuffle" type="button">🔀 Mélanger</button>
+              <button class="btn btn-primary" id="btnNext" type="button" style="display:none;">Suivant →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">🎉</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Exercice terminé !</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle">Voici vos résultats pour cette session.</p>
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card">
+                <div class="kpi-value" id="resCorrect">0</div>
+                <div class="kpi-label">Paires trouvées</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resErrors">0</div>
+                <div class="kpi-label">Erreurs</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resXP">0</div>
+                <div class="kpi-label">XP</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resAccuracy">—</div>
+                <div class="kpi-label">Précision</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Recommencer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/apparier-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  /* ===== DONNÉES ===== */
+  const GROUPS = window.APPARIER_DATA;
+
+  const PAGE_ID    = 'apparier';
+
+  let quickPlayMode = false;
+
+  let session = {
+    groups:   [],
+    roundIdx: 0,
+    correct:  0,
+    errors:   0,
+    xp:       0,
+    typed:    0,
+    // état du round en cours
+    matched:  0,
+    total:    0,
+    selectedLeft:  null,  // { el, idx }
+    selectedRight: null,  // { el, idx }
+    pairs:    [],
+  };
+  let autoAdvanceTimer = null;
+
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function scheduleAutoAdvance(callback, delay = 1200) {
+    clearAutoAdvance();
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      callback();
+    }, delay);
+  }
+
+  let xpRulesShown = false;
+
+  function updateProgressUI(done, total) {
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('prog-pct').textContent = pct + '%';
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  /* ===== UTILITAIRES ===== */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /* ===== INIT ===== */
+  function startSession() {
+    clearAutoAdvance();
+    // Phase 5: Mode Quick Play - prendre seulement 5 groupes si activé
+    const pool = quickPlayMode ? shuffle(GROUPS).slice(0, 5) : shuffle(GROUPS);
+
+    session.groups   = pool;
+    session.roundIdx = 0;
+    session.correct  = 0;
+    session.errors   = 0;
+    session.xp       = 0;
+    session.typed    = 0;
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    updateKPIs();
+    updateProgressUI(0, pool.length);
+
+    // Afficher les règles XP seulement à la première session
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Apparier');
+    }
+
+    loadRound();
+  }
+
+  /* ===== CHARGER UN ROUND ===== */
+  function loadRound() {
+    clearAutoAdvance();
+    session.matched       = 0;
+    session.selectedLeft  = null;
+    session.selectedRight = null;
+
+    const group = session.groups[session.roundIdx];
+    session.pairs = shuffle(group.pairs);
+    session.total = session.pairs.length;
+
+    document.getElementById('roundNum').textContent   = session.roundIdx + 1;
+    document.getElementById('roundTotal').textContent = session.groups.length;
+    document.getElementById('roundCategory').textContent = group.category;
+    document.getElementById('feedbackMsg').textContent = '';
+    document.getElementById('feedbackMsg').className  = 'feedback-msg';
+    document.getElementById('btnNext').style.display  = 'none';
+
+    renderCards();
+  }
+
+  /* ===== RENDU DES CARTES ===== */
+  function renderCards() {
+    const colLeft  = document.getElementById('colLeft');
+    const colRight = document.getElementById('colRight');
+    colLeft.innerHTML  = '';
+    colRight.innerHTML = '';
+
+    const leftItems  = shuffle(session.pairs.map((p, i) => ({ text: p.term, idx: i })));
+    const rightItems = shuffle(session.pairs.map((p, i) => ({ text: p.def,  idx: i })));
+
+    leftItems.forEach(item => {
+      const card = makeCard(item.text, item.idx, 'left');
+      colLeft.appendChild(card);
+    });
+
+    rightItems.forEach(item => {
+      const card = makeCard(item.text, item.idx, 'right');
+      colRight.appendChild(card);
+    });
+  }
+
+  function makeCard(text, pairIdx, side) {
+    const el = document.createElement('div');
+    el.className       = 'match-card';
+    el.textContent     = text;
+    el.dataset.idx     = pairIdx;
+    el.dataset.side    = side;
+    el.dataset.matched = 'false';
+    el.addEventListener('click', () => onCardClick(el));
+    return el;
+  }
+
+  /* ===== LOGIQUE DE SÉLECTION ===== */
+  function onCardClick(el) {
+    const side    = el.dataset.side;
+    const matched = el.dataset.matched === 'true';
+    if (matched) return;
+
+    if (side === 'left') {
+      // Désélectionner l'ancien
+      if (session.selectedLeft && session.selectedLeft.el !== el) {
+        session.selectedLeft.el.classList.remove('selected');
+      }
+      // Basculer sélection
+      if (session.selectedLeft && session.selectedLeft.el === el) {
+        el.classList.remove('selected');
+        session.selectedLeft = null;
+      } else {
+        el.classList.add('selected');
+        session.selectedLeft = { el, idx: parseInt(el.dataset.idx) };
+      }
+    } else {
+      if (session.selectedRight && session.selectedRight.el !== el) {
+        session.selectedRight.el.classList.remove('selected');
+      }
+      if (session.selectedRight && session.selectedRight.el === el) {
+        el.classList.remove('selected');
+        session.selectedRight = null;
+      } else {
+        el.classList.add('selected');
+        session.selectedRight = { el, idx: parseInt(el.dataset.idx) };
+      }
+    }
+
+    // Les deux côtés sélectionnés → tenter l'appariement
+    if (session.selectedLeft && session.selectedRight) {
+      tryMatch();
+    }
+  }
+
+  function tryMatch() {
+    const L = session.selectedLeft;
+    const R = session.selectedRight;
+
+    session.typed++;
+
+    if (L.idx === R.idx) {
+      // Correct !
+      L.el.classList.remove('selected');
+      R.el.classList.remove('selected');
+      L.el.classList.add('matched');
+      R.el.classList.add('matched');
+      L.el.dataset.matched = 'true';
+      R.el.dataset.matched = 'true';
+
+      session.matched++;
+      session.correct++;
+      const xp = 2;
+      session.xp += xp;
+
+      const fb = document.getElementById('feedbackMsg');
+      fb.textContent = '✅ Bonne paire ! +' + xp + ' XP';
+      fb.className   = 'feedback-msg ok';
+
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+      updateKPIs();
+
+      if (session.matched === session.total) {
+        roundComplete();
+      }
+    } else {
+      // Mauvais !
+      session.errors++;
+
+      const fb = document.getElementById('feedbackMsg');
+      fb.textContent = '❌ Ce n\'est pas la bonne paire, réessaie !';
+      fb.className   = 'feedback-msg err';
+
+      [L.el, R.el].forEach(el => {
+        el.classList.remove('selected');
+        el.classList.add('wrong-flash');
+        setTimeout(() => el.classList.remove('wrong-flash'), 520);
+      });
+
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+      updateKPIs();
+    }
+
+    session.selectedLeft  = null;
+    session.selectedRight = null;
+  }
+
+  /* ===== ROUND COMPLET ===== */
+  function roundComplete() {
+    const fb = document.getElementById('feedbackMsg');
+    fb.textContent = '🎉 Toutes les paires trouvées !';
+    fb.className   = 'feedback-msg ok';
+
+    showToast('Série complète !', 'success');
+    if (session.errors === 0) launchConfetti();
+    scheduleAutoAdvance(nextRound);
+  }
+
+  /* ===== SUIVANT / TERMINER ===== */
+  function nextRound() {
+    session.roundIdx++;
+    if (session.roundIdx >= session.groups.length) {
+      finishSession();
+    } else {
+      loadRound();
+    }
+  }
+
+  /* ===== FIN DE SESSION ===== */
+  function finishSession() {
+    clearAutoAdvance();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const accuracy = calcAccuracy(session.correct, session.typed);
+    document.getElementById('resCorrect').textContent  = session.correct;
+    document.getElementById('resErrors').textContent   = session.errors;
+    document.getElementById('resXP').textContent       = session.xp;
+    document.getElementById('resAccuracy').textContent = accuracy + '%';
+    updateProgressUI(session.groups.length, session.groups.length);
+
+    if (accuracy >= 90) launchConfetti();
+  }
+
+  /* ===== KPIs ===== */
+  function updateKPIs() {
+    updateExerciseScoreKpis(session);
+    const doneRounds = session.roundIdx + ((session.total > 0 && session.matched === session.total) ? 1 : 0);
+    updateProgressUI(doneRounds, session.groups.length);
+  }
+
+  /* ===== EVENTS ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+    // Phase 5: Quick Play toggle
+    document.getElementById('btnModeComplete').addEventListener('click', () => {
+      quickPlayMode = false;
+      document.getElementById('btnModeComplete').classList.add('active');
+      document.getElementById('btnModeQuick').classList.remove('active');
+    });
+    document.getElementById('btnModeQuick').addEventListener('click', () => {
+      quickPlayMode = true;
+      document.getElementById('btnModeQuick').classList.add('active');
+      document.getElementById('btnModeComplete').classList.remove('active');
+    });
+
+    document.getElementById('btnNext').addEventListener('click', nextRound);
+    setupRestartButton(startSession);
+    document.getElementById('btnShuffle').addEventListener('click', () => {
+      // Mélanger uniquement les cartes non appariées
+      if (session.matched === session.total) return;
+      session.selectedLeft  = null;
+      session.selectedRight = null;
+      // Re-render en conservant les matched
+      const matched = new Set(
+        [...document.querySelectorAll('.match-card[data-matched="true"]')]
+          .map(el => parseInt(el.dataset.idx))
+      );
+      const colLeft  = document.getElementById('colLeft');
+      const colRight = document.getElementById('colRight');
+      const remaining = session.pairs
+        .map((p, i) => ({ term: p.term, def: p.def, idx: i }))
+        .filter(p => !matched.has(p.idx));
+
+      // Garder les cartes matched et recréer les autres
+      const keepLeft  = [...colLeft.querySelectorAll('.match-card[data-matched="true"]')];
+      const keepRight = [...colRight.querySelectorAll('.match-card[data-matched="true"]')];
+      colLeft.innerHTML  = '';
+      colRight.innerHTML = '';
+      keepLeft.forEach(el  => colLeft.appendChild(el));
+      keepRight.forEach(el => colRight.appendChild(el));
+
+      shuffle(remaining).forEach(item => colLeft.appendChild(makeCard(item.term, item.idx, 'left')));
+      shuffle(remaining).forEach(item => colRight.appendChild(makeCard(item.def, item.idx, 'right')));
+    });
+
+    startSession();
+  });
+  </script>
+</body>
+</html>
+

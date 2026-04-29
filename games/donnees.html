@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Données et confidentialité - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+        <div class="page-header fade-up">
+          <div class="page-icon">🔒</div>
+          <h1>Données &amp; confidentialité</h1>
+          <p>Vos donnees restent sur cet appareil. Rien n est envoye sur internet.</p>
+        </div>
+        <div class="mb-24 fade-up delay-1 flex gap-8 flex-wrap">
+          <a href="accueil.html" class="btn btn-secondary btn-sm">Accueil</a>
+          <a href="evaluations.html" class="btn btn-secondary btn-sm">Évaluations</a>
+          <a href="donnees.html" class="btn btn-secondary btn-sm">Données</a>
+          <a href="regles.html" class="btn btn-secondary btn-sm">Règles XP</a>
+        </div>
+
+        <div class="alert alert-info mb-24 fade-up delay-1">
+          <span>ℹ️</span>
+          <div>Ce site fonctionne <strong>hors ligne</strong>. Vos scores et preferences sont gardes dans le navigateur de cet appareil.</div>
+        </div>
+        <div class="card mb-24 fade-up delay-2" id="data-summary-card">
+          <div class="card-title">📊 Résumé de mes données</div>
+          <div id="data-summary" style="font-size:14px;color:var(--text2);line-height:2;margin-top:8px;"></div>
+        </div>
+        <div class="card mb-24 fade-up delay-3">
+          <div class="card-title">📤 Exporter mes données</div>
+          <p class="card-desc mb-16">Telechargez une copie de vos donnees en JSON.</p>
+          <button class="btn btn-primary btn-sm" id="btn-export" type="button">⬇️ Télécharger mes données (JSON)</button>
+        </div>
+        <div class="card mb-24 fade-up delay-3">
+          <div class="card-title">📥 Importer mes données</div>
+          <p class="card-desc mb-16">Restaurez vos donnees depuis un fichier JSON deja exporte.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" id="btn-import" type="button">📂 Importer un fichier JSON</button>
+            <input type="file" id="import-file" accept=".json,application/json" style="display:none;">
+          </div>
+        </div>
+        <div class="card mb-24 fade-up delay-3" style="border-color:rgba(248,113,113,0.2);">
+          <div class="card-title" style="color:var(--danger);">🗑️ Supprimer mes données</div>
+          <p class="card-desc mb-16">Cette action est <strong>irreversible</strong>. Les scores, progressions et preferences seront effaces.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-danger btn-sm" id="btn-clear-scores" type="button">Effacer scores &amp; progression</button>
+            <button class="btn btn-danger btn-sm" id="btn-clear-all" type="button">Tout effacer</button>
+          </div>
+        </div>
+        <div class="card fade-up delay-4">
+          <div class="card-title">🛡️ Politique de confidentialité</div>
+          <div style="font-size:13px;color:var(--text2);line-height:2;margin-top:8px;">
+            <p>• <strong>Aucune donnee personnelle</strong> n est transmise a des tiers.</p>
+            <p>• Les donnees sont stockees dans le <strong>localStorage</strong> du navigateur.</p>
+            <p>• Effacer le cache ou l historique supprime aussi ces donnees.</p>
+            <p>• En cas de doute, utilisez le bouton "Tout effacer".</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  function safeStorageGet(key) {
+    try { return localStorage.getItem(key); } catch (err) { return null; }
+  }
+  function safeStorageSet(key, value) {
+    try { localStorage.setItem(key, value); return true; } catch (err) { return false; }
+  }
+  function safeStorageClear() {
+    try { localStorage.clear(); return true; } catch (err) { return false; }
+  }
+
+  function renderDataSummary() {
+    const all = (typeof ScoreManager !== 'undefined' && ScoreManager.getAllData) ? ScoreManager.getAllData() : {};
+    const pages = Object.keys(all || {});
+    const el = document.getElementById('data-summary');
+    if (!el) return;
+
+    const theme = safeStorageGet('theme') || 'light';
+    const themeLabel = theme === 'dark' ? 'sombre' : 'clair';
+
+    el.innerHTML =
+      '<div>📈 Scores enregistrés pour <strong>' + pages.length + '</strong> exercice(s).</div>' +
+      '<div>🎨 Thème : ' + themeLabel + '</div>';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderDataSummary();
+    const importBtn = document.getElementById('btn-import');
+    const importFileInput = document.getElementById('import-file');
+
+    importBtn.addEventListener('click', () => importFileInput.click());
+    importFileInput.addEventListener('change', async (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        const importedStore = (parsed && typeof parsed === 'object') ? parsed : null;
+        if (!importedStore || (!importedStore.scores && !importedStore.sessions)) {
+          showToast('Fichier JSON invalide: données manquantes.', 'error');
+          return;
+        }
+
+        const imported = (typeof ScoreManager !== 'undefined' && typeof ScoreManager.importStore === 'function')
+          ? ScoreManager.importStore(importedStore)
+          : false;
+        if (!imported) {
+          showToast('Stockage local indisponible: import impossible.', 'error');
+          return;
+        }
+        if (typeof parsed.theme === 'string') {
+          safeStorageSet('theme', parsed.theme === 'light' ? 'light' : 'dark');
+        }
+
+        document.dispatchEvent(new CustomEvent('score:updated'));
+        if (typeof initTheme === 'function') initTheme();
+        renderDataSummary();
+        showToast('Données importées avec succès.', 'success');
+      } catch (err) {
+        showToast('Impossible de lire ce fichier JSON.', 'error');
+      } finally {
+        event.target.value = '';
+      }
+    });
+    document.getElementById('btn-export').addEventListener('click', () => {
+      const theme = safeStorageGet('theme') || 'light';
+      const store = (typeof ScoreManager !== 'undefined' && typeof ScoreManager.exportStore === 'function')
+        ? ScoreManager.exportStore()
+        : { scores: ScoreManager.getAllData(), sessions: [] };
+      const data = { ...store, theme, exportedAt: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = 'ah-donnees-' + new Date().toISOString().slice(0,10) + '.json';
+      a.click(); URL.revokeObjectURL(url);
+    });
+    document.getElementById('btn-clear-scores').addEventListener('click', () => { if (confirm('Effacer tous les scores ?')) { ScoreManager.reset(); renderDataSummary(); showToast('Scores effacés.', 'info'); } });
+    document.getElementById('btn-clear-all').addEventListener('click', () => {
+      if (!confirm('Effacer TOUTES les données ?')) return;
+      if (!safeStorageClear()) {
+        showToast('Stockage local indisponible: suppression impossible.', 'error');
+        return;
+      }
+      renderDataSummary();
+      showToast('Toutes les données effacées.', 'info');
+    });
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maths pratiques - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: #fffaf2;
+      --panel-strong: #fff;
+      --line: #d8cdb8;
+      --text: #2d2a26;
+      --muted: #6f665c;
+      --accent: #226f54;
+      --accent-soft: #dcefe4;
+      --blue: #2f6690;
+      --blue-soft: #dbeaf7;
+      --gold: #d8a728;
+      --gold-soft: #fbefc7;
+      --danger: #b3403d;
+      --danger-soft: #f8dada;
+      --success: #237a46;
+      --success-soft: #d9f1df;
+      --shadow: 0 18px 40px rgba(45, 42, 38, 0.08);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", Verdana, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, #f7e2c0 0, transparent 26%),
+        radial-gradient(circle at top left, #dbe9f8 0, transparent 22%),
+        linear-gradient(180deg, #f8f4ed 0%, #f1ece3 100%);
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .hero,
+    .card {
+      background: rgba(255, 250, 242, 0.94);
+      border: 1px solid rgba(216, 205, 184, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 22px 24px;
+      display: grid;
+      grid-template-columns: 1.2fr auto;
+      gap: 18px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .hero p,
+    .big-text,
+    .label,
+    .meta,
+    .question,
+    .feedback,
+    .method,
+    .help,
+    button,
+    select {
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.35;
+    }
+
+    .hero-stats,
+    .stats-grid,
+    .filter-grid,
+    .action-grid,
+    .answer-grid,
+    .summary-grid,
+    .calc-grid,
+    .print-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .mini-stat {
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .hero-copy {
+      max-width: 780px;
+    }
+
+    .hero-copy p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .hero-stats {
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      min-width: min(100%, 520px);
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .maths-sidebar,
+    .maths-content {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-title h2,
+    .card-title h3 {
+      margin: 0;
+      font-size: clamp(22px, 2.4vw, 32px);
+    }
+
+    .mini-stat {
+      min-height: 88px;
+      padding: 14px;
+    }
+
+    .mini-stat .value {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800;
+    }
+
+    .mini-stat .note {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .filter-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .action-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .answer-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    button,
+    select,
+    .fake-button {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-weight: 700;
+      font-family: inherit;
+    }
+
+    button,
+    .fake-button {
+      cursor: pointer;
+      background: var(--panel-strong);
+      color: var(--text);
+      border: 2px solid var(--line);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    button:hover,
+    .fake-button:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button.secondary { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+    button.warning { background: var(--gold-soft); border-color: var(--gold); }
+    button.danger { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+    button.choice { min-height: 92px; text-align: left; }
+    button.choice.correct { background: var(--success-soft); border-color: var(--success); color: var(--success); }
+    button.choice.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+    button.choice.reveal { background: var(--blue-soft); border-color: var(--blue); }
+    button.active-filter { background: var(--accent-soft); border-color: var(--accent); }
+
+    select {
+      background: var(--panel-strong);
+      border: 2px solid var(--line);
+      color: var(--text);
+    }
+
+    .meta,
+    .help,
+    .method,
+    .feedback,
+    .small-note {
+      background: var(--panel-strong);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+    }
+
+    .meta,
+    .small-note { color: var(--muted); }
+    .feedback.correct { background: var(--success-soft); border-color: var(--success); color: var(--success); }
+    .feedback.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+    .help { background: #f5f7fd; }
+    .method { background: #f8f3de; }
+
+    .scenario-box {
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #f7fbff, #eef5fb);
+      border: 1px solid #cfe0ef;
+    }
+
+    .scenario-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .scenario-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid #cfe0ef;
+      font-size: 16px;
+      font-weight: 700;
+      color: #305a78;
+    }
+
+    .scenario-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .scenario-steps {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .scenario-step {
+      display: flex;
+      gap: 12px;
+      align-items: start;
+      background: rgba(255, 255, 255, 0.78);
+      border-radius: 16px;
+      border: 1px solid #d9e6f2;
+      padding: 12px 14px;
+    }
+
+    .scenario-step-number {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .scenario-step-text {
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .exercise-shell {
+      display: grid;
+      gap: 14px;
+    }
+
+    .exercise-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .exercise-main {
+      display: grid;
+      gap: 14px;
+    }
+
+    .exercise-support summary,
+    .tools-card summary {
+      cursor: pointer;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--accent);
+      list-style: none;
+    }
+
+    .exercise-support summary::-webkit-details-marker,
+    .tools-card summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .exercise-support[open],
+    .tools-card[open] {
+      background: rgba(255, 250, 242, 0.94);
+    }
+
+    .compact-note {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .numbers-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .number-pill {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 20px;
+      border-radius: 999px;
+      background: #eadfcb;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2f6690, #226f54);
+      border-radius: 999px;
+      transition: width 260ms ease;
+    }
+
+    .surface-box {
+      background: #eef5fb;
+      border: 1px dashed #6d96ba;
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 16px;
+    }
+
+    .surface-stage {
+      height: 180px;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+    }
+
+    .surface-rect {
+      position: relative;
+      background: linear-gradient(135deg, #dcecf7, #f7fbff);
+      border: 4px solid #2f6690;
+      border-radius: 12px;
+      min-width: 120px;
+      min-height: 90px;
+      display: grid;
+      place-items: center;
+      color: #184766;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    .surface-label-top,
+    .surface-label-side {
+      position: absolute;
+      font-size: 18px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.92);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #9ec0dc;
+    }
+
+    .surface-label-top { top: -18px; left: 50%; transform: translateX(-50%); }
+    .surface-label-side { right: -22px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+
+    .percent-box {
+      margin-top: 16px;
+      padding: 16px;
+      background: #f8f1db;
+      border-radius: 18px;
+      border: 1px solid #e3ce7e;
+    }
+
+    .percent-bar {
+      height: 28px;
+      border-radius: 999px;
+      background: #f2e7c2;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .percent-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d8a728, #f0c95b);
+      transition: width 260ms ease;
+    }
+
+    .calc-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calc-row {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .calc-row input {
+      width: 100%;
+      padding: 16px;
+      border-radius: 16px;
+      border: 2px solid var(--line);
+      font-size: 24px;
+      font-family: inherit;
+    }
+
+    .result-box {
+      margin-top: 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 18px;
+      padding: 16px;
+      font-weight: 800;
+      font-size: 26px;
+      min-height: 64px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .tag {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #efe7dc;
+      color: #5d544c;
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .summary-line {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #2d2a26;
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      font-size: 18px;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+      max-width: 320px;
+      z-index: 30;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .print-sheet {
+      display: none;
+      background: #fff;
+      color: #000;
+      padding: 20px;
+    }
+
+    .print-list { grid-template-columns: 1fr; }
+    .print-item {
+      border: 1px solid #888;
+      border-radius: 12px;
+      padding: 14px;
+      break-inside: avoid;
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .app-layout {
+        grid-template-columns: 1fr;
+      }
+      .hero-stats,
+      .filter-grid,
+      .action-grid,
+      .answer-grid,
+      .summary-grid,
+      .calc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .layout,
+      #header-slot,
+      #sidebar-slot,
+      #footer-slot { display: none !important; }
+      .print-sheet { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+        <div class="app-shell">
+    <section class="hero fade-up">
+      <div class="hero-copy">
+        <div class="eyebrow">📘 Maths utiles pour le travail</div>
+        <h1>Calculer dans des situations simples de travail</h1>
+        <p>Lis la situation, regarde les nombres, puis choisis la bonne reponse. Les exemples parlent de nettoyage, cuisine, vente, stock et batiment.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="mini-stat">
+          <div class="note">Repondu</div>
+          <div class="value" id="statAnswered">0</div>
+        </div>
+        <div class="mini-stat">
+          <div class="note">Correct</div>
+          <div class="value" id="statCorrect">0</div>
+        </div>
+        <div class="mini-stat">
+          <div class="note">Reussite</div>
+          <div class="value" id="statRate">0%</div>
+        </div>
+        <div class="mini-stat">
+          <div class="note">Mode</div>
+          <div class="value" id="statMode">Debut</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="app-layout">
+      <aside class="maths-sidebar">
+        <section class="card">
+          <div class="card-title"><h2>Reglages</h2></div>
+          <div class="label">Theme</div>
+          <div class="filter-grid" id="themeFilters"></div>
+          <div class="label" style="margin-top:14px;">Mode</div>
+          <select id="modeSelect" aria-label="Choisir un mode">
+            <option value="debut">Debut</option>
+            <option value="encours">En cours</option>
+            <option value="acquis">Acquis</option>
+          </select>
+          <div class="label" style="margin-top:14px;">Ordre</div>
+          <button type="button" id="mixToggle">Melange : non</button>
+          <div class="action-grid" style="margin-top:14px;">
+            <button type="button" class="primary" id="newExerciseBtn">Nouvel exercice</button>
+            <button type="button" class="secondary" id="methodBtn">Voir la methode</button>
+            <button type="button" class="warning" id="printBtn">Imprimer une fiche</button>
+            <button type="button" class="danger" id="resetBtn">Remettre a zero</button>
+          </div>
+          <div class="small-note" style="margin-top:14px;">
+            Le score se garde tout seul sur cet appareil.
+          </div>
+        </section>
+
+        <details class="card tools-card">
+          <summary>Outils en plus</summary>
+          <p class="compact-note" style="margin:10px 0 14px;">Utilise ces outils seulement si besoin.</p>
+          <div class="action-grid" style="margin-bottom:14px;">
+            <button type="button" class="secondary" id="exportBtn">Exporter les resultats</button>
+            <button type="button" id="importBtn">Importer les resultats</button>
+          </div>
+          <input type="file" id="importFile" accept=".json,application/json" hidden>
+          <div class="calc-grid">
+            <button type="button" data-calc="add" class="calc-action">➕ Addition</button>
+            <button type="button" data-calc="multiply" class="calc-action">✖️ Multiplication</button>
+            <button type="button" data-calc="divide" class="calc-action">➗ Division</button>
+            <button type="button" data-calc="surface" class="calc-action">📐 Surface</button>
+            <button type="button" data-calc="ten" class="calc-action">🔟 10%</button>
+            <button type="button" data-calc="half" class="calc-action">🟰 50%</button>
+          </div>
+          <div class="calc-row">
+            <input id="calcA" type="number" step="0.01" placeholder="Nombre A">
+            <input id="calcB" type="number" step="0.01" placeholder="Nombre B si besoin">
+            <div class="result-box" id="calcResult">Resultat ici</div>
+          </div>
+        </details>
+      </aside>
+
+      <main class="maths-content">
+        <section class="card">
+          <div class="exercise-shell">
+            <div class="exercise-header">
+              <h2 id="exerciseTitle">Exercice</h2>
+              <div class="tag-row">
+                <div class="tag" id="exerciseThemeTag">Surface</div>
+                <div class="tag" id="difficultyTag">Mode Debut</div>
+                <div class="tag" id="exerciseJobTag">Metier</div>
+                <div class="tag" id="questionCountTag">Exercice 1</div>
+              </div>
+            </div>
+            <div class="exercise-main">
+              <div class="meta" id="exerciseSituation">Situation ici.</div>
+              <div class="scenario-box" id="scenarioBox">
+                <div class="scenario-head">
+                  <div class="scenario-badge" id="scenarioPlace">📍 Lieu</div>
+                  <div class="scenario-badge" id="scenarioGoal">🎯 But</div>
+                </div>
+                <div class="scenario-title" id="scenarioTitle">Je regarde la situation.</div>
+                <div class="scenario-steps" id="scenarioSteps"></div>
+              </div>
+              <div class="question" id="exerciseQuestion">Question ici.</div>
+              <div class="numbers-row" id="numbersRow"></div>
+              <div id="visualBox"></div>
+              <div class="answer-grid" id="answersGrid"></div>
+              <div class="feedback" id="feedbackBox">Choisis une reponse.</div>
+            </div>
+            <details class="exercise-support">
+              <summary>Aide et methode</summary>
+              <div class="help" id="exerciseHelp" style="margin-top:12px;">Aide simple ici.</div>
+              <div class="method" id="exerciseMethod" hidden style="margin-top:12px;">Methode ici.</div>
+            </details>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-title"><h2>Resume</h2></div>
+          <div class="summary-grid">
+            <div class="small-note">
+              <div class="summary-line"><strong>Total repondu :</strong> <span id="summaryAnswered">0</span></div>
+              <div class="summary-line"><strong>Bonnes reponses :</strong> <span id="summaryCorrect">0</span></div>
+            </div>
+            <div class="small-note">
+              <div class="summary-line"><strong>Taux de reussite :</strong> <span id="summaryRate">0%</span></div>
+              <div class="summary-line"><strong>Theme le plus difficile :</strong> <span id="summaryHardest">Aucun</span></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+        </div>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <section class="print-sheet" id="printSheet">
+    <h1>Fiche participant - Maths pratiques</h1>
+    <p>Exercices sans reponses. A faire sur papier ou en classe.</p>
+    <div class="print-list" id="printList"></div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+    'use strict';
+
+    const STORAGE_KEY = 'ah:maths-pratiques:v1';
+    const PAGE_KEY = 'maths-pratiques';
+    const THEMES = ['Surface', 'Pourcentage', 'Unites', 'Calculs metiers'];
+    const MODES = ['debut', 'encours', 'acquis'];
+    const JOB_ICONS = {
+      'Nettoyage': '🧽',
+      'Peinture': '🪣',
+      'Carrelage': '⬜',
+      'Mesure': '📏',
+      'Entretien': '🧹',
+      'Batiment': '🦺',
+      'Vente': '🛒',
+      'Stock': '📦',
+      'Travail': '💼',
+      'Cuisine': '🍲',
+      'Planning': '🕒',
+      'Caisse': '💰',
+      'Logistique': '🚚'
+    };
+
+    const exercises = [
+      { id: 'surface-1', theme: 'Surface', mode: 'debut', job: 'Nettoyage', title: 'Nettoyer une salle', situation: 'Une salle fait 5 m de long et 4 m de large.', question: 'Quelle surface faut-il nettoyer ?', numbers: ['5 m', '4 m'], help: 'Surface = longueur x largeur.', method: 'Je prends 5 x 4. La surface est 20 metres carres.', choices: ['9 m²', '20 m²', '25 m²', '40 m²'], answer: '20 m²', visual: { type: 'surface', length: 5, width: 4 } },
+      { id: 'surface-2', theme: 'Surface', mode: 'debut', job: 'Peinture', title: 'Peindre un mur', situation: 'Un mur fait 3 m de long et 2 m de haut.', question: 'Quelle surface faut-il peindre ?', numbers: ['3 m', '2 m'], help: 'On multiplie 3 x 2.', method: 'Je fais 3 x 2 = 6. Il faut peindre 6 metres carres.', choices: ['5 m²', '6 m²', '8 m²', '12 m²'], answer: '6 m²', visual: { type: 'surface', length: 3, width: 2 } },
+      { id: 'surface-3', theme: 'Surface', mode: 'debut', job: 'Carrelage', title: 'Carreler un sol', situation: 'Le sol fait 4 m de long et 3 m de large.', question: 'Quelle surface faut-il carreler ?', numbers: ['4 m', '3 m'], help: 'Longueur x largeur.', method: 'Je calcule 4 x 3 = 12. Il faut 12 metres carres.', choices: ['7 m²', '12 m²', '14 m²', '24 m²'], answer: '12 m²', visual: { type: 'surface', length: 4, width: 3 } },
+      { id: 'surface-4', theme: 'Surface', mode: 'debut', job: 'Mesure', title: 'Mesurer une petite piece', situation: 'Une piece fait 2 m de long et 6 m de large.', question: 'Quelle est la surface ?', numbers: ['2 m', '6 m'], help: 'Je fais 2 x 6.', method: '2 x 6 = 12. La piece fait 12 m².', choices: ['8 m²', '10 m²', '12 m²', '16 m²'], answer: '12 m²', visual: { type: 'surface', length: 2, width: 6 } },
+      { id: 'surface-5', theme: 'Surface', mode: 'debut', job: 'Nettoyage', title: 'Zone a laver', situation: 'La zone fait 7 m de long et 2 m de large.', question: 'Quelle surface faut-il laver ?', numbers: ['7 m', '2 m'], help: '7 x 2.', method: 'Je multiplie 7 par 2. Resultat : 14 m².', choices: ['9 m²', '12 m²', '14 m²', '21 m²'], answer: '14 m²', visual: { type: 'surface', length: 7, width: 2 } },
+      { id: 'surface-6', theme: 'Surface', mode: 'encours', job: 'Peinture', title: 'Peinture d une cloison', situation: 'Une cloison fait 8 m de long et 3 m de haut.', question: 'Quelle surface faut-il peindre ?', numbers: ['8 m', '3 m'], help: 'Surface = longueur x largeur.', method: '8 x 3 = 24. La cloison fait 24 m².', choices: ['11 m²', '21 m²', '24 m²', '32 m²'], answer: '24 m²', visual: { type: 'surface', length: 8, width: 3 } },
+      { id: 'surface-7', theme: 'Surface', mode: 'encours', job: 'Carrelage', title: 'Carrelage entree', situation: 'Une entree mesure 9 m sur 2 m.', question: 'Quelle surface faut-il couvrir ?', numbers: ['9 m', '2 m'], help: 'Multiplier les deux nombres.', method: '9 x 2 = 18. Surface : 18 m².', choices: ['16 m²', '18 m²', '20 m²', '22 m²'], answer: '18 m²', visual: { type: 'surface', length: 9, width: 2 } },
+      { id: 'surface-8', theme: 'Surface', mode: 'encours', job: 'Nettoyage', title: 'Grand couloir', situation: 'Le couloir fait 10 m de long et 2 m de large.', question: 'Combien de m² faut-il nettoyer ?', numbers: ['10 m', '2 m'], help: 'On utilise longueur x largeur.', method: '10 x 2 = 20. Le couloir fait 20 m².', choices: ['12 m²', '18 m²', '20 m²', '24 m²'], answer: '20 m²', visual: { type: 'surface', length: 10, width: 2 } },
+      { id: 'surface-9', theme: 'Surface', mode: 'encours', job: 'Batiment', title: 'Mesurer une facade', situation: 'Une facade mesure 6 m de large et 4 m de haut.', question: 'Quelle surface faut-il peindre ?', numbers: ['6 m', '4 m'], help: '6 x 4.', method: 'Je fais 6 x 4 = 24. Surface : 24 m².', choices: ['20 m²', '24 m²', '26 m²', '30 m²'], answer: '24 m²', visual: { type: 'surface', length: 6, width: 4 } },
+      { id: 'surface-10', theme: 'Surface', mode: 'encours', job: 'Entretien', title: 'Salle de pause', situation: 'La salle fait 5 m sur 6 m.', question: 'Quelle surface faut-il entretenir ?', numbers: ['5 m', '6 m'], help: 'Longueur x largeur.', method: '5 x 6 = 30. La salle fait 30 m².', choices: ['11 m²', '25 m²', '30 m²', '36 m²'], answer: '30 m²', visual: { type: 'surface', length: 5, width: 6 } },
+      { id: 'surface-11', theme: 'Surface', mode: 'acquis', job: 'Peinture', title: 'Deux murs identiques', situation: 'Un mur fait 4 m sur 3 m. Il y a 2 murs.', question: 'Quelle surface totale faut-il peindre ?', numbers: ['4 m', '3 m', '2 murs'], help: 'D abord une surface. Ensuite x 2.', method: 'Un mur : 4 x 3 = 12 m². Deux murs : 12 x 2 = 24 m².', choices: ['12 m²', '20 m²', '24 m²', '28 m²'], answer: '24 m²', visual: { type: 'surface', length: 4, width: 3, note: 'x 2 murs' } },
+      { id: 'surface-12', theme: 'Surface', mode: 'acquis', job: 'Carrelage', title: 'Deux zones au sol', situation: 'Une premiere zone fait 3 m sur 4 m. Une deuxieme fait 2 m sur 5 m.', question: 'Quelle est la surface totale ?', numbers: ['3 x 4', '2 x 5'], help: 'Calcule une surface. Calcule l autre. Puis additionne.', method: 'Premiere zone : 12 m². Deuxieme zone : 10 m². Total : 22 m².', choices: ['18 m²', '20 m²', '22 m²', '24 m²'], answer: '22 m²', visual: { type: 'surface', length: 3, width: 4, note: '+ autre zone 2 x 5' } },
+      { id: 'surface-13', theme: 'Surface', mode: 'acquis', job: 'Nettoyage', title: 'Deux salles', situation: 'Salle A : 5 m sur 4 m. Salle B : 4 m sur 4 m.', question: 'Quelle surface totale faut-il nettoyer ?', numbers: ['5 x 4', '4 x 4'], help: 'Additionne les deux surfaces.', method: 'Salle A : 20 m². Salle B : 16 m². Total : 36 m².', choices: ['32 m²', '34 m²', '36 m²', '40 m²'], answer: '36 m²', visual: { type: 'surface', length: 5, width: 4, note: '+ salle B 4 x 4' } },
+      { id: 'surface-14', theme: 'Surface', mode: 'acquis', job: 'Batiment', title: 'Peinture de 3 panneaux', situation: 'Un panneau fait 2 m sur 3 m. Il y a 3 panneaux.', question: 'Quelle surface totale ?', numbers: ['2 m', '3 m', '3 panneaux'], help: 'Surface d un panneau puis x 3.', method: '2 x 3 = 6. Puis 6 x 3 = 18 m².', choices: ['12 m²', '15 m²', '18 m²', '21 m²'], answer: '18 m²', visual: { type: 'surface', length: 2, width: 3, note: 'x 3 panneaux' } },
+      { id: 'surface-15', theme: 'Surface', mode: 'acquis', job: 'Entretien', title: 'Bureau et entree', situation: 'Bureau : 6 m sur 3 m. Entree : 2 m sur 3 m.', question: 'Quelle surface totale a nettoyer ?', numbers: ['6 x 3', '2 x 3'], help: 'Deux calculs puis total.', method: 'Bureau : 18 m². Entree : 6 m². Total : 24 m².', choices: ['21 m²', '22 m²', '24 m²', '26 m²'], answer: '24 m²', visual: { type: 'surface', length: 6, width: 3, note: '+ entree 2 x 3' } },
+
+      { id: 'pct-1', theme: 'Pourcentage', mode: 'debut', job: 'Vente', title: 'Rabais simple', situation: 'Une veste coute 40 CHF. Le rabais est 50%.', question: 'Quel est le nouveau prix ?', numbers: ['40 CHF', '50%'], help: '50% = la moitie.', method: 'La moitie de 40 est 20. Nouveau prix : 20 CHF.', choices: ['10 CHF', '20 CHF', '30 CHF', '50 CHF'], answer: '20 CHF', visual: { type: 'percent', percent: 50, label: '50% de 40 CHF' } },
+      { id: 'pct-2', theme: 'Pourcentage', mode: 'debut', job: 'Vente', title: 'Petit rabais', situation: 'Un sac coute 30 CHF. Le rabais est 10%.', question: 'Combien vaut 10% de 30 CHF ?', numbers: ['30 CHF', '10%'], help: '10% = 1 sur 10.', method: '10% de 30 = 3. Le rabais est 3 CHF.', choices: ['2 CHF', '3 CHF', '5 CHF', '10 CHF'], answer: '3 CHF', visual: { type: 'percent', percent: 10, label: '10% de 30 CHF' } },
+      { id: 'pct-3', theme: 'Pourcentage', mode: 'debut', job: 'Stock', title: 'Stock deja range', situation: 'Sur 20 cartons, 10 sont ranges.', question: 'Quel pourcentage est deja range ?', numbers: ['20 cartons', '10 ranges'], help: '10 sur 20 = la moitie.', method: 'La moitie = 50%. Donc 50% du stock est range.', choices: ['10%', '25%', '50%', '75%'], answer: '50%', visual: { type: 'percent', percent: 50, label: '10 sur 20' } },
+      { id: 'pct-4', theme: 'Pourcentage', mode: 'debut', job: 'Nettoyage', title: 'Travail avance', situation: 'Une equipe a fait 1 partie sur 4.', question: 'Quel pourcentage est termine ?', numbers: ['1 sur 4'], help: '1 sur 4 = 25%.', method: 'Quand je partage en 4 parts, 1 part = 25%.', choices: ['10%', '20%', '25%', '50%'], answer: '25%', visual: { type: 'percent', percent: 25, label: '1 sur 4' } },
+      { id: 'pct-5', theme: 'Pourcentage', mode: 'debut', job: 'Magasin', title: 'Prix apres rabais', situation: 'Une boite coute 50 CHF. Rabais 10%.', question: 'Quel est le prix apres rabais ?', numbers: ['50 CHF', '10%'], help: 'Trouve 10% puis enleve.', method: '10% de 50 = 5. 50 - 5 = 45 CHF.', choices: ['40 CHF', '45 CHF', '50 CHF', '55 CHF'], answer: '45 CHF', visual: { type: 'percent', percent: 10, label: 'Rabais 10%' } },
+      { id: 'pct-6', theme: 'Pourcentage', mode: 'encours', job: 'Vente', title: 'Rabais de 25%', situation: 'Une lampe coute 80 CHF. Le rabais est 25%.', question: 'Combien vaut le rabais ?', numbers: ['80 CHF', '25%'], help: '25% = 1 sur 4.', method: '80 partage par 4 = 20. Le rabais vaut 20 CHF.', choices: ['10 CHF', '20 CHF', '25 CHF', '40 CHF'], answer: '20 CHF', visual: { type: 'percent', percent: 25, label: '25% de 80 CHF' } },
+      { id: 'pct-7', theme: 'Pourcentage', mode: 'encours', job: 'Stock', title: 'Palette preparee', situation: 'Sur 40 cartons, 20 sont prets.', question: 'Quel pourcentage est pret ?', numbers: ['40 cartons', '20 prets'], help: '20 sur 40 = la moitie.', method: 'La moitie de 40 est 20. Donc 50% sont prets.', choices: ['25%', '40%', '50%', '75%'], answer: '50%', visual: { type: 'percent', percent: 50, label: '20 sur 40' } },
+      { id: 'pct-8', theme: 'Pourcentage', mode: 'encours', job: 'Entretien', title: 'Zones deja faites', situation: 'Une equipe a nettoye 3 zones sur 4.', question: 'Quel pourcentage est termine ?', numbers: ['3 sur 4'], help: '1 sur 4 = 25%. Donc 3 sur 4 = 75%.', method: '25% + 25% + 25% = 75%.', choices: ['50%', '60%', '75%', '80%'], answer: '75%', visual: { type: 'percent', percent: 75, label: '3 sur 4' } },
+      { id: 'pct-9', theme: 'Pourcentage', mode: 'encours', job: 'Magasin', title: 'Prix avec 50%', situation: 'Des chaussures coutent 90 CHF avec 50% de rabais.', question: 'Quel est le nouveau prix ?', numbers: ['90 CHF', '50%'], help: '50% = moitie.', method: 'La moitie de 90 est 45. Nouveau prix : 45 CHF.', choices: ['35 CHF', '40 CHF', '45 CHF', '50 CHF'], answer: '45 CHF', visual: { type: 'percent', percent: 50, label: '50% de rabais' } },
+      { id: 'pct-10', theme: 'Pourcentage', mode: 'encours', job: 'Travail', title: 'Tache presque finie', situation: 'Sur 8 etapes, 2 restent.', question: 'Quel pourcentage est deja fini ?', numbers: ['8 etapes', '2 restent'], help: 'Si 2 restent, 6 sont finies.', method: '6 sur 8 = 3 sur 4 = 75%.', choices: ['25%', '50%', '70%', '75%'], answer: '75%', visual: { type: 'percent', percent: 75, label: '6 sur 8' } },
+      { id: 'pct-11', theme: 'Pourcentage', mode: 'acquis', job: 'Vente', title: 'Prix avant puis apres', situation: 'Une veste coute 120 CHF. Rabais 25%.', question: 'Quel est le prix apres rabais ?', numbers: ['120 CHF', '25%'], help: 'Trouve 25%, puis enleve.', method: '25% de 120 = 30. 120 - 30 = 90 CHF.', choices: ['80 CHF', '90 CHF', '100 CHF', '110 CHF'], answer: '90 CHF', visual: { type: 'percent', percent: 25, label: '25% de 120 CHF' } },
+      { id: 'pct-12', theme: 'Pourcentage', mode: 'acquis', job: 'Cuisine', title: 'Portions preparees', situation: 'Sur 24 portions, 18 sont deja faites.', question: 'Quel pourcentage est deja fait ?', numbers: ['24 portions', '18 faites'], help: '18 sur 24 = 3 sur 4.', method: '3 sur 4 = 75%. Donc 75% sont faites.', choices: ['50%', '60%', '75%', '80%'], answer: '75%', visual: { type: 'percent', percent: 75, label: '18 sur 24' } },
+      { id: 'pct-13', theme: 'Pourcentage', mode: 'acquis', job: 'Stock', title: 'Palettes rangees', situation: '40 palettes au total. 10 ne sont pas rangees.', question: 'Quel pourcentage est range ?', numbers: ['40 palettes', '10 pas rangees'], help: 'Si 10 ne sont pas rangees, 30 sont rangees.', method: '30 sur 40 = 3 sur 4 = 75%.', choices: ['25%', '50%', '75%', '90%'], answer: '75%', visual: { type: 'percent', percent: 75, label: '30 sur 40' } },
+      { id: 'pct-14', theme: 'Pourcentage', mode: 'acquis', job: 'Nettoyage', title: 'Produit utilise', situation: 'Une bouteille de 1 litre est utilisee a 50%.', question: 'Combien reste-t-il ?', numbers: ['1 L', '50% utilise'], help: 'Si 50% est utilise, 50% reste.', method: '50% de 1 litre = 0.5 litre. Il reste 0.5 litre.', choices: ['0.25 L', '0.5 L', '0.75 L', '1 L'], answer: '0.5 L', visual: { type: 'percent', percent: 50, label: '50% utilise' } },
+      { id: 'pct-15', theme: 'Pourcentage', mode: 'acquis', job: 'Magasin', title: 'Double lecture du prix', situation: 'Un produit a 10% de rabais sur 70 CHF.', question: 'Quel est le prix final ?', numbers: ['70 CHF', '10%'], help: '10% de 70 = 7.', method: 'Je trouve 7 CHF de rabais. Puis 70 - 7 = 63 CHF.', choices: ['60 CHF', '63 CHF', '67 CHF', '77 CHF'], answer: '63 CHF', visual: { type: 'percent', percent: 10, label: 'Rabais 10%' } },
+
+      { id: 'unit-1', theme: 'Unites', mode: 'debut', job: 'Cuisine', title: 'Grammes et kilos', situation: '1 kg = 1000 g.', question: '500 g, c est combien en kg ?', numbers: ['500 g'], help: '500 g = la moitie de 1000 g.', method: '500 g = 0.5 kg.', choices: ['0.2 kg', '0.5 kg', '1 kg', '5 kg'], answer: '0.5 kg' },
+      { id: 'unit-2', theme: 'Unites', mode: 'debut', job: 'Cuisine', title: 'Litres et millilitres', situation: '1 litre = 1000 ml.', question: '250 ml, c est combien de litre ?', numbers: ['250 ml'], help: '250 ml = 1 sur 4 de 1000 ml.', method: '250 ml = 0.25 litre.', choices: ['0.1 L', '0.25 L', '0.5 L', '1 L'], answer: '0.25 L' },
+      { id: 'unit-3', theme: 'Unites', mode: 'debut', job: 'Batiment', title: 'Metres et centimetres', situation: '1 m = 100 cm.', question: '200 cm, c est combien de metres ?', numbers: ['200 cm'], help: '100 cm = 1 m.', method: '200 cm = 2 m.', choices: ['1 m', '2 m', '20 m', '200 m'], answer: '2 m' },
+      { id: 'unit-4', theme: 'Unites', mode: 'debut', job: 'Planning', title: 'Heures et minutes', situation: '1 heure = 60 minutes.', question: '30 minutes, c est combien d heure ?', numbers: ['30 min'], help: '30 min = la moitie de 60 min.', method: '30 minutes = 0.5 heure.', choices: ['0.5 h', '1 h', '1.5 h', '30 h'], answer: '0.5 h' },
+      { id: 'unit-5', theme: 'Unites', mode: 'debut', job: 'Vente', title: 'Francs et centimes', situation: '1 CHF = 100 centimes.', question: '50 centimes, c est combien en francs ?', numbers: ['50 cts'], help: '50 centimes = la moitie de 100 centimes.', method: '50 cts = 0.50 CHF.', choices: ['0.05 CHF', '0.50 CHF', '5 CHF', '50 CHF'], answer: '0.50 CHF' },
+      { id: 'unit-6', theme: 'Unites', mode: 'encours', job: 'Cuisine', title: 'Poids pour recette', situation: 'Tu as 1500 g de riz.', question: 'Cela fait combien de kilos ?', numbers: ['1500 g'], help: '1000 g = 1 kg.', method: '1500 g = 1.5 kg.', choices: ['0.15 kg', '1.5 kg', '15 kg', '150 kg'], answer: '1.5 kg' },
+      { id: 'unit-7', theme: 'Unites', mode: 'encours', job: 'Nettoyage', title: 'Produit liquide', situation: 'Tu as 750 ml de produit.', question: 'Cela fait combien de litre ?', numbers: ['750 ml'], help: '750 = trois quarts de 1000.', method: '750 ml = 0.75 litre.', choices: ['0.25 L', '0.5 L', '0.75 L', '7.5 L'], answer: '0.75 L' },
+      { id: 'unit-8', theme: 'Unites', mode: 'encours', job: 'Mesure', title: 'Ruban de mesure', situation: 'Une planche fait 250 cm.', question: 'Cela fait combien de metres ?', numbers: ['250 cm'], help: '100 cm = 1 m.', method: '250 cm = 2.5 m.', choices: ['0.25 m', '2.5 m', '25 m', '2500 m'], answer: '2.5 m' },
+      { id: 'unit-9', theme: 'Unites', mode: 'encours', job: 'Entretien', title: 'Duree de travail', situation: 'Le travail dure 90 minutes.', question: 'Cela fait combien d heures ?', numbers: ['90 min'], help: '60 min = 1 h. Il reste 30 min.', method: '90 min = 1 h 30 = 1.5 h.', choices: ['1 h', '1.5 h', '2 h', '9 h'], answer: '1.5 h' },
+      { id: 'unit-10', theme: 'Unites', mode: 'encours', job: 'Caisse', title: 'Pieces en francs', situation: 'Tu as 250 centimes.', question: 'Cela fait combien de francs ?', numbers: ['250 cts'], help: '100 cts = 1 CHF.', method: '250 cts = 2.50 CHF.', choices: ['0.25 CHF', '2.50 CHF', '25 CHF', '250 CHF'], answer: '2.50 CHF' },
+      { id: 'unit-11', theme: 'Unites', mode: 'acquis', job: 'Cuisine', title: 'Deux paquets', situation: 'Un paquet fait 500 g. Tu en as 2.', question: 'Quel poids total en kilos ?', numbers: ['500 g', '2 paquets'], help: '500 g + 500 g = 1000 g.', method: 'Total 1000 g. 1000 g = 1 kg.', choices: ['0.5 kg', '1 kg', '1.5 kg', '2 kg'], answer: '1 kg' },
+      { id: 'unit-12', theme: 'Unites', mode: 'acquis', job: 'Nettoyage', title: 'Deux bouteilles', situation: 'Une bouteille fait 500 ml. Il y a 3 bouteilles.', question: 'Quel volume total en litres ?', numbers: ['500 ml', '3 bouteilles'], help: '500 x 3 = 1500 ml.', method: '1500 ml = 1.5 litre.', choices: ['1 L', '1.5 L', '2 L', '3 L'], answer: '1.5 L' },
+      { id: 'unit-13', theme: 'Unites', mode: 'acquis', job: 'Batiment', title: 'Deux longueurs', situation: 'Une barre fait 120 cm. Une autre fait 80 cm.', question: 'Quelle longueur totale en metres ?', numbers: ['120 cm', '80 cm'], help: '120 + 80 = 200 cm.', method: '200 cm = 2 m.', choices: ['1.2 m', '1.8 m', '2 m', '20 m'], answer: '2 m' },
+      { id: 'unit-14', theme: 'Unites', mode: 'acquis', job: 'Planning', title: 'Deux taches', situation: 'Une tache dure 45 min. Une autre dure 30 min.', question: 'Quelle duree totale ?', numbers: ['45 min', '30 min'], help: 'Additionne les minutes.', method: '45 + 30 = 75 min. Donc 1 h 15.', choices: ['1 h', '1 h 15', '1 h 30', '2 h'], answer: '1 h 15' },
+      { id: 'unit-15', theme: 'Unites', mode: 'acquis', job: 'Vente', title: 'Monnaie totale', situation: 'Tu as 1 CHF et 50 centimes.', question: 'Combien as-tu au total ?', numbers: ['1 CHF', '50 cts'], help: '50 cts = 0.50 CHF.', method: '1 CHF + 0.50 CHF = 1.50 CHF.', choices: ['1.05 CHF', '1.50 CHF', '5 CHF', '15 CHF'], answer: '1.50 CHF' },
+
+      { id: 'job-1', theme: 'Calculs metiers', mode: 'debut', job: 'Cuisine', title: 'Portions de soupe', situation: '1 casserole donne 4 portions. Tu fais 2 casseroles.', question: 'Combien de portions ?', numbers: ['4 portions', '2 casseroles'], help: '4 x 2.', method: '4 x 2 = 8 portions.', choices: ['6', '8', '10', '12'], answer: '8' },
+      { id: 'job-2', theme: 'Calculs metiers', mode: 'debut', job: 'Nettoyage', title: 'Bouteilles de produit', situation: '1 bouteille contient 2 litres. Tu as 3 bouteilles.', question: 'Combien de litres au total ?', numbers: ['2 L', '3 bouteilles'], help: '2 x 3.', method: '2 x 3 = 6 litres.', choices: ['5 L', '6 L', '8 L', '23 L'], answer: '6 L' },
+      { id: 'job-3', theme: 'Calculs metiers', mode: 'debut', job: 'Logistique', title: 'Cartons sur palette', situation: 'Une palette porte 10 cartons. Il y a 2 palettes.', question: 'Combien de cartons ?', numbers: ['10 cartons', '2 palettes'], help: '10 x 2.', method: '10 x 2 = 20 cartons.', choices: ['12', '18', '20', '22'], answer: '20' },
+      { id: 'job-4', theme: 'Calculs metiers', mode: 'debut', job: 'Vente', title: 'Rendre la monnaie', situation: 'Le client paie 20 CHF. Le produit coute 15 CHF.', question: 'Combien rendre ?', numbers: ['20 CHF', '15 CHF'], help: 'On enleve 15 a 20.', method: '20 - 15 = 5 CHF.', choices: ['3 CHF', '5 CHF', '10 CHF', '15 CHF'], answer: '5 CHF' },
+      { id: 'job-5', theme: 'Calculs metiers', mode: 'debut', job: 'Entretien', title: 'Temps pour 2 zones', situation: 'Une zone prend 30 minutes. Il y a 2 zones.', question: 'Combien de minutes au total ?', numbers: ['30 min', '2 zones'], help: '30 + 30.', method: '30 x 2 = 60 minutes.', choices: ['45 min', '60 min', '90 min', '120 min'], answer: '60 min' },
+      { id: 'job-6', theme: 'Calculs metiers', mode: 'encours', job: 'Cuisine', title: 'Poids des portions', situation: 'Une portion pese 250 g. Il faut 4 portions.', question: 'Quel poids total ?', numbers: ['250 g', '4 portions'], help: '250 x 4.', method: '250 x 4 = 1000 g, soit 1 kg.', choices: ['500 g', '750 g', '1000 g', '1250 g'], answer: '1000 g' },
+      { id: 'job-7', theme: 'Calculs metiers', mode: 'encours', job: 'Nettoyage', title: 'Dosage produit', situation: 'Il faut 100 ml pour 1 seau. Tu fais 5 seaux.', question: 'Combien de ml au total ?', numbers: ['100 ml', '5 seaux'], help: '100 x 5.', method: '100 x 5 = 500 ml.', choices: ['300 ml', '400 ml', '500 ml', '1000 ml'], answer: '500 ml' },
+      { id: 'job-8', theme: 'Calculs metiers', mode: 'encours', job: 'Batiment', title: 'Pots de peinture', situation: '1 pot couvre 10 m². Le mur fait 20 m².', question: 'Combien de pots faut-il ?', numbers: ['10 m²', '20 m²'], help: '20 partage par 10.', method: '20 / 10 = 2. Il faut 2 pots.', choices: ['1 pot', '2 pots', '3 pots', '10 pots'], answer: '2 pots' },
+      { id: 'job-9', theme: 'Calculs metiers', mode: 'encours', job: 'Logistique', title: 'Poids des cartons', situation: '1 carton pese 8 kg. Il y a 4 cartons.', question: 'Quel poids total ?', numbers: ['8 kg', '4 cartons'], help: '8 x 4.', method: '8 x 4 = 32 kg.', choices: ['24 kg', '28 kg', '32 kg', '48 kg'], answer: '32 kg' },
+      { id: 'job-10', theme: 'Calculs metiers', mode: 'encours', job: 'Vente', title: 'Deux articles', situation: 'Article A : 12 CHF. Article B : 8 CHF.', question: 'Quel prix total ?', numbers: ['12 CHF', '8 CHF'], help: 'Additionne les deux prix.', method: '12 + 8 = 20 CHF.', choices: ['18 CHF', '20 CHF', '22 CHF', '24 CHF'], answer: '20 CHF' },
+      { id: 'job-11', theme: 'Calculs metiers', mode: 'acquis', job: 'Cuisine', title: 'Recette pour plus de personnes', situation: 'Pour 2 personnes, il faut 300 g de riz. Pour 4 personnes ?', question: 'Quel poids de riz faut-il ?', numbers: ['300 g pour 2', '4 personnes'], help: '4 personnes = 2 fois plus.', method: '300 g x 2 = 600 g.', choices: ['450 g', '600 g', '800 g', '1200 g'], answer: '600 g' },
+      { id: 'job-12', theme: 'Calculs metiers', mode: 'acquis', job: 'Nettoyage', title: 'Produit pour 2 etages', situation: '1 etage demande 3 litres. Il y a 2 etages.', question: 'Combien de litres au total ?', numbers: ['3 L', '2 etages'], help: '3 x 2.', method: '3 x 2 = 6 litres.', choices: ['5 L', '6 L', '7 L', '8 L'], answer: '6 L' },
+      { id: 'job-13', theme: 'Calculs metiers', mode: 'acquis', job: 'Batiment', title: 'Peinture et pots', situation: 'Une zone fait 30 m². 1 pot couvre 10 m².', question: 'Combien de pots faut-il ?', numbers: ['30 m²', '10 m² par pot'], help: '30 partage par 10.', method: '30 / 10 = 3. Il faut 3 pots.', choices: ['2 pots', '3 pots', '4 pots', '5 pots'], answer: '3 pots' },
+      { id: 'job-14', theme: 'Calculs metiers', mode: 'acquis', job: 'Logistique', title: 'Deux palettes de poids differents', situation: 'Palette A : 24 kg. Palette B : 16 kg.', question: 'Quel poids total ?', numbers: ['24 kg', '16 kg'], help: 'Additionne les deux poids.', method: '24 + 16 = 40 kg.', choices: ['32 kg', '36 kg', '40 kg', '44 kg'], answer: '40 kg' },
+      { id: 'job-15', theme: 'Calculs metiers', mode: 'acquis', job: 'Entretien', title: 'Planning du matin', situation: 'Zone 1 : 20 min. Zone 2 : 25 min. Zone 3 : 15 min.', question: 'Quel temps total ?', numbers: ['20 min', '25 min', '15 min'], help: 'Additionne les 3 durees.', method: '20 + 25 + 15 = 60 minutes.', choices: ['45 min', '55 min', '60 min', '75 min'], answer: '60 min' }
+    ];
+
+    const INITIAL_STATS = {
+      answered: 0,
+      correct: 0,
+      byTheme: {
+        Surface: { answered: 0, correct: 0 },
+        Pourcentage: { answered: 0, correct: 0 },
+        Unites: { answered: 0, correct: 0 },
+        'Calculs metiers': { answered: 0, correct: 0 }
+      },
+      history: []
+    };
+
+    const state = {
+      theme: 'Surface',
+      mode: 'debut',
+      mix: false,
+      currentId: null,
+      showMethod: false,
+      stats: cloneState(INITIAL_STATS)
+    };
+
+    const refs = {};
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function cloneState(input) {
+      return JSON.parse(JSON.stringify(input));
+    }
+
+    function defaultStats() {
+      return cloneState(INITIAL_STATS);
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          state.theme = THEMES.includes(parsed.theme) ? parsed.theme : state.theme;
+          state.mode = MODES.includes(parsed.mode) ? parsed.mode : state.mode;
+          state.mix = Boolean(parsed.mix);
+          if (parsed.stats && typeof parsed.stats === 'object') {
+            state.stats = Object.assign(defaultStats(), parsed.stats);
+            THEMES.forEach((theme) => {
+              if (!state.stats.byTheme || typeof state.stats.byTheme !== 'object') {
+                state.stats.byTheme = cloneState(INITIAL_STATS.byTheme);
+              }
+              if (!state.stats.byTheme[theme]) {
+                state.stats.byTheme[theme] = { answered: 0, correct: 0 };
+              }
+            });
+            if (!Array.isArray(state.stats.history)) {
+              state.stats.history = [];
+            }
+          }
+          if (typeof parsed.currentId === 'string') {
+            state.currentId = parsed.currentId;
+          }
+        }
+      } catch (_) {
+        showToast('Impossible de lire la sauvegarde.');
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        theme: state.theme,
+        mode: state.mode,
+        mix: state.mix,
+        currentId: state.currentId,
+        stats: state.stats
+      }));
+    }
+
+    function rate(correct, answered) {
+      return answered > 0 ? Math.round((correct / answered) * 100) : 0;
+    }
+
+    function poolForCurrentFilters() {
+      return exercises.filter((item) => item.theme === state.theme && item.mode === state.mode);
+    }
+
+    function pickExercise() {
+      const pool = poolForCurrentFilters();
+      if (!pool.length) return null;
+
+      if (!state.mix) {
+        const sameThemeHistory = state.stats.history.filter((entry) => entry.theme === state.theme && entry.mode === state.mode);
+        const nextIndex = sameThemeHistory.length % pool.length;
+        return pool[nextIndex];
+      }
+
+      const index = Math.floor(Math.random() * pool.length);
+      return pool[index];
+    }
+
+    function currentExercise() {
+      return exercises.find((item) => item.id === state.currentId) || null;
+    }
+
+    function renderThemeFilters() {
+      refs.themeFilters.innerHTML = '';
+      THEMES.forEach((theme) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = theme;
+        if (theme === state.theme) button.classList.add('active-filter');
+        button.addEventListener('click', () => {
+          state.theme = theme;
+          state.currentId = null;
+          state.showMethod = false;
+          newExercise();
+        });
+        refs.themeFilters.appendChild(button);
+      });
+    }
+
+    function renderNumbers(numbers) {
+      refs.numbersRow.innerHTML = '';
+      numbers.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'number-pill';
+        div.textContent = item;
+        refs.numbersRow.appendChild(div);
+      });
+    }
+
+    function renderVisual(exercise) {
+      refs.visualBox.innerHTML = '';
+      if (!exercise.visual) return;
+
+      if (exercise.visual.type === 'surface') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'surface-box';
+        const stage = document.createElement('div');
+        stage.className = 'surface-stage';
+        const rect = document.createElement('div');
+        rect.className = 'surface-rect';
+        const widthPx = Math.min(280, 70 + (exercise.visual.length * 18));
+        const heightPx = Math.min(160, 60 + (exercise.visual.width * 18));
+        rect.style.width = widthPx + 'px';
+        rect.style.height = heightPx + 'px';
+        rect.textContent = 'Rectangle';
+
+        const top = document.createElement('div');
+        top.className = 'surface-label-top';
+        top.textContent = exercise.visual.length + ' m';
+
+        const side = document.createElement('div');
+        side.className = 'surface-label-side';
+        side.textContent = exercise.visual.width + ' m';
+
+        rect.appendChild(top);
+        rect.appendChild(side);
+        stage.appendChild(rect);
+        wrapper.innerHTML = '<strong>Vue simple de la surface</strong>';
+        if (exercise.visual.note) {
+          wrapper.innerHTML += '<div class="small-note" style="margin-top:10px;">' + exercise.visual.note + '</div>';
+        }
+        wrapper.appendChild(stage);
+        refs.visualBox.appendChild(wrapper);
+      }
+
+      if (exercise.visual.type === 'percent') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'percent-box';
+        const pct = Math.max(0, Math.min(100, Number(exercise.visual.percent) || 0));
+        wrapper.innerHTML = '<strong>Vue simple du pourcentage</strong><div>' + (exercise.visual.label || '') + '</div>';
+        const bar = document.createElement('div');
+        bar.className = 'percent-bar';
+        const fill = document.createElement('div');
+        fill.className = 'percent-bar-fill';
+        fill.style.width = pct + '%';
+        bar.appendChild(fill);
+        wrapper.appendChild(bar);
+        refs.visualBox.appendChild(wrapper);
+      }
+    }
+
+    function getScenarioMeta(exercise) {
+      const theme = exercise.theme;
+      const icon = JOB_ICONS[exercise.job] || '🧩';
+      const base = {
+        place: icon + ' ' + exercise.job,
+        goal: '🎯 Trouver la bonne reponse',
+        title: 'Je comprends la situation avant de calculer.',
+        steps: [
+          'Je regarde les nombres utiles.',
+          'Je choisis le bon calcul.',
+          'Je prends la reponse qui correspond.'
+        ]
+      };
+
+      if (theme === 'Surface') {
+        base.goal = '🎯 Trouver une surface simple';
+        base.title = 'Je vois un lieu de travail. Je cherche combien de m² il faut nettoyer, peindre ou couvrir.';
+        base.steps = [
+          'Je regarde la longueur et la largeur.',
+          'Je fais longueur x largeur.',
+          'Je choisis la bonne surface en m².'
+        ];
+      } else if (theme === 'Pourcentage') {
+        base.goal = '🎯 Comprendre un rabais ou une progression';
+        base.title = 'Je regarde un prix, un stock ou une tache. Je cherche une partie du total.';
+        base.steps = [
+          'Je regarde le total.',
+          'Je repere 10%, 25%, 50% ou 75%.',
+          'Je choisis le bon prix ou le bon pourcentage.'
+        ];
+      } else if (theme === 'Unites') {
+        base.goal = '🎯 Passer d une unite a une autre';
+        base.title = 'Je lis une mesure simple du travail ou de la vie quotidienne.';
+        base.steps = [
+          'Je regarde l unite de depart.',
+          'Je pense a l equivalence simple.',
+          'Je choisis la bonne conversion.'
+        ];
+      } else if (theme === 'Calculs metiers') {
+        base.goal = '🎯 Resoudre une petite situation de travail';
+        base.title = 'Je suis dans une vraie situation de cuisine, nettoyage, vente ou logistique.';
+        base.steps = [
+          'Je vois ce que je dois preparer ou compter.',
+          'Je fais une addition, une multiplication ou une division simple.',
+          'Je choisis la reponse utile pour le travail.'
+        ];
+      }
+
+      if (exercise.mode === 'debut') {
+        base.steps = [
+          base.steps[0],
+          'Je fais un petit calcul simple.',
+          'Je regarde les choix et je choisis.'
+        ];
+      }
+
+      if (exercise.mode === 'acquis') {
+        base.steps = [
+          base.steps[0],
+          'Je fais une premiere etape.',
+          'Je fais une deuxieme etape puis je choisis.'
+        ];
+      }
+
+      return base;
+    }
+
+    function renderScenario(exercise) {
+      const scenario = getScenarioMeta(exercise);
+      refs.scenarioPlace.textContent = scenario.place;
+      refs.scenarioGoal.textContent = scenario.goal;
+      refs.scenarioTitle.textContent = scenario.title;
+      refs.scenarioSteps.innerHTML = '';
+      scenario.steps.forEach((step, index) => {
+        const row = document.createElement('div');
+        row.className = 'scenario-step';
+        row.innerHTML =
+          '<div class="scenario-step-number">' + (index + 1) + '</div>' +
+          '<div class="scenario-step-text">' + step + '</div>';
+        refs.scenarioSteps.appendChild(row);
+      });
+    }
+
+    function renderAnswers(exercise) {
+      refs.answersGrid.innerHTML = '';
+      exercise.choices.forEach((choice) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'choice';
+        button.textContent = choice;
+        button.addEventListener('click', () => answerExercise(choice, button));
+        refs.answersGrid.appendChild(button);
+      });
+    }
+
+    function exerciseNumberLabel() {
+      const samePool = poolForCurrentFilters();
+      const index = samePool.findIndex((item) => item.id === state.currentId);
+      return index >= 0 ? 'Exercice ' + (index + 1) + ' / ' + samePool.length : 'Exercice';
+    }
+
+    function renderExercise() {
+      const exercise = currentExercise();
+      if (!exercise) return;
+      refs.exerciseTitle.textContent = exercise.title;
+      refs.exerciseThemeTag.textContent = exercise.theme;
+      refs.exerciseSituation.textContent = exercise.situation;
+      renderScenario(exercise);
+      refs.exerciseQuestion.textContent = exercise.question;
+      refs.exerciseHelp.textContent = exercise.help;
+      refs.exerciseMethod.textContent = exercise.method;
+      refs.exerciseMethod.hidden = !state.showMethod;
+      refs.difficultyTag.textContent = 'Mode ' + modeLabel(state.mode);
+      refs.exerciseJobTag.textContent = exercise.job;
+      refs.questionCountTag.textContent = exerciseNumberLabel();
+      refs.feedbackBox.className = 'feedback';
+      refs.feedbackBox.textContent = 'Choisis une reponse.';
+      renderNumbers(exercise.numbers);
+      renderVisual(exercise);
+      renderAnswers(exercise);
+    }
+
+    function answerExercise(choice, button) {
+      const exercise = currentExercise();
+      if (!exercise) return;
+
+      Array.from(refs.answersGrid.querySelectorAll('button')).forEach((btn) => btn.disabled = true);
+
+      const correct = choice === exercise.answer;
+      state.stats.answered += 1;
+      state.stats.byTheme[exercise.theme].answered += 1;
+
+      if (correct) {
+        state.stats.correct += 1;
+        state.stats.byTheme[exercise.theme].correct += 1;
+        button.classList.add('correct');
+        refs.feedbackBox.className = 'feedback correct';
+        refs.feedbackBox.textContent = 'Bravo. Bonne reponse : ' + exercise.answer;
+      } else {
+        button.classList.add('wrong');
+        refs.feedbackBox.className = 'feedback wrong';
+        refs.feedbackBox.textContent = 'Ce n est pas la bonne reponse. Bonne reponse : ' + exercise.answer;
+        Array.from(refs.answersGrid.querySelectorAll('button')).forEach((btn) => {
+          if (btn.textContent === exercise.answer) btn.classList.add('reveal');
+        });
+      }
+
+      state.stats.history.push({
+        id: exercise.id,
+        theme: exercise.theme,
+        mode: exercise.mode,
+        correct,
+        at: new Date().toISOString()
+      });
+
+      if (window.ScoreManager) {
+        window.ScoreManager.promoteStatus(PAGE_KEY, 'in_progress');
+        window.ScoreManager.updateMetrics(PAGE_KEY, {
+          correct: correct ? 1 : 0,
+          typed: 1,
+          errors: correct ? 0 : 1,
+          xp: correct ? 3 : 1
+        });
+        window.ScoreManager.pushSessionHistory({
+          page: PAGE_KEY,
+          name: 'Maths pratiques',
+          xp: correct ? 3 : 1,
+          correct: correct ? 1 : 0,
+          typed: 1,
+          errors: correct ? 0 : 1
+        });
+        if (state.stats.answered >= 5) {
+          window.ScoreManager.promoteStatus(PAGE_KEY, 'completed');
+        }
+      }
+
+      saveState();
+      updateStats();
+    }
+
+    function modeLabel(mode) {
+      if (mode === 'debut') return 'Debut';
+      if (mode === 'encours') return 'En cours';
+      return 'Acquis';
+    }
+
+    function hardestTheme() {
+      let lowestTheme = 'Aucun';
+      let lowestRate = Infinity;
+      THEMES.forEach((theme) => {
+        const block = state.stats.byTheme[theme];
+        if (!block || block.answered === 0) return;
+        const currentRate = rate(block.correct, block.answered);
+        if (currentRate < lowestRate) {
+          lowestRate = currentRate;
+          lowestTheme = theme;
+        }
+      });
+      return lowestTheme;
+    }
+
+    function updateStats() {
+      const answered = state.stats.answered;
+      const correct = state.stats.correct;
+      const currentRate = rate(correct, answered);
+      refs.statAnswered.textContent = answered;
+      refs.statCorrect.textContent = correct;
+      refs.statRate.textContent = currentRate + '%';
+      refs.statMode.textContent = modeLabel(state.mode);
+      refs.summaryAnswered.textContent = answered;
+      refs.summaryCorrect.textContent = correct;
+      refs.summaryRate.textContent = currentRate + '%';
+      refs.summaryHardest.textContent = hardestTheme();
+      refs.globalProgress.style.width = Math.min(100, currentRate) + '%';
+    }
+
+    function newExercise() {
+      const next = pickExercise();
+      if (!next) {
+        showToast('Aucun exercice pour ce filtre.');
+        return;
+      }
+      state.currentId = next.id;
+      state.showMethod = false;
+      saveState();
+      renderThemeFilters();
+      refs.modeSelect.value = state.mode;
+      refs.mixToggle.textContent = 'Melange : ' + (state.mix ? 'oui' : 'non');
+      renderExercise();
+      updateStats();
+    }
+
+    function toggleMethod() {
+      state.showMethod = !state.showMethod;
+      refs.exerciseMethod.hidden = !state.showMethod;
+      saveState();
+    }
+
+    function resetAll() {
+      if (!window.confirm('Effacer tous les resultats ?')) return;
+      state.stats = defaultStats();
+      state.currentId = null;
+      state.showMethod = false;
+      if (window.ScoreManager) {
+        window.ScoreManager.writeMetrics(PAGE_KEY, {
+          correct: 0,
+          typed: 0,
+          errors: 0,
+          xp: 0,
+          status: 'not_started'
+        });
+      }
+      saveState();
+      newExercise();
+      showToast('Resultats remis a zero.');
+    }
+
+    function showToast(message) {
+      refs.toast.textContent = message;
+      refs.toast.classList.add('show');
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => refs.toast.classList.remove('show'), 2200);
+    }
+
+    function exportResults() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        state
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'maths-pratiques-resultats.json';
+      link.click();
+      URL.revokeObjectURL(url);
+      showToast('Export JSON pret.');
+    }
+
+    function importResults(file) {
+      file.text().then((text) => {
+        const parsed = JSON.parse(text);
+        if (!parsed || !parsed.state) throw new Error('invalid');
+        if (parsed.state.theme && THEMES.includes(parsed.state.theme)) state.theme = parsed.state.theme;
+        if (parsed.state.mode && MODES.includes(parsed.state.mode)) state.mode = parsed.state.mode;
+        state.mix = Boolean(parsed.state.mix);
+        state.currentId = typeof parsed.state.currentId === 'string' ? parsed.state.currentId : null;
+        if (parsed.state.stats) {
+          state.stats = Object.assign(defaultStats(), parsed.state.stats);
+          THEMES.forEach((theme) => {
+            if (!state.stats.byTheme || typeof state.stats.byTheme !== 'object') {
+              state.stats.byTheme = cloneState(INITIAL_STATS.byTheme);
+            }
+            if (!state.stats.byTheme[theme]) {
+              state.stats.byTheme[theme] = { answered: 0, correct: 0 };
+            }
+          });
+          if (!Array.isArray(state.stats.history)) {
+            state.stats.history = [];
+          }
+        }
+        saveState();
+        renderThemeFilters();
+        if (!currentExercise()) {
+          newExercise();
+        } else {
+          renderExercise();
+          updateStats();
+        }
+        showToast('Import termine.');
+      }).catch(() => {
+        showToast('Import impossible.');
+      });
+    }
+
+    function renderPrintSheet() {
+      const list = refs.printList;
+      list.innerHTML = '';
+      const printItems = exercises.filter((item) => item.theme === state.theme && item.mode === state.mode).slice(0, 10);
+      printItems.forEach((item, index) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'print-item';
+        wrap.innerHTML =
+          '<strong>' + (index + 1) + '. ' + item.title + '</strong>' +
+          '<p><strong>Situation :</strong> ' + item.situation + '</p>' +
+          '<p><strong>Question :</strong> ' + item.question + '</p>' +
+          '<p><strong>Nombres :</strong> ' + item.numbers.join(', ') + '</p>' +
+          '<p><strong>Reponse :</strong> ________________________</p>';
+        list.appendChild(wrap);
+      });
+    }
+
+    function printSheet() {
+      renderPrintSheet();
+      window.print();
+    }
+
+    function runCalculator(kind) {
+      const a = Number(refs.calcA.value);
+      const b = Number(refs.calcB.value);
+      let result = '';
+
+      if (Number.isNaN(a)) {
+        refs.calcResult.textContent = 'Entre le nombre A';
+        return;
+      }
+
+      if (kind === 'add') result = a + (Number.isNaN(b) ? 0 : b);
+      if (kind === 'multiply') result = a * (Number.isNaN(b) ? 0 : b);
+      if (kind === 'divide') result = Number.isNaN(b) || b === 0 ? 'Division impossible' : (a / b);
+      if (kind === 'surface') result = a * (Number.isNaN(b) ? 0 : b) + ' m²';
+      if (kind === 'ten') result = (a * 0.1);
+      if (kind === 'half') result = (a * 0.5);
+
+      refs.calcResult.textContent = typeof result === 'number' ? String(Number(result.toFixed(2))) : result;
+    }
+
+    function collectRefs() {
+      [
+        'themeFilters', 'modeSelect', 'mixToggle', 'newExerciseBtn', 'methodBtn', 'resetBtn',
+        'printBtn', 'exportBtn', 'importBtn', 'importFile', 'exerciseTitle', 'exerciseThemeTag',
+        'exerciseSituation', 'scenarioPlace', 'scenarioGoal', 'scenarioTitle', 'scenarioSteps',
+        'difficultyTag', 'exerciseJobTag', 'questionCountTag', 'exerciseQuestion',
+        'numbersRow', 'exerciseHelp', 'exerciseMethod', 'visualBox', 'answersGrid', 'feedbackBox',
+        'statAnswered', 'statCorrect', 'statRate', 'statMode', 'summaryAnswered', 'summaryCorrect',
+        'summaryRate', 'summaryHardest', 'globalProgress', 'calcA', 'calcB', 'calcResult',
+        'toast', 'printList'
+      ].forEach((id) => refs[id] = $(id));
+    }
+
+    function bindEvents() {
+      refs.modeSelect.addEventListener('change', (event) => {
+        state.mode = event.target.value;
+        state.currentId = null;
+        newExercise();
+      });
+
+      refs.mixToggle.addEventListener('click', () => {
+        state.mix = !state.mix;
+        newExercise();
+      });
+
+      refs.newExerciseBtn.addEventListener('click', newExercise);
+      refs.methodBtn.addEventListener('click', toggleMethod);
+      refs.resetBtn.addEventListener('click', resetAll);
+      refs.exportBtn.addEventListener('click', exportResults);
+      refs.importBtn.addEventListener('click', () => refs.importFile.click());
+      refs.importFile.addEventListener('change', (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (file) importResults(file);
+        event.target.value = '';
+      });
+      refs.printBtn.addEventListener('click', printSheet);
+
+      Array.from(document.querySelectorAll('.calc-action')).forEach((button) => {
+        button.addEventListener('click', () => runCalculator(button.dataset.calc));
+      });
+    }
+
+    function init() {
+      collectRefs();
+      loadState();
+      bindEvents();
+      renderThemeFilters();
+      refs.modeSelect.value = state.mode;
+      refs.mixToggle.textContent = 'Melange : ' + (state.mix ? 'oui' : 'non');
+      if (!currentExercise()) {
+        newExercise();
+      } else {
+        renderExercise();
+        updateStats();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

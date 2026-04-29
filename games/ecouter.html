@@ -1,0 +1,667 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compréhension orale - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/ecouter.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🎧</div>
+          <h1>Compréhension orale</h1>
+          <p>Ecoutez, puis repondez aux questions.</p>
+        </div>
+
+        <!-- KPI globaux -->
+        <div class="kpi-row fade-up delay-1">
+          <div class="kpi-pill">✅ <span class="kv" id="kpiCorrect">0</span> corrects</div>
+          <div class="kpi-pill">❌ <span class="kv" id="kpiErrors">0</span> erreurs</div>
+          <div class="kpi-pill">⚡ <span class="kv" id="kpiXP">0</span> XP</div>
+          <div class="kpi-pill">📖 <span class="kv" id="kpiEp">0/0</span> épisodes</div>
+        </div>
+
+        <!-- Sélecteur d'épisode -->
+        <div class="ep-select-wrap fade-up delay-1">
+          <select id="epSelect"></select>
+          <button class="btn btn-ghost btn-sm" id="btnPrevEp" type="button" aria-label="Épisode précédent">◀</button>
+          <button class="btn btn-ghost btn-sm" id="btnNextEp" type="button" aria-label="Épisode suivant">▶</button>
+        </div>
+
+        <!-- Panneau épisode -->
+        <div class="episode-panel fade-up delay-2">
+
+          <!-- En-tête -->
+          <div class="ep-header">
+            <div class="ep-icon" id="epIcon">📖</div>
+            <div class="ep-info">
+              <div class="ep-title" id="epTitle">—</div>
+              <div class="ep-meta" id="epMeta">—</div>
+            </div>
+            <span class="ep-type-badge" id="epTypeBadge"></span>
+          </div>
+
+          <!-- Écoute -->
+          <div class="listen-section">
+            <button class="btn-play" id="btnPlay" type="button" title="Écouter" aria-label="Écouter l'épisode">▶️</button>
+            <div class="listen-info">
+              <div class="listen-title" id="listenTitle">Appuie ▶️ pour écouter</div>
+              <div class="listen-sub" id="listenSub">Écoute bien avant de répondre aux questions.</div>
+              <div class="listen-count" id="listenCount"></div>
+              <div class="listen-controls">
+                <button class="btn btn-ghost btn-sm" id="btnStop" type="button" style="display:none;">⏹ Stop</button>
+                <button class="voice-speed" id="btnSpeed" type="button" aria-label="Changer la vitesse de lecture">🐢 × 0.85</button>
+                <button class="btn btn-ghost btn-sm" id="btnTranscript" type="button" style="display:none;">📝 Afficher les sous-titres</button>
+              </div>
+              <div id="transcriptZone" style="display:none;margin-top:12px;padding:12px;background:var(--bg2);border-radius:var(--r-md);"></div>
+              <div class="voice-row" id="voiceRow" style="display:none;">
+                Voix : <select id="voiceSelect"></select>
+              </div>
+              <div class="voice-badges" id="voiceBadges" style="display:none;">
+                <span class="voice-badge f">👩 <span id="badgeVoiceF">—</span></span>
+                <span class="voice-badge m">👨 <span id="badgeVoiceM">—</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Résultat inline -->
+          <div class="result-banner" id="resultBanner">
+            <div class="res-emoji" id="resEmoji"></div>
+            <div class="res-title" id="resTitle"></div>
+            <div class="res-sub"   id="resSub"></div>
+            <div class="res-xp"    id="resXP"></div>
+          </div>
+
+          <!-- Questions -->
+          <div class="questions-section">
+            <div class="q-header">
+              <div class="q-title">Questions de compréhension</div>
+              <div class="score-dots" id="scoreDots"></div>
+            </div>
+            <div id="questionsContainer"></div>
+          </div>
+
+          <!-- Barre actions -->
+          <div class="bottom-bar">
+            <button class="btn btn-primary" id="btnReplay" type="button" style="display:none;">↺ Réécouter</button>
+            <button class="btn btn-secondary btn-sm" id="btnReset" type="button">🔄 Recommencer cet épisode</button>
+            <span class="key-hint">
+              <kbd>Espace</kbd> écouter &nbsp;|&nbsp; <kbd>1</kbd>–<kbd>4</kbd> répondre &nbsp;|&nbsp; <kbd>R</kbd> réécouter
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/ecouter-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const ALL_EP  = window.ECOUTER_DATA || [];
+  const PAGE_ID = 'ecouter';
+
+  /* ════════════════════════════════════════
+     TTS — voix Google FR uniquement
+     Histoire  : voix Google FR (féminine, pitch 1.0)
+     Dialogue  : même voix Google FR
+                 ♀ pitch 1.05 (féminin)
+                 ♂ pitch 0.75 (masculin, plus grave)
+  ════════════════════════════════════════ */
+  let ttsOk      = false;
+  let googleVoice = null;  // la voix Google FR retenue (unique base)
+  let speaking    = false;
+  let audioSpeed  = 0.85;
+
+  const SPEEDS = [0.75, 0.85, 1.0, 1.15];
+
+  // Pitch par genre pour les dialogues
+  const PITCH_F = 1.08;   // légèrement aigu → féminin
+  const PITCH_M = 0.72;   // grave → masculin
+  const PITCH_N = 1.0;    // neutre (histoires)
+
+  function initTTS() {
+    if (!window.speechSynthesis) return;
+    ttsOk = true;
+
+    function pick() {
+      const all = window.speechSynthesis.getVoices();
+
+      // 1. Voix Google fr-CH (idéale)
+      googleVoice = all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-CH')
+        // 2. Voix Google fr-FR
+        || all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-FR')
+        // 3. Toute voix Google française
+        || all.find(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('fr'))
+        // 4. Fallback : meilleure voix FR disponible
+        || all.find(v => v.lang === 'fr-CH')
+        || all.find(v => v.lang === 'fr-FR')
+        || all.find(v => v.lang.startsWith('fr'))
+        || null;
+
+      buildVoiceSelect(all);
+      updateVoiceBadges();
+    }
+
+    pick();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = pick;
+    }
+  }
+
+  function buildVoiceSelect(all) {
+    const sel = document.getElementById('voiceSelect');
+    const row = document.getElementById('voiceRow');
+    if (!sel) return;
+
+    // N'afficher que les voix Google FR (+ la voix retenue si pas Google)
+    const googleFR = all.filter(v =>
+      v.name.toLowerCase().includes('google') && v.lang.startsWith('fr')
+    );
+    const pool = googleFR.length ? googleFR : all.filter(v => v.lang.startsWith('fr'));
+
+    sel.innerHTML = '';
+    pool.forEach((v, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = v.name + (v.lang === 'fr-CH' ? ' 🇨🇭' : '');
+      if (v === googleVoice) opt.selected = true;
+      sel.appendChild(opt);
+    });
+
+    if (pool.length > 1) row.style.display = 'flex';
+
+    sel.addEventListener('change', () => {
+      googleVoice = pool[+sel.value] || googleVoice;
+      updateVoiceBadges();
+    });
+  }
+
+  /* Lire un utterance avec pitch contrôlé */
+  function speakOne(text, pitch, onEnd) {
+    if (!ttsOk) { if (onEnd) onEnd(); return; }
+    const utt   = new SpeechSynthesisUtterance(text);
+    utt.lang    = googleVoice ? googleVoice.lang : 'fr-CH';
+    utt.rate    = audioSpeed;
+    utt.pitch   = pitch;
+    utt.volume  = 1.0;
+    if (googleVoice) utt.voice = googleVoice;
+    utt.onend = utt.onerror = () => { if (onEnd) onEnd(); };
+    window.speechSynthesis.speak(utt);
+  }
+
+  /* UI : état bouton lecture */
+  function setPlayingUI(on) {
+    const btn = document.getElementById('btnPlay');
+    if (!btn) return;
+    btn.classList.toggle('playing', on);
+    btn.textContent = on ? '⏸' : '▶️';
+    document.getElementById('btnStop').style.display   = on ? '' : 'none';
+    document.getElementById('btnReplay').style.display = on ? 'none' : '';
+  }
+
+  /* Lire le transcript simple (histoires — voix neutre) */
+  function speakTranscript(text) {
+    window.speechSynthesis.cancel();
+    speaking = true;
+    setPlayingUI(true);
+    speakOne(text, PITCH_N, () => {
+      speaking = false;
+      setPlayingUI(false);
+    });
+  }
+
+  /* Lire les lignes d'un dialogue en chaîne — pitch H/F */
+  function speakDialogue(lines) {
+    window.speechSynthesis.cancel();
+    speaking = true;
+    setPlayingUI(true);
+    let i = 0;
+
+    function next() {
+      if (!speaking || i >= lines.length) {
+        speaking = false;
+        setPlayingUI(false);
+        highlightLine(-1);
+        return;
+      }
+      const line  = lines[i];
+      const pitch = line.gender === 'm' ? PITCH_M : PITCH_F;
+      highlightLine(i);
+      i++;
+      speakOne(line.text, pitch, next);
+    }
+
+    next();
+  }
+
+  /* Surligner la ligne lue */
+  function highlightLine(idx) {
+    document.querySelectorAll('.trs-line').forEach((el, i) => {
+      el.classList.toggle('trs-active', i === idx);
+    });
+  }
+
+  function stopSpeech() {
+    speaking = false;
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    setPlayingUI(false);
+    highlightLine(-1);
+  }
+
+  /* ════════════════════════════════════════
+     ÉTAT
+  ════════════════════════════════════════ */
+  let epIdx       = 0;
+  let listenCount = 0;
+  let qStates     = [];   // 'pending' | 'correct' | 'wrong'
+  let globalOk    = 0, globalErr = 0, globalXP = 0;
+  let epDone      = new Set();
+  let xpShown     = false;
+
+  /* ════════════════════════════════════════
+     SÉLECTEUR D'ÉPISODE
+  ════════════════════════════════════════ */
+  function buildSelect() {
+    const sel = document.getElementById('epSelect');
+    sel.innerHTML = '';
+    ALL_EP.forEach((ep, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      const done = epDone.has(ep.id) ? '✓ ' : '';
+      opt.textContent = done + (i + 1) + '. ' + ep.title + ' (' + ep.category + ')';
+      sel.appendChild(opt);
+    });
+    sel.value = epIdx;
+  }
+
+  /* ════════════════════════════════════════
+     CHARGER UN ÉPISODE
+  ════════════════════════════════════════ */
+  function loadEpisode(idx) {
+    epIdx = Math.max(0, Math.min(idx, ALL_EP.length - 1));
+    document.getElementById('epSelect').value = epIdx;
+    stopSpeech();
+
+    const ep = ALL_EP[epIdx];
+    listenCount = 0;
+    qStates     = ep.questions.map(() => 'pending');
+
+    // En-tête
+    document.getElementById('epIcon').textContent  = ep.type === 'dialogue' ? '💬' : '📖';
+    document.getElementById('epTitle').textContent = ep.title;
+    document.getElementById('epMeta').textContent  = ep.category + ' · ' + ep.questions.length + ' questions';
+    const tb = document.getElementById('epTypeBadge');
+    tb.textContent = ep.type === 'dialogue' ? '💬 Dialogue' : '📖 Histoire';
+    tb.className   = 'ep-type-badge ' + ep.type;
+
+    // Badges voix (visible seulement pour les dialogues)
+    const badges = document.getElementById('voiceBadges');
+    if (ep.type === 'dialogue') {
+      badges.style.display = 'flex';
+      updateVoiceBadges();
+    } else {
+      badges.style.display = 'none';
+    }
+
+    // Transcript (construit en arrière-plan pour le surlignage des dialogues)
+    buildTranscriptBox(ep);
+
+    // Écoute
+    document.getElementById('listenTitle').textContent = 'Appuie ▶️ pour écouter';
+    document.getElementById('listenSub').textContent   = 'Écoute bien avant de répondre aux questions.';
+    document.getElementById('listenCount').textContent = '';
+    document.getElementById('btnReplay').style.display = 'none';
+    document.getElementById('btnStop').style.display   = 'none';
+
+    // Phase 5.4: Show transcript button
+    document.getElementById('btnTranscript').style.display = 'inline-block';
+    document.getElementById('transcriptZone').style.display = 'none';
+    document.getElementById('btnTranscript').textContent = '📝 Afficher les sous-titres';
+
+    // Résultat caché
+    document.getElementById('resultBanner').classList.remove('show', 'good', 'mid', 'bad');
+
+    // Questions
+    buildQuestions(ep);
+    buildDots(ep);
+
+    if (!xpShown) { xpShown = true; showXPRules('Écoute'); }
+    promoteExerciseStatus(PAGE_ID, 'in_progress');
+    updateGlobalKPIs();
+  }
+
+  /* ════════════════════════════════════════
+     CONSTRUIRE LES QUESTIONS
+  ════════════════════════════════════════ */
+  function buildQuestions(ep) {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+
+    ep.questions.forEach((q, qi) => {
+      const item = document.createElement('div');
+      item.className = 'q-item' + (qi === 0 ? ' current' : ' locked');
+      item.id = 'q-item-' + qi;
+
+      const choicesHTML = q.choices.map((c, ci) =>
+        `<button class="eq-choice" type="button" data-qi="${qi}" data-ci="${ci}">
+           <span class="cl">${letters[ci]}</span><span>${c}</span>
+         </button>`
+      ).join('');
+
+      item.innerHTML = `
+        <div class="q-num">Question ${qi + 1} / ${ep.questions.length}</div>
+        <div class="q-text">${q.question}</div>
+        <div class="eq-choices" id="choices-${qi}">${choicesHTML}</div>
+        <div class="q-feedback"   id="fb-${qi}"></div>
+        <div class="q-explication" id="exp-${qi}"></div>`;
+
+      container.appendChild(item);
+    });
+
+    // Events sur les boutons
+    container.querySelectorAll('.eq-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const qi = +btn.dataset.qi;
+        const ci = +btn.dataset.ci;
+        answerQuestion(qi, ci);
+      });
+    });
+  }
+
+  function buildDots(ep) {
+    const bar = document.getElementById('scoreDots');
+    bar.innerHTML = '';
+    ep.questions.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 's-dot' + (i === 0 ? ' cur' : '');
+      d.id = 'dot-' + i;
+      bar.appendChild(d);
+    });
+  }
+
+  /* ════════════════════════════════════════
+     RÉPONDRE
+  ════════════════════════════════════════ */
+  function answerQuestion(qi, ci) {
+    if (qStates[qi] !== 'pending') return;
+
+    const ep   = ALL_EP[epIdx];
+    const q    = ep.questions[qi];
+    const isOk = ci === q.answer;
+
+    qStates[qi] = isOk ? 'correct' : 'wrong';
+
+    // Désactiver les boutons de cette question
+    document.querySelectorAll(`[data-qi="${qi}"]`).forEach(b => { b.disabled = true; });
+
+    // Colorier
+    const choicesBtns = document.querySelectorAll(`[data-qi="${qi}"]`);
+    choicesBtns[ci].classList.add(isOk ? 'correct' : 'wrong');
+    if (!isOk) choicesBtns[q.answer].classList.add('correct');
+
+    // Feedback + explication
+    const fb  = document.getElementById('fb-'  + qi);
+    const exp = document.getElementById('exp-' + qi);
+    const xp  = isOk ? (listenCount <= 1 ? 4 : 3) : 0;
+
+    if (isOk) {
+      fb.textContent = '✅ Correct !' + (xp > 0 ? ' +' + xp + ' XP' : '');
+      fb.className   = 'q-feedback ok';
+      globalOk++;
+      globalXP += xp;
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+    } else {
+      fb.textContent = '❌ Incorrect';
+      fb.className   = 'q-feedback err';
+      globalErr++;
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+    }
+    exp.textContent = q.explication;
+    exp.className   = 'q-explication ' + (isOk ? 'ok' : 'err');
+
+    // Dot
+    const dot = document.getElementById('dot-' + qi);
+    dot.classList.remove('cur');
+    dot.classList.add(isOk ? 'ok' : 'err');
+
+    // Style de la carte
+    const item = document.getElementById('q-item-' + qi);
+    item.classList.remove('current', 'locked');
+    item.classList.add(isOk ? 'answered-ok' : 'answered-err');
+
+    // Débloquer la suivante ou terminer
+    const nextQi = qi + 1;
+    if (nextQi < ep.questions.length) {
+      const nextItem = document.getElementById('q-item-' + nextQi);
+      nextItem.classList.remove('locked');
+      nextItem.classList.add('current');
+      const nextDot = document.getElementById('dot-' + nextQi);
+      if (nextDot) nextDot.classList.add('cur');
+      // Scroll doux vers la suivante
+      setTimeout(() => nextItem.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+    } else {
+      finishEpisode();
+    }
+
+    updateGlobalKPIs();
+  }
+
+  /* ════════════════════════════════════════
+     FIN D'ÉPISODE
+  ════════════════════════════════════════ */
+  function finishEpisode() {
+    const ep      = ALL_EP[epIdx];
+    const total   = ep.questions.length;
+    const correct = qStates.filter(s => s === 'correct').length;
+    const xpTotal = qStates.reduce((acc, s, i) =>
+      acc + (s === 'correct' ? (listenCount <= 1 ? 4 : 3) : 0), 0);
+    const pct     = Math.round((correct / total) * 100);
+
+    epDone.add(ep.id);
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    buildSelect();
+    updateGlobalKPIs();
+
+    let emoji = '📚', title = 'Continue à t\'entraîner !', cls = 'bad';
+    if (pct >= 90) { emoji = '🏆'; title = 'Excellent !';       cls = 'good'; }
+    else if (pct >= 70) { emoji = '🎉'; title = 'Très bien !';  cls = 'good'; }
+    else if (pct >= 50) { emoji = '👍'; title = 'Pas mal !';    cls = 'mid';  }
+
+    const banner = document.getElementById('resultBanner');
+    document.getElementById('resEmoji').textContent = emoji;
+    document.getElementById('resTitle').textContent = title;
+    document.getElementById('resSub').textContent   = correct + ' / ' + total + ' correctes · ' + pct + '%';
+    document.getElementById('resXP').textContent    = '+' + xpTotal + ' XP';
+    banner.classList.add('show', cls);
+    banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    if (pct >= 75) launchConfetti();
+
+    // TTS feedback
+    if (ttsOk) {
+      const msg = pct >= 70
+        ? 'Bravo ! ' + correct + ' bonnes réponses sur ' + total + '.'
+        : correct + ' bonnes réponses sur ' + total + '. Continue à t\'entraîner !';
+      setTimeout(() => speakOne(msg, PITCH_N, null), 600);
+    }
+  }
+
+  /* ════════════════════════════════════════
+     KPIs GLOBAUX
+  ════════════════════════════════════════ */
+  function updateGlobalKPIs() {
+    document.getElementById('kpiCorrect').textContent = globalOk;
+    document.getElementById('kpiErrors').textContent  = globalErr;
+    document.getElementById('kpiXP').textContent      = globalXP;
+    document.getElementById('kpiEp').textContent      = epDone.size + '/' + ALL_EP.length;
+  }
+
+  /* ════════════════════════════════════════
+     RACCOURCIS CLAVIER
+  ════════════════════════════════════════ */
+  function getCurrentQ() {
+    return qStates.findIndex(s => s === 'pending');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+    if (e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault();
+      if (speaking) stopSpeech(); else onPlay();
+      return;
+    }
+    if (e.key === 'r' || e.key === 'R') {
+      stopSpeech();
+      setTimeout(() => onPlay(), 100);
+      return;
+    }
+    const map = { '1': 0, '2': 1, '3': 2, '4': 3 };
+    if (map[e.key] !== undefined) {
+      const qi = getCurrentQ();
+      if (qi >= 0) answerQuestion(qi, map[e.key]);
+    }
+  });
+
+  function updateVoiceBadges() {
+    const name = googleVoice ? googleVoice.name.replace(/Microsoft |Google /, '') : '—';
+    const bF = document.getElementById('badgeVoiceF');
+    const bM = document.getElementById('badgeVoiceM');
+    // Même voix Google, pitch différent
+    if (bF) bF.textContent = name + ' · ♀ aigu';
+    if (bM) bM.textContent = name + ' · ♂ grave';
+  }
+
+  /* ════════════════════════════════════════
+     TRANSCRIPT VISUEL
+  ════════════════════════════════════════ */
+  // Phase 5.4: Store current episode for transcript rendering
+  let currentEpisode = null;
+
+  function buildTranscriptBox(ep) {
+    currentEpisode = ep; // Store for renderTranscript
+    const box = document.getElementById('transcriptZone');
+    if (!box) return;
+    box.innerHTML = '';
+
+    if (ep.type === 'dialogue' && Array.isArray(ep.lines)) {
+      ep.lines.forEach((line, i) => {
+        const row = document.createElement('div');
+        row.className = 'trs-line';
+        row.id = 'trs-' + i;
+        const icon = line.gender === 'm' ? '👨' : '👩';
+        row.innerHTML =
+          `<span class="trs-speaker trs-${line.gender}">${icon} ${line.speaker}</span>` +
+          `<span class="trs-text">${line.text}</span>`;
+        box.appendChild(row);
+      });
+    } else {
+      const p = document.createElement('p');
+      p.style.cssText = 'font-size:13px;line-height:1.7;color:var(--text2);margin:0;';
+      p.textContent = ep.transcript || '';
+      box.appendChild(p);
+    }
+  }
+
+  // Phase 5.4: Render transcript in transcriptZone
+  function renderTranscript(episode) {
+    if (!episode) return;
+    buildTranscriptBox(episode);
+  }
+
+  /* ════════════════════════════════════════
+     ÉCOUTER
+  ════════════════════════════════════════ */
+  function onPlay() {
+    const ep = ALL_EP[epIdx];
+    listenCount++;
+
+    document.getElementById('listenCount').textContent =
+      listenCount > 1 ? '🔁 Écouté ' + listenCount + ' fois' : '';
+    document.getElementById('listenTitle').textContent =
+      listenCount === 1 ? '🔊 Lecture en cours…' : '🔁 Réécoute en cours…';
+    document.getElementById('listenSub').textContent =
+      listenCount === 1 ? 'Écoute attentivement !' : 'Tu peux répondre pendant ou après l\'écoute.';
+
+    if (ep.type === 'dialogue' && Array.isArray(ep.lines)) {
+      speakDialogue(ep.lines);
+    } else {
+      speakTranscript(ep.transcript || '');
+    }
+  }
+
+  /* ════════════════════════════════════════
+     INIT
+  ════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', () => {
+    initTTS();
+    buildSelect();
+    loadEpisode(0);
+
+    document.getElementById('epSelect').addEventListener('change', e => {
+      loadEpisode(+e.target.value);
+    });
+    document.getElementById('btnPrevEp').addEventListener('click', () => loadEpisode(epIdx - 1));
+    document.getElementById('btnNextEp').addEventListener('click', () => loadEpisode(epIdx + 1));
+
+    document.getElementById('btnPlay').addEventListener('click', () => {
+      if (speaking) stopSpeech(); else onPlay();
+    });
+    document.getElementById('btnStop').addEventListener('click', stopSpeech);
+    document.getElementById('btnReplay').addEventListener('click', () => {
+      stopSpeech(); setTimeout(() => onPlay(), 80);
+    });
+    document.getElementById('btnReset').addEventListener('click', () => {
+      stopSpeech(); loadEpisode(epIdx);
+    });
+
+    document.getElementById('btnSpeed').addEventListener('click', () => {
+      const idx = SPEEDS.indexOf(audioSpeed);
+      audioSpeed = SPEEDS[(idx + 1) % SPEEDS.length];
+      const icons = ['🐢', '🐢', '🚶', '🏃'];
+      const iSpeed = SPEEDS.indexOf(audioSpeed);
+      document.getElementById('btnSpeed').textContent = icons[iSpeed] + ' × ' + audioSpeed;
+    });
+
+    // Phase 5.4: Transcript toggle
+    document.getElementById('btnTranscript').addEventListener('click', () => {
+      const zone = document.getElementById('transcriptZone');
+      const btn = document.getElementById('btnTranscript');
+      const isVisible = zone.style.display !== 'none';
+      if (isVisible) {
+        zone.style.display = 'none';
+        btn.textContent = '📝 Afficher les sous-titres';
+      } else {
+        renderTranscript(currentEpisode);
+        zone.style.display = 'block';
+        btn.textContent = '📝 Masquer les sous-titres';
+      }
+    });
+
+  });
+  </script>
+</body>
+</html>

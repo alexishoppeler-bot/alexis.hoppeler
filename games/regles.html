@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Règles XP - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/regles.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+        <div class="page-header fade-up">
+          <div class="page-icon">💡</div>
+          <h1>Règles de gain XP</h1>
+          <p>Cette page explique comment les XP sont gagnes. Elle se met a jour automatiquement.</p>
+        </div>
+
+        <div class="mb-24 fade-up delay-1 flex gap-8 flex-wrap">
+          <a href="accueil.html" class="btn btn-secondary btn-sm">Accueil</a>
+          <a href="evaluations.html" class="btn btn-secondary btn-sm">Évaluations</a>
+          <a href="donnees.html" class="btn btn-secondary btn-sm">Données</a>
+          <a href="regles.html" class="btn btn-secondary btn-sm">Règles XP</a>
+        </div>
+
+        <div class="alert alert-info mb-24 fade-up delay-1">
+          <span>∞</span>
+          <div>
+            Vous pouvez rejouer les exercices autant que besoin et gagner de l XP a chaque session.
+          </div>
+        </div>
+
+        <div class="card mb-24 fade-up delay-2">
+          <div class="card-title">Règles générales</div>
+          <div id="generalRules" style="font-size:14px;color:var(--text2);line-height:1.8;"></div>
+        </div>
+
+        <div class="rules-grid fade-up delay-3" id="rulesGrid"></div>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+    (function renderRules() {
+      const config = window.EXERCISE_CONFIG || {};
+      const orderedPages = Array.isArray(config.orderedPages) ? config.orderedPages : [];
+      const meta = config.meta || {};
+      const xpCfg = config.xpRules || {};
+      const general = Array.isArray(xpCfg.general) ? xpCfg.general : [];
+      const byPage = xpCfg.byPage || {};
+
+      const generalBox = document.getElementById('generalRules');
+      const rulesGrid = document.getElementById('rulesGrid');
+      if (!generalBox || !rulesGrid) return;
+
+      const defaultGeneral = [
+        'Les bonnes réponses donnent des XP selon les règles de chaque jeu.',
+        'Les mauvaises réponses donnent en général 0 XP.',
+        'Chaque tranche de 100 XP fait progresser votre niveau global.'
+      ];
+      const generalRules = general.length ? general : defaultGeneral;
+      generalBox.innerHTML = generalRules.map((line) => `<p>• ${escapeHTML(line)}</p>`).join('');
+
+      const seen = new Set();
+      const pages = [];
+
+      orderedPages.forEach((page) => {
+        if (!seen.has(page)) {
+          seen.add(page);
+          pages.push(page);
+        }
+      });
+      Object.keys(byPage).forEach((page) => {
+        if (!seen.has(page)) {
+          seen.add(page);
+          pages.push(page);
+        }
+      });
+
+      rulesGrid.innerHTML = pages.map((page) => {
+        const title = (meta[page] && meta[page].name) ? meta[page].name : page;
+        const rule = byPage[page];
+        const ruleText = formatRule(rule);
+        return `<div class="rule-card"><h3>${escapeHTML(title)}</h3><p>${escapeHTML(ruleText)}</p></div>`;
+      }).join('');
+
+      function formatRule(rule) {
+        if (!rule) return 'Règle XP non définie dans la configuration.';
+        if (typeof rule === 'string') return rule;
+        if (typeof rule !== 'object') return String(rule);
+
+        const perCorrect = Number(rule.perCorrect) || 0;
+        const perAttempt = Number(rule.perAttempt) || 0;
+        const completionBonus = Number(rule.completionBonus) || 0;
+        return `+${perCorrect} XP par bonne réponse, +${perAttempt} XP par tentative, bonus de fin +${completionBonus} XP.`;
+      }
+
+      function escapeHTML(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,557 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lettres mélangées - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/demeler.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">&#128256;</div>
+          <h1>Lettres m&eacute;lang&eacute;es</h1>
+          <p>Remettez les mots dans le bon ordre pour refaire la phrase.</p>
+        </div>
+
+        <!-- KPI -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="sc-phrase">0/0</div>
+            <div class="kpi-label">Phrase</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" style="color:var(--success)" id="sc-ok">0</div>
+            <div class="kpi-label">Correctes</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" style="color:var(--danger)" id="sc-err">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="sc-xp">0 XP</div>
+            <div class="kpi-label">XP gagn&eacute;</div>
+          </div>
+        </div>
+
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="demeler-zone">
+            <div class="quiz-top">
+              <div class="quiz-progress-label">Progression <strong id="sc-phrase-top">0/0</strong></div>
+              <div class="quiz-timer" id="prog-pct">0%</div>
+            </div>
+            <div class="series-progress" style="margin-bottom:22px;">
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            </div>
+
+            <div class="card-title">&#128221; Phrase &agrave; reconstituer</div>
+            <div class="sentence-cat" id="sentence-cat">-</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:14px;" id="instruction">
+              Fais glisser un mot pour le placer au bon endroit. Tu peux aussi cliquer un mot puis un second mot pour les echanger, ou utiliser Deplacer a gauche / Deplacer a droite.
+            </div>
+
+            <!-- Zone de reordonnancement -->
+            <div style="margin-bottom:14px;">
+              <div id="answer-zone" role="list" aria-label="Mots a reordonner"></div>
+            </div>
+
+            <div class="move-tools" aria-label="Controles de deplacement">
+              <div class="move-selected" id="selected-word-label">Mot selectionne : aucun</div>
+              <div class="move-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-move-left" type="button">Deplacer a gauche</button>
+                <button class="btn btn-secondary btn-sm" id="btn-move-right" type="button">Deplacer a droite</button>
+              </div>
+            </div>
+
+            <!-- Correction -->
+            <div class="correct-sentence" id="correct-sentence" aria-live="polite"></div>
+
+            <div id="feedback-demeler" class="feedback-text" role="status" aria-live="polite">&nbsp;</div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+              <button class="btn btn-primary btn-sm" id="btn-check" type="button">V&eacute;rifier</button>
+              <button class="btn btn-secondary btn-sm" id="btn-clear" type="button">Effacer</button>
+              <button class="btn btn-secondary btn-sm" id="btn-undo" type="button">Annuler</button>
+              <button class="btn btn-secondary btn-sm" id="btn-hint" type="button">Indice (-2 XP si correct)</button>
+              <button class="btn btn-ghost btn-sm" id="btn-next" type="button">Suivant</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raccourcis -->
+        <div class="alert alert-info mt-16 fade-up delay-3">
+          <span>&#9000;</span>
+          <div>Raccourcis : <strong>Entr&eacute;e</strong> = V&eacute;rifier - <strong>&Eacute;chap</strong> = M&eacute;langer - <strong>H</strong> = Indice - <strong>N</strong> = Suivant - <strong>Z</strong> = Annuler - <strong>&larr;/&rarr;</strong> sur un mot = d&eacute;placer</div>
+        </div>
+
+        <!-- Resultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:12px;" id="resEmoji">&#127881;</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Exercice termin&eacute; !</h2>
+            <p style="color:var(--text2);margin-bottom:24px;" id="resSubtitle"></p>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+              </div>
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btn-restart" type="button">Recommencer</button>
+              <a href="evaluations.html" class="btn btn-success btn-lg">Évaluations</a>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">&larr; Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/demeler-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+  const PAGE_ID = 'demeler';
+
+  const ALL_SENTENCES = window.DEMELER_DATA;
+  let session = [];
+  let idx = 0, okCount = 0, errCount = 0, xpCount = 0;
+  let hintUsed = false;
+  let answerWords = [], availableWords = [];
+  let dragSrcId = null;
+  let selectedWordId = null;
+  let moveHistory = [];
+  let xpRulesShown = false;
+
+  /* ── Shuffle ── */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /* ── Build session ── */
+  function buildSession() {
+    session = shuffle(ALL_SENTENCES || []);
+    idx = 0; okCount = 0; errCount = 0; xpCount = 0;
+    updateKPI();
+
+    // Afficher les règles XP seulement à la première session
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('D\u00e9m\u00ealer');
+    }
+  }
+
+  /* ── KPI ── */
+  function updateKPI() {
+    const phraseText = session.length ? ((idx + 1) + '/' + session.length) : '0/0';
+    document.getElementById('sc-phrase').textContent = phraseText;
+    document.getElementById('sc-phrase-top').textContent = phraseText;
+    document.getElementById('sc-ok').textContent     = okCount;
+    document.getElementById('sc-err').textContent    = errCount;
+    document.getElementById('sc-xp').textContent     = xpCount + ' XP';
+    const pct = session.length ? Math.round(idx / session.length * 100) : 0;
+    document.getElementById('prog-pct').textContent  = pct + '%';
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  /* ── Load sentence ── */
+  function loadSentence() {
+    if (!session.length) {
+      document.getElementById('feedback-demeler').textContent = 'Aucune phrase disponible.';
+      document.getElementById('sentence-cat').textContent = '-';
+      updateKPI();
+      return;
+    }
+    if (idx >= session.length) { finishSession(); return; }
+    const s    = session[idx];
+    const words = s.text.replace(/[.!?]$/, '').split(' ');
+    answerWords = shuffle(words.map((w, i) => ({ w, id: i })));
+    availableWords = [];
+    selectedWordId = null;
+    moveHistory = [];
+    hintUsed = false;
+    document.getElementById('sentence-cat').textContent = s.cat;
+    document.getElementById('feedback-demeler').textContent = '\u00a0';
+    document.getElementById('feedback-demeler').className   = 'feedback-text';
+    document.getElementById('correct-sentence').classList.remove('show');
+    updateKPI();
+    renderZones();
+  }
+
+  /* ── Render zones ── */
+  function renderZones() {
+    const az = document.getElementById('answer-zone');
+    az.querySelectorAll('.word-chip').forEach(c => c.remove());
+    answerWords.forEach(item => az.appendChild(makeChip(item, 'answer')));
+    updateSelectedWordLabel();
+  }
+
+  /* ── Make chip ── */
+  function makeChip(item, zone) {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.textContent = item.w;
+    chip.dataset.id  = item.id;
+    chip.draggable   = true;
+    chip.tabIndex    = 0;
+    chip.setAttribute('role', 'button');
+    chip.setAttribute('aria-label', `Mot ${item.w}`);
+    if (item.id === selectedWordId) chip.classList.add('selected');
+
+    /* Drag start */
+    chip.addEventListener('dragstart', e => {
+      dragSrcId = { id: item.id, zone };
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+
+    chip.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+
+    chip.addEventListener('drop', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!dragSrcId || dragSrcId.id === item.id) {
+        dragSrcId = null;
+        return;
+      }
+
+      const rect = chip.getBoundingClientRect();
+      const placeBefore = e.clientX < (rect.left + rect.width / 2);
+      const sourceZone = dragSrcId.zone;
+      const targetZone = zone;
+
+      if (sourceZone === targetZone) {
+        pushHistory();
+        reorderWithinZone(targetZone, dragSrcId.id, item.id, placeBefore);
+      } else {
+        pushHistory();
+        moveAcrossZones(sourceZone, targetZone, dragSrcId.id, item.id, placeBefore);
+      }
+
+      renderZones();
+      dragSrcId = null;
+    });
+
+    chip.addEventListener('click', () => {
+      if (selectedWordId !== null && selectedWordId !== item.id) {
+        swapWordsById(selectedWordId, item.id);
+        return;
+      }
+      selectedWordId = selectedWordId === item.id ? null : item.id;
+      renderZones();
+    });
+
+    chip.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectedWordId = item.id;
+        renderZones();
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        moveWordByKeyboard(item.id, -1);
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        moveWordByKeyboard(item.id, 1);
+      }
+    });
+
+    return chip;
+  }
+
+  /* ── Move word on click ── */
+  function getListByZone(zone) {
+    return zone === 'answer' ? answerWords : availableWords;
+  }
+
+  function setListByZone(zone, nextList) {
+    if (zone === 'answer') answerWords = nextList;
+    else availableWords = nextList;
+  }
+
+  function reorderWithinZone(zone, dragId, targetId, placeBefore) {
+    const list = [...getListByZone(zone)];
+    const fromIndex = list.findIndex(i => i.id === dragId);
+    const targetIndex = list.findIndex(i => i.id === targetId);
+    if (fromIndex < 0 || targetIndex < 0 || fromIndex === targetIndex) return;
+
+    const [moved] = list.splice(fromIndex, 1);
+    let insertIndex = targetIndex;
+    if (fromIndex < targetIndex) insertIndex -= 1;
+    if (!placeBefore) insertIndex += 1;
+    list.splice(Math.max(0, Math.min(insertIndex, list.length)), 0, moved);
+    setListByZone(zone, list);
+  }
+
+  function moveAcrossZones(sourceZone, targetZone, dragId, targetId, placeBefore) {
+    const source = [...getListByZone(sourceZone)];
+    const target = [...getListByZone(targetZone)];
+    const sourceIndex = source.findIndex(i => i.id === dragId);
+    const targetIndex = target.findIndex(i => i.id === targetId);
+    if (sourceIndex < 0 || targetIndex < 0) return;
+
+    const [moved] = source.splice(sourceIndex, 1);
+    const cleanTarget = target.filter(i => i.id !== moved.id);
+    let insertIndex = targetIndex + (placeBefore ? 0 : 1);
+    insertIndex = Math.max(0, Math.min(insertIndex, cleanTarget.length));
+    cleanTarget.splice(insertIndex, 0, moved);
+
+    setListByZone(sourceZone, source);
+    setListByZone(targetZone, cleanTarget);
+  }
+
+  function getAnswerDropIndex(event) {
+    const az = document.getElementById('answer-zone');
+    const chips = Array.from(az.querySelectorAll('.word-chip'));
+    if (chips.length === 0) return 0;
+
+    for (let i = 0; i < chips.length; i++) {
+      const rect = chips[i].getBoundingClientRect();
+      const beforeByRow = event.clientY < (rect.top + rect.height / 2);
+      const beforeByCol = event.clientY <= rect.bottom && event.clientX < (rect.left + rect.width / 2);
+      if (beforeByRow || beforeByCol) return i;
+    }
+    return chips.length;
+  }
+
+  function placeInAnswerAt(item, index) {
+    pushHistory();
+    answerWords = answerWords.filter(i => i.id !== item.id);
+    const safeIndex = Math.max(0, Math.min(index, answerWords.length));
+    answerWords.splice(safeIndex, 0, item);
+    selectedWordId = item.id;
+    renderZones();
+  }
+
+  function updateSelectedWordLabel() {
+    const current = answerWords.find((i) => i.id === selectedWordId);
+    const label = document.getElementById('selected-word-label');
+    label.textContent = current
+      ? ('Mot selectionne : ' + current.w + ' (clique un autre mot pour echanger)')
+      : 'Mot selectionne : aucun';
+    document.getElementById('btn-move-left').disabled = !current;
+    document.getElementById('btn-move-right').disabled = !current;
+  }
+
+  function moveWordByKeyboard(wordId, delta) {
+    const list = [...answerWords];
+    const from = list.findIndex((i) => i.id === wordId);
+    if (from < 0) return;
+    const to = Math.max(0, Math.min(list.length - 1, from + delta));
+    if (from === to) return;
+    pushHistory();
+    const [moved] = list.splice(from, 1);
+    list.splice(to, 0, moved);
+    answerWords = list;
+    selectedWordId = moved.id;
+    renderZones();
+  }
+
+  function moveSelected(delta) {
+    if (selectedWordId === null) {
+      showToast('Selectionne d abord un mot.', 'info');
+      return;
+    }
+    moveWordByKeyboard(selectedWordId, delta);
+  }
+
+  function swapWordsById(firstId, secondId) {
+    if (firstId === secondId) return;
+    const list = [...answerWords];
+    const firstIndex = list.findIndex((i) => i.id === firstId);
+    const secondIndex = list.findIndex((i) => i.id === secondId);
+    if (firstIndex < 0 || secondIndex < 0) return;
+    pushHistory();
+    [list[firstIndex], list[secondIndex]] = [list[secondIndex], list[firstIndex]];
+    answerWords = list;
+    selectedWordId = secondId;
+    renderZones();
+    showToast('Mots echanges.', 'info');
+  }
+
+  function pushHistory() {
+    moveHistory.push(answerWords.map((i) => ({ ...i })));
+    if (moveHistory.length > 30) moveHistory.shift();
+    updateUndoButton();
+  }
+
+  function undoLastMove() {
+    if (!moveHistory.length) {
+      showToast('Aucun mouvement a annuler.', 'info');
+      return;
+    }
+    answerWords = moveHistory.pop();
+    selectedWordId = null;
+    renderZones();
+    updateUndoButton();
+  }
+
+  function updateUndoButton() {
+    const btn = document.getElementById('btn-undo');
+    if (btn) btn.disabled = moveHistory.length === 0;
+  }
+
+  /* ── Drop on answer zone ── */
+  function setupDrop() {
+    const az = document.getElementById('answer-zone');
+    az.addEventListener('dragover', e => { e.preventDefault(); az.classList.add('drag-over'); });
+    az.addEventListener('dragleave', () => az.classList.remove('drag-over'));
+    az.addEventListener('drop', e => {
+      e.preventDefault();
+      az.classList.remove('drag-over');
+      if (!dragSrcId) return;
+      const item = answerWords.find(i => i.id === dragSrcId.id);
+      if (!item) {
+        dragSrcId = null;
+        return;
+      }
+
+      const dropIndex = getAnswerDropIndex(e);
+      placeInAnswerAt(item, dropIndex);
+      dragSrcId = null;
+    });
+  }
+
+  /* ── Check ── */
+  function checkAnswer() {
+    const s       = session[idx];
+    const correct = s.text.replace(/[.!?]$/, '').split(' ');
+    const answer  = answerWords.map(i => i.w);
+    if (answer.length === 0) { showToast('Ajoute des mots !', 'info'); return; }
+
+    const ok = JSON.stringify(answer) === JSON.stringify(correct);
+    const fb = document.getElementById('feedback-demeler');
+    const cs = document.getElementById('correct-sentence');
+
+    if (ok) {
+      fb.textContent = '\u2705 Parfait !';
+      fb.className   = 'feedback-text ok';
+      const xp = hintUsed ? 3 : 5;
+      okCount++; xpCount += xp;
+      selectedWordId = null;
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+      updateKPI();
+      if (!hintUsed) launchConfetti();
+      setTimeout(() => { idx++; loadSentence(); }, 1400);
+    } else {
+      fb.textContent = '\u274c Pas encore...';
+      fb.className   = 'feedback-text err';
+      errCount++;
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+      updateKPI();
+      // Afficher la bonne r&eacute;ponse
+      cs.textContent = 'Correct : ' + s.text;
+      cs.classList.add('show');
+    }
+  }
+
+  /* ── Hint ── */
+  function giveHint() {
+    if (hintUsed) { showToast('Indice d\u00e9j\u00e0 utilis\u00e9.', 'info'); return; }
+    const s     = session[idx];
+    const words = s.text.replace(/[.!?]$/, '').split(' ');
+    pushHistory();
+    // Révéler les 2 premiers mots dans le bon ordre en tête
+    const first2 = words.slice(0, 2);
+    const orderedStart = [];
+    const usedIds = new Set();
+    first2.forEach(w => {
+      const item = answerWords.find(i => i.w === w && !usedIds.has(i.id));
+      if (item) { orderedStart.push(item); usedIds.add(item.id); }
+    });
+    const remaining = answerWords.filter(i => !usedIds.has(i.id));
+    answerWords = [...orderedStart, ...remaining];
+    selectedWordId = orderedStart[0] ? orderedStart[0].id : null;
+    hintUsed = true;
+    updateKPI();
+    showToast('Indice : les 2 premiers mots sont en place (-2 XP si correct).', 'info');
+    renderZones();
+  }
+
+  /* ── Finish ── */
+  function finishSession() {
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    const acc = Math.round(okCount / (okCount + errCount) * 100) || 0;
+    document.getElementById('resSubtitle').innerHTML =
+      `<strong>${okCount}</strong> correctes - <strong>${errCount}</strong> erreurs - <strong>${acc}%</strong> - <strong>${xpCount} XP</strong>`;
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+    document.getElementById('prog-pct').textContent  = '100%';
+    document.getElementById('progressFill').style.width = '100%';
+    if (acc >= 70) launchConfetti();
+  }
+
+  /* ── Init ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+    buildSession();
+    loadSentence();
+    setupDrop();
+    promoteExerciseStatus(PAGE_ID, 'in_progress');
+
+    document.getElementById('btn-check').addEventListener('click', checkAnswer);
+    document.getElementById('btn-clear').textContent = 'Melanger';
+    document.getElementById('btn-clear').addEventListener('click', () => {
+      pushHistory();
+      answerWords = shuffle(answerWords);
+      selectedWordId = null;
+      renderZones();
+    });
+    document.getElementById('btn-undo').addEventListener('click', undoLastMove);
+    document.getElementById('btn-move-left').addEventListener('click', () => moveSelected(-1));
+    document.getElementById('btn-move-right').addEventListener('click', () => moveSelected(1));
+    document.getElementById('btn-hint').addEventListener('click', giveHint);
+    document.getElementById('btn-next').addEventListener('click', () => { idx++; loadSentence(); });
+    document.getElementById('btn-restart').addEventListener('click', () => {
+      document.getElementById('resultZone').classList.remove('show');
+      document.getElementById('gameZone').classList.remove('hidden');
+      buildSession();
+      loadSentence();
+      promoteExerciseStatus(PAGE_ID, 'in_progress');
+    });
+
+    /* Keyboard shortcuts */
+    document.addEventListener('keydown', e => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (e.key === 'Enter') checkAnswer();
+      if (e.key === 'Escape') {
+        answerWords = shuffle(answerWords);
+        selectedWordId = null;
+        renderZones();
+      }
+      if (e.key.toLowerCase() === 'h') giveHint();
+      if (e.key.toLowerCase() === 'n') { idx++; loadSentence(); }
+      if (e.key.toLowerCase() === 'z') undoLastMove();
+    });
+    updateUndoButton();
+  });
+  </script>
+</body>
+</html>

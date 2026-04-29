@@ -1,0 +1,1143 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dactylographie - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/clavier.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        
+
+
+        <div class="page-header fade-up">
+          <div class="page-icon">⌨️</div>
+          <h1>Dactylographie</h1>
+          <p>Tapez la phrase comme elle apparait. La precision compte d abord.</p>
+          <button class="btn btn-secondary btn-sm" id="btn-train-start" type="button"
+                  style="margin-top:12px;">⌨️ Mode Entraînement</button>
+        </div>
+
+        <div class="keyboard-options fade-up delay-1" aria-label="Options de l'exercice clavier">
+          <label class="keyboard-option">
+            <span>Niveau</span>
+            <select id="level-select">
+              <option value="debutant">Débutant</option>
+              <option value="intermediaire">Intermédiaire</option>
+              <option value="avance">Avancé</option>
+              <option value="tous">Tous les niveaux</option>
+            </select>
+          </label>
+          <button class="btn btn-ghost btn-sm" id="btn-session-size" type="button">Session courte : oui</button>
+          <div class="keyboard-option-note" id="level-note">Phrases courtes pour commencer. Change de niveau quand tu veux.</div>
+        </div>
+
+        <!-- KPI -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card" style="display:none;">
+            <div class="kpi-val" id="sc-phrase">0/0</div>
+            <div class="kpi-lbl">Phrase</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" style="color:var(--success)" id="sc-correct">0</div>
+            <div class="kpi-lbl">Correctes</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" style="color:var(--danger)" id="sc-errors">0</div>
+            <div class="kpi-lbl">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" id="sc-accuracy">100%</div>
+            <div class="kpi-lbl">Précision</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" id="sc-xp">0 XP</div>
+            <div class="kpi-lbl">XP gagné</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" id="sc-skipped">0</div>
+            <div class="kpi-lbl">Passées</div>
+          </div>
+        </div>
+
+        <!-- Progression -->
+        <div class="card mb-16 fade-up delay-1" id="progress-card" style="padding:14px 20px;">
+          <div class="quiz-top">
+            <div class="quiz-progress-label">
+              Progression <strong id="qNum">0</strong> / <strong id="qTotal">0</strong>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span id="prog-pct" style="font-size:13px;font-weight:700;color:var(--accent);">0%</span>
+            </div>
+          </div>
+          <div class="series-progress">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Zone d'exercice -->
+        <div class="exercise-zone fade-up delay-2">
+          <div class="feedback-text" id="feedback-text">&nbsp;</div>
+          <div class="exercise-phrase" id="phrase-display"></div>
+          <div class="typing-target-row" aria-live="polite">
+            <span>Prochain : <strong id="next-char-display">—</strong></span>
+            <span>Doigt : <strong id="finger-guide-display">—</strong></span>
+            <span>Reste dans la phrase : <strong id="remaining-char-display">0</strong></span>
+          </div>
+          <input type="text" id="typing-input" placeholder="Votre texte apparaît ici…"
+            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <div class="input-helper">Le texte correct reste dans cette case. En cas d'erreur, regarde le caractère bleu et recommence cette touche.</div>
+          <div id="wpm-live"></div>
+          <div id="shift-hint"></div>
+          <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <button class="btn btn-secondary btn-sm" id="btn-skip" type="button">Passer</button>
+            <button class="btn btn-secondary btn-sm" id="btn-restart" type="button">Rejouer</button>
+          </div>
+        </div>
+
+        <!-- ══ Zone Entraînement ══ -->
+        <div id="train-zone" style="display:none;margin-bottom:16px;">
+          <!-- Header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;
+                      margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:13px;font-weight:700;text-transform:uppercase;
+                         letter-spacing:0.8px;color:var(--text3);">Mode Entraînement</span>
+            <button class="btn btn-secondary btn-sm" id="btn-train-stop" type="button">&#9632; ARRÊTER</button>
+          </div>
+
+          <!-- Carte principale -->
+          <div class="exercise-zone" style="text-align:center;padding:32px 24px;position:relative;">
+            <!-- Overlay pause cognitive (s'affiche par-dessus la carte) -->
+            <div id="train-pause-overlay">
+              <div class="train-breath-ring"></div>
+              <div class="train-pause-dots">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+            <div id="train-char"
+                 style="font-size:96px;line-height:1;font-family:'Courier New',monospace;
+                        font-weight:700;color:var(--accent);min-height:110px;
+                        display:flex;align-items:center;justify-content:center;">?</div>
+            <div id="train-desc"
+                 style="font-size:14px;color:var(--text2);margin-top:8px;min-height:20px;font-weight:500;"></div>
+            <div id="train-step"
+                 style="display:none;margin-top:10px;padding:3px 12px;border-radius:999px;
+                        background:var(--bg3);border:1px solid var(--border);
+                        font-size:11px;font-weight:700;color:var(--text3);
+                        text-transform:uppercase;letter-spacing:0.5px;"></div>
+            <div id="train-feedback" style="font-size:18px;min-height:28px;margin-top:12px;">&nbsp;</div>
+          </div>
+
+          <!-- KPI entraînement -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;">
+            <div class="kpi-card">
+              <div class="kpi-val" style="color:var(--success)" id="train-correct">0</div>
+              <div class="kpi-lbl">Correct</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-val" style="color:var(--danger)" id="train-errors">0</div>
+              <div class="kpi-lbl">Erreurs</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-val" id="train-streak">0</div>
+              <div class="kpi-lbl">Série</div>
+            </div>
+          </div>
+        </div>
+        <!-- ══ /Zone Entraînement ══ -->
+
+        <!-- Clavier virtuel CH-FR (QWERTZ) -->
+        <div class="keyboard fade-up delay-3" id="virtual-keyboard">
+          <!-- Row 1: numbers -->
+          <div class="keyboard-row">
+            <div class="key wide-1 duo" data-key="°" data-shift="§"><span class="key-top">§</span><span class="key-btm">°</span></div>
+            <div class="key duo" data-key="1" data-shift="+"><span class="key-top">+</span><span class="key-btm">1</span></div>
+            <div class="key duo" data-key="2" data-shift="&quot;"><span class="key-top">&quot;</span><span class="key-btm">2</span></div>
+            <div class="key duo" data-key="3" data-shift="*"><span class="key-top">*</span><span class="key-btm">3</span></div>
+            <div class="key duo" data-key="4" data-shift="ç"><span class="key-top">ç</span><span class="key-btm">4</span></div>
+            <div class="key duo" data-key="5" data-shift="%"><span class="key-top">%</span><span class="key-btm">5</span></div>
+            <div class="key duo" data-key="6" data-shift="&amp;"><span class="key-top">&amp;</span><span class="key-btm">6</span></div>
+            <div class="key duo" data-key="7" data-shift="/"><span class="key-top">/</span><span class="key-btm">7</span></div>
+            <div class="key duo" data-key="8" data-shift="("><span class="key-top">(</span><span class="key-btm">8</span></div>
+            <div class="key duo" data-key="9" data-shift=")"><span class="key-top">)</span><span class="key-btm">9</span></div>
+            <div class="key duo" data-key="0" data-shift="="><span class="key-top">=</span><span class="key-btm">0</span></div>
+            <div class="key duo" data-key="'" data-shift="?"><span class="key-top">?</span><span class="key-btm">'</span></div>
+            <div class="key duo" data-key="^" data-shift="`"><span class="key-top">`</span><span class="key-btm">^</span></div>
+            <div class="key wide-2" data-key="Backspace">⌫ Eff.</div>
+          </div>
+          <!-- Row 2: QWERTZ -->
+          <div class="keyboard-row">
+            <div class="key wide-1" data-key="Tab">Tab</div>
+            <div class="key" data-key="q">q</div><div class="key" data-key="w">w</div>
+            <div class="key" data-key="e">e</div><div class="key" data-key="r">r</div>
+            <div class="key" data-key="t">t</div><div class="key" data-key="z">z</div>
+            <div class="key" data-key="u">u</div><div class="key" data-key="i">i</div>
+            <div class="key" data-key="o">o</div><div class="key" data-key="p">p</div>
+            <div class="key duo" data-key="è" data-shift="ü"><span class="key-top">ü</span><span class="key-btm">è</span></div>
+            <div class="key duo" data-key="´" data-shift="!"><span class="key-top">!</span><span class="key-btm">´</span></div>
+            <div class="key wide-1" data-key="Enter">↵ Entrée</div>
+          </div>
+          <!-- Row 3: middle -->
+          <div class="keyboard-row">
+            <div class="key wide-2" data-key="CapsLock">⇪ Maj fix</div>
+            <div class="key" data-key="a">a</div><div class="key" data-key="s">s</div>
+            <div class="key" data-key="d">d</div><div class="key" data-key="f">f</div>
+            <div class="key" data-key="g">g</div><div class="key" data-key="h">h</div>
+            <div class="key" data-key="j">j</div><div class="key" data-key="k">k</div>
+            <div class="key" data-key="l">l</div>
+            <div class="key duo" data-key="é" data-shift="ö"><span class="key-top">ö</span><span class="key-btm">é</span></div>
+            <div class="key duo" data-key="à" data-shift="ä"><span class="key-top">ä</span><span class="key-btm">à</span></div>
+            <div class="key duo" data-key="$" data-shift="£"><span class="key-top">£</span><span class="key-btm">$</span></div>
+          </div>
+          <!-- Row 4: lower -->
+          <div class="keyboard-row">
+            <div class="key wide-3" data-key="Shift" data-side="left">⇧ Maj gauche</div>
+            <div class="key duo" data-key="<" data-shift=">"><span class="key-top">&gt;</span><span class="key-btm">&lt;</span></div>
+            <div class="key" data-key="y">y</div><div class="key" data-key="x">x</div>
+            <div class="key" data-key="c">c</div><div class="key" data-key="v">v</div>
+            <div class="key" data-key="b">b</div><div class="key" data-key="n">n</div>
+            <div class="key" data-key="m">m</div>
+            <div class="key duo" data-key="," data-shift=";"><span class="key-top">;</span><span class="key-btm">,</span></div>
+            <div class="key duo" data-key="." data-shift=":"><span class="key-top">:</span><span class="key-btm">.</span></div>
+            <div class="key duo" data-key="-" data-shift="_"><span class="key-top">_</span><span class="key-btm">-</span></div>
+            <div class="key wide-3" data-key="Shift" data-side="right">⇧ Maj</div>
+          </div>
+          <!-- Row 5: space -->
+          <div class="keyboard-row">
+            <div class="key wide-1">Ctrl</div>
+            <div class="key wide-1">Alt</div>
+            <div class="key space-key" data-key=" ">Espace</div>
+            <div class="key wide-1">Alt Gr</div>
+            <div class="key wide-1">Ctrl</div>
+          </div>
+        </div>
+
+        <!-- Conseil -->
+        <div class="alert alert-info mt-16 fade-up delay-4">
+          <span>💡</span>
+          <div>La touche attendue est mise en évidence en <strong>bleu</strong>. Tape exactement le texte affiché, majuscules et ponctuation comprises. Le WPM se calcule en temps réel.</div>
+        </div>
+
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <!-- Modal fin -->
+  <div class="modal-overlay" id="modal-success">
+    <div class="modal">
+      <div class="modal-icon" id="resEmoji">🎉</div>
+      <div class="modal-title" id="resTitle">Exercice terminé !</div>
+      <!-- Ring de précision -->
+      <div class="result-ring-wrap">
+        <div class="result-ring">
+          <svg width="90" height="90" viewBox="0 0 90 90">
+            <circle class="bg"  cx="45" cy="45" r="35"/>
+            <circle class="arc" cx="45" cy="45" r="35" id="result-arc"/>
+          </svg>
+          <div class="lbl" id="result-ring-lbl">—</div>
+        </div>
+      </div>
+      <div class="modal-text" id="resSubtitle"></div>
+      <div class="keyboard-result-details" id="keyboard-result-details"></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+        <a href="cliquer.html" class="btn btn-primary" id="btnNextExercise">Exercice suivant</a>
+        <button class="btn btn-secondary" id="modal-restart" type="button">Rejouer</button>
+        <a href="accueil.html" class="btn btn-secondary">&larr; Accueil</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data/ch-fr-keymap.js"></script>
+  <script src="../js/data/clavier-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+  const PAGE_ID = 'clavier';
+
+  /* ── Corpus global ── */
+  const CORPUS_BY_LEVEL = window.CLAVIER_DATA || {};
+  const CORPUS = Array.isArray(CORPUS_BY_LEVEL)
+    ? CORPUS_BY_LEVEL
+    : Object.values(CORPUS_BY_LEVEL).flat().filter(Boolean);
+  const SHORT_PHRASE_COUNT = 8;
+  const LEVEL_NOTES = {
+    debutant: 'Phrases courtes pour commencer. Change de niveau quand tu veux.',
+    intermediaire: 'Phrases plus longues avec e-mails, formulaires, rendez-vous et transports.',
+    avance: 'Phrases longues : précision, accents et vocabulaire professionnel.',
+    tous: 'Mélange de tous les niveaux. Les phrases faciles apparaissent aussi.'
+  };
+
+  let phrases    = [];
+  let phraseIdx  = 0;
+  let inputPos   = 0;
+  let totalCorrect = 0, totalTyped = 0, totalErrors = 0, totalXP = 0;
+  let totalSkipped = 0;
+  let wrongFlashIndex = -1;
+  let phraseHadError = false;
+  let perfectPhrases = 0;
+  let hardestPhrase = '';
+  let hardestPhraseErrors = 0;
+  let currentPhraseErrors = 0;
+  let phraseSkipped = false;
+  let errorByExpectedChar = {};
+  let currentLevel = 'debutant';
+  let shortSession = true;
+  let startTime  = null;
+  let phraseStartTime = null;
+  let wpmInterval    = null;
+  let xpRulesShown = false;
+
+  const phraseEl   = document.getElementById('phrase-display');
+  const inputEl    = document.getElementById('typing-input');
+  const feedbackEl = document.getElementById('feedback-text');
+  const wpmEl      = document.getElementById('wpm-live');
+
+  function normalizeApostrophe(ch) {
+    return ch === '’' ? "'" : ch;
+  }
+
+  /* ── Shuffle ── */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function stopTracking() {
+    clearInterval(wpmInterval);
+  }
+
+  function getLevelCorpus() {
+    if (currentLevel === 'tous' || Array.isArray(CORPUS_BY_LEVEL)) return CORPUS;
+    return CORPUS_BY_LEVEL[currentLevel] || CORPUS;
+  }
+
+  function buildPhraseSet() {
+    const source = shuffle(getLevelCorpus());
+    return shortSession ? source.slice(0, SHORT_PHRASE_COUNT) : source;
+  }
+
+  function formatExpectedChar(ch) {
+    if (!ch) return '—';
+    if (ch === ' ') return 'Espace';
+    return ch;
+  }
+
+  function fingerGuideForChar(ch) {
+    const normalized = normalizeApostrophe(ch || '').toLowerCase();
+    const guides = {
+      a: 'auriculaire gauche', q: 'auriculaire gauche', w: 'auriculaire gauche', y: 'auriculaire gauche',
+      s: 'annulaire gauche', x: 'annulaire gauche',
+      d: 'majeur gauche', e: 'majeur gauche', c: 'majeur gauche',
+      f: 'index gauche', g: 'index gauche', r: 'index gauche', t: 'index gauche', v: 'index gauche', b: 'index gauche',
+      h: 'index droit', j: 'index droit', z: 'index droit', u: 'index droit', n: 'index droit', m: 'index droit',
+      k: 'majeur droit', i: 'majeur droit',
+      l: 'annulaire droit', o: 'annulaire droit',
+      p: 'auriculaire droit',
+      'é': 'auriculaire droit', 'è': 'auriculaire droit', 'à': 'auriculaire droit',
+      ',': 'majeur droit', '.': 'annulaire droit', '-': 'auriculaire droit', "'": 'auriculaire droit'
+    };
+    if (ch === ' ') return 'pouce';
+    if (/[A-ZÀ-ÖØ-Þ]/.test(ch || '')) return 'Maj + ' + (guides[normalized] || 'doigt de la lettre');
+    if (/[0-9]/.test(ch || '')) return 'rangée des chiffres';
+    return guides[normalized] || 'regarde la touche bleue';
+  }
+
+  function keyLabel(ch) {
+    return ch === ' ' ? 'espace' : formatExpectedChar(ch);
+  }
+
+  function recordExpectedError(ch) {
+    const label = keyLabel(ch);
+    errorByExpectedChar[label] = (errorByExpectedChar[label] || 0) + 1;
+  }
+
+  function topProblemKeys() {
+    return Object.entries(errorByExpectedChar)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([label, count]) => label + ' (' + count + ')');
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function acceptedText() {
+    return (phrases[phraseIdx] || '').slice(0, inputPos);
+  }
+
+  function syncInputToAcceptedText() {
+    inputEl.value = acceptedText();
+    try { inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length); } catch (_) {}
+  }
+
+  /* ── WPM live ── */
+  function startWPMInterval() {
+    clearInterval(wpmInterval);
+    phraseStartTime = performance.now();
+    wpmInterval = setInterval(() => {
+      if (!phraseStartTime) return;
+      const elapsedMin = (performance.now() - phraseStartTime) / 60000;
+      if (elapsedMin < 0.01) return;
+      const words = Math.max(0, inputPos / 5);
+      const wpm   = Math.round(words / elapsedMin);
+      wpmEl.textContent = `⚡ ${wpm} mots/min`;
+    }, 500);
+  }
+
+  /* ── Render phrase ── */
+  function renderPhrase() {
+    const phrase = phrases[phraseIdx];
+    phraseEl.innerHTML = phrase.split('').map((ch, i) => {
+      let cls = '';
+      if (i < inputPos)      cls = 'correct';
+      else if (i === wrongFlashIndex) cls = 'wrong';
+      else if (i === inputPos) cls = 'current';
+      return `<span class="char ${cls}" data-idx="${i}">${ch === ' ' ? '\u00a0' : escapeHtml(ch)}</span>`;
+    }).join('');
+    highlightKey(phrase[inputPos]);
+    updateCounters();
+  }
+
+  /* ── Update counters ── */
+  function updateCounters() {
+    document.getElementById('sc-phrase').textContent    = (phraseIdx + 1) + '/' + phrases.length;
+    document.getElementById('sc-correct').textContent   = totalCorrect;
+    document.getElementById('sc-errors').textContent    = totalErrors;
+    document.getElementById('sc-skipped').textContent   = totalSkipped;
+    const acc = totalTyped > 0 ? Math.round(totalCorrect / totalTyped * 100) : 100;
+    document.getElementById('sc-accuracy').textContent  = acc + '%';
+    document.getElementById('sc-xp').textContent        = totalXP + ' XP';
+    document.getElementById('qNum').textContent         = phrases.length > 0 ? Math.min(phraseIdx + 1, phrases.length) : 0;
+    document.getElementById('qTotal').textContent       = phrases.length;
+    const pct = phrases.length > 0 ? Math.round(phraseIdx / phrases.length * 100) : 0;
+    document.getElementById('prog-pct').textContent     = pct + '%';
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    const phrase = phrases[phraseIdx] || '';
+    const expected = phrase[inputPos] || '';
+    document.getElementById('next-char-display').textContent = formatExpectedChar(expected);
+    document.getElementById('finger-guide-display').textContent = fingerGuideForChar(expected);
+    document.getElementById('remaining-char-display').textContent = Math.max(0, phrase.length - inputPos);
+  }
+
+  /* ── Highlight key ── */
+  function highlightKey(expectedChar) {
+    expectedChar = normalizeApostrophe(expectedChar);
+
+    // Déléguer au mapping CH-FR si disponible
+    if (window.CH_FR_KEYMAP && expectedChar) {
+      window.CH_FR_KEYMAP.highlightKeys(expectedChar);
+      return;
+    }
+
+    // Fallback : logique générique (si ch-fr-keymap.js non chargé)
+    document.querySelectorAll('.key').forEach(k => k.classList.remove('highlight'));
+    const hintEl = document.getElementById('shift-hint');
+    if (hintEl) hintEl.textContent = '';
+    if (!expectedChar) return;
+
+    const ch = expectedChar.toLowerCase();
+    let shiftNeeded = false, baseHint = null;
+
+    document.querySelectorAll('.key').forEach(k => {
+      const dk = k.dataset.key || '';
+      const ds = k.dataset.shift || '';
+      const isMatch      = dk.toLowerCase() === ch || dk === expectedChar;
+      const isShiftMatch = ds && ds === expectedChar;
+      if (isMatch || isShiftMatch) k.classList.add('highlight');
+      if (isShiftMatch) { shiftNeeded = true; baseHint = dk || baseHint; }
+    });
+
+    if (expectedChar === ' ')
+      document.querySelectorAll('.key[data-key=" "]').forEach(k => k.classList.add('highlight'));
+
+    const isLetter = expectedChar.toLowerCase() !== expectedChar.toUpperCase();
+    const isUpper  = isLetter && expectedChar === expectedChar.toUpperCase();
+    if (isUpper) { shiftNeeded = true; baseHint = expectedChar.toLowerCase(); }
+
+    if (shiftNeeded) {
+      document.querySelectorAll('.key[data-key="Shift"][data-side="left"]').forEach(k => k.classList.add('highlight', 'highlight-shift'));
+      if (hintEl && baseHint) hintEl.textContent = 'Maj + ' + baseHint + ' → ' + expectedChar;
+    }
+  }
+
+  /* ── Input handler ── */
+  function onInput() {
+    const phrase = phrases[phraseIdx];
+    if (!phrase) return;
+
+    const raw = inputEl.value;
+    const expectedPrefix = acceptedText();
+
+    if (!raw.startsWith(expectedPrefix)) {
+      syncInputToAcceptedText();
+      return;
+    }
+
+    const pending = raw.slice(inputPos);
+    if (!pending.length) {
+      syncInputToAcceptedText();
+      return;
+    }
+
+    for (const typedChar of pending) {
+      if (processTypedChar(typedChar)) {
+        return;
+      }
+    }
+
+    syncInputToAcceptedText();
+    renderPhrase();
+  }
+
+  function processTypedChar(lastChar) {
+    const phrase = phrases[phraseIdx];
+    const expected = phrase[inputPos];
+    const typedNormalized = normalizeApostrophe(lastChar);
+    const expectedNormalized = normalizeApostrophe(expected);
+
+    totalTyped++;
+
+    if (typedNormalized === expectedNormalized) {
+      wrongFlashIndex = -1;
+      totalCorrect++;
+      totalXP++;
+      inputPos++;
+      inputEl.classList.remove('wrong');
+      inputEl.classList.add('correct');
+      feedbackEl.textContent = '✅';
+      feedbackEl.className   = 'feedback-text ok';
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp: 1 });
+
+      // Flash pressed key
+      document.querySelectorAll('.key').forEach(k => {
+        if ((k.dataset.key || '').toLowerCase() === typedNormalized.toLowerCase()) {
+          k.classList.add('pressed');
+          setTimeout(() => k.classList.remove('pressed'), 120);
+        }
+      });
+
+      // Phrase finie ?
+      if (inputPos >= phrase.length) {
+        syncInputToAcceptedText();
+        advancePhrase('🎉 Phrase suivante !');
+        return true;
+      }
+    } else {
+      phraseHadError = true;
+      currentPhraseErrors++;
+      recordExpectedError(expected);
+      wrongFlashIndex = inputPos;
+      totalErrors++;
+      inputEl.classList.remove('correct');
+      inputEl.classList.add('wrong');
+      feedbackEl.textContent = '❌ Attendu : ' + formatExpectedChar(expected) + ' · tapé : ' + formatExpectedChar(lastChar);
+      feedbackEl.className   = 'feedback-text err';
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+      setTimeout(() => {
+        inputEl.classList.remove('wrong');
+        if (wrongFlashIndex === inputPos) {
+          wrongFlashIndex = -1;
+          renderPhrase();
+        }
+      }, 450);
+
+      // Flash error key
+      document.querySelectorAll('.key').forEach(k => {
+        if ((k.dataset.key || '').toLowerCase() === typedNormalized.toLowerCase()) {
+          k.classList.add('error');
+          setTimeout(() => k.classList.remove('error'), 200);
+        }
+      });
+      syncInputToAcceptedText();
+    }
+    return false;
+  }
+
+  function advancePhrase(message) {
+    clearInterval(wpmInterval);
+    const completedPhrase = phrases[phraseIdx] || '';
+    if (currentPhraseErrors > hardestPhraseErrors) {
+      hardestPhraseErrors = currentPhraseErrors;
+      hardestPhrase = completedPhrase;
+    }
+    if (completedPhrase && !phraseHadError && !phraseSkipped) {
+      const bonus = 5;
+      perfectPhrases++;
+      totalXP += bonus;
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp: bonus });
+      message = 'Phrase parfaite ! Bonus +' + bonus + ' XP';
+    }
+
+    phraseIdx++;
+    inputPos = 0;
+    wrongFlashIndex = -1;
+    phraseHadError = false;
+    phraseSkipped = false;
+    currentPhraseErrors = 0;
+    inputEl.value = '';
+    inputEl.classList.remove('correct', 'wrong');
+
+    if (phraseIdx >= phrases.length) {
+      finishExercise();
+      return;
+    }
+
+    feedbackEl.textContent = message || 'Phrase suivante !';
+    feedbackEl.className = 'feedback-text ok';
+    setTimeout(() => {
+      if (!trainActive) feedbackEl.textContent = '\u00a0';
+    }, 1500);
+    phraseStartTime = performance.now();
+    startWPMInterval();
+    renderPhrase();
+    inputEl.focus();
+  }
+
+  /* ── Finish ── */
+  function finishExercise() {
+    stopTracking();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+
+    const acc     = totalTyped > 0 ? Math.round(totalCorrect / totalTyped * 100) : 0;
+    const elapsed = startTime ? Math.round((performance.now() - startTime) / 1000) : 0;
+    const min     = Math.floor(elapsed / 60);
+    const sec     = elapsed % 60;
+    const words   = totalCorrect / 5;
+    const wpm     = elapsed > 0 ? Math.round(words / (elapsed / 60)) : 0;
+
+    // Ring
+    const arc = document.getElementById('result-arc');
+    arc.style.strokeDashoffset = String(220 - 220 * acc / 100);
+    document.getElementById('result-ring-lbl').textContent = acc + '%';
+
+    document.getElementById('resSubtitle').textContent =
+      `${totalCorrect} correctes · ${totalErrors} erreurs · ${totalSkipped} passées · Précision ${acc}% · ${wpm} mots/min · ${totalXP} XP`;
+    renderResultDetails(acc);
+
+    updateCounters();
+    document.getElementById('prog-pct').textContent  = '100%';
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('modal-success').classList.add('show');
+    document.querySelectorAll('.key').forEach(k => k.classList.remove('highlight'));
+    wpmEl.textContent = '';
+
+    if (acc >= 80) launchConfetti();
+  }
+
+  function renderResultDetails(acc) {
+    const details = document.getElementById('keyboard-result-details');
+    const keys = topProblemKeys();
+    const nextTip = keys.length
+      ? 'Recommence le mode entraînement avec ces touches : ' + keys.join(', ') + '.'
+      : 'Aucune touche difficile repérée dans cette session.';
+    const difficult = hardestPhrase
+      ? 'Phrase la plus difficile : "' + hardestPhrase + '" (' + hardestPhraseErrors + ' erreur' + (hardestPhraseErrors > 1 ? 's' : '') + ').'
+      : 'Aucune phrase difficile repérée.';
+
+    details.innerHTML = [
+      '<div><strong>Phrases parfaites :</strong> ' + perfectPhrases + ' / ' + phrases.length + '</div>',
+      '<div><strong>Touches à travailler :</strong> ' + (keys.length ? keys.join(', ') : 'aucune') + '</div>',
+      '<div><strong>À refaire :</strong> ' + escapeHtml(difficult) + '</div>',
+      '<div><strong>Prochaine étape :</strong> ' + escapeHtml(acc >= 90 ? 'Passe au niveau suivant ou essaie une session complète.' : nextTip) + '</div>'
+    ].join('');
+  }
+
+  /* ── Restart ── */
+  function restart() {
+    stopTracking();
+    phrases      = buildPhraseSet();
+    phraseIdx    = 0;
+    inputPos     = 0;
+    totalCorrect = 0;
+    totalTyped   = 0;
+    totalErrors  = 0;
+    totalXP      = 0;
+    totalSkipped = 0;
+    wrongFlashIndex = -1;
+    phraseHadError = false;
+    phraseSkipped = false;
+    perfectPhrases = 0;
+    hardestPhrase = '';
+    hardestPhraseErrors = 0;
+    currentPhraseErrors = 0;
+    errorByExpectedChar = {};
+    inputEl.value = '';
+    inputEl.classList.remove('correct', 'wrong');
+    feedbackEl.textContent = '\u00a0';
+    wpmEl.textContent      = '';
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('modal-success').classList.remove('show');
+    document.getElementById('btn-session-size').textContent = shortSession ? 'Session courte : oui' : 'Session courte : non';
+    document.getElementById('level-select').value = currentLevel;
+    document.getElementById('level-note').textContent = LEVEL_NOTES[currentLevel] || LEVEL_NOTES.debutant;
+    promoteExerciseStatus(PAGE_ID, 'in_progress');
+
+    // Afficher les règles XP seulement à la première session
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Clavier');
+    }
+
+    if (!phrases.length) {
+      feedbackEl.textContent = 'Aucune phrase disponible.';
+      phraseEl.textContent = '';
+      updateCounters();
+      return;
+    }
+
+    startTime = performance.now();
+    startWPMInterval();
+    renderPhrase();
+    inputEl.focus();
+  }
+
+  function skipCurrentPhrase() {
+    if (!phrases.length) return;
+    totalSkipped++;
+    totalErrors++;
+    phraseHadError = true;
+    phraseSkipped = true;
+    currentPhraseErrors++;
+    recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+    advancePhrase('Phrase passée. On continue doucement.');
+  }
+
+  /* ── Boot ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+    restart();
+    inputEl.addEventListener('input', onInput);
+
+    document.getElementById('btn-skip').addEventListener('click', skipCurrentPhrase);
+
+    document.getElementById('btn-restart').addEventListener('click', restart);
+    document.getElementById('modal-restart').addEventListener('click', restart);
+    document.getElementById('btn-session-size').addEventListener('click', () => {
+      shortSession = !shortSession;
+      restart();
+    });
+    document.getElementById('level-select').addEventListener('change', e => {
+      currentLevel = e.target.value;
+      restart();
+    });
+
+    /* Boutons mode entraînement */
+    document.getElementById('btn-train-start').addEventListener('click', () => {
+      trainActive ? trainStop() : trainStart();
+    });
+    document.getElementById('btn-train-stop').addEventListener('click', trainStop);
+
+    /* Real keyboard visual feedback */
+    document.addEventListener('keydown', e => {
+      if (trainActive) return; // géré par le mode entraînement
+      const k = document.querySelector(`.key[data-key="${e.key}"]`);
+      if (k) { k.classList.add('pressed'); setTimeout(() => k.classList.remove('pressed'), 120); }
+    });
+
+  });
+  </script>
+
+  <!-- ══════════════════════════════════════════════════════════
+       MODE ENTRAÎNEMENT — bloc autonome
+       ══════════════════════════════════════════════════════════ -->
+  <script>
+  'use strict';
+
+  /* ── Jeu de caractères à entraîner (A0-B1) ── */
+  const TRAIN_CHARSET = [
+    'a','b','c','d','e','f','g','h','i','j','k','l','m',
+    'n','o','p','q','r','s','t','u','v','w','x','y','z',
+    'A','B','C','D','E','F','G','H','I','J','K','L','M',
+    'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+    '0','1','2','3','4','5','6','7','8','9',
+    'é','è','à','ü','ö','ä','ç',
+    '.',' ',',','-',"'",
+  ];
+
+  /* ── Progression intelligente : pondération par touche ── */
+  // Clé localStorage pour la persistance inter-sessions
+  const TRAIN_STATS_KEY = 'ah_train_stats_v1';
+
+  // Charge les statistiques depuis localStorage
+  function trainLoadStats() {
+    try {
+      return JSON.parse(localStorage.getItem(TRAIN_STATS_KEY)) || {};
+    } catch (_) { return {}; }
+  }
+
+  // Sauvegarde les statistiques dans localStorage
+  function trainSaveStats(stats) {
+    try { localStorage.setItem(TRAIN_STATS_KEY, JSON.stringify(stats)); } catch (_) {}
+  }
+
+  // Calcule le poids d'un caractère : plus d'erreurs = poids plus élevé
+  // Poids = 1 + erreurs – (réussites / 3), minimum 0.2, maximum 5
+  function trainWeight(ch, stats) {
+    const s = stats[ch] || { ok: 0, err: 0 };
+    const raw = 1 + s.err - (s.ok / 3);
+    return Math.min(5, Math.max(0.2, raw));
+  }
+
+  // Sélection aléatoire pondérée : les touches faibles reviennent plus souvent
+  function trainPickChar(stats) {
+    const weights = TRAIN_CHARSET.map(ch => trainWeight(ch, stats));
+    const total   = weights.reduce((s, w) => s + w, 0);
+    let   r       = Math.random() * total;
+    for (let i = 0; i < TRAIN_CHARSET.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return TRAIN_CHARSET[i];
+    }
+    return TRAIN_CHARSET[TRAIN_CHARSET.length - 1];
+  }
+
+  /* ── Pause cognitive ── */
+  const TRAIN_PAUSE_EVERY  = 30;  // frappes correctes entre deux pauses
+  const TRAIN_PAUSE_DURATION = 2500; // durée de la pause en ms
+  let trainKeysSincePause  = 0;   // compteur de frappes depuis la dernière pause
+  let trainPauseTimer      = null;
+
+  function trainTriggerPause() {
+    const overlay = document.getElementById('train-pause-overlay');
+    if (!overlay) return;
+    overlay.classList.add('show');
+    // Bloquer temporairement les frappes
+    trainActive = false;
+    clearTimeout(trainPauseTimer);
+    trainPauseTimer = setTimeout(() => {
+      overlay.classList.remove('show');
+      trainActive = true;
+      trainKeysSincePause = 0;
+      // Afficher le prochain caractère seulement après la pause
+      trainNextChar();
+    }, TRAIN_PAUSE_DURATION);
+  }
+
+  /* ── État ── */
+  let trainActive        = false;
+  let trainChar          = null;
+  let trainSeq           = [];
+  let trainStepIdx       = 0;
+  let trainCorrect       = 0;
+  let trainErrors        = 0;
+  let trainStreak        = 0;
+  let trainFeedbackTimer = null;
+  let _trainKeyHandler   = null;
+  let SHIFT_PRODUCED_CHAR = {};
+  let ALTGR_PRODUCED_CHAR = {};
+  let trainStats = {};  // statistiques par caractère pour la session + localStorage
+
+  /* ── Tables de correspondance clavier → caractère produit ── */
+  function trainBuildLookupTables() {
+    SHIFT_PRODUCED_CHAR = {};
+    document.querySelectorAll('.key[data-key][data-shift]').forEach(k => {
+      if (k.dataset.key && k.dataset.shift)
+        SHIFT_PRODUCED_CHAR[k.dataset.key.toLowerCase()] = k.dataset.shift;
+    });
+    ALTGR_PRODUCED_CHAR = {};
+    if (window.CH_FR_KEYMAP && window.CH_FR_KEYMAP._map) {
+      Object.entries(window.CH_FR_KEYMAP._map).forEach(([produced, entry]) => {
+        const s = entry.sequence;
+        if (s.length === 1 && s[0].type === 'altgr')
+          ALTGR_PRODUCED_CHAR[s[0].key.toLowerCase()] = produced;
+      });
+    }
+  }
+
+  /* ── Démarrer ── */
+  function trainStart() {
+    if (trainActive) return;
+    trainActive        = true;
+    trainCorrect       = 0;
+    trainErrors        = 0;
+    trainStreak        = 0;
+    trainKeysSincePause = 0;
+
+    // Charger les stats persistées pour la progression intelligente
+    trainStats = trainLoadStats();
+
+    // Masquer l'exercice de phrases, afficher la zone entraînement
+    document.querySelector('.exercise-zone').style.display = 'none';
+    document.getElementById('train-zone').style.display = 'block';
+
+    // S'assurer que l'overlay de pause est caché
+    const overlay = document.getElementById('train-pause-overlay');
+    if (overlay) overlay.classList.remove('show');
+
+    // Désactiver le champ de saisie des phrases
+    const inp = document.getElementById('typing-input');
+    if (inp) inp.disabled = true;
+
+    document.getElementById('btn-train-start').textContent = '← Retour exercice';
+
+    trainBuildLookupTables();
+    _trainKeyHandler = trainOnKeydown;
+    document.addEventListener('keydown', _trainKeyHandler);
+
+    trainUpdateKPI();
+    trainNextChar();
+  }
+
+  /* ── Arrêter ── */
+  function trainStop() {
+    // Peut être appelé même pendant la pause (trainActive peut être false)
+    const wasRunning = trainActive || trainPauseTimer;
+    trainActive = false;
+
+    // Annuler la pause en cours si nécessaire
+    clearTimeout(trainPauseTimer);
+    trainPauseTimer = null;
+    const overlay = document.getElementById('train-pause-overlay');
+    if (overlay) overlay.classList.remove('show');
+
+    document.querySelector('.exercise-zone').style.display = '';
+    document.getElementById('train-zone').style.display = 'none';
+
+    const inp = document.getElementById('typing-input');
+    if (inp) { inp.disabled = false; inp.focus(); }
+
+    document.getElementById('btn-train-start').textContent = '⌨️ Mode Entraînement';
+
+    if (_trainKeyHandler) {
+      document.removeEventListener('keydown', _trainKeyHandler);
+      _trainKeyHandler = null;
+    }
+
+    // Sauvegarder les stats avant de quitter
+    trainSaveStats(trainStats);
+
+    // Nettoyer les surlignages
+    document.querySelectorAll('.key').forEach(k =>
+      k.classList.remove('highlight', 'highlight-shift', 'highlight-altgr', 'highlight-dead'));
+    const h = document.getElementById('shift-hint');
+    if (h) h.textContent = '';
+  }
+
+  /* ── Prochain caractère (sélection pondérée) ── */
+  function trainNextChar() {
+    // Sélection intelligente : les caractères avec plus d'erreurs reviennent plus souvent
+    trainChar    = trainPickChar(trainStats);
+    const entry  = window.CH_FR_KEYMAP ? window.CH_FR_KEYMAP.lookup(trainChar) : null;
+    trainSeq     = entry ? entry.sequence : [];
+    trainStepIdx = 0;
+
+    const charEl = document.getElementById('train-char');
+    if (charEl) charEl.textContent = (trainChar === ' ') ? '␣' : trainChar;
+
+    const descEl = document.getElementById('train-desc');
+    if (descEl) descEl.textContent = window.CH_FR_KEYMAP ? window.CH_FR_KEYMAP.describe(trainChar) : '';
+
+    trainHighlightStep();
+  }
+
+  /* ── Surligner la touche attendue à l'étape courante ── */
+  function trainHighlightStep() {
+    const kb = document.getElementById('virtual-keyboard');
+    if (!kb) return;
+
+    kb.querySelectorAll('.key').forEach(k =>
+      k.classList.remove('highlight', 'highlight-shift', 'highlight-altgr', 'highlight-dead'));
+
+    const h = document.getElementById('shift-hint');
+    if (h) h.textContent = '';
+
+    if (!trainSeq.length) return;
+
+    const step  = trainSeq[trainStepIdx];
+    const total = trainSeq.length;
+    const num   = trainStepIdx + 1;
+
+    // Indicateur d'étape
+    const stepEl = document.getElementById('train-step');
+    if (stepEl) {
+      stepEl.style.display = total > 1 ? 'inline-block' : 'none';
+      if (total > 1) stepEl.textContent = 'Étape ' + num + ' / ' + total;
+    }
+
+    // Surligner la touche physique
+    const fk = step.key.toLowerCase();
+    kb.querySelectorAll('.key').forEach(k => {
+      const dk = (k.dataset.key   || '').toLowerCase();
+      const ds = (k.dataset.shift || '').toLowerCase();
+      let match = false;
+      if (step.type === 'normal' && dk === fk)                match = true;
+      if (step.type === 'shift'  && (dk === fk || ds === fk)) match = true;
+      if (step.type === 'altgr'  && dk === fk)                match = true;
+      if (step.type === 'dead'   && dk === fk)                match = true;
+      if (step.key  === ' '      && dk === ' ')               match = true;
+      if (match) {
+        k.classList.add('highlight');
+        if (step.type === 'dead') k.classList.add('highlight-dead');
+      }
+    });
+
+    // Modificateurs
+    if (step.type === 'shift') {
+      const shiftSelector = /^[a-z]$/i.test(step.key)
+        ? '.key[data-key="Shift"][data-side="left"]'
+        : '.key[data-key="Shift"]';
+      kb.querySelectorAll(shiftSelector).forEach(k =>
+        k.classList.add('highlight', 'highlight-shift'));
+    }
+
+    if (step.type === 'altgr')
+      kb.querySelectorAll('.key').forEach(k => {
+        const txt = (k.textContent || '').trim().toLowerCase();
+        if (txt === 'alt gr' || (k.dataset.key || '').toLowerCase() === 'altgr')
+          k.classList.add('highlight', 'highlight-altgr');
+      });
+
+    // Indice textuel
+    if (h) h.textContent = step.label || '';
+  }
+
+  /* ── Clés à ignorer ── */
+  const TRAIN_IGNORE = [
+    'Shift','Control','Alt','AltGraph','Meta','CapsLock',
+    'Tab','Escape','Enter','Backspace',
+    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
+    'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+  ];
+
+  /* ── Gestion des frappes clavier ── */
+  function trainOnKeydown(e) {
+    if (TRAIN_IGNORE.includes(e.key) || !trainActive || !trainSeq.length) return;
+
+    const step = trainSeq[trainStepIdx];
+    let ok = false;
+
+    if (step.type === 'normal') {
+      ok = (e.key === (step.key === ' ' ? ' ' : step.key));
+
+    } else if (step.type === 'shift') {
+      if (e.shiftKey) {
+        const isLetter = /^[a-z]$/i.test(step.key);
+        if (isLetter) {
+          ok = (e.key.toLowerCase() === step.key.toLowerCase());
+        } else {
+          const expected = SHIFT_PRODUCED_CHAR[step.key.toLowerCase()] || step.key;
+          ok = (e.key === expected);
+        }
+      }
+
+    } else if (step.type === 'altgr') {
+      if (e.altKey) {
+        const expected = ALTGR_PRODUCED_CHAR[step.key.toLowerCase()];
+        ok = expected ? (e.key === expected) : (e.key.toLowerCase() === step.key.toLowerCase());
+      }
+
+    } else if (step.type === 'dead') {
+      // Les touches mortes produisent e.key === 'Dead' dans tous les navigateurs modernes
+      ok = (e.key === 'Dead') || (e.key === step.key);
+    }
+
+    e.preventDefault();
+
+    if (ok) {
+      trainCorrect++;
+      trainStreak++;
+      trainKeysSincePause++;
+      trainUpdateKPI();
+      trainFlash(true);
+
+      // Mémoriser la réussite sur ce caractère (seulement à la fin d'une séquence complète)
+      const isLastStep = (trainStepIdx + 1 >= trainSeq.length);
+      if (isLastStep) {
+        if (!trainStats[trainChar]) trainStats[trainChar] = { ok: 0, err: 0 };
+        trainStats[trainChar].ok++;
+        // Sauvegarde périodique (tous les 10 caractères complets)
+        if (trainCorrect % 10 === 0) trainSaveStats(trainStats);
+      }
+
+      // Flash de la touche pressée
+      try {
+        document.querySelectorAll('.key[data-key="' + CSS.escape(step.key) + '"]').forEach(k => {
+          k.classList.add('pressed');
+          setTimeout(() => k.classList.remove('pressed'), 120);
+        });
+      } catch (_) {}
+
+      trainStepIdx++;
+      if (trainStepIdx >= trainSeq.length) {
+        // Pause cognitive toutes les N frappes correctes
+        if (trainKeysSincePause >= TRAIN_PAUSE_EVERY) {
+          trainTriggerPause();
+        } else {
+          trainNextChar();
+        }
+      } else {
+        trainHighlightStep();
+      }
+
+    } else {
+      trainErrors++;
+      trainStreak = 0;
+      trainUpdateKPI();
+      trainFlash(false);
+
+      // Mémoriser l'erreur sur ce caractère
+      if (!trainStats[trainChar]) trainStats[trainChar] = { ok: 0, err: 0 };
+      trainStats[trainChar].err++;
+
+      // Flash erreur sur la mauvaise touche
+      try {
+        document.querySelectorAll('.key[data-key="' + CSS.escape(e.key) + '"]').forEach(k => {
+          k.classList.add('error');
+          setTimeout(() => k.classList.remove('error'), 200);
+        });
+      } catch (_) {}
+
+      trainHighlightStep(); // reste sur la même étape
+    }
+  }
+
+  /* ── Flash feedback ✓ / ✗ ── */
+  function trainFlash(ok) {
+    const el = document.getElementById('train-feedback');
+    if (!el) return;
+    clearTimeout(trainFeedbackTimer);
+    el.textContent    = ok ? '✓' : '✗';
+    el.style.color      = ok ? 'var(--success)' : 'var(--danger)';
+    el.style.fontWeight = '700';
+    el.style.fontSize   = '22px';
+    trainFeedbackTimer = setTimeout(() => { el.textContent = '\u00a0'; }, ok ? 400 : 600);
+  }
+
+  /* ── Mise à jour des compteurs KPI ── */
+  function trainUpdateKPI() {
+    document.getElementById('train-correct').textContent = trainCorrect;
+    document.getElementById('train-errors').textContent  = trainErrors;
+    document.getElementById('train-streak').textContent  = trainStreak;
+  }
+  </script>
+</body>
+</html>

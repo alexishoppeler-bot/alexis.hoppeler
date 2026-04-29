@@ -1,0 +1,797 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Évaluations - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/evaluations.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">📈</div>
+          <h1>Mes evaluations</h1>
+          <p>Vue simple de votre progression. Les resultats se mettent a jour avec vos exercices.</p>
+        </div>
+        <div class="mb-24 fade-up delay-1 flex gap-8 flex-wrap items-center">
+          <a href="accueil.html" class="btn btn-secondary btn-sm">Accueil</a>
+          <a href="evaluations.html" class="btn btn-secondary btn-sm">Évaluations</a>
+          <a href="donnees.html" class="btn btn-secondary btn-sm">Données</a>
+          <a href="regles.html" class="btn btn-secondary btn-sm">Règles XP</a>
+        </div>
+
+        <!-- ═══════════════════════════
+             HÉRO — Niveau + Badge
+        ═══════════════════════════ -->
+        <div class="card card-accent mb-24 fade-up delay-1">
+          <div class="level-hero">
+            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600;margin-bottom:6px;">Votre niveau</div>
+            <div class="level-number" id="eval-level">1</div>
+            <div id="eval-badge" class="badge-rank">🌱 Début</div>
+            <div class="xp-next" id="xp-bar-label">0/100 XP vers niveau 2</div>
+            <div style="max-width:320px;margin:10px auto 0;">
+              <div class="progress-bar progress-lg" style="height:10px;">
+                <div class="progress-fill" id="xp-bar" style="width:0%;transition:width 1s ease;"></div>
+              </div>
+            </div>
+            <div style="margin-top:14px;font-size:13px;color:var(--text2);">
+              <span id="eval-xp-hero" style="font-weight:700;color:var(--accent);">0 XP</span> accumulés au total
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════
+             BADGES DE JALONS
+        ═══════════════════════════ -->
+        <div class="card mb-24 fade-up delay-2">
+          <div class="card-title mb-4">🎯 Jalons de progression</div>
+          <div id="milestone-badges" style="display:flex;gap:12px;flex-wrap:wrap;"></div>
+        </div>
+
+        <!-- ═══════════════════════════
+             STREAK + DAILY XP
+        ═══════════════════════════ -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;" class="fade-up delay-2">
+
+          <div class="card">
+            <div class="card-title mb-4">🔥 Série actuelle</div>
+            <div id="streak-current" style="font-size:28px;font-weight:700;color:var(--accent);margin-bottom:8px;">0</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">jours consécutifs</div>
+            <div style="font-size:11px;color:var(--text2);">Meilleure : <span id="streak-best" style="font-weight:700;">0</span> jours</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title mb-4">📊 XP sur 7 jours</div>
+            <div class="sparkline-wrap" style="margin:-8px -12px 0;">
+              <div class="sparkline-bar-row" id="daily-xp-bars" style="height:60px;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card mb-24 fade-up delay-2 pedagogical-card">
+          <div class="card-title mb-4">Priorite pedagogique</div>
+          <div class="pedagogical-grid">
+            <div class="pedagogical-box">
+              <div class="pedagogical-label">Point fort</div>
+              <div class="pedagogical-value" id="ped-strength-title">En cours</div>
+              <p id="ped-strength-text">Le point fort apparait ici.</p>
+            </div>
+            <div class="pedagogical-box">
+              <div class="pedagogical-label">A travailler</div>
+              <div class="pedagogical-value" id="ped-priority-title">En cours</div>
+              <p id="ped-priority-text">La priorite apparait ici.</p>
+            </div>
+            <div class="pedagogical-box pedagogical-box-accent">
+              <div class="pedagogical-label">Prochaine etape</div>
+              <div class="pedagogical-value" id="ped-next-title">En cours</div>
+              <p id="ped-next-text">La suite apparait ici.</p>
+              <a class="link-cell" id="ped-next-link" href="accueil.html">Ouvrir</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════
+             HISTORIQUE SESSIONS
+        ═══════════════════════════ -->
+        <div class="card mb-24 fade-up delay-2">
+          <div class="card-title mb-4">📝 5 dernières sessions</div>
+          <div style="overflow-x:auto;">
+            <table class="eval-table" style="font-size:12px;">
+              <thead>
+                <tr>
+                  <th>Jeu</th>
+                  <th>XP</th>
+                  <th>Précision</th>
+                  <th>Heure</th>
+                </tr>
+              </thead>
+              <tbody id="session-tbody">
+                <tr><td colspan="4" style="text-align:center;padding:16px;color:var(--text3);">Aucune session pour le moment.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Toggle Details Button -->
+        <div class="text-center mb-24 fade-up delay-2">
+          <button class="btn btn-secondary btn-sm" id="btn-toggle-details" type="button">Voir plus de details</button>
+        </div>
+
+        <!-- ═══════════════════════════
+             DETAIL SECTIONS (hidden by default)
+        ═══════════════════════════ -->
+        <div class="detail-section mb-24" id="detail-section">
+
+        <!-- 3 RINGS -->
+        <div class="grid-3 mb-24 fade-up delay-2">
+
+          <div class="card eval-ring-card">
+            <div class="ring-title">Précision globale</div>
+            <svg id="ring-global" width="120" height="120" viewBox="0 0 120 120" class="ring-svg" style="margin:8px 0;">
+              <defs></defs>
+              <circle class="ring-bg"   cx="60" cy="60" r="50"/>
+              <circle class="ring-fill" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/>
+              <text class="ring-label" x="60" y="60" text-anchor="middle" dominant-baseline="central"
+                    style="transform:rotate(90deg);transform-origin:60px 60px;" id="ring-global-pct">0%</text>
+            </svg>
+            <div class="ring-pct-label">Toutes réponses correctes</div>
+          </div>
+
+          <div class="card eval-ring-card">
+            <div class="ring-title">Exercices terminés</div>
+            <svg id="ring-closed" width="120" height="120" viewBox="0 0 120 120" class="ring-svg" style="margin:8px 0;">
+              <defs></defs>
+              <circle class="ring-bg"   cx="60" cy="60" r="50"/>
+              <circle class="ring-fill" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/>
+              <text class="ring-label" x="60" y="60" text-anchor="middle" dominant-baseline="central"
+                    style="transform:rotate(90deg);transform-origin:60px 60px;" id="ring-closed-pct">0%</text>
+            </svg>
+            <div class="ring-pct-label">Sur <span id="ring-total-count">15</span> exercices</div>
+          </div>
+
+          <div class="card eval-ring-card">
+            <div class="ring-title">XP moyen / exercice</div>
+            <svg id="ring-open" width="120" height="120" viewBox="0 0 120 120" class="ring-svg" style="margin:8px 0;">
+              <defs></defs>
+              <circle class="ring-bg"   cx="60" cy="60" r="50"/>
+              <circle class="ring-fill" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/>
+              <text class="ring-label" x="60" y="60" text-anchor="middle" dominant-baseline="central"
+                    style="transform:rotate(90deg);transform-origin:60px 60px;" id="ring-open-pct">0</text>
+            </svg>
+            <div class="ring-pct-label">Moyenne XP par exercice joué</div>
+          </div>
+
+        </div>
+
+        <!-- ═══════════════════════════
+             KPI 7 compteurs
+        ═══════════════════════════ -->
+        <div class="kpi-grid-7 mb-24 fade-up delay-2">
+          <div class="kpi-card2">
+            <div class="kpi-val2" style="color:var(--success)" id="eval-correct">0</div>
+            <div class="kpi-lbl2">Correctes</div>
+          </div>
+          <div class="kpi-card2">
+            <div class="kpi-val2" id="eval-typed">0</div>
+            <div class="kpi-lbl2">Tentatives</div>
+          </div>
+          <div class="kpi-card2">
+            <div class="kpi-val2" style="color:var(--danger)" id="eval-errors">0</div>
+            <div class="kpi-lbl2">Erreurs</div>
+          </div>
+          <div class="kpi-card2">
+            <div class="kpi-val2" id="eval-accuracy">0%</div>
+            <div class="kpi-lbl2">Précision</div>
+          </div>
+          <div class="kpi-card2">
+            <div class="kpi-val2" id="eval-xp">0</div>
+            <div class="kpi-lbl2">XP Total</div>
+          </div>
+          <div class="kpi-card2">
+            <div class="kpi-val2" style="color:var(--success)" id="eval-completed">0</div>
+            <div class="kpi-lbl2">Terminés</div>
+          </div>
+          <div class="kpi-card2">
+            <div class="kpi-val2" style="color:var(--warning)" id="eval-inprogress">0</div>
+            <div class="kpi-lbl2">En cours</div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════
+             VOTES (LIKES/DISLIKES)
+        ═══════════════════════════ -->
+        <div class="card mb-24 fade-up delay-3">
+          <div class="card-title mb-4">👍👎 Avis sur les jeux</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="font-size:32px;">👍</div>
+              <div>
+                <div style="font-size:20px;font-weight:700;color:var(--success);" id="eval-likes">0</div>
+                <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;">J'aime</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="font-size:32px;">👎</div>
+              <div>
+                <div style="font-size:20px;font-weight:700;color:var(--danger);" id="eval-dislikes">0</div>
+                <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;">Je n'aime pas</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════
+             GRAPHIQUE XP PAR EXERCICE
+        ═══════════════════════════ -->
+        <div class="card mb-24 fade-up delay-3">
+          <div class="card-title mb-4">📊 XP par exercice</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Survole une barre pour voir les détails.</div>
+          <div class="sparkline-wrap">
+            <div class="sparkline-bar-row" id="sparkline-bars"></div>
+            <div class="sparkline-labels"  id="sparkline-labels"></div>
+          </div>
+          <div id="sparkline-tooltip" style="font-size:12px;color:var(--text2);margin-top:8px;min-height:18px;text-align:center;"></div>
+        </div>
+
+        <!-- ═══════════════════════════
+             TABLEAU DÉTAIL
+        ═══════════════════════════ -->
+        <div class="card fade-up delay-3">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <div class="card-title" style="margin:0;">📋 Détail par exercice</div>
+            <div class="filter-tabs" id="filter-tabs">
+              <button class="filter-tab active" data-filter="all" type="button">Tous</button>
+              <button class="filter-tab" data-filter="completed" type="button">✅ Terminés</button>
+              <button class="filter-tab" data-filter="in_progress" type="button">🔄 En cours</button>
+              <button class="filter-tab" data-filter="not_started" type="button">⬜ Non démarrés</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="eval-table">
+              <thead>
+                <tr>
+                  <th>Exercice</th>
+                  <th>Correctes</th>
+                  <th>Erreurs</th>
+                  <th>Précision</th>
+                  <th>Progrès</th>
+                  <th>XP</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="exercise-tbody">
+                <tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text3);">Aucune donnée. Commence un exercice !</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Résumé ligne -->
+          <div id="table-summary" style="padding:10px 14px;font-size:12px;color:var(--text3);border-top:1px solid var(--border);display:none;">
+            <span id="summary-shown">0</span> exercice(s) affiché(s)
+          </div>
+        </div>
+
+        </div>
+        <!-- End of detail-section -->
+
+        <!-- Reset -->
+        <div class="mt-24 mb-32 text-center fade-up delay-4">
+          <button class="btn btn-danger btn-sm" id="btn-reset-scores" type="button">🗑️ Réinitialiser toutes les données</button>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/vote-system.js"></script>
+  <script>
+  'use strict';
+
+  /* ═══════════════════════════════════════════
+     CONFIG
+  ═══════════════════════════════════════════ */
+  const CONFIG = window.EXERCISE_CONFIG || {};
+  const ALL_PAGES = CONFIG.orderedPages || [];
+  const PAGE_META = CONFIG.meta || {};
+
+  const BADGE_LEVELS = [
+    { min: 0,    label: '🌱 Débutant',       color: '#8b95ab' },
+    { min: 50,   label: '📈 En progression', color: '#4f8ef7' },
+    { min: 150,  label: '💪 Solide',         color: '#7c5ff5' },
+    { min: 300,  label: '⭐ Avancé',          color: '#f59e0b' },
+    { min: 500,  label: '🏆 Expert',          color: '#f87171' },
+  ];
+
+  const STATUS_META = {
+    completed:   { label: 'Terminé',       dot: 'dot-green',  badge: 'badge-green'  },
+    in_progress: { label: 'En cours',      dot: 'dot-yellow', badge: 'badge-yellow' },
+    not_started: { label: 'Non démarré',   dot: 'dot-gray',   badge: 'badge-gray'   },
+  };
+
+  /* ═══════════════════════════════════════════
+     HELPERS
+  ═══════════════════════════════════════════ */
+  function getBadge(xp) {
+    let b = BADGE_LEVELS[0];
+    BADGE_LEVELS.forEach(l => { if (xp >= l.min) b = l; });
+    return b;
+  }
+
+  function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  function renderRing(svgId, pct, c1, c2) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    const R = 50, C = 2 * Math.PI * R;
+    const fill = svg.querySelector('.ring-fill');
+    const defs = svg.querySelector('defs');
+    if (defs) defs.innerHTML = `
+      <linearGradient id="${svgId}-g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="${c1}"/>
+        <stop offset="100%" stop-color="${c2}"/>
+      </linearGradient>`;
+    if (fill) {
+      fill.setAttribute('stroke-dasharray',  String(C));
+      fill.setAttribute('stroke-dashoffset', String(C - (pct / 100) * C));
+      fill.style.stroke = `url(#${svgId}-g)`;
+    }
+  }
+
+  /* ═══════════════════════════════════════════
+     RENDERMILESTONEBADGES
+  ═══════════════════════════════════════════ */
+  function renderMilestoneBadges() {
+    const allData = ScoreManager.getAllData();
+    let completedCount = 0;
+    for (const page of ALL_PAGES) {
+      if ((allData[page] || {}).status === 'completed') completedCount++;
+    }
+
+    const milestones = [
+      { threshold: 5, emoji: '🎯', label: '5 jeux' },
+      { threshold: 10, emoji: '🌟', label: '10 jeux' },
+      { threshold: 15, emoji: '🔥', label: '15 jeux' },
+      { threshold: 20, emoji: '🏆', label: '20 jeux' },
+    ];
+
+    const container = document.getElementById('milestone-badges');
+    if (!container) return;
+    container.innerHTML = '';
+
+    milestones.forEach(m => {
+      const unlocked = completedCount >= m.threshold;
+      const badge = document.createElement('div');
+      badge.className = 'milestone-badge' + (unlocked ? ' unlocked' : '');
+      badge.innerHTML = `<div class="milestone-emoji">${m.emoji}</div><div class="milestone-text">${m.label}</div>`;
+      container.appendChild(badge);
+    });
+  }
+
+  /* ═══════════════════════════════════════════
+     RENDERDAILYXP
+  ═══════════════════════════════════════════ */
+  function renderDailyXP() {
+    const dailyData = typeof ScoreManager.getDailyXP === 'function' ? ScoreManager.getDailyXP(7) : [];
+    const barsEl = document.getElementById('daily-xp-bars');
+    if (!barsEl) return;
+    barsEl.innerHTML = '';
+
+    if (dailyData.length === 0) {
+      barsEl.innerHTML = '<div style="width:100%;text-align:center;color:var(--text3);padding:12px;">Pas de données sur 7 jours.</div>';
+      return;
+    }
+
+    const maxXp = Math.max(...dailyData.map(d => d.xp), 1);
+    dailyData.forEach((d, i) => {
+      const pct = Math.max(4, Math.round((d.xp / maxXp) * 100));
+      const bar = document.createElement('div');
+      bar.className = 'sparkline-bar';
+      bar.style.height = '4px';
+      bar.title = `${d.label}: ${d.xp} XP`;
+      bar.style.minWidth = 'auto';
+      bar.style.flex = '1';
+      barsEl.appendChild(bar);
+      setTimeout(() => { bar.style.height = pct + '%'; }, 50 + i * 30);
+    });
+  }
+
+  /* ═══════════════════════════════════════════
+     RENDERSTREAK
+  ═══════════════════════════════════════════ */
+  function renderStreak() {
+    const streakData = typeof ScoreManager.getStreakData === 'function' ? ScoreManager.getStreakData() : { current: 0, best: 0 };
+    document.getElementById('streak-current').textContent = streakData.current || 0;
+    document.getElementById('streak-best').textContent = streakData.best || 0;
+  }
+
+  /* ═══════════════════════════════════════════
+     RENDERSESSIONHISTORY
+  ═══════════════════════════════════════════ */
+  function renderSessionHistory() {
+    const sessions = typeof ScoreManager.getSessionHistory === 'function' ? ScoreManager.getSessionHistory() : [];
+    const tbody = document.getElementById('session-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (sessions.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="4" style="text-align:center;padding:16px;color:var(--text3);">Aucune session pour le moment.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    sessions.forEach(s => {
+      const tr = document.createElement('tr');
+      const accuracy = s.typed > 0 ? Math.round((s.correct / s.typed) * 100) : 0;
+      const timeStr = s.timestamp ? new Date(s.timestamp).toLocaleString('fr-CH', { hour: '2-digit', minute: '2-digit' }) : '—';
+      tr.innerHTML = `
+        <td><strong>${s.gameName || '—'}</strong></td>
+        <td style="color:var(--accent);font-weight:600;">${s.xp || 0} XP</td>
+        <td>${accuracy}%</td>
+        <td style="color:var(--text3);">${timeStr}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function getSectionPedagogy(allData) {
+    const labels = {
+      'Emploi & ORP': 'Emploi',
+      'Numérique': 'Bureautique',
+      'Français': 'Francais'
+    };
+    const sections = {};
+
+    ALL_PAGES.forEach((page) => {
+      const meta = PAGE_META[page] || {};
+      const section = meta.section || 'Autres';
+      if (!sections[section]) {
+        sections[section] = {
+          key: section,
+          label: labels[section] || section,
+          total: 0,
+          completed: 0,
+          xp: 0,
+          accuracyTotal: 0,
+          played: 0
+        };
+      }
+
+      const metrics = allData[page] || {};
+      sections[section].total += 1;
+      sections[section].xp += Number(metrics.xp) || 0;
+      if (metrics.status === 'completed') sections[section].completed += 1;
+      if ((Number(metrics.typed) || 0) > 0) {
+        sections[section].played += 1;
+        sections[section].accuracyTotal += Math.round((metrics.correct / metrics.typed) * 100);
+      }
+    });
+
+    const items = Object.values(sections).map((section) => {
+      const completionPct = section.total > 0 ? Math.round((section.completed / section.total) * 100) : 0;
+      const avgAccuracy = section.played > 0 ? Math.round(section.accuracyTotal / section.played) : 0;
+      return {
+        key: section.key,
+        label: section.label,
+        total: section.total,
+        completed: section.completed,
+        xp: section.xp,
+        completionPct: completionPct,
+        avgAccuracy: avgAccuracy,
+        score: Math.round((completionPct * 0.6) + (avgAccuracy * 0.4))
+      };
+    });
+
+    const sorted = items.slice().sort((a, b) => a.score - b.score);
+    return {
+      weakest: sorted[0] || null,
+      strongest: sorted[sorted.length - 1] || null
+    };
+  }
+
+  function getNextExerciseForSection(sectionKey) {
+    if (!sectionKey) return null;
+    for (const page of ALL_PAGES) {
+      const meta = PAGE_META[page] || {};
+      if (meta.section !== sectionKey) continue;
+      const metrics = ScoreManager.readMetrics(page);
+      if (metrics.status !== 'completed') {
+        return {
+          page,
+          name: meta.name || page,
+          href: meta.href || (page + '.html')
+        };
+      }
+    }
+    return null;
+  }
+
+  function renderPedagogicalPriority(allData) {
+    const pedagogy = getSectionPedagogy(allData);
+    const weakest = pedagogy.weakest;
+    const strongest = pedagogy.strongest;
+    const nextExercise = weakest ? getNextExerciseForSection(weakest.key) : null;
+
+    setText('ped-strength-title', strongest ? strongest.label : 'Aucune donnee');
+    setText(
+      'ped-strength-text',
+      strongest
+        ? strongest.completed > 0
+          ? 'C est le domaine le plus stable pour le moment. Vous pouvez vous appuyer dessus pour reprendre confiance.'
+          : 'Aucun domaine n est encore bien installe, ce qui est normal au debut.'
+        : 'Pas assez de donnees pour identifier un point fort.'
+    );
+
+    setText('ped-priority-title', weakest ? weakest.label : 'Commencer');
+    setText(
+      'ped-priority-text',
+      weakest
+        ? weakest.completed === 0
+          ? 'Ce domaine n est pas encore lance. Un premier exercice court fera deja progresser.'
+          : 'C est le domaine a consolider en priorite pour rendre la progression plus reguliere.'
+        : 'La priorite apparaitra apres quelques exercices.'
+    );
+
+    setText('ped-next-title', nextExercise ? nextExercise.name : 'Voir l accueil');
+    setText(
+      'ped-next-text',
+      nextExercise
+        ? 'Bonne prochaine etape : faire cet exercice calmement, puis verifier si la precision monte.'
+        : 'Tous les parcours semblent deja avances. Refaire un exercice utile peut renforcer l autonomie.'
+    );
+
+    const link = document.getElementById('ped-next-link');
+    if (link) {
+      link.href = nextExercise ? nextExercise.href : 'accueil.html';
+      link.textContent = nextExercise ? 'Ouvrir l exercice' : 'Retour accueil';
+    }
+  }
+
+  /* ═══════════════════════════════════════════
+     RENDER PRINCIPAL
+  ═══════════════════════════════════════════ */
+  function renderEvaluation() {
+    const allData = ScoreManager.getAllData();
+
+    /* ── Résumé ── */
+    const global = ScoreManager.getGlobalSummary(ALL_PAGES);
+    const badge  = getBadge(global.totalXp);
+
+    /* ── Votes ── */
+    const votesStats = ScoreManager.getVotesStats(ALL_PAGES);
+    setText('eval-likes', votesStats.totalLikes);
+    setText('eval-dislikes', votesStats.totalDislikes);
+
+    /* ── Héro niveau ── */
+    setText('eval-level', global.level);
+    setText('eval-xp-hero', global.totalXp + ' XP');
+
+    const badgeEl = document.getElementById('eval-badge');
+    if (badgeEl) {
+      badgeEl.textContent       = badge.label;
+      badgeEl.style.color       = badge.color;
+      badgeEl.style.borderColor = badge.color + '55';
+      badgeEl.style.background  = badge.color + '18';
+    }
+
+    /* Barre XP vers prochain niveau */
+    const xpInLevel = global.totalXp % 100;
+    const xpBar     = document.getElementById('xp-bar');
+    if (xpBar) xpBar.style.width = xpInLevel + '%';
+    setText('xp-bar-label', `${xpInLevel}/100 XP vers niveau ${global.level + 1}`);
+
+    /* ── KPI ── */
+    setText('eval-correct',    global.totalCorrect);
+    setText('eval-typed',      global.totalTyped);
+    setText('eval-errors',     global.totalErrors);
+    setText('eval-accuracy',   global.accuracy + '%');
+    setText('eval-xp',         global.totalXp + ' XP');
+    setText('eval-completed',  global.completed);
+    setText('eval-inprogress', global.inProgress);
+
+    /* ── Rings ── */
+    // Anneau 1 : précision globale
+    renderRing('ring-global', Math.min(global.accuracy, 100), '#4f8ef7', '#7c5ff5');
+    setText('ring-global-pct', global.accuracy + '%');
+
+    // Anneau 2 : % d'exercices terminés
+    const completedPct = Math.round((global.completed / ALL_PAGES.length) * 100);
+    renderRing('ring-closed', completedPct, '#34d399', '#4f8ef7');
+    setText('ring-closed-pct', completedPct + '%');
+    setText('ring-total-count', ALL_PAGES.length);
+
+    // Anneau 3 : XP moyen par exercice joué (cap 200 XP pour l'anneau)
+    const playedCount = global.completed + global.inProgress;
+    const avgXP       = playedCount > 0 ? Math.round(global.totalXp / playedCount) : 0;
+    const avgXPPct    = Math.min(Math.round(avgXP / 2), 100); // 200 XP max → 100%
+    renderRing('ring-open', avgXPPct, '#f59e0b', '#f87171');
+    setText('ring-open-pct', avgXP);
+
+    /* ── Sparkline ── */
+    renderSparkline(allData);
+    renderPedagogicalPriority(allData);
+
+    /* ── Phase 3 rendus ── */
+    renderMilestoneBadges();
+    renderDailyXP();
+    renderStreak();
+    renderSessionHistory();
+
+    /* ── Table ── */
+    renderTable(allData, currentFilter);
+  }
+
+  /* ═══════════════════════════════════════════
+     SPARKLINE
+  ═══════════════════════════════════════════ */
+  function renderSparkline(allData) {
+    const barsEl   = document.getElementById('sparkline-bars');
+    const labelsEl = document.getElementById('sparkline-labels');
+    const tooltip  = document.getElementById('sparkline-tooltip');
+    if (!barsEl || !labelsEl) return;
+
+    const values = ALL_PAGES.map(p => (allData[p] || {}).xp || 0);
+    const maxVal = Math.max(...values, 1);
+
+    barsEl.innerHTML   = '';
+    labelsEl.innerHTML = '';
+
+    ALL_PAGES.forEach((page, i) => {
+      const xp  = values[i];
+      const pct = Math.max(4, Math.round((xp / maxVal) * 100));
+      const meta = PAGE_META[page] || { name: page };
+
+      const bar = document.createElement('div');
+      bar.className = 'sparkline-bar';
+      bar.style.height = '4px'; // start low, animate
+      bar.title = `${meta.name} : ${xp} XP`;
+      barsEl.appendChild(bar);
+
+      const lbl = document.createElement('div');
+      lbl.className   = 'sparkline-lbl';
+      lbl.textContent = (meta.name || page).replace(/^[^\s]+\s/, ''); // strip emoji
+      labelsEl.appendChild(lbl);
+
+      bar.addEventListener('mouseenter', () => {
+        const d = ScoreManager.getAllData()[page] || {};
+        tooltip.textContent = `${meta.name} — ${xp} XP · ${d.correct || 0} correctes · ${d.errors || 0} erreurs`;
+      });
+      bar.addEventListener('mouseleave', () => { tooltip.textContent = ''; });
+
+      setTimeout(() => { bar.style.height = pct + '%'; }, 50 + i * 40);
+    });
+  }
+
+  /* ═══════════════════════════════════════════
+     TABLE
+  ═══════════════════════════════════════════ */
+  let currentFilter = 'all';
+
+  function renderTable(allData, filter) {
+    const tbody = document.getElementById('exercise-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    let shown = 0;
+
+    ALL_PAGES.forEach((page, idx) => {
+      const d      = allData[page] || { correct: 0, typed: 0, errors: 0, xp: 0, status: 'not_started' };
+      const status = d.status || 'not_started';
+      if (filter !== 'all' && status !== filter) return;
+
+      const acc    = d.typed > 0 ? Math.round((d.correct / d.typed) * 100) : 0;
+      const meta   = PAGE_META[page] || { name: page, href: '#', cat: '' };
+      const sm     = STATUS_META[status];
+      const rank   = idx + 1;
+      const medal  = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+
+      const tr = document.createElement('tr');
+      tr.dataset.status = status;
+      tr.innerHTML = `
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="status-dot ${sm.dot}"></span>
+            <div>
+              <div>${meta.name}</div>
+              <div style="font-size:10px;color:var(--text3);font-weight:400;">${meta.cat || ''}</div>
+            </div>
+          </div>
+        </td>
+        <td style="font-weight:600;color:var(--success);">${d.correct || 0}</td>
+        <td style="color:var(--danger);">${d.errors || 0}</td>
+        <td>
+          <div>${acc}%</div>
+        </td>
+        <td>
+          <div class="mini-bar">
+            <div class="mini-bar-fill" style="width:${acc}%;"></div>
+          </div>
+        </td>
+        <td style="font-weight:700;color:var(--accent);">${d.xp || 0} XP</td>
+        <td><span class="badge ${sm.badge}">${sm.label}</span></td>
+        <td><a href="${meta.href}" class="link-cell">▶ Jouer</a></td>
+      `;
+      tbody.appendChild(tr);
+      shown++;
+    });
+
+    if (shown === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="8" style="text-align:center;padding:28px;color:var(--text3);">Aucun exercice dans cette catégorie.</td>`;
+      tbody.appendChild(tr);
+    }
+
+    const summary = document.getElementById('table-summary');
+    const summaryShown = document.getElementById('summary-shown');
+    if (summary && summaryShown) {
+      summary.style.display = 'block';
+      summaryShown.textContent = shown;
+    }
+  }
+
+  /* ═══════════════════════════════════════════
+     FILTER TABS
+  ═══════════════════════════════════════════ */
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderTable(ScoreManager.getAllData(), currentFilter);
+    });
+  });
+
+  /* ═══════════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════════ */
+  document.getElementById('btn-reset-scores').addEventListener('click', () => {
+    if (confirm('⚠️ Effacer toutes les données de progression ? Cette action est irréversible.')) {
+      ScoreManager.reset();
+      renderEvaluation();
+      showToast('Données réinitialisées.', 'info');
+    }
+  });
+
+  /* ═══════════════════════════════════════════
+     TOGGLE DETAILS
+  ═══════════════════════════════════════════ */
+  function toggleDetails() {
+    const section = document.getElementById('detail-section');
+    const btn = document.getElementById('btn-toggle-details');
+    const isShown = section.classList.toggle('show');
+    btn.textContent = isShown ? 'Masquer les details' : 'Voir plus de details';
+  }
+
+  /* ═══════════════════════════════════════════
+     BOOT
+  ═══════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', () => {
+    renderEvaluation();
+    document.addEventListener('score:updated', renderEvaluation);
+    document.getElementById('btn-toggle-details').addEventListener('click', toggleDetails);
+  });
+  </script>
+</body>
+</html>

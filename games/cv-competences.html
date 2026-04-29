@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compétences CV - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/cv-competences.css">
+</head>
+<body class="page-cv-competences">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+        <div class="page-header fade-up">
+          <div class="page-icon">📋</div>
+          <h1>Copier des compétences pour un CV</h1>
+          <p>Choisissez un profil et un metier, puis copiez une phrase simple pour le CV.</p>
+        </div>
+
+        <div class="cv-shell">
+          <section class="cv-card intro-card fade-up delay-1">
+            <h2>Aide CV niveau B1</h2>
+            <p>Cet outil propose des competences simples a copier une par une dans un CV modifiable.</p>
+          </section>
+
+          <section class="cv-card controls-card fade-up delay-2">
+            <div class="controls-grid">
+              <div class="field-group">
+                <label for="profil">Profil</label>
+                <select id="profil" aria-label="Profil">
+                  <option value="">-- Choisir --</option>
+                  <option value="H">Homme</option>
+                  <option value="F">Femme</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <label for="metier">Métier</label>
+                <select id="metier" aria-label="Métier"></select>
+              </div>
+
+              <button id="btnShowDiag" type="button" class="btn btn-secondary diag-toggle">Diagnostics</button>
+            </div>
+
+            <p id="warning" class="notice-line" aria-live="polite"></p>
+            <p id="status" class="status-line" aria-live="polite"></p>
+            <p class="helper-note">Astuce : cliquez sur <strong>📋 Copier</strong>, puis collez dans Word avec <span class="kbd">Ctrl</span> + <span class="kbd">V</span>.</p>
+
+            <div class="diag-box" id="diagBox" hidden>
+              <strong>Diagnostics</strong>
+              <div class="diag-actions">
+                <button id="btnTestCopy" type="button" class="btn btn-ghost btn-sm">Tester la copie</button>
+              </div>
+              <pre id="diag"></pre>
+            </div>
+          </section>
+
+          <section class="columns-grid fade-up delay-3">
+            <article class="cv-card list-card">
+              <h2>Compétences</h2>
+              <div id="competences" class="list-stack">
+                <div class="empty-state">Choisissez un profil et un métier pour afficher les phrases.</div>
+              </div>
+            </article>
+
+            <article class="cv-card list-card">
+              <h2>Qualités personnelles</h2>
+              <div id="qualites" class="list-stack">
+                <div class="empty-state">Les qualités personnelles apparaissent ici.</div>
+              </div>
+            </article>
+          </section>
+        </div>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <div class="toast" id="toast">Copié</div>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">Copie manuelle</h3>
+      <p>Le navigateur bloque la copie automatique. Cliquez dans la zone, faites <span class="kbd">Ctrl</span> + <span class="kbd">C</span>, puis collez dans Word avec <span class="kbd">Ctrl</span> + <span class="kbd">V</span>.</p>
+      <textarea id="manualText" spellcheck="false"></textarea>
+      <div class="modal-actions">
+        <button id="btnSelect" type="button" class="btn btn-secondary">Sélectionner</button>
+        <button id="btnClose" type="button" class="btn btn-primary">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/cv-competences.js"></script>
+</body>
+</html>

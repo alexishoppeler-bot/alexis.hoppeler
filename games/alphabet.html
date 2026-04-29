@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ordre alphabétique - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/alphabet.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🔤</div>
+          <h1>Ordre alphabétique</h1>
+          <p>Remettez les mots dans l’ordre alphabétique, du haut vers le bas.</p>
+        </div>
+
+        <!-- KPI en temps réel -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="alpCorrect">0</div>
+            <div class="kpi-label">Bonnes</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="alpErrors">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="alpXp">0 XP</div>
+            <div class="kpi-label">XP gagné</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="alpQuestion">1 / 6</div>
+            <div class="kpi-label">Question</div>
+          </div>
+        </div>
+
+        <!-- Zone jeu -->
+        <div class="fade-up delay-2" id="gameZone">
+          <div class="alphabet-zone">
+            <div class="alphabet-mission">
+              <div class="alphabet-mission-item"><span>1</span><strong>Lisez tous les mots.</strong></div>
+              <div class="alphabet-mission-item"><span>2</span><strong>Faites glisser les lignes pour les remettre dans l’ordre.</strong></div>
+              <div class="alphabet-mission-item"><span>3</span><strong>Cliquez sur « Vérifier » quand la liste vous semble juste.</strong></div>
+            </div>
+            <div class="alphabet-list" id="alphabetList"></div>
+          </div>
+          <div class="alphabet-feedback" id="alphabetFeedback" aria-live="polite">Glissez les mots pour les remettre dans l’ordre alphabétique.</div>
+          <div class="action-buttons">
+            <button class="btn btn-primary" id="btnSubmit" type="button">✓ Vérifier</button>
+            <button class="btn btn-secondary" id="btnReset" type="button">↻ Remettre en mélange</button>
+          </div>
+        </div>
+
+        <!-- Zone résultats -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div id="resEmoji" style="font-size:48px;margin-bottom:12px;">🎉</div>
+            <h2 id="resTitle">Session terminée !</h2>
+            <p id="resSubtitle" style="color:var(--text2);margin-bottom:16px;"></p>
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--success)" id="resFinal">0</div>
+                <div class="kpi-label">Bonnes</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--danger)" id="resFinalErr">0</div>
+                <div class="kpi-label">Erreurs</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resFinalXp">0 XP</div>
+                <div class="kpi-label">XP gagné</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resFinalAcc">0%</div>
+                <div class="kpi-label">Précision</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+              <button class="btn btn-primary" id="btnRestart" type="button">🔄 Rejouer</button>
+              <button class="btn btn-secondary" id="btnNextExercise" type="button">Exercice suivant →</button>
+              <a href="accueil.html" class="btn btn-secondary">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/alphabet-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+  const PAGE_ID = 'alphabet';
+  const TOTAL_QUESTIONS = 6;
+
+  let session = {
+    correct: 0,
+    errors: 0,
+    xp: 0,
+    questionCount: 0,
+    active: true
+  };
+
+  let alphabetData = [];
+  let currentWords = [];
+  let draggedElement = null;
+
+  function setFeedback(message, type) {
+    const box = document.getElementById('alphabetFeedback');
+    box.textContent = message;
+    box.className = 'alphabet-feedback' + (type ? ' ' + type : '');
+  }
+
+  /* ── Mettre à jour les KPI ── */
+  function updateKpi() {
+    document.getElementById('alpCorrect').textContent = session.correct;
+    document.getElementById('alpErrors').textContent = session.errors;
+    document.getElementById('alpXp').textContent = session.xp + ' XP';
+    document.getElementById('alpQuestion').textContent = session.questionCount + ' / ' + TOTAL_QUESTIONS;
+  }
+
+  /* ── Initialiser le jeu ── */
+  function initGame() {
+    alphabetData = window.ALPHABET_DATA || [];
+    session = { correct: 0, errors: 0, xp: 0, questionCount: 0, active: true };
+    updateKpi();
+    setFeedback('Glissez les mots pour les remettre dans l’ordre alphabétique.', '');
+    nextQuestion();
+    startExerciseSession(PAGE_ID);
+  }
+
+  /* ── Shuffle ── */
+  function shuffle(arr) {
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  /* ── Prochaine question ── */
+  function nextQuestion() {
+    if (session.questionCount >= TOTAL_QUESTIONS) {
+      endSession();
+      return;
+    }
+    session.questionCount++;
+    const dataset = alphabetData[session.questionCount - 1] || alphabetData[0];
+    currentWords = shuffle([...dataset.words]);
+    renderItems();
+    setFeedback('Rangez les mots du haut vers le bas, puis cliquez sur « Vérifier ».', '');
+    updateKpi();
+  }
+
+  /* ── Afficher les items ── */
+  function renderItems() {
+    const list = document.getElementById('alphabetList');
+    list.innerHTML = '';
+    currentWords.forEach((word, idx) => {
+      const el = document.createElement('div');
+      el.className = 'alphabet-item';
+      el.textContent = word;
+      el.draggable = true;
+      el.dataset.index = idx;
+
+      el.addEventListener('dragstart', (e) => {
+        draggedElement = el;
+        el.classList.add('dragging');
+      });
+
+      el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+        draggedElement = null;
+      });
+
+      el.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        el.classList.add('over');
+      });
+
+      el.addEventListener('dragleave', () => {
+        el.classList.remove('over');
+      });
+
+      el.addEventListener('drop', (e) => {
+        e.preventDefault();
+        el.classList.remove('over');
+        if (draggedElement && draggedElement !== el) {
+          const parent = list;
+          const allItems = [...parent.children];
+          const draggedIdx = allItems.indexOf(draggedElement);
+          const targetIdx = allItems.indexOf(el);
+          if (draggedIdx < targetIdx) {
+            el.parentNode.insertBefore(draggedElement, el.nextSibling);
+          } else {
+            el.parentNode.insertBefore(draggedElement, el);
+          }
+        }
+      });
+
+      list.appendChild(el);
+    });
+  }
+
+  /* ── Vérifier la réponse ── */
+  function checkAnswer() {
+    const items = document.querySelectorAll('.alphabet-item');
+    const current = Array.from(items).map(el => el.textContent);
+    const sorted = [...current].sort();
+    const isCorrect = JSON.stringify(current) === JSON.stringify(sorted);
+
+    if (isCorrect) {
+      session.correct++;
+      session.xp += 5;
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp: 5 });
+      setFeedback('Bravo, la liste est dans le bon ordre. +5 XP.', 'ok');
+    } else {
+      session.errors++;
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+      setFeedback('Ce n’est pas encore le bon ordre. La liste a été remise en mélange pour réessayer.', 'err');
+      renderItems();
+      return;
+    }
+
+    updateKpi();
+    setTimeout(() => {
+      nextQuestion();
+    }, 500);
+  }
+
+  /* ── Réinitialiser la question ── */
+  function resetQuestion() {
+    renderItems();
+    setFeedback('La liste a été remise en mélange. Recommencez le classement.', '');
+  }
+
+  /* ── Terminer la session ── */
+  function endSession() {
+    session.active = false;
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const accuracy = session.correct + session.errors > 0
+      ? Math.round((session.correct / (session.correct + session.errors)) * 100)
+      : 0;
+
+    let emoji = '📚';
+    let title = 'Continue à t\'entraîner !';
+    if (accuracy === 100) { emoji = '🏆'; title = 'Parfait ! Score 100% !'; }
+    else if (accuracy >= 80) { emoji = '🎉'; title = 'Excellent !'; }
+    else if (accuracy >= 60) { emoji = '👍'; title = 'Très bien !'; }
+    else if (accuracy >= 40) { emoji = '😐'; title = 'Pas mal !'; }
+
+    document.getElementById('resEmoji').textContent = emoji;
+    document.getElementById('resTitle').textContent = title;
+    document.getElementById('resSubtitle').textContent =
+      `Tu as classé ${session.correct}/${TOTAL_QUESTIONS} listes correctement. Précision : ${accuracy}%`;
+
+    document.getElementById('resFinal').textContent = session.correct;
+    document.getElementById('resFinalErr').textContent = session.errors;
+    document.getElementById('resFinalXp').textContent = session.xp + ' XP';
+    document.getElementById('resFinalAcc').textContent = accuracy + '%';
+
+    if (accuracy >= 80) launchConfetti();
+
+    endExerciseSession(PAGE_ID);
+
+    setupNextExerciseButton(PAGE_ID, { labelSuffix: ' →' });
+  }
+
+  /* ── Bouton Rejouer ── */
+  document.getElementById('btnRestart').addEventListener('click', () => {
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    initGame();
+  });
+
+  /* ── Boutons d'action ── */
+  document.getElementById('btnSubmit').addEventListener('click', checkAnswer);
+  document.getElementById('btnReset').addEventListener('click', resetQuestion);
+
+  /* ── Lancer le jeu au démarrage ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof StageManager !== 'undefined' && typeof ScoreManager !== 'undefined') {
+      initGame();
+    } else {
+      setTimeout(() => initGame(), 100);
+    }
+  });
+
+  // Partage de résultats
+  document.addEventListener('DOMContentLoaded', () => {
+    attachShareButtons();
+  });
+  </script>
+</body>
+</html>

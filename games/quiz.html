@@ -1,0 +1,479 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/quiz.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">❓</div>
+          <h1>Questions simples</h1>
+          <p>Lisez la question, puis choisissez la bonne reponse.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiCorrect">0</div>
+            <div class="kpi-label">Correctes</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiErrors">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiXP">0</div>
+            <div class="kpi-label">Points</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiStreak">0</div>
+            <div class="kpi-label">Consécutives</div>
+          </div>
+        </div>
+
+        <!-- Quick Play Toggle (Phase 5) -->
+        <div class="quick-play-toggle fade-up delay-1" style="display:flex;gap:8px;justify-content:center;margin-bottom:24px;">
+          <button id="btnModeComplete" class="btn btn-secondary btn-sm active" type="button">Toutes les questions</button>
+          <button id="btnModeQuick" class="btn btn-secondary btn-sm" type="button">5 questions</button>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="quiz-zone">
+
+            <div class="quiz-top">
+              <div class="quiz-progress-label">
+                Question <strong id="qNum">0</strong> / <strong id="qTotal">0</strong>
+                &nbsp;<span class="streak-badge" id="streakBadge">🔥 <span id="streakVal">0</span></span>
+              </div>
+            </div>
+
+            <div class="series-progress">
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            </div>
+
+            <!-- Question -->
+            <div class="quiz-question-box">
+              <div class="quiz-question-meta">
+                <span class="badge badge-blue" id="qCategory"></span>
+              </div>
+              <div class="quiz-question-text" id="qText"></div>
+            </div>
+
+            <!-- Choix -->
+            <div class="quiz-choices" id="quizChoices"></div>
+
+            <!-- Explication -->
+            <div class="quiz-explication" id="quizExplication"></div>
+
+            <!-- Feedback -->
+            <div class="quiz-feedback" id="quizFeedback"></div>
+
+            <!-- Actions -->
+            <div class="quiz-actions">
+              <button class="btn btn-ghost btn-sm" id="btnFifty" type="button">Aide</button>
+              <button class="btn btn-primary" id="btnNext" type="button" style="display:none;">Suivant</button>
+            </div>
+
+            <div class="key-hint">
+              Clavier : <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> = choix
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">🏆</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:4px;" id="resTitle">Session terminee</h2>
+            <p style="color:var(--text2);margin-bottom:24px;" id="resSubtitle"></p>
+
+            <!-- Ring de score -->
+            <div class="score-ring-wrap">
+              <div class="ring-container">
+                <svg class="ring-svg" width="130" height="130" viewBox="0 0 130 130">
+                  <circle class="ring-bg"   cx="65" cy="65" r="54"/>
+                  <circle class="ring-fill" cx="65" cy="65" r="54" id="resRing"
+                    stroke="url(#ringGrad)"
+                    stroke-dasharray="339.3"
+                    stroke-dashoffset="339.3"/>
+                  <defs>
+                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#4f8ef7"/>
+                      <stop offset="100%" stop-color="#7c5ff5"/>
+                    </linearGradient>
+                  </defs>
+                  <text class="ring-label"    x="65" y="62" text-anchor="middle" dy=".3em" id="resRingPct">0%</text>
+                  <text class="ring-sublabel" x="65" y="82" text-anchor="middle">reussite</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card"><div class="kpi-value" id="resCorrect">0</div><div class="kpi-label">Correctes</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resErrors">0</div><div class="kpi-label">Erreurs</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resXP">0</div><div class="kpi-label">Points</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resBestStreak">0</div><div class="kpi-label">Meilleures consécutives</div></div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Rejouer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/data/quiz-data.js"></script>
+  <script>
+  'use strict';
+
+  const ALL_QUESTIONS = window.QUIZ_DATA || [];
+
+  const PAGE_ID       = 'quiz';
+  const Q_PER_SESSION = Array.isArray(ALL_QUESTIONS) ? ALL_QUESTIONS.length : 0;
+
+  let quickPlayMode = false;
+
+  let session = {
+    questions:   [],
+    index:       0,
+    correct:     0,
+    errors:      0,
+    xp:          0,
+    typed:       0,
+    streak:      0,
+    bestStreak:  0,
+    answered:    false,
+    fiftyUsed:   false
+  };
+  let autoAdvanceTimer = null;
+
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function scheduleAutoAdvance(callback, delay = 1400) {
+    clearAutoAdvance();
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      callback();
+    }, delay);
+  }
+
+  /* ===== UTILS ===== */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /* ===== PHASE 5: ADAPTIVE DIFFICULTY ===== */
+  function getAdaptiveDifficulty(page) {
+    const m = typeof ScoreManager !== 'undefined' ? ScoreManager.readMetrics(page) : { typed: 0, correct: 0 };
+    const acc = m.typed > 0 ? Math.round((m.correct / m.typed) * 100) : 0;
+    return acc > 85 ? 'hard' : acc > 60 ? 'medium' : 'easy';
+  }
+
+  function filterByDifficulty(questions, targetDiff) {
+    if (targetDiff === 'hard') return questions;
+    if (targetDiff === 'medium') return questions.filter(q => q.difficulty !== 'hard');
+    return questions.filter(q => q.difficulty === 'easy');
+  }
+
+  /* ===== INIT ===== */
+  function startSession() {
+    clearAutoAdvance();
+    if (!Q_PER_SESSION) {
+      showToast('Aucune question disponible.', 'error');
+      return;
+    }
+
+    // Phase 5.3: Adaptive difficulty
+    const targetDiff = getAdaptiveDifficulty(PAGE_ID);
+    let filtered = filterByDifficulty(ALL_QUESTIONS, targetDiff);
+    if (filtered.length === 0) filtered = ALL_QUESTIONS; // fallback
+
+    // Phase 5.2: Mode Quick Play - prendre seulement 5 questions si activé
+    const pool = quickPlayMode ? shuffle(filtered).slice(0, 5) : shuffle(filtered);
+
+    session.questions  = pool;
+    session.index      = 0;
+    session.correct    = 0;
+    session.errors     = 0;
+    session.xp         = 0;
+    session.typed      = 0;
+    session.streak     = 0;
+    session.bestStreak = 0;
+    session.answered   = false;
+    session.fiftyUsed  = false;
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    updateKPIs();
+    loadQuestion();
+
+    // Afficher les règles XP seulement à la première session
+    if (session.index === 0) {
+      showXPRules('Quiz');
+    }
+  }
+
+  /* ===== CHARGER UNE QUESTION ===== */
+  function loadQuestion() {
+    clearAutoAdvance();
+    session.answered  = false;
+    session.fiftyUsed = false;
+
+    const q = session.questions[session.index];
+
+    document.getElementById('qNum').textContent       = session.index + 1;
+    document.getElementById('qTotal').textContent     = session.questions.length;
+    document.getElementById('qCategory').textContent  = q.category;
+    document.getElementById('qText').textContent      = q.question;
+    document.getElementById('quizFeedback').textContent = '';
+    document.getElementById('quizFeedback').className   = 'quiz-feedback';
+    document.getElementById('quizExplication').className = 'quiz-explication';
+    document.getElementById('btnNext').style.display    = 'none';
+    document.getElementById('btnFifty').disabled        = false;
+    document.getElementById('btnFifty').style.opacity   = '1';
+
+    const pct = Math.round((session.index / session.questions.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    renderChoices(q);
+  }
+
+  /* ===== CHOIX ===== */
+  function renderChoices(q) {
+    const grid    = document.getElementById('quizChoices');
+    const letters = ['A', 'B', 'C', 'D'];
+    grid.innerHTML = '';
+
+    q.choices.forEach((text, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-choice';
+      btn.dataset.idx = i;
+      btn.innerHTML = `<span class="choice-letter">${letters[i]}</span><span>${text}</span>`;
+      btn.addEventListener('click', () => answerQuestion(i));
+      grid.appendChild(btn);
+    });
+  }
+
+  /* ===== RÉPONDRE ===== */
+  function answerQuestion(idx) {
+    if (session.answered) return;
+    session.answered = true;
+    session.typed++;
+
+    const q    = session.questions[session.index];
+    const isOk = idx === q.answer;
+
+    disableChoices();
+
+    // Colorer le choix sélectionné et la bonne réponse
+    const choices = document.querySelectorAll('.quiz-choice');
+    choices[idx].classList.add(isOk ? 'correct' : 'wrong');
+    if (!isOk) markCorrect(q.answer);
+
+    const fb = document.getElementById('quizFeedback');
+
+    if (isOk) {
+      session.correct++;
+      session.streak++;
+      if (session.streak > session.bestStreak) session.bestStreak = session.streak;
+
+      // XP : base + bonus streak
+      const streakBonus = session.streak >= 3 ? 2 : 0;
+      const xp = 3 + streakBonus;
+      session.xp += xp;
+
+      fb.textContent = 'Bonne reponse.' + (streakBonus ? ' Serie de ' + session.streak + '.' : '') + ' +' + xp + ' XP';
+      fb.className   = 'quiz-feedback ok';
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+    } else {
+      session.errors++;
+      session.streak = 0;
+      fb.textContent = 'Ce n est pas la bonne reponse.';
+      fb.className   = 'quiz-feedback err';
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+    }
+
+    showExplication(q, isOk);
+    showNextBtn();
+    updateKPIs();
+  }
+
+  function markCorrect(idx) {
+    const choices = document.querySelectorAll('.quiz-choice');
+    if (choices[idx]) choices[idx].classList.add('correct');
+  }
+
+  function disableChoices() {
+    document.querySelectorAll('.quiz-choice').forEach(b => {
+      b.disabled = true;
+    });
+    document.getElementById('btnFifty').disabled      = true;
+    document.getElementById('btnFifty').style.opacity = '0.4';
+  }
+
+  function showExplication(q, isOk) {
+    const box = document.getElementById('quizExplication');
+    box.textContent = q.explication;
+    box.className   = 'quiz-explication ' + (isOk ? 'ok' : 'err');
+  }
+
+  function showNextBtn() {
+    scheduleAutoAdvance(nextQuestion);
+  }
+
+  /* ===== 50/50 ===== */
+  function useFiftyFifty() {
+    if (session.answered || session.fiftyUsed) return;
+    session.fiftyUsed = true;
+    document.getElementById('btnFifty').disabled      = true;
+    document.getElementById('btnFifty').style.opacity = '0.4';
+
+    const q       = session.questions[session.index];
+    const wrong   = [0, 1, 2, 3].filter(i => i !== q.answer);
+    const toHide  = shuffle(wrong).slice(0, 2);
+
+    const choices = document.querySelectorAll('.quiz-choice');
+    toHide.forEach(i => {
+      choices[i].style.opacity      = '0.25';
+      choices[i].style.pointerEvents = 'none';
+    });
+
+    showToast('Aide : deux mauvaises reponses sont cachees.', 'info');
+  }
+
+  /* ===== SUIVANT ===== */
+  function nextQuestion() {
+    if (!session.answered) return;
+    session.index++;
+    if (session.index >= session.questions.length) {
+      finishSession();
+    } else {
+      loadQuestion();
+    }
+  }
+
+  /* ===== FIN ===== */
+  function finishSession() {
+    clearAutoAdvance();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+    document.getElementById('progressFill').style.width = '100%';
+
+    const accuracy = calcAccuracy(session.correct, session.typed);
+    let emoji = '📋', title = 'Continuez';
+    if (accuracy >= 90) { emoji = '✅'; title = 'Tres bien'; }
+    else if (accuracy >= 70) { emoji = '👍'; title = 'Bien'; }
+    else if (accuracy >= 50) { emoji = '📈'; title = 'Bon debut'; }
+    else { emoji = '📚'; title = 'Continuez'; }
+
+    document.getElementById('resEmoji').textContent    = emoji;
+    document.getElementById('resTitle').textContent    = title;
+    document.getElementById('resSubtitle').textContent = session.correct + ' bonne' + (session.correct > 1 ? 's' : '') + ' reponse' + (session.correct > 1 ? 's' : '') + ' sur ' + session.questions.length + ' questions.';
+    document.getElementById('resCorrect').textContent  = session.correct;
+    document.getElementById('resErrors').textContent   = session.errors;
+    document.getElementById('resXP').textContent       = session.xp;
+    document.getElementById('resBestStreak').textContent = session.bestStreak;
+    document.getElementById('resRingPct').textContent  = accuracy + '%';
+
+    // Anneau de score
+    const circumference = 339.3;
+    const offset = circumference - (accuracy / 100) * circumference;
+    setTimeout(() => {
+      document.getElementById('resRing').style.strokeDashoffset = offset;
+    }, 200);
+
+    if (accuracy >= 80) launchConfetti();
+  }
+
+  /* ===== KPIs ===== */
+  function updateKPIs() {
+    document.getElementById('kpiCorrect').textContent = session.correct;
+    document.getElementById('kpiErrors').textContent  = session.errors;
+    document.getElementById('kpiXP').textContent      = session.xp;
+    document.getElementById('kpiStreak').textContent  = session.streak;
+
+    const badge = document.getElementById('streakBadge');
+    if (session.streak >= 3) {
+      badge.classList.add('show');
+      document.getElementById('streakVal').textContent = session.streak;
+    } else {
+      badge.classList.remove('show');
+    }
+  }
+
+  /* ===== EVENTS ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+        
+    // Phase 5: Quick Play toggle
+    document.getElementById('btnModeComplete').addEventListener('click', () => {
+      quickPlayMode = false;
+      document.getElementById('btnModeComplete').classList.add('active');
+      document.getElementById('btnModeQuick').classList.remove('active');
+    });
+    document.getElementById('btnModeQuick').addEventListener('click', () => {
+      quickPlayMode = true;
+      document.getElementById('btnModeQuick').classList.add('active');
+      document.getElementById('btnModeComplete').classList.remove('active');
+    });
+
+    document.getElementById('btnNext').addEventListener('click', nextQuestion);
+    document.getElementById('btnFifty').addEventListener('click', useFiftyFifty);
+    document.getElementById('btnRestart').addEventListener('click', () => {
+      startSession();
+    });
+
+    // Raccourcis clavier
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT') return;
+      const map = { '1': 0, '2': 1, '3': 2, '4': 3 };
+      if (map[e.key] !== undefined && !session.answered) answerQuestion(map[e.key]);
+    });
+
+    startSession();
+  });
+  </script>
+</body>
+</html>

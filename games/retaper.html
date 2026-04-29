@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retaper - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/retaper.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">&#9997;&#65039;</div>
+          <h1>Retaper un e-mail</h1>
+          <p>Lisez la situation, puis retapez seulement le corps du modele.</p>
+        </div>
+
+        <!-- KPI -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiCorrect">0</div>
+            <div class="kpi-label">Justes</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiErrors">0</div>
+            <div class="kpi-label">&Agrave; revoir</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiXP">0</div>
+            <div class="kpi-label">Points</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiProgress">0%</div>
+            <div class="kpi-label">Avance</div>
+          </div>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="retaper-zone">
+
+            <div class="retaper-top">
+              <div class="retaper-progress-label">
+                E-mail <strong id="roundNum">1</strong>&nbsp;/&nbsp;<strong id="roundTotal">10</strong>
+              </div>
+              <div class="retaper-tools">
+                <button class="btn btn-ghost btn-xs mode-toggle" id="btnMode" type="button">Session courte : non</button>
+                <span id="roundCategory" class="badge badge-blue"></span>
+              </div>
+            </div>
+
+            <div class="series-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width:0%"></div>
+              </div>
+            </div>
+
+            <!-- Situation -->
+            <div class="contexte-box">
+              <div class="contexte-label">Situation</div>
+              <div id="contexteText"></div>
+            </div>
+
+            <div class="profile-box" aria-label="Choisir le profil pour adapter le modèle">
+              <span class="profile-label">Profil du message :</span>
+              <button class="profile-choice-btn active" id="btnProfileHomme" type="button" aria-pressed="true">Homme</button>
+              <button class="profile-choice-btn" id="btnProfileFemme" type="button" aria-pressed="false">Femme</button>
+              <span class="profile-note" id="profileNote">Le texte et la signature utilisent le profil choisi.</span>
+            </div>
+
+            <!-- Objet -->
+            <div class="sujet-box">
+              <span class="sujet-label">Objet :</span>
+              <span class="sujet-value" id="sujetValue"></span>
+            </div>
+
+            <div class="copy-note">
+              &Agrave; taper : le corps du message uniquement. Ne recopiez pas l'objet.
+            </div>
+
+            <!-- Mod&egrave;le &agrave; recopier -->
+            <div class="ref-label">Mod&egrave;le &agrave; recopier</div>
+            <div class="ref-box" id="refText" aria-label="Texte de r&eacute;f&eacute;rence &agrave; recopier"></div>
+            <div class="mobile-ref-reminder" id="mobileRefReminder" aria-live="polite"></div>
+
+            <!-- Indice -->
+            <div class="hint-box" id="hintBox"></div>
+
+            <!-- Zone de saisie -->
+            <textarea
+              class="typing-area"
+              id="typingArea"
+              placeholder="Recopiez ici le texte ci-dessus exactement..."
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              rows="7"
+            ></textarea>
+
+            <!-- Statistiques en direct -->
+            <div class="typing-stats">
+              <span>Caract&egrave;res&nbsp;: <strong id="statTyped">0/0</strong></span>
+              <span>Erreurs&nbsp;: <strong class="stat-errors-val" id="statErrors">0</strong></span>
+              <span>Reste&nbsp;: <strong id="statMissing">0</strong></span>
+            </div>
+
+            <div class="typing-guidance" id="typingGuidance" aria-live="polite"></div>
+
+            <!-- Feedback -->
+            <div class="feedback-row">
+              <span class="feedback-msg" id="feedbackMsg"></span>
+            </div>
+
+            <div class="diff-panel" id="diffPanel" aria-live="polite">
+              <div class="diff-title">Diff&eacute;rences &agrave; revoir</div>
+              <div class="diff-summary" id="diffSummary"></div>
+              <div class="diff-grid">
+                <div>
+                  <div class="diff-label">Mod&egrave;le</div>
+                  <div class="diff-text" id="diffRef"></div>
+                </div>
+                <div>
+                  <div class="diff-label">Votre texte</div>
+                  <div class="diff-text" id="diffTyped"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="btn btn-ghost btn-sm" id="btnHint" type="button">Indice</button>
+              <button class="btn btn-ghost btn-sm" id="btnClearCurrent" type="button">Recommencer cet e-mail</button>
+              <button class="btn btn-primary" id="btnValidate" type="button">Valider</button>
+              <button class="btn btn-ghost btn-sm" id="btnRetryCurrent" type="button" style="display:none;">Corriger sans score</button>
+              <button class="btn btn-secondary" id="btnNext" type="button" style="display:none;">Suivant &rarr;</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- R&eacute;sultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">&#9997;&#65039;</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Session termin&eacute;e&nbsp;!</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle">Voici vos r&eacute;sultats pour cette session.</p>
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card">
+                <div class="kpi-value" id="resCorrect">0</div>
+                <div class="kpi-label">Justes</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resErrors">0</div>
+                <div class="kpi-label">&Agrave; revoir</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resXP">0</div>
+                <div class="kpi-label">XP</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resAccuracy">-</div>
+                <div class="kpi-label">Pr&eacute;cision</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon r&eacute;sum&eacute;</button>
+              <a href="#" class="btn btn-primary btn-lg" id="btnNextExercise">Exercice suivant</a>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Recommencer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">&larr; Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/data/retaper-data.js"></script>
+  <script>
+  'use strict';
+
+  /*
+   * Retaper — recopier des mod&egrave;les d'e-mail professionnels.
+   * L'apprenant recopie le texte affiché caractère par caractère.
+   * Coloration en direct : vert = correct, rouge = erreur, curseur animé.
+   * XP : +7 parfait, +5 ≥ 90 %, +3 ≥ 70 %, +1 sinon. −1 XP si indice utilisé.
+   */
+
+  const DATA    = window.RETAPER_DATA || [];
+  const PAGE_ID = 'retaper';
+  const SHORT_SESSION_SIZE = 3;
+  const MIN_MANUAL_SUBMIT_RATIO = 0.5;
+  const DIFFICULTY_ORDER = { easy: 1, medium: 2, hard: 3 };
+
+  let session = {
+    items:      [],
+    index:      0,
+    correct:    0,
+    typed:      0,
+    charCorrect: 0,
+    charTotal:   0,
+    charErrors:  0,
+    xp:         0,
+    submitted:  false,
+    practiceOnly: false,
+    hintUsed:   false,
+    shortMode:   false,
+    profile:     'homme',
+    currentRef: ''   /* référence normalisée de l'item en cours */
+  };
+
+  let xpRulesShown = false;
+
+  /* ===== NORMALISATION DES CARACTÈRES ===== */
+  /*
+   * L'OS (macOS, Windows, iOS) remplace automatiquement les apostrophes
+   * droites par des apostrophes courbes, les guillemets droits par des
+   * guillemets typographiques, etc. On normalise le texte saisi avant
+   * comparaison pour que la frappe correcte soit toujours reconnue.
+   * Tous les remplacements sont 1:1 (longueur conservée, curseur intact).
+   */
+  const CHAR_MAP = [
+    [/[\u2018\u201B\u02BC\u02B9\u0060\u00B4\u2032\uFF07]/g, '\u0027'], /* apostrophes courbes → ' */
+    [/\u2019/g, '\u0027'],                                               /* RIGHT SINGLE QUOTATION MARK → ' */
+    [/[\u201C\u201D\u00AB\u00BB\u2033]/g, '\u0022'],                    /* guillemets → " */
+    [/[\u2013\u2014\u2015]/g, '\u002D'],                                 /* tirets longs → - */
+    [/\u00A0/g, '\u0020'],                                               /* espace insécable → espace */
+  ];
+
+  function normalizeInput(str) {
+    let s = str;
+    for (const [re, rep] of CHAR_MAP) s = s.replace(re, rep);
+    return s;
+  }
+
+  /* Normalise la valeur d'un textarea en préservant la position du curseur */
+  function normalizeTextarea(ta) {
+    const pos  = ta.selectionStart;
+    const orig = ta.value;
+    const norm = normalizeInput(orig);
+    if (norm !== orig) {
+      ta.value = norm;
+      try { ta.setSelectionRange(pos, pos); } catch (e) {}
+    }
+  }
+
+  /* Normalise les espaces : espaces multiples, espaces autour des sauts
+     de ligne, et plus de 2 sauts de ligne consécutifs */
+  function normalizeWhitespace(str) {
+    return str
+      .replace(/[ \t]+/g, ' ')       /* espaces/tabs multiples → espace simple */
+      .replace(/ *\n */g, '\n')       /* espaces autour des sauts de ligne      */
+      .replace(/\n{3,}/g, '\n\n')    /* 3+ sauts de ligne → 2 max              */
+      .replace(/^ | $/gm, '')         /* espaces en début/fin de chaque ligne    */
+      .trim();
+  }
+
+  /* Normalise le texte de référence (apostrophes + espaces) */
+  function normalizeRef(str) {
+    return normalizeWhitespace(normalizeInput(str));
+  }
+
+  /* Normalise le texte tapé par l'utilisateur (même règles) */
+  function normalizeTyped(str) {
+    return normalizeWhitespace(normalizeInput(str));
+  }
+
+  /* ===== UTILITAIRES ===== */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function difficultyRank(item) {
+    return DIFFICULTY_ORDER[item && item.difficulty] || 99;
+  }
+
+  function buildSessionItems() {
+    const staged = shuffle([...DATA]).sort((a, b) => difficultyRank(a) - difficultyRank(b));
+    if (!session.shortMode) return staged;
+
+    const picked = [];
+    ['easy', 'medium', 'hard'].forEach(diff => {
+      const pool = staged.filter(item => item.difficulty === diff && !picked.includes(item));
+      if (pool.length) picked.push(pool[0]);
+    });
+
+    for (const item of staged) {
+      if (picked.length >= SHORT_SESSION_SIZE) break;
+      if (!picked.includes(item)) picked.push(item);
+    }
+    return picked;
+  }
+
+  function currentTotal() {
+    return session.items.length || 1;
+  }
+
+  function replaceSignature(text, signature) {
+    if (!signature) return text;
+    const lines = text.split('\n');
+    const lastContentIndex = lines.map(line => line.trim()).lastIndexOf(lines.map(line => line.trim()).filter(Boolean).pop());
+    if (lastContentIndex >= 0) lines[lastContentIndex] = signature;
+    return lines.join('\n');
+  }
+
+  function adaptedBody(item) {
+    const variant = item.profileVariants && item.profileVariants[session.profile];
+    let text = item.corps;
+    if (!variant) return text;
+
+    if (Array.isArray(variant.replacements)) {
+      variant.replacements.forEach(pair => {
+        text = text.replace(pair[0], pair[1]);
+      });
+    }
+    return replaceSignature(text, variant.signature);
+  }
+
+  function adaptedHint(item) {
+    const variant = item.profileVariants && item.profileVariants[session.profile];
+    if (variant && variant.hint) return item.hint + ' ' + variant.hint;
+    return item.hint;
+  }
+
+  function getTypingStats(typed, ref) {
+    let ok = 0;
+    let substitutionErrors = 0;
+    let firstError = -1;
+    const len = Math.min(typed.length, ref.length);
+
+    for (let i = 0; i < len; i++) {
+      if (typed[i] === ref[i]) {
+        ok++;
+      } else {
+        substitutionErrors++;
+        if (firstError === -1) firstError = i;
+      }
+    }
+
+    const missing = Math.max(0, ref.length - typed.length);
+    const extra = Math.max(0, typed.length - ref.length);
+    if (firstError === -1 && extra > 0) firstError = ref.length;
+
+    return {
+      ok,
+      substitutionErrors,
+      missing,
+      extra,
+      totalErrors: substitutionErrors + extra,
+      accuracy: Math.round((ok / Math.max(ref.length, typed.length, 1)) * 100),
+      firstError
+    };
+  }
+
+  function labelChar(ch) {
+    if (ch === undefined) return '[rien]';
+    if (ch === '\n') return '[saut de ligne]';
+    if (ch === ' ') return '[espace]';
+    return ch;
+  }
+
+  function setFeedback(message, kind) {
+    const fb = document.getElementById('feedbackMsg');
+    fb.textContent = message;
+    fb.className = 'feedback-msg' + (kind ? ' ' + kind : '');
+  }
+
+  function clearFeedback() {
+    setFeedback('', '');
+  }
+
+  /* ===== DÉMARRAGE ===== */
+  function startSession() {
+    if (!DATA.length) {
+      showToast('Aucune donnée trouvée pour Retaper.', 'error');
+      return;
+    }
+    session.items     = buildSessionItems();
+    session.index     = 0;
+    session.correct   = 0;
+    session.typed     = 0;
+    session.charCorrect = 0;
+    session.charTotal   = 0;
+    session.charErrors  = 0;
+    session.xp        = 0;
+    session.submitted = false;
+    session.practiceOnly = false;
+    session.hintUsed  = false;
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    updateModeButton();
+    updateProfileButtons();
+
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Retaper');
+    }
+
+    loadItem();
+  }
+
+  /* ===== CHARGER UN ITEM ===== */
+  function loadItem() {
+    const item = session.items[session.index];
+    session.submitted = false;
+    session.practiceOnly = false;
+    session.hintUsed  = false;
+
+    /* Progression */
+    document.getElementById('roundNum').textContent      = session.index + 1;
+    document.getElementById('roundTotal').textContent    = currentTotal();
+    document.getElementById('roundCategory').textContent = item.category;
+    const pct = Math.round((session.index / currentTotal()) * 100);
+    document.getElementById('progressFill').style.width  = pct + '%';
+
+    /* KPI */
+    document.getElementById('kpiCorrect').textContent  = session.correct;
+    document.getElementById('kpiErrors').textContent   = session.typed - session.correct;
+    document.getElementById('kpiXP').textContent       = session.xp;
+    document.getElementById('kpiProgress').textContent = pct + '%';
+
+    /* Contenu — normaliser la référence une seule fois ici */
+    session.currentRef = normalizeRef(adaptedBody(item));
+    document.getElementById('contexteText').textContent = item.contexte;
+    document.getElementById('sujetValue').textContent   = item.sujet;
+    document.getElementById('profileNote').textContent =
+      'Modèle adapté : ' + (session.profile === 'femme' ? 'accords et signature au féminin.' : 'accords et signature au masculin.');
+
+    renderReference(session.currentRef);
+    updateMobileReminder('');
+
+    /* Zone de saisie */
+    const ta = document.getElementById('typingArea');
+    ta.value     = '';
+    ta.className = 'typing-area';
+    ta.disabled  = false;
+
+    /* Stats */
+    document.getElementById('statTyped').textContent  = '0/' + session.currentRef.length;
+    document.getElementById('statErrors').textContent = '0';
+    document.getElementById('statMissing').textContent = session.currentRef.length;
+    document.getElementById('typingGuidance').textContent = 'Commencez par les premiers mots du modèle, puis avancez ligne par ligne.';
+
+    /* Feedback */
+    clearFeedback();
+    hideDiffPanel();
+
+    /* Indice */
+    const hintBox = document.getElementById('hintBox');
+    hintBox.classList.remove('show');
+    hintBox.textContent = '';
+    const btnHint = document.getElementById('btnHint');
+    btnHint.disabled    = false;
+    btnHint.textContent = 'Indice';
+
+    /* Boutons */
+    document.getElementById('btnValidate').style.display = 'inline-flex';
+    document.getElementById('btnValidate').disabled      = false;
+    document.getElementById('btnNext').style.display     = 'none';
+    document.getElementById('btnRetryCurrent').style.display = 'none';
+    document.getElementById('btnClearCurrent').style.display = 'inline-flex';
+
+    ta.focus();
+  }
+
+  /* ===== RENDU DU TEXTE DE RÉFÉRENCE ===== */
+  function renderReference(text) {
+    const el = document.getElementById('refText');
+    el.innerHTML = '';
+    for (let i = 0; i < text.length; i++) {
+      const span = document.createElement('span');
+      span.className      = 'ref-char pending';
+      span.dataset.idx    = i;
+      span.textContent    = text[i]; /* \n preserved by white-space:pre-wrap */
+      el.appendChild(span);
+    }
+  }
+
+  function updateMobileReminder(typed) {
+    const ref = session.currentRef;
+    const next = ref.slice(typed.length, typed.length + 70).replace(/\n/g, ' / ');
+    const el = document.getElementById('mobileRefReminder');
+    el.textContent = next ? 'Suite du modèle : ' + next : 'Le modèle est complet.';
+  }
+
+  function updateGuidance(typed, ref, stats) {
+    const el = document.getElementById('typingGuidance');
+    if (!typed.length) {
+      el.textContent = 'Commencez par les premiers mots du modèle, puis avancez ligne par ligne.';
+      return;
+    }
+    if (stats.totalErrors > 0) {
+      const expected = labelChar(ref[stats.firstError]);
+      const found = labelChar(typed[stats.firstError]);
+      el.textContent = 'Première différence : attendu "' + expected + '", tapé "' + found + '". Corrigez à cet endroit avant de continuer.';
+      return;
+    }
+    if (stats.missing > 0) {
+      el.textContent = 'C\'est juste jusqu\'ici. Il reste ' + stats.missing + ' caractère' + (stats.missing > 1 ? 's' : '') + ' à recopier.';
+      return;
+    }
+    el.textContent = 'Texte complet. Vous pouvez valider.';
+  }
+
+  function renderDiffText(el, text, ref, mode) {
+    el.innerHTML = '';
+    const len = Math.max(text.length, ref.length);
+    for (let i = 0; i < len; i++) {
+      const span = document.createElement('span');
+      const char = text[i];
+      const refChar = ref[i];
+      const isMissing = char === undefined;
+      span.className = 'diff-char';
+      if (mode === 'typed') {
+        if (isMissing) span.classList.add('missing');
+        else if (char !== refChar) span.classList.add('wrong');
+      } else if (char !== refChar) {
+        span.classList.add('expected');
+      }
+      span.textContent = isMissing ? '□' : char;
+      el.appendChild(span);
+    }
+  }
+
+  function showDiffPanel(typed, ref, stats) {
+    const panel = document.getElementById('diffPanel');
+    const summary = document.getElementById('diffSummary');
+    const diffRef = document.getElementById('diffRef');
+    const diffTyped = document.getElementById('diffTyped');
+
+    summary.textContent =
+      stats.accuracy + '% de précision de frappe. ' +
+      stats.totalErrors + ' caractère' + (stats.totalErrors > 1 ? 's' : '') + ' différent' + (stats.totalErrors > 1 ? 's' : '') + ', ' +
+      stats.missing + ' manquant' + (stats.missing > 1 ? 's' : '') + ', ' +
+      stats.extra + ' en trop.';
+    renderDiffText(diffRef, ref, typed, 'ref');
+    renderDiffText(diffTyped, typed, ref, 'typed');
+    panel.classList.add('show');
+  }
+
+  function hideDiffPanel() {
+    document.getElementById('diffPanel').classList.remove('show');
+    document.getElementById('diffSummary').textContent = '';
+    document.getElementById('diffRef').innerHTML = '';
+    document.getElementById('diffTyped').innerHTML = '';
+  }
+
+  /* ===== COMPARAISON EN DIRECT ===== */
+  function updateComparison() {
+    if (session.submitted) return;
+
+    const ta = document.getElementById('typingArea');
+    normalizeTextarea(ta);  /* remplace apostrophes courbes, guillemets (1:1) */
+
+    const ref   = session.currentRef;
+    const typed = normalizeTyped(ta.value);  /* normalise aussi les espaces */
+    const chars = document.querySelectorAll('#refText .ref-char');
+    const stats = getTypingStats(typed, ref);
+
+    chars.forEach((span, i) => {
+      span.classList.remove('correct', 'wrong', 'current', 'pending');
+      if (i < typed.length) {
+        if (typed[i] === ref[i]) {
+          span.classList.add('correct');
+        } else {
+          span.classList.add('wrong');
+        }
+      } else if (i === typed.length) {
+        span.classList.add('current');
+      } else {
+        span.classList.add('pending');
+      }
+    });
+
+    document.getElementById('statTyped').textContent  = typed.length + '/' + ref.length;
+    document.getElementById('statErrors').textContent = stats.totalErrors;
+    document.getElementById('statMissing').textContent = stats.missing;
+    updateGuidance(typed, ref, stats);
+    updateMobileReminder(typed);
+
+    ta.classList.remove('has-error', 'perfect');
+    if (stats.totalErrors > 0) ta.classList.add('has-error');
+    else if (typed.length > 0) ta.classList.add('perfect');
+
+    /* Soumission automatique si texte identique */
+    if (typed === ref) {
+      submitItem(true);
+    }
+  }
+
+  /* ===== SOUMETTRE L'ITEM ===== */
+  function submitItem(isPerfect) {
+    const ref      = session.currentRef;
+    const typed    = normalizeTyped(document.getElementById('typingArea').value);
+    const stats    = getTypingStats(typed, ref);
+    const accuracy = isPerfect ? 100 : stats.accuracy;
+
+    if (session.submitted) return;
+    if (!session.practiceOnly && !isPerfect && typed.length < Math.ceil(ref.length * MIN_MANUAL_SUBMIT_RATIO)) {
+      setFeedback('Recopiez au moins la moitié du modèle avant de valider.', 'err');
+      showToast('Continuez encore un peu avant de valider.', 'info');
+      return;
+    }
+
+    session.submitted = true;
+
+    const isGood = accuracy >= 70;
+
+    let xp = 0;
+    if (isPerfect)        xp = 7;
+    else if (accuracy >= 90) xp = 5;
+    else if (accuracy >= 70) xp = 3;
+    else                     xp = 1;
+
+    if (session.hintUsed && xp > 1) xp -= 1;
+
+    if (!session.practiceOnly) {
+      session.typed++;
+      if (isGood) session.correct++;
+      session.charCorrect += stats.ok;
+      session.charTotal += Math.max(ref.length, typed.length);
+      session.charErrors += stats.totalErrors + stats.missing;
+      session.xp += xp;
+
+      recordExerciseProgress(PAGE_ID, {
+        correct: isGood ? 1 : 0,
+        typed:   1,
+        errors:  isGood ? 0 : 1,
+        xp
+      });
+    }
+
+    if (isPerfect && session.practiceOnly) {
+      setFeedback('\u2713 Correction réussie. Vous pouvez passer au suivant.', 'ok');
+      showToast('Correction réussie.', 'success');
+      launchConfetti();
+    } else if (isPerfect) {
+      setFeedback('\u2713 Parfait ! +' + xp + ' XP', 'ok');
+      showToast('Parfait ! +' + xp + ' XP', 'success');
+      launchConfetti();
+    } else if (accuracy >= 70) {
+      setFeedback('\u2713 Bien ! ' + accuracy + '\u00a0% de précision de frappe.' + (session.practiceOnly ? '' : ' +' + xp + ' XP'), 'ok');
+      showToast(session.practiceOnly ? 'Correction contrôlée.' : 'Bon travail\u00a0! +' + xp + ' XP', 'success');
+    } else {
+      setFeedback('\u2717 ' + accuracy + '\u00a0% de précision de frappe.' + (session.practiceOnly ? ' Corrigez les zones marquées.' : ' +' + xp + ' XP. Relisez le modèle.'), 'err');
+      showToast('Continuez à pratiquer.', 'info');
+    }
+
+    /* Mettre à jour les KPI */
+    document.getElementById('kpiCorrect').textContent = session.correct;
+    document.getElementById('kpiErrors').textContent  = session.typed - session.correct;
+    document.getElementById('kpiXP').textContent      = session.xp;
+
+    if (!isPerfect) showDiffPanel(typed, ref, stats);
+
+    document.getElementById('typingArea').disabled          = true;
+    document.getElementById('btnValidate').style.display    = 'none';
+    document.getElementById('btnHint').disabled             = true;
+    document.getElementById('btnNext').style.display        = 'inline-flex';
+    document.getElementById('btnRetryCurrent').style.display = isPerfect ? 'none' : 'inline-flex';
+    document.getElementById('btnClearCurrent').style.display = 'none';
+  }
+
+  /* ===== ITEM SUIVANT ===== */
+  function nextItem() {
+    session.index++;
+    if (session.index >= currentTotal()) {
+      finishSession();
+    } else {
+      loadItem();
+    }
+  }
+
+  /* ===== FIN DE SESSION ===== */
+  function finishSession() {
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const emailAccuracy = calcAccuracy(session.correct, session.typed);
+    const typingAccuracy = session.charTotal
+      ? Math.round((session.charCorrect / session.charTotal) * 100)
+      : 0;
+    document.getElementById('resCorrect').textContent  = session.correct;
+    document.getElementById('resErrors').textContent   = session.typed - session.correct;
+    document.getElementById('resXP').textContent       = session.xp;
+    document.getElementById('resAccuracy').textContent = typingAccuracy + '%';
+
+    const emoji = typingAccuracy >= 90 ? '🌟' : typingAccuracy >= 70 ? '✅' : '✍️';
+    document.getElementById('resEmoji').textContent  = emoji;
+    document.getElementById('resSubtitle').textContent =
+      'Vous avez recopié ' + session.typed + ' e-mail' + (session.typed > 1 ? 's' : '') +
+      ' avec ' + typingAccuracy + '\u00a0% de précision de frappe. ' +
+      'E-mails réussis\u00a0: ' + emailAccuracy + '\u00a0%.';
+
+    if (typingAccuracy >= 80) launchConfetti();
+  }
+
+  function resetCurrentInput() {
+    if (session.submitted) return;
+    const ta = document.getElementById('typingArea');
+    ta.value = '';
+    ta.disabled = false;
+    clearFeedback();
+    hideDiffPanel();
+    updateComparison();
+    ta.focus();
+  }
+
+  function startPracticeRetry() {
+    session.submitted = false;
+    session.practiceOnly = true;
+    hideDiffPanel();
+    clearFeedback();
+
+    const ta = document.getElementById('typingArea');
+    ta.value = '';
+    ta.disabled = false;
+    ta.className = 'typing-area';
+
+    document.getElementById('btnValidate').style.display = 'inline-flex';
+    document.getElementById('btnValidate').disabled = false;
+    document.getElementById('btnRetryCurrent').style.display = 'none';
+    document.getElementById('btnNext').style.display = 'inline-flex';
+    document.getElementById('btnClearCurrent').style.display = 'inline-flex';
+    document.getElementById('typingGuidance').textContent = 'Correction sans score : recopiez à nouveau, puis validez quand vous voulez comparer.';
+    updateComparison();
+    ta.focus();
+  }
+
+  function updateModeButton() {
+    document.getElementById('btnMode').textContent = session.shortMode
+      ? 'Session courte : oui'
+      : 'Session courte : non';
+  }
+
+  function toggleSessionMode() {
+    session.shortMode = !session.shortMode;
+    updateModeButton();
+    startSession();
+  }
+
+  function updateProfileButtons() {
+    const isHomme = session.profile === 'homme';
+    document.getElementById('btnProfileHomme').classList.toggle('active', isHomme);
+    document.getElementById('btnProfileFemme').classList.toggle('active', !isHomme);
+    document.getElementById('btnProfileHomme').setAttribute('aria-pressed', String(isHomme));
+    document.getElementById('btnProfileFemme').setAttribute('aria-pressed', String(!isHomme));
+  }
+
+  function chooseProfile(profile) {
+    if (session.profile === profile) return;
+    session.profile = profile;
+    updateProfileButtons();
+
+    if (session.submitted) {
+      showToast('Le profil sera appliqué au prochain e-mail.', 'info');
+      return;
+    }
+
+    const typed = normalizeTyped(document.getElementById('typingArea').value);
+    if (typed.length > 0) showToast('Profil changé : le modèle actuel est rechargé.', 'info');
+    loadItem();
+  }
+
+  /* ===== ÉVÉNEMENTS ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+
+    /* Saisie en direct */
+    document.getElementById('typingArea').addEventListener('input', updateComparison);
+
+    /* Valider manuellement */
+    document.getElementById('btnValidate').addEventListener('click', () => submitItem(false));
+
+    /* Suivant */
+    document.getElementById('btnNext').addEventListener('click', nextItem);
+
+    /* Session courte / complète */
+    document.getElementById('btnMode').addEventListener('click', toggleSessionMode);
+
+    document.getElementById('btnProfileHomme').addEventListener('click', () => chooseProfile('homme'));
+    document.getElementById('btnProfileFemme').addEventListener('click', () => chooseProfile('femme'));
+
+    /* Repartir de zéro sur le même modèle avant score */
+    document.getElementById('btnClearCurrent').addEventListener('click', resetCurrentInput);
+
+    /* S'entraîner après la note, sans modifier le score */
+    document.getElementById('btnRetryCurrent').addEventListener('click', startPracticeRetry);
+
+    /* Indice */
+    document.getElementById('btnHint').addEventListener('click', () => {
+      if (session.submitted || session.hintUsed) return;
+      session.hintUsed = true;
+      const item    = session.items[session.index];
+      const hintBox = document.getElementById('hintBox');
+      hintBox.textContent = 'Indice\u00a0: ' + adaptedHint(item);
+      hintBox.classList.add('show');
+      document.getElementById('btnHint').disabled    = true;
+      document.getElementById('btnHint').textContent = 'Indice utilisé';
+    });
+
+    /* Recommencer */
+    setupRestartButton(startSession);
+
+    setupNextExerciseButton(PAGE_ID);
+
+    /* Raccourci clavier : Entrée pour valider quand non soumis */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.ctrlKey && !session.submitted) {
+        e.preventDefault();
+        submitItem(false);
+      }
+    });
+
+    startSession();
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulation d’entretien - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    /* ── Sélecteur de scénario ── */
+    .scenario-select-wrap {
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .scenario-select-wrap select {
+      flex: 1; min-width: 200px; max-width: 440px;
+      padding: 10px 14px;
+      border-radius: var(--r-md);
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text1);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+    }
+    .scenario-select-wrap select:focus { border-color: var(--accent); outline: none; }
+
+    /* ── Panneau entretien ── */
+    .entretien-panel {
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+    }
+
+    /* En-tête */
+    .et-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    }
+    .et-icon { font-size: 28px; flex-shrink: 0; }
+    .et-info { flex: 1; min-width: 0; }
+    .et-title { font-size: 17px; font-weight: 800; font-family: var(--font-head); color: var(--text1); }
+    .et-meta  { font-size: 12px; color: var(--text3); margin-top: 2px; }
+    .et-badge {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 3px 10px; border-radius: 999px;
+      background: rgba(79,142,247,0.15); color: #4f8ef7;
+    }
+
+    /* ── Zone recruteur ── */
+    .recruteur-zone {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap;
+    }
+
+    /* Avatar recruteur animé */
+    .avatar-wrap { flex-shrink: 0; position: relative; }
+    .avatar {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 4px 18px rgba(79,142,247,0.35);
+      transition: transform 0.2s;
+    }
+    .avatar.parle::before, .avatar.parle::after {
+      content: ''; position: absolute; border-radius: 50%;
+      border: 2px solid rgba(79,142,247,0.35);
+      animation: ripple 1.6s ease-out infinite;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+    }
+    .avatar.parle::before { width: 86px;  height: 86px; }
+    .avatar.parle::after  { width: 110px; height: 110px; animation-delay: 0.45s; }
+    @keyframes ripple {
+      0%   { transform: translate(-50%,-50%) scale(0.8); opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+    }
+
+    /* Bulle de dialogue */
+    .bulle-wrap { flex: 1; min-width: 180px; }
+    .recruteur-nom {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--accent); margin-bottom: 8px;
+    }
+    .bulle-question {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 0 var(--r-lg) var(--r-lg) var(--r-lg);
+      padding: 14px 18px;
+      font-size: 15px; font-weight: 600; color: var(--text1); line-height: 1.5;
+      min-height: 56px;
+      position: relative;
+    }
+    .bulle-question::before {
+      content: '';
+      position: absolute; left: -10px; top: 0;
+      width: 0; height: 0;
+      border-top: 10px solid var(--border);
+      border-left: 10px solid transparent;
+    }
+    .bulle-question::after {
+      content: '';
+      position: absolute; left: -8px; top: 0;
+      width: 0; height: 0;
+      border-top: 9px solid var(--surface);
+      border-left: 9px solid transparent;
+    }
+
+    /* Contexte entretien (intro) */
+    .contexte-banner {
+      margin: 0 0 14px;
+      padding: 12px 16px;
+      background: rgba(124,95,245,0.08);
+      border: 1px solid rgba(124,95,245,0.2);
+      border-radius: var(--r-md);
+      font-size: 13px; color: var(--text2); line-height: 1.6;
+      display: none;
+    }
+    .contexte-banner.visible { display: block; }
+
+    /* Contrôles audio */
+    .audio-controls {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+    }
+    .voice-speed {
+      font-size: 12px; color: var(--text3); cursor: pointer;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 3px 10px; background: var(--surface);
+    }
+    .voice-speed:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Zone réponses ── */
+    .reponses-section {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .reponses-label {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--text3); margin-bottom: 12px;
+    }
+    .reponses-grid {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .btn-reponse {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px;
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: var(--r-lg);
+      font-size: 14px; color: var(--text1); text-align: left;
+      cursor: pointer; transition: all 0.15s;
+      line-height: 1.45;
+    }
+    .btn-reponse:hover:not(:disabled) {
+      border-color: var(--accent); background: rgba(79,142,247,0.06);
+      transform: translateY(-1px);
+    }
+    .btn-reponse:active:not(:disabled) { transform: translateY(0); }
+    .btn-reponse .lettre {
+      min-width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg3); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: var(--text2); flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .btn-reponse:hover:not(:disabled) .lettre {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+    .btn-reponse.bonne    { border-color: var(--success); background: rgba(52,211,153,0.09); }
+    .btn-reponse.bonne .lettre  { background: var(--success); border-color: var(--success); color: #fff; }
+    .btn-reponse.moyenne  { border-color: #f59e0b; background: rgba(245,158,11,0.08); }
+    .btn-reponse.moyenne .lettre { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+    .btn-reponse.mauvaise { border-color: var(--danger); background: rgba(248,113,113,0.07); opacity: 0.8; }
+    .btn-reponse.mauvaise .lettre { background: var(--danger); border-color: var(--danger); color: #fff; }
+    .btn-reponse:disabled { cursor: default; }
+    .btn-reponse .badge-qualite {
+      margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: 0.4px;
+      padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-reponse.bonne .badge-qualite    { background: rgba(52,211,153,0.15); color: var(--success); }
+    .btn-reponse.moyenne .badge-qualite  { background: rgba(245,158,11,0.15);  color: #f59e0b; }
+    .btn-reponse.mauvaise .badge-qualite { background: rgba(248,113,113,0.12); color: var(--danger); }
+
+    /* ── Feedback ── */
+    .feedback-zone {
+      display: none;
+      margin: 14px 28px 0;
+      padding: 14px 18px;
+      border-radius: var(--r-lg);
+      font-size: 13px; line-height: 1.65; color: var(--text2);
+    }
+    .feedback-zone.visible { display: block; }
+    .feedback-zone.ok   { background: rgba(52,211,153,0.08);  border: 1.5px solid rgba(52,211,153,0.3); }
+    .feedback-zone.mid  { background: rgba(245,158,11,0.08);  border: 1.5px solid rgba(245,158,11,0.3); }
+    .feedback-zone.bad  { background: rgba(248,113,113,0.08); border: 1.5px solid rgba(248,113,113,0.25); }
+    .feedback-icon { font-size: 18px; margin-right: 6px; }
+    .feedback-conseil {
+      margin-top: 8px; padding: 8px 12px;
+      background: rgba(79,142,247,0.07); border-radius: var(--r-md);
+      font-size: 12px; color: var(--text3);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* ── Progression entretien ── */
+    .et-progress-bar-wrap {
+      padding: 14px 28px 0;
+      display: flex; gap: 10px; align-items: center;
+    }
+    .et-progress-label { font-size: 12px; font-weight: 700; color: var(--text3); white-space: nowrap; }
+    .et-progress-track {
+      flex: 1; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden;
+    }
+    .et-progress-fill {
+      height: 100%; border-radius: 999px;
+      background: var(--gradient);
+      transition: width 0.4s ease;
+    }
+    .et-dots { display: flex; gap: 5px; }
+    .et-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--border); transition: background 0.25s;
+    }
+    .et-dot.ok    { background: var(--success); }
+    .et-dot.mid   { background: #f59e0b; }
+    .et-dot.bad   { background: var(--danger); }
+    .et-dot.cur   { background: var(--accent); }
+
+    /* ── Barre d’actions ── */
+    .et-bottom-bar {
+      padding: 16px 28px;
+      border-top: 1px solid var(--border);
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .key-hint { font-size: 11px; color: var(--text3); }
+    .key-hint kbd {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 1px 6px; font-size: 10px;
+    }
+
+    /* ── Résultat final ── */
+    .resultat-banner {
+      display: none;
+      margin: 16px 28px 20px;
+      padding: 24px;
+      border-radius: var(--r-xl);
+      text-align: center;
+    }
+    .resultat-banner.visible { display: block; }
+    .resultat-banner.super   { background: rgba(52,211,153,0.09); border: 2px solid var(--success); }
+    .resultat-banner.bien    { background: rgba(245,158,11,0.09);  border: 2px solid #f59e0b; }
+    .resultat-banner.effort  { background: rgba(248,113,113,0.08); border: 2px solid var(--danger); }
+    .res-emoji  { font-size: 44px; margin-bottom: 10px; }
+    .res-titre  { font-size: 20px; font-weight: 800; font-family: var(--font-head); color: var(--text1); }
+    .res-sous   { font-size: 14px; color: var(--text2); margin-top: 4px; }
+    .res-xp     { font-size: 24px; font-weight: 800; color: var(--accent); margin-top: 10px; }
+    .res-recap  {
+      margin-top: 18px; text-align: left;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); overflow: hidden;
+    }
+    .res-recap-titre {
+      padding: 10px 16px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text3); border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+    .res-recap-liste { list-style: none; padding: 0; margin: 0; }
+    .res-recap-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px; line-height: 1.5;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .res-recap-item:last-child { border-bottom: none; }
+    .res-recap-item .ri-puce {
+      font-size: 16px; flex-shrink: 0; margin-top: 1px;
+    }
+    .res-recap-item .ri-q { color: var(--text2); }
+    .res-recap-item .ri-r { font-weight: 600; color: var(--text1); }
+
+    /* ── Historique conversation ── */
+    .historique-zone {
+      padding: 18px 28px;
+      border-top: 1px solid var(--border);
+    }
+    .historique-titre {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--text3); margin-bottom: 14px;
+    }
+    .historique-liste { list-style: none; padding: 0; margin: 0; }
+    .hist-ligne {
+      display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start;
+    }
+    .hist-qui {
+      font-size: 11px; font-weight: 700; padding: 2px 8px;
+      border-radius: 999px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .hist-qui.rec { background: rgba(79,142,247,0.15); color: #4f8ef7; }
+    .hist-qui.can { background: rgba(52,211,153,0.15); color: var(--success); }
+    .hist-qui.can.mid-ans { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .hist-qui.can.bad-ans { background: rgba(248,113,113,0.12); color: var(--danger); }
+    .hist-texte { font-size: 13px; color: var(--text2); line-height: 1.55; flex: 1; }
+
+    /* KPI pills */
+    .kpi-row {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .kpi-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 999px; font-size: 13px; font-weight: 700;
+    }
+    .kpi-pill .kv { color: var(--accent); }
+
+    @media (max-width: 500px) {
+      .recruteur-zone, .reponses-section, .et-bottom-bar,
+      .historique-zone, .et-progress-bar-wrap { padding-left: 16px; padding-right: 16px; }
+      .et-header { padding: 14px 16px; }
+      .bulle-question { font-size: 14px; }
+    }
+    @media (min-width: 1200px) {
+      .et-header, .recruteur-zone, .reponses-section,
+      .et-bottom-bar, .historique-zone, .et-progress-bar-wrap {
+        padding-left: 34px; padding-right: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🎙️</div>
+          <h1>Simulation d’entretien</h1>
+          <p>Entrainez-vous a repondre aux questions d un recruteur.</p>
+        </div>
+
+        <!-- KPIs globaux -->
+        <div class="kpi-row fade-up delay-1">
+          <div class="kpi-pill">✅ <span class="kv" id="kpiOk">0</span> bonnes</div>
+          <div class="kpi-pill">⚠️ <span class="kv" id="kpiMid">0</span> correctes</div>
+          <div class="kpi-pill">❌ <span class="kv" id="kpiBad">0</span> à améliorer</div>
+          <div class="kpi-pill">⚡ <span class="kv" id="kpiXP">0</span> XP</div>
+          <div class="kpi-pill">📋 <span class="kv" id="kpiEnt">0/0</span> entretiens</div>
+        </div>
+
+        <!-- Sélecteur de scénario -->
+        <div class="scenario-select-wrap fade-up delay-1">
+          <select id="scenarioSelect" aria-label="Choisir un scénario d’entretien"></select>
+          <button class="btn btn-ghost btn-sm" id="btnPrev" type="button" aria-label="Scénario précédent">◀</button>
+          <button class="btn btn-ghost btn-sm" id="btnNext" type="button" aria-label="Scénario suivant">▶</button>
+        </div>
+
+        <!-- Panneau entretien -->
+        <div class="entretien-panel fade-up delay-2">
+
+          <!-- En-tête scénario -->
+          <div class="et-header">
+            <div class="et-icon" id="etIcon">💼</div>
+            <div class="et-info">
+              <div class="et-title" id="etTitle">—</div>
+              <div class="et-meta"  id="etMeta">—</div>
+            </div>
+            <span class="et-badge" id="etBadge">Entretien</span>
+          </div>
+
+          <!-- Progression -->
+          <div class="et-progress-bar-wrap">
+            <span class="et-progress-label" id="progressLabel">Question 0 / 0</span>
+            <div class="et-progress-track">
+              <div class="et-progress-fill" id="progressFill" style="width:0%"></div>
+            </div>
+            <div class="et-dots" id="etDots"></div>
+          </div>
+
+          <!-- Zone recruteur -->
+          <div class="recruteur-zone">
+            <div class="avatar-wrap">
+              <div class="avatar" id="avatarRec" title="Recruteur">👩‍💼</div>
+            </div>
+            <div class="bulle-wrap">
+              <div class="recruteur-nom" id="recNom">Recruteur</div>
+              <div class="contexte-banner" id="contexteBanner"></div>
+              <div class="bulle-question" id="bulleQuestion">Chargement…</div>
+              <div class="audio-controls">
+                <button class="btn btn-ghost btn-sm" id="btnEcouter" type="button" aria-label="Écouter la question">🔊 Écouter</button>
+                <button class="btn btn-ghost btn-sm" id="btnEcouterLent" type="button" aria-label="Écouter lentement">🐢 Lentement</button>
+                <button class="voice-speed" id="btnSpeed" type="button" aria-label="Vitesse de lecture">× 1.0</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feedback après réponse -->
+          <div class="feedback-zone" id="feedbackZone"></div>
+
+          <!-- Choix de réponses -->
+          <div class="reponses-section">
+            <div class="reponses-label">Choisissez votre réponse :</div>
+            <div class="reponses-grid" id="reponsesGrid"></div>
+          </div>
+
+          <!-- Résultat final -->
+          <div class="resultat-banner" id="resultatBanner">
+            <div class="res-emoji"  id="resEmoji"></div>
+            <div class="res-titre"  id="resTitre"></div>
+            <div class="res-sous"   id="resSous"></div>
+            <div class="res-xp"     id="resXP"></div>
+            <div class="res-recap" id="resRecap">
+              <div class="res-recap-titre">Ce que vous avez retenu</div>
+              <ul class="res-recap-liste" id="resRecapListe"></ul>
+            </div>
+          </div>
+
+          <!-- Barre d’actions -->
+          <div class="et-bottom-bar">
+            <button class="btn btn-secondary btn-sm" id="btnRestart" type="button">🔄 Recommencer</button>
+            <button class="btn btn-primary" id="btnSuivant" type="button" style="display:none;">Suivant →</button>
+            <span class="key-hint" style="margin-left:auto;">
+              <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> répondre &nbsp;|&nbsp; <kbd>Espace</kbd> écouter &nbsp;|&nbsp; <kbd>S</kbd> suivant
+            </span>
+          </div>
+
+          <!-- Historique conversation -->
+          <div class="historique-zone" id="historiqueZone" style="display:none;">
+            <div class="historique-titre">Conversation</div>
+            <ul class="historique-liste" id="historiqueListe"></ul>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  /* ════════════════════════════════════════════════════════
+     DONNÉES — scénarios d’entretien
+  ════════════════════════════════════════════════════════ */
+  const SCENARIOS = [
+    {
+      id: 'nettoyage',
+      titre: 'Agent de nettoyage',
+      icone: '🧹',
+      lieu: 'Entreprise de nettoyage — Vevey',
+      recruteur: { nom: 'M. Blanc — Responsable RH', avatar: '👨‍💼' },
+      contexte: 'Vous postulez pour un poste d’agent de nettoyage dans des bureaux. C’est votre premier entretien de la journée.',
+      questions: [
+        {
+          q: 'Bonjour, pouvez-vous vous présenter brièvement ?',
+          choix: [
+            { texte: 'Bonjour ! Je m’appelle [prénom], j’ai de l’expérience dans le nettoyage et je cherche un poste stable où je peux m’investir.', qualite: 'bonne', feedback: 'Excellent début ! Vous vous présentez clairement, mentionnez votre expérience et montrez votre motivation.', conseil: 'Conseil : précisez toujours votre prénom et une compétence clé dès la présentation.' },
+            { texte: 'Je suis là parce que j’ai vu l’annonce sur internet.', qualite: 'mauvaise', feedback: 'Cette réponse ne se présente pas — elle explique seulement pourquoi vous êtes là, pas qui vous êtes.', conseil: 'Conseil : une bonne présentation = prénom + expérience + motivation courte (30 secondes environ).' },
+            { texte: 'Je m’appelle [prénom], je cherche du travail.', qualite: 'moyenne', feedback: 'Vous donnez votre prénom, c’est bien. Mais la réponse manque de contenu sur vos compétences et votre motivation.', conseil: 'Conseil : ajoutez une compétence ou une expérience concrète pour convaincre le recruteur.' }
+          ]
+        },
+        {
+          q: 'Avez-vous déjà travaillé dans le nettoyage ou un domaine similaire ?',
+          choix: [
+            { texte: 'Oui, j’ai travaillé dans un hôtel pendant deux ans. Je connais les produits d’entretien et les procédures d’hygiène.', qualite: 'bonne', feedback: 'Parfait ! Vous donnez une expérience concrète avec des détails utiles pour le recruteur.', conseil: 'Conseil : si vous n’avez pas d’expérience directe, mentionnez des compétences transférables (rigueur, ponctualité).' },
+            { texte: 'Non, pas vraiment.', qualite: 'mauvaise', feedback: 'Une réponse trop courte qui ferme la conversation. Le recruteur ne peut pas évaluer votre potentiel.', conseil: 'Conseil : même sans expérience directe, parlez de vos points forts : ponctualité, soin, envie d’apprendre.' },
+            { texte: 'Pas vraiment dans le nettoyage, mais j’ai l’habitude du travail physique et je suis très ordonné(e).', qualite: 'moyenne', feedback: 'Bonne tentative — vous compensez le manque d’expérience par des qualités utiles. C’est acceptable.', conseil: 'Conseil : soyez encore plus précis : "J’ai travaillé en cuisine, j’ai l’habitude de nettoyer et désinfecter."' }
+          ]
+        },
+        {
+          q: 'Pouvez-vous travailler tôt le matin ou le soir ?',
+          choix: [
+            { texte: 'Oui, je suis disponible le matin dès 6h ou le soir jusqu’à 22h. Je peux m’organiser selon les besoins.', qualite: 'bonne', feedback: 'Très bien ! Vous montrez de la flexibilité et prenez l’initiative de préciser vos disponibilités concrètes.', conseil: 'Conseil : si vous avez des contraintes (enfants, transport), dites-le honnêtement — mieux vaut être clair dès le départ.' },
+            { texte: 'Ça dépend des jours.', qualite: 'mauvaise', feedback: 'Réponse trop vague. Le recruteur a besoin de savoir si vous pouvez assurer les horaires du poste.', conseil: 'Conseil : préparez vos disponibilités à l’avance et donnez des horaires précis.' },
+            { texte: 'Je préfère le matin, mais je peux m’adapter si nécessaire.', qualite: 'moyenne', feedback: 'Correct — vous exprimez une préférence tout en montrant de la flexibilité. C’est professionnel.', conseil: 'Conseil : ajoutez des heures précises pour rassurer le recruteur : "Le matin dès 7h me convient."' }
+          ]
+        },
+        {
+          q: 'Comment réagissez-vous si vous trouvez un objet oublié par un client ?',
+          choix: [
+            { texte: 'Je le dépose immédiatement à l’accueil ou chez mon responsable en le signalant. On ne touche pas aux affaires des clients.', qualite: 'bonne', feedback: 'Excellente réponse ! Vous montrez votre honnêteté et votre sens des responsabilités — deux qualités essentielles dans ce métier.', conseil: 'Conseil : l’honnêteté est non négociable dans le nettoyage. Les recruteurs testent souvent ce point.' },
+            { texte: 'Je le mets de côté pour voir si quelqu’un vient le chercher.', qualite: 'moyenne', feedback: 'L’intention est bonne, mais "mettre de côté" sans signaler peut poser des problèmes. Mieux vaut prévenir son responsable.', conseil: 'Conseil : toujours signaler à un responsable — cela vous protège aussi en cas de litige.' },
+            { texte: 'Si c’est petit et que personne ne regarde, je le garde, ça arrive à tout le monde.', qualite: 'mauvaise', feedback: 'Cette réponse est très risquée — elle suggère une malhonnêteté qui entraînerait un licenciement immédiat.', conseil: 'Conseil : l’honnêteté est la base de la confiance en milieu professionnel. Ne jamais prendre ce qui ne vous appartient pas.' }
+          ]
+        },
+        {
+          q: 'Avez-vous des questions pour nous ?',
+          choix: [
+            { texte: 'Oui — quels seraient mes horaires exacts ? Et y a-t-il une période d’essai ?', qualite: 'bonne', feedback: 'Bravo ! Poser des questions montre votre intérêt pour le poste. Les recruteurs apprécient un(e) candidat(e) curieux.', conseil: 'Conseil : préparez toujours 2-3 questions avant un entretien. Cela montre votre sérieux.' },
+            { texte: 'Non, c’est bon, merci.', qualite: 'mauvaise', feedback: 'Ne pas poser de questions peut sembler un manque d’intérêt ou de préparation.', conseil: 'Conseil : demandez toujours quelque chose — les horaires, l’équipe, la formation, les attentes du poste.' },
+            { texte: 'Est-ce que le salaire est négociable ?', qualite: 'moyenne', feedback: 'La question sur le salaire est légitime, mais peut sembler prématurée si c’est la seule question. Équilibrez avec d’autres.', conseil: 'Conseil : associez la question du salaire à d’autres questions sur le poste pour montrer un intérêt global.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'cuisine',
+      titre: 'Aide en cuisine',
+      icone: '🍳',
+      lieu: 'Restaurant — Montreux',
+      recruteur: { nom: 'Mme Dupont — Cheffe de cuisine', avatar: '👩‍🍳' },
+      contexte: 'Vous postulez comme aide en cuisine dans un restaurant de brasserie. Le restaurant est actif le midi et le soir.',
+      questions: [
+        {
+          q: 'Avez-vous une expérience en cuisine professionnelle ?',
+          choix: [
+            { texte: 'Oui, j’ai travaillé 6 mois dans une cafétéria scolaire. Je maîtrise la plonge, la préparation des légumes et le respect des normes d’hygiène.', qualite: 'bonne', feedback: 'Parfait ! Vous donnez des détails concrets et montrez que vous connaissez les bases de la cuisine professionnelle.', conseil: 'Conseil : citez toujours des tâches précises — cela prouve que vous savez vraiment de quoi vous parlez.' },
+            { texte: 'Je cuisine bien à la maison.', qualite: 'mauvaise', feedback: 'La cuisine maison est différente de la cuisine professionnelle. Cette réponse ne rassure pas le recruteur.', conseil: 'Conseil : si vous n’avez pas d’expérience pro, mettez en avant votre capacité à apprendre vite et votre motivation.' },
+            { texte: 'Pas vraiment, mais je suis motivé(e) et j’apprends vite.', qualite: 'moyenne', feedback: 'La motivation est importante, mais sans expérience vous devrez convaincre davantage. Cette réponse est honnête.', conseil: 'Conseil : ajoutez un exemple concret qui montre que vous apprenez vite dans d’autres domaines.' }
+          ]
+        },
+        {
+          q: 'Savez-vous ce que signifie l’HACCP en cuisine ?',
+          choix: [
+            { texte: 'Oui, c’est un système qui garantit la sécurité alimentaire — on contrôle les températures, les dates de péremption et la propreté pour éviter les contaminations.', qualite: 'bonne', feedback: 'Excellent ! Vous montrez une connaissance professionnelle des normes d’hygiène, ce qui est très apprécié.', conseil: 'Conseil : HACCP = Hazard Analysis Critical Control Points. Si vous ne connaissez pas, cherchez avant l’entretien.' },
+            { texte: 'Je ne sais pas exactement, mais je respecte toujours les règles d’hygiène.', qualite: 'moyenne', feedback: 'Vous êtes honnête et montrez de bonnes intentions. La réponse est acceptable mais laisse un doute.', conseil: 'Conseil : renseignez-vous sur les bases de l’HACCP avant tout entretien en cuisine — c’est incontournable.' },
+            { texte: 'Non, je ne connais pas ce terme.', qualite: 'mauvaise', feedback: 'L’HACCP est une norme obligatoire dans tous les restaurants. Ne pas la connaître inquiète les recruteurs.', conseil: 'Conseil : apprenez les bases : température de conservation, traçabilité, nettoyage régulier, port de gants.' }
+          ]
+        },
+        {
+          q: 'Comment gérez-vous la pression pendant un service chargé ?',
+          choix: [
+            { texte: 'Je reste calme et je priorise. Si j’ai beaucoup à faire, je note mentalement les tâches urgentes et je communique avec l’équipe.', qualite: 'bonne', feedback: 'Excellente réponse — vous montrez de la maîtrise de vous et l’esprit d’équipe, deux qualités essentielles en cuisine.', conseil: 'Conseil : en cuisine, la communication et le calme font la différence pendant les "coups de feu".' },
+            { texte: 'Je travaille plus vite mais parfois je fais des erreurs.', qualite: 'moyenne', feedback: 'Réponse honnête mais incomplète. Reconnaître ses erreurs est bien, mais montrez comment vous les gérez.', conseil: 'Conseil : dites comment vous récupérez : "Je préviens mon chef et je corrige immédiatement."' },
+            { texte: 'La pression me stresse beaucoup, je n’aime pas ça.', qualite: 'mauvaise', feedback: 'La cuisine est un métier stressant par nature. Cette réponse signale que le poste n’est peut-être pas adapté à vous.', conseil: 'Conseil : si vous êtes stressé(e), dites comment vous gérez ce stress : respiration, organisation, soutien collègues.' }
+          ]
+        },
+        {
+          q: 'Êtes-vous prêt(e) à travailler les week-ends et jours fériés ?',
+          choix: [
+            { texte: 'Oui, je comprends que la restauration fonctionne surtout le week-end. Je m’y suis préparé(e) et je suis disponible.', qualite: 'bonne', feedback: 'Très bien ! Vous montrez que vous avez des attentes réalistes sur le métier, ce qui rassure le recruteur.', conseil: 'Conseil : si vous avez des contraintes (garde d’enfants, etc.), dites-le — mieux vaut être clair dès le départ.' },
+            { texte: 'Oui, mais seulement de temps en temps.', qualite: 'moyenne', feedback: 'La réserve est compréhensible, mais dans la restauration les week-ends sont quasi-obligatoires.', conseil: 'Conseil : renseignez-vous sur les horaires du poste avant l’entretien pour donner une réponse adaptée.' },
+            { texte: 'Non, je préfère avoir mes week-ends libres.', qualite: 'mauvaise', feedback: 'Cette réponse montre une incompatibilité avec le métier de la restauration, où le week-end est le cœur de l’activité.', conseil: 'Conseil : si les week-ends posent vraiment problème, cherchez des postes de restauration collective (cantines, hôpitaux).' }
+          ]
+        },
+        {
+          q: 'Pourquoi voulez-vous travailler dans notre restaurant en particulier ?',
+          choix: [
+            { texte: 'Je suis passé(e) devant votre restaurant et j’ai été attiré(e) par l’ambiance. J’ai aussi lu de bons commentaires en ligne — vos plats du jour ont l’air excellents.', qualite: 'bonne', feedback: 'Parfait ! Vous montrez que vous avez fait des recherches et que vous vous intéressez vraiment à cet établissement.', conseil: 'Conseil : toujours se renseigner sur l’établissement avant l’entretien — c’est un signe de sérieux très apprécié.' },
+            { texte: 'Parce que c’est près de chez moi.', qualite: 'mauvaise', feedback: 'La proximité géographique n’est pas une motivation professionnelle. Cela peut sembler peu engagé.', conseil: 'Conseil : la localisation peut être un argument secondaire, mais donnez aussi une raison liée au restaurant lui-même.' },
+            { texte: 'Je cherche du travail dans la restauration et votre annonce m’a semblé intéressante.', qualite: 'moyenne', feedback: 'Honnête, mais un peu générique. Le recruteur cherche à savoir pourquoi son restaurant spécifiquement.', conseil: 'Conseil : même une petite recherche sur Google (spécialités, avis) vous permet de personnaliser votre réponse.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'commerce',
+      titre: 'Caissier / Caissière',
+      icone: '🛒',
+      lieu: 'Supermarché — Lausanne',
+      recruteur: { nom: 'M. Favre — Responsable RH', avatar: '👨‍💼' },
+      contexte: 'Vous postulez pour un poste de caissier(ère) dans un supermarché. Le poste implique de travailler avec des clients toute la journée.',
+      questions: [
+        {
+          q: 'Avez-vous déjà travaillé en contact avec le public ?',
+          choix: [
+            { texte: 'Oui, j’ai travaillé comme vendeur(se) dans une boutique. J’aime le contact avec les clients et je suis à l’aise pour répondre à leurs questions.', qualite: 'bonne', feedback: 'Excellente réponse ! Vous montrez une expérience directe et une attitude positive envers les clients.', conseil: 'Conseil : en commerce, l’attitude positive et le sourire sont aussi importants que les compétences techniques.' },
+            { texte: 'Pas vraiment, mais les gens ne me font pas peur.', qualite: 'moyenne', feedback: 'La réponse est acceptable — vous montrez de la confiance. Mais sans exemple concret, c’est difficile à évaluer.', conseil: 'Conseil : pensez à des situations quotidiennes où vous êtes en contact avec le public (services, associations, etc.).' },
+            { texte: 'Non, je préfère les travaux où je suis seul(e).', qualite: 'mauvaise', feedback: 'Cette réponse montre une incompatibilité avec le poste de caissier, qui est entièrement orienté service client.', conseil: 'Conseil : un poste de caisse nécessite du contact permanent. Cherchez peut-être un poste en entrepôt ou manutention si vous préférez travailler seul(e).' }
+          ]
+        },
+        {
+          q: 'Comment réagissez-vous face à un client mécontent ?',
+          choix: [
+            { texte: 'Je l’écoute sans l’interrompre, je m’excuse pour la gêne et je propose une solution ou j’appelle mon responsable si nécessaire.', qualite: 'bonne', feedback: 'Réponse professionnelle ! Vous montrez de l’empathie, du calme et savez escalader si besoin.', conseil: 'Conseil : ne jamais répondre sur un ton défensif — l’écoute et la solution sont les clés de la gestion des conflits.' },
+            { texte: 'Je lui dis que ce n’est pas de ma faute.', qualite: 'mauvaise', feedback: 'Cette réponse aggrave le conflit. Se déresponsabiliser devant un client mécontent est une erreur courante.', conseil: 'Conseil : même si ce n’est pas de votre faute, dites d’abord "Je comprends votre frustration" avant d’expliquer.' },
+            { texte: 'J’essaie de comprendre ce qui le dérange et je fais de mon mieux.', qualite: 'moyenne', feedback: 'Bonne intention, mais la réponse reste vague. Que faites-vous concrètement ?', conseil: 'Conseil : soyez précis : "J’écoute, je m’excuse, je propose une solution ou j’appelle un responsable."' }
+          ]
+        },
+        {
+          q: 'Que faites-vous si vous constatez une erreur de prix en caisse ?',
+          choix: [
+            { texte: 'Je signale l’erreur au client et j’appelle mon responsable pour corriger le prix avant de terminer la transaction.', qualite: 'bonne', feedback: 'Parfait — vous combinez honnêteté, transparence envers le client et respect des procédures.', conseil: 'Conseil : en caisse, toujours signaler les erreurs — cela protège le client, le magasin et vous.' },
+            { texte: 'Je fais payer le prix qui s’affiche et je n’en parle pas.', qualite: 'mauvaise', feedback: 'Si le prix affiché est plus cher que prévu, ne pas le signaler peut être vécu comme une arnaque par le client.', conseil: 'Conseil : l’honnêteté en caisse est fondamentale — un client qui paie trop cher et le découvre peut causer des problèmes sérieux.' },
+            { texte: 'Je dis au client que je ne peux pas changer ça et qu’il doit s’adresser au service client.', qualite: 'moyenne', feedback: 'Vous renvoyez le client, ce qui est parfois justifié mais peut sembler peu impliqué.', conseil: 'Conseil : essayez d’abord de résoudre vous-même en appelant votre responsable — ne "renvoyez" le client qu’en dernier recours.' }
+          ]
+        },
+        {
+          q: 'Êtes-vous à l’aise avec les outils informatiques et les caisses enregistreuses ?',
+          choix: [
+            { texte: 'J’ai utilisé des caisses enregistreuses dans mon ancien travail. En général je m’adapte rapidement à de nouveaux outils.', qualite: 'bonne', feedback: 'Bonne réponse — expérience concrète + capacité d’adaptation. Le recruteur sera rassuré.', conseil: 'Conseil : si vous n’avez pas utilisé de caisse, mentionnez d’autres outils (smartphone, tablette) pour montrer que le numérique ne vous fait pas peur.' },
+            { texte: 'Non, je ne suis pas très à l’aise avec les ordinateurs.', qualite: 'mauvaise', feedback: 'Les caisses modernes sont informatisées — cette réponse inquiète le recruteur pour votre capacité à gérer le poste.', conseil: 'Conseil : précisez si c’est une lacune passagère : "Je ne l’ai jamais fait mais je suis prêt(e) à me former."' },
+            { texte: 'Ça ne m’a jamais posé de problème mais je n’en ai pas utilisé beaucoup.', qualite: 'moyenne', feedback: 'Réponse honnête. Vous montrez une bonne disposition sans surestimer vos compétences.', conseil: 'Conseil : ajoutez que vous êtes prêt(e) à suivre une formation si besoin — cela montre de la proactivité.' }
+          ]
+        },
+        {
+          q: 'Où vous voyez-vous dans deux ans ?',
+          choix: [
+            { texte: 'Je souhaite d’abord maîtriser parfaitement ce poste, puis évoluer vers plus de responsabilités si l’opportunité se présente.', qualite: 'bonne', feedback: 'Excellente réponse — vous montrez de l’ambition réaliste et votre volonté de vous investir sur la durée.', conseil: 'Conseil : les recruteurs cherchent des gens stables. Montrer qu’on veut progresser dans la même entreprise est toujours bien vu.' },
+            { texte: 'Je cherche juste un emploi pour le moment, on verra après.', qualite: 'mauvaise', feedback: 'Cette réponse donne l’impression que le poste n’est qu’une solution de dépannage, pas un choix.', conseil: 'Conseil : même si vous n’avez pas de plan précis, montrez que vous êtes prêt(e) à vous investir dans l’entreprise.' },
+            { texte: 'J’espère trouver quelque chose de mieux d’ici là.', qualite: 'mauvaise', feedback: 'Dire que vous cherchez "mieux" lors d’un entretien pour ce poste est une erreur — cela montre un manque d’engagement.', conseil: 'Conseil : même si c’est vrai, gardez cette pensée pour vous. Concentrez-vous sur ce que vous apporterez au poste actuel.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'bureau',
+      titre: 'Assistant(e) administratif(ve)',
+      icone: '🗂️',
+      lieu: 'PME — Lausanne',
+      recruteur: { nom: 'Mme Roux — Directrice administrative', avatar: '👩‍💼' },
+      contexte: 'Vous postulez pour un poste d’assistant(e) administratif(ve) dans une petite entreprise. Le poste inclut accueil, classement, emails et agenda.',
+      questions: [
+        {
+          q: 'Quels logiciels de bureautique maîtrisez-vous ?',
+          choix: [
+            { texte: 'Je maîtrise Word et Excel pour les documents courants. J’utilise aussi Outlook pour les emails et j’ai quelques notions de PowerPoint.', qualite: 'bonne', feedback: 'Réponse concrète et utile ! Vous donnez des noms de logiciels et leur utilisation — exactement ce que le recruteur veut entendre.', conseil: 'Conseil : si vous maîtrisez d’autres outils (Google Docs, Teams, Zoom), mentionnez-les aussi.' },
+            { texte: 'Je me débrouille avec les ordinateurs.', qualite: 'mauvaise', feedback: 'Trop vague — "se débrouiller" ne dit pas au recruteur ce que vous savez réellement faire.', conseil: 'Conseil : citez des logiciels précis. Si vous ne connaissez que les bases, dites-le avec honnêteté et ajoutez que vous apprenez vite.' },
+            { texte: 'J’ai utilisé Word et un peu Excel, mais je dois me remettre à niveau.', qualite: 'moyenne', feedback: 'Honnête — vous reconnaissez une lacune et montrez la volonté de vous améliorer. C’est acceptable.', conseil: 'Conseil : dites concrètement comment vous comptez vous remettre à niveau (tutoriels, formation, etc.).' }
+          ]
+        },
+        {
+          q: 'Comment organisez-vous votre travail quand vous avez plusieurs tâches urgentes ?',
+          choix: [
+            { texte: 'Je fais une liste des tâches, je les classe par urgence et importance, puis je m’y tiens. Si une urgence surgit, j’informe mon responsable.', qualite: 'bonne', feedback: 'Méthode claire et professionnelle ! La matrice urgence/importance montre que vous connaissez les bases de l’organisation.', conseil: 'Conseil : mentionnez aussi des outils concrets si vous en utilisez : agenda, to-do list, rappels sur téléphone.' },
+            { texte: 'Je fais tout en même temps pour aller plus vite.', qualite: 'mauvaise', feedback: 'Le multitâche excessif augmente les erreurs. Cette réponse inquiète un recruteur qui cherche de la rigueur.', conseil: 'Conseil : priorisez toujours. Le cerveau humain n’est pas fait pour plusieurs tâches complexes simultanées.' },
+            { texte: 'J’essaie de tout faire, parfois je demande de l’aide.', qualite: 'moyenne', feedback: 'Acceptable — demander de l’aide est une bonne attitude. Mais la méthode manque de structure.', conseil: 'Conseil : montrez que vous savez prioriser : "Je commence par le plus urgent et je communique si je suis en surcharge."' }
+          ]
+        },
+        {
+          q: 'Comment gérez-vous un appel téléphonique professionnel entrant ?',
+          choix: [
+            { texte: 'Je décroche rapidement, je me présente avec le nom de l’entreprise, j’écoute le motif de l’appel et je dirige vers la bonne personne ou je note un message précis.', qualite: 'bonne', feedback: 'Parfait ! Vous décrivez une procédure claire et professionnelle — exactement ce qu’on attend d’un(e) assistant(e).', conseil: 'Conseil : toujours noter le nom de l’appelant, la société, l’heure et le message — ne faites jamais confiance à votre mémoire.' },
+            { texte: 'Je dis allô et je passe l’appel à qui ça concerne.', qualite: 'mauvaise', feedback: 'Trop informel pour un cadre professionnel. "Allô" sans présentation donne une mauvaise image de l’entreprise.', conseil: 'Conseil : la formule standard : "[Entreprise], [Prénom], bonjour — en quoi puis-je vous aider ?"' },
+            { texte: 'Je demande qui appelle et pourquoi, puis je transfère.', qualite: 'moyenne', feedback: 'Vous avez les bons réflexes de base, mais sans se présenter ni saluer, c’est encore un peu incomplet.', conseil: 'Conseil : ajoutez une formule d’accueil et présentez l’entreprise dès le début.' }
+          ]
+        },
+        {
+          q: 'Avez-vous déjà rédigé des courriers ou e-mails professionnels ?',
+          choix: [
+            { texte: 'Oui, régulièrement. Je fais attention à la formule d’appel, au ton formel, et je relis toujours pour corriger les fautes.', qualite: 'bonne', feedback: 'Excellent ! Vous montrez que vous connaissez les codes de la communication écrite professionnelle.', conseil: 'Conseil : précisez si vous avez utilisé des modèles ou si vous rédigez librement — les deux sont valables.' },
+            { texte: 'Pas vraiment, mais j’écris beaucoup de messages sur les réseaux sociaux.', qualite: 'mauvaise', feedback: 'Les réseaux sociaux ont des codes très différents de la communication professionnelle formelle.', conseil: 'Conseil : travaillez la rédaction formelle : formule d’appel, ton neutre, conclusion adaptée (Cordialement, etc.).' },
+            { texte: 'Un peu, lors de ma formation. Je n’en ai pas écrit beaucoup.', qualite: 'moyenne', feedback: 'Honnête — vous reconnaissez votre niveau sans l’exagérer. C’est acceptable si vous montrez la volonté de progresser.', conseil: 'Conseil : proposez de montrer un exemple ou dites que vous êtes prêt(e) à pratiquer pour vous améliorer.' }
+          ]
+        },
+        {
+          q: 'Êtes-vous discret(e) concernant les informations confidentielles de l’entreprise ?',
+          choix: [
+            { texte: 'Absolument. La confidentialité est essentielle dans un poste administratif. Je ne parle jamais des dossiers ou informations internes en dehors du bureau.', qualite: 'bonne', feedback: 'Réponse très professionnelle ! Vous montrez que vous comprenez les enjeux de la discrétion en entreprise.', conseil: 'Conseil : la confidentialité protège l’entreprise, les clients ET vous. C’est une règle non négociable.' },
+            { texte: 'En général oui, sauf si c’est avec des amis de confiance.', qualite: 'mauvaise', feedback: 'Partager des informations confidentielles avec des "amis de confiance" constitue une violation grave — même involontaire.', conseil: 'Conseil : en entreprise, aucune information interne ne se partage hors du cadre professionnel, même avec des proches.' },
+            { texte: 'Je pense que oui, je ne parle pas trop en général.', qualite: 'moyenne', feedback: 'La discrétion naturelle est une bonne base, mais la réponse manque de conviction.', conseil: 'Conseil : montrez que vous avez réfléchi à la question : "Je sais que c’est une responsabilité importante et je la prends au sérieux."' }
+          ]
+        }
+      ]
+    }
+  ];
+
+  /* ════════════════════════════════════════════════════════
+     TTS
+  ════════════════════════════════════════════════════════ */
+  const PAGE_ID = 'simulations-dialogues';
+  let ttsOk = false;
+  let googleVoice = null;
+  let speaking = false;
+  let audioSpeed = 1.0;
+  const SPEEDS = [0.75, 0.85, 1.0, 1.15];
+
+  function initTTS() {
+    if (!window.speechSynthesis) return;
+    ttsOk = true;
+    function pick() {
+      const all = window.speechSynthesis.getVoices();
+      googleVoice =
+        all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-CH') ||
+        all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-FR') ||
+        all.find(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('fr')) ||
+        all.find(v => v.lang === 'fr-CH') ||
+        all.find(v => v.lang === 'fr-FR') ||
+        all.find(v => v.lang.startsWith('fr')) ||
+        null;
+    }
+    pick();
+    if (window.speechSynthesis.onvoiceschanged !== undefined)
+      window.speechSynthesis.onvoiceschanged = pick;
+  }
+
+  function speakText(text, rate, onEnd) {
+    if (!ttsOk) { if (onEnd) onEnd(); return; }
+    window.speechSynthesis.cancel();
+    speaking = true;
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang   = googleVoice ? googleVoice.lang : 'fr-CH';
+    utt.rate   = rate || audioSpeed;
+    utt.pitch  = 1.05;
+    utt.volume = 1.0;
+    if (googleVoice) utt.voice = googleVoice;
+    utt.onend = utt.onerror = () => {
+      speaking = false;
+      setAvatarSpeaking(false);
+      if (onEnd) onEnd();
+    };
+    setAvatarSpeaking(true);
+    window.speechSynthesis.speak(utt);
+  }
+
+  function stopSpeech() {
+    speaking = false;
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    setAvatarSpeaking(false);
+  }
+
+  function setAvatarSpeaking(on) {
+    const av = document.getElementById('avatarRec');
+    if (av) av.classList.toggle('parle', on);
+  }
+
+  /* ════════════════════════════════════════════════════════
+     ÉTAT
+  ════════════════════════════════════════════════════════ */
+  let scIdx     = 0;
+  let qIdx      = 0;
+  let qStates   = [];  // 'pending' | 'bonne' | 'moyenne' | 'mauvaise'
+  let globalOk  = 0, globalMid = 0, globalBad = 0, globalXP = 0;
+  let entDone   = new Set();
+  let historiqueItems = [];
+
+  /* ════════════════════════════════════════════════════════
+     SÉLECTEUR DE SCÉNARIO
+  ════════════════════════════════════════════════════════ */
+  function buildSelect() {
+    const sel = document.getElementById('scenarioSelect');
+    sel.innerHTML = '';
+    SCENARIOS.forEach((sc, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      const done = entDone.has(sc.id) ? '✓ ' : '';
+      opt.textContent = done + sc.icone + ' ' + sc.titre + ' — ' + sc.lieu;
+      sel.appendChild(opt);
+    });
+    sel.value = scIdx;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     CHARGER UN SCÉNARIO
+  ════════════════════════════════════════════════════════ */
+  function loadScenario(idx) {
+    scIdx = Math.max(0, Math.min(idx, SCENARIOS.length - 1));
+    document.getElementById('scenarioSelect').value = scIdx;
+    stopSpeech();
+
+    const sc = SCENARIOS[scIdx];
+    qIdx     = 0;
+    qStates  = sc.questions.map(() => 'pending');
+    historiqueItems = [];
+
+    // En-tête
+    document.getElementById('etIcon').textContent  = sc.icone;
+    document.getElementById('etTitle').textContent = sc.titre;
+    document.getElementById('etMeta').textContent  = sc.lieu + ' · ' + sc.questions.length + ' questions';
+    document.getElementById('recNom').textContent  = sc.recruteur.nom;
+    document.getElementById('avatarRec').textContent = sc.recruteur.avatar;
+
+    // Contexte
+    const ctxEl = document.getElementById('contexteBanner');
+    ctxEl.textContent = sc.contexte;
+    ctxEl.classList.add('visible');
+
+    // Réinitialiser UI
+    document.getElementById('feedbackZone').classList.remove('visible', 'ok', 'mid', 'bad');
+    document.getElementById('feedbackZone').innerHTML = '';
+    document.getElementById('resultatBanner').classList.remove('visible', 'super', 'bien', 'effort');
+    document.getElementById('btnSuivant').style.display = 'none';
+    document.getElementById('historiqueZone').style.display = 'none';
+    document.getElementById('historiqueListe').innerHTML = '';
+
+    buildDots(sc);
+    loadQuestion();
+    promoteExerciseStatus(PAGE_ID, 'in_progress');
+    updateKPIs();
+  }
+
+  /* ════════════════════════════════════════════════════════
+     CHARGER UNE QUESTION
+  ════════════════════════════════════════════════════════ */
+  function loadQuestion() {
+    const sc = SCENARIOS[scIdx];
+    const q  = sc.questions[qIdx];
+
+    // Texte question
+    document.getElementById('bulleQuestion').textContent = q.q;
+    document.getElementById('feedbackZone').classList.remove('visible', 'ok', 'mid', 'bad');
+    document.getElementById('feedbackZone').innerHTML = '';
+    document.getElementById('btnSuivant').style.display = 'none';
+
+    // Masquer le contexte après la première question
+    if (qIdx > 0) {
+      document.getElementById('contexteBanner').classList.remove('visible');
+    }
+
+    // Progression
+    document.getElementById('progressLabel').textContent = 'Question ' + (qIdx + 1) + ' / ' + sc.questions.length;
+    const pct = Math.round((qIdx / sc.questions.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    updateDots(-1);
+
+    // Choix
+    buildChoices(q);
+
+    // TTS auto : lit la question
+    setTimeout(() => speakText(q.q, audioSpeed), 300);
+  }
+
+  /* ════════════════════════════════════════════════════════
+     CONSTRUIRE LES CHOIX
+  ════════════════════════════════════════════════════════ */
+  function buildChoices(q) {
+    const grid    = document.getElementById('reponsesGrid');
+    const lettres = ['A', 'B', 'C'];
+    grid.innerHTML = '';
+
+    // Mélanger l’ordre des choix
+    const indices = shuffle([0, 1, 2]);
+
+    indices.forEach((ci, li) => {
+      const c   = q.choix[ci];
+      const btn = document.createElement('button');
+      btn.className = 'btn-reponse';
+      btn.type      = 'button';
+      btn.dataset.ci = ci;
+      btn.innerHTML =
+        '<span class="lettre">' + lettres[li] + '</span>' +
+        '<span>' + c.texte + '</span>';
+      btn.addEventListener('click', () => repondre(ci));
+      grid.appendChild(btn);
+    });
+  }
+
+  /* ════════════════════════════════════════════════════════
+     RÉPONDRE
+  ════════════════════════════════════════════════════════ */
+  function repondre(ci) {
+    const sc = SCENARIOS[scIdx];
+    const q  = sc.questions[qIdx];
+    const c  = q.choix[ci];
+
+    qStates[qIdx] = c.qualite;
+
+    // Désactiver tous les boutons
+    document.querySelectorAll('.btn-reponse').forEach(b => { b.disabled = true; });
+
+    // Colorier chaque bouton
+    document.querySelectorAll('.btn-reponse').forEach(btn => {
+      const bci = +btn.dataset.ci;
+      const bc  = q.choix[bci];
+      btn.classList.add(bc.qualite);
+      const badge = document.createElement('span');
+      badge.className = 'badge-qualite';
+      badge.textContent = bc.qualite === 'bonne' ? '✅ Idéal' : bc.qualite === 'moyenne' ? '⚠️ Correct' : '❌ À éviter';
+      btn.appendChild(badge);
+    });
+
+    // XP
+    const xp = c.qualite === 'bonne' ? 3 : c.qualite === 'moyenne' ? 1 : 0;
+    if (c.qualite === 'bonne')    { globalOk++;  globalXP += xp; recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp }); }
+    else if (c.qualite === 'moyenne') { globalMid++; globalXP += xp; recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 0, xp }); }
+    else                          { globalBad++; recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 }); }
+
+    // Dot
+    updateDots(qIdx);
+
+    // Feedback
+    showFeedback(c);
+
+    // Historique
+    ajouterHistorique(q.q, c.texte, c.qualite);
+
+    // Bouton suivant
+    document.getElementById('btnSuivant').style.display = '';
+
+    updateKPIs();
+  }
+
+  /* ════════════════════════════════════════════════════════
+     FEEDBACK
+  ════════════════════════════════════════════════════════ */
+  function showFeedback(c) {
+    const zone  = document.getElementById('feedbackZone');
+    const cls   = c.qualite === 'bonne' ? 'ok' : c.qualite === 'moyenne' ? 'mid' : 'bad';
+    const icon  = c.qualite === 'bonne' ? '✅' : c.qualite === 'moyenne' ? '⚠️' : '❌';
+    zone.innerHTML =
+      '<span class="feedback-icon">' + icon + '</span>' +
+      c.feedback +
+      (c.conseil ? '<div class="feedback-conseil">💡 ' + c.conseil + '</div>' : '');
+    zone.classList.add('visible', cls);
+    zone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // TTS feedback court
+    if (ttsOk) {
+      const msg = c.qualite === 'bonne' ? 'Très bien !' : c.qualite === 'moyenne' ? 'Correct, mais il y a mieux.' : 'Attention, cette réponse est à éviter.';
+      speakText(msg, audioSpeed);
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     DOTS
+  ════════════════════════════════════════════════════════ */
+  function buildDots(sc) {
+    const wrap = document.getElementById('etDots');
+    wrap.innerHTML = '';
+    sc.questions.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'et-dot' + (i === 0 ? ' cur' : '');
+      d.id = 'dot-' + i;
+      wrap.appendChild(d);
+    });
+  }
+
+  function updateDots(answeredIdx) {
+    const sc = SCENARIOS[scIdx];
+    sc.questions.forEach((_, i) => {
+      const d = document.getElementById('dot-' + i);
+      if (!d) return;
+      d.className = 'et-dot';
+      if (i === answeredIdx && qStates[i] !== 'pending') {
+        d.classList.add(qStates[i] === 'bonne' ? 'ok' : qStates[i] === 'moyenne' ? 'mid' : 'bad');
+      } else if (i < qIdx) {
+        d.classList.add(qStates[i] === 'bonne' ? 'ok' : qStates[i] === 'moyenne' ? 'mid' : 'bad');
+      } else if (i === qIdx) {
+        d.classList.add('cur');
+      }
+    });
+  }
+
+  /* ════════════════════════════════════════════════════════
+     HISTORIQUE
+  ════════════════════════════════════════════════════════ */
+  function ajouterHistorique(question, reponse, qualite) {
+    historiqueItems.push({ question, reponse, qualite });
+    const liste = document.getElementById('historiqueListe');
+    const zone  = document.getElementById('historiqueZone');
+
+    // Ligne recruteur
+    const liR = document.createElement('li');
+    liR.className = 'hist-ligne';
+    liR.innerHTML =
+      '<span class="hist-qui rec">Recruteur</span>' +
+      '<span class="hist-texte">' + escHtml(question) + '</span>';
+    liste.appendChild(liR);
+
+    // Ligne candidat
+    const liC = document.createElement('li');
+    liC.className = 'hist-ligne';
+    const cls = qualite === 'bonne' ? '' : qualite === 'moyenne' ? ' mid-ans' : ' bad-ans';
+    liC.innerHTML =
+      '<span class="hist-qui can' + cls + '">Vous</span>' +
+      '<span class="hist-texte">' + escHtml(reponse) + '</span>';
+    liste.appendChild(liC);
+
+    zone.style.display = '';
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ════════════════════════════════════════════════════════
+     SUIVANT
+  ════════════════════════════════════════════════════════ */
+  function suivant() {
+    qIdx++;
+    const sc = SCENARIOS[scIdx];
+    if (qIdx >= sc.questions.length) {
+      finirEntretien();
+    } else {
+      loadQuestion();
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     FIN D’ENTRETIEN
+  ════════════════════════════════════════════════════════ */
+  function finirEntretien() {
+    stopSpeech();
+    const sc    = SCENARIOS[scIdx];
+    const nb    = sc.questions.length;
+    const nbOk  = qStates.filter(s => s === 'bonne').length;
+    const nbMid = qStates.filter(s => s === 'moyenne').length;
+    const nbBad = qStates.filter(s => s === 'mauvaise').length;
+    const xpEnt = nbOk * 3 + nbMid * 1;
+    const pct   = Math.round((nbOk / nb) * 100);
+
+    entDone.add(sc.id);
+    buildSelect();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    updateKPIs();
+
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'Terminé !';
+
+    let emoji = '📚', titre = 'Continuez à vous entraîner !', cls = 'effort';
+    if (pct >= 80) { emoji = '🏆'; titre = 'Excellent entretien !'; cls = 'super'; }
+    else if (pct >= 50) { emoji = '👍'; titre = 'Bon début !'; cls = 'bien'; }
+
+    document.getElementById('resEmoji').textContent = emoji;
+    document.getElementById('resTitre').textContent = titre;
+    document.getElementById('resSous').textContent  = nbOk + ' réponse(s) idéale(s) · ' + nbMid + ' correcte(s) · ' + nbBad + ' à améliorer — ' + pct + '%';
+    document.getElementById('resXP').textContent    = '+' + xpEnt + ' XP';
+
+    // Récapitulatif
+    const recapListe = document.getElementById('resRecapListe');
+    recapListe.innerHTML = '';
+    qStates.forEach((s, i) => {
+      const q = sc.questions[i];
+      // Trouver la réponse donnée
+      const reponseIdx = q.choix.findIndex(c => c.qualite === s && c === q.choix[q.choix.findIndex(cc => cc.qualite === s)]);
+      const bonne = q.choix.find(c => c.qualite === 'bonne');
+      const li = document.createElement('li');
+      li.className = 'res-recap-item';
+      const puce = s === 'bonne' ? '✅' : s === 'moyenne' ? '⚠️' : '❌';
+      li.innerHTML =
+        '<span class="ri-puce">' + puce + '</span>' +
+        '<div><div class="ri-q">' + escHtml(q.q) + '</div>' +
+        (s !== 'bonne' ? '<div class="ri-r" style="margin-top:4px;font-size:12px;color:var(--success);">Idéal : ' + escHtml(bonne.texte) + '</div>' : '') +
+        '</div>';
+      recapListe.appendChild(li);
+    });
+
+    const banner = document.getElementById('resultatBanner');
+    banner.classList.add('visible', cls);
+    banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('btnSuivant').style.display = 'none';
+
+    // Masquer la zone de choix
+    document.getElementById('reponsesGrid').innerHTML = '';
+
+    if (pct >= 75) launchConfetti();
+
+    // TTS final
+    if (ttsOk) {
+      const msg = pct >= 80
+        ? 'Bravo ! Vous avez réussi cet entretien avec ' + nbOk + ' excellentes réponses.'
+        : 'Bon effort ! Continuez à vous entraîner pour progresser.';
+      setTimeout(() => speakText(msg, audioSpeed), 800);
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     KPIs
+  ════════════════════════════════════════════════════════ */
+  function updateKPIs() {
+    document.getElementById('kpiOk').textContent  = globalOk;
+    document.getElementById('kpiMid').textContent = globalMid;
+    document.getElementById('kpiBad').textContent  = globalBad;
+    document.getElementById('kpiXP').textContent  = globalXP;
+    document.getElementById('kpiEnt').textContent = entDone.size + '/' + SCENARIOS.length;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     UTILITAIRES
+  ════════════════════════════════════════════════════════ */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     RACCOURCIS CLAVIER
+  ════════════════════════════════════════════════════════ */
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+    // Espace = écouter la question
+    if (e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault();
+      const sc = SCENARIOS[scIdx];
+      const q  = sc.questions[qIdx];
+      if (q && qIdx < sc.questions.length) speakText(q.q, audioSpeed);
+      return;
+    }
+
+    // S = suivant (si disponible)
+    if ((e.key === 's' || e.key === 'S') && document.getElementById('btnSuivant').style.display !== 'none') {
+      suivant();
+      return;
+    }
+
+    // 1 / 2 / 3 = répondre (ordre visuel)
+    const map = { '1': 0, '2': 1, '3': 2 };
+    if (map[e.key] !== undefined) {
+      const btns = document.querySelectorAll('.btn-reponse:not(:disabled)');
+      if (btns[map[e.key]]) btns[map[e.key]].click();
+    }
+  });
+
+  /* ════════════════════════════════════════════════════════
+     INIT
+  ════════════════════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', () => {
+    initTTS();
+    buildSelect();
+    loadScenario(0);
+
+    document.getElementById('scenarioSelect').addEventListener('change', e => loadScenario(+e.target.value));
+    document.getElementById('btnPrev').addEventListener('click', () => loadScenario(scIdx - 1));
+    document.getElementById('btnNext').addEventListener('click', () => loadScenario(scIdx + 1));
+
+    document.getElementById('btnEcouter').addEventListener('click', () => {
+      const sc = SCENARIOS[scIdx];
+      const q  = sc.questions[qIdx];
+      if (q) speakText(q.q, audioSpeed);
+    });
+
+    document.getElementById('btnEcouterLent').addEventListener('click', () => {
+      const sc = SCENARIOS[scIdx];
+      const q  = sc.questions[qIdx];
+      if (q) speakText(q.q, 0.7);
+    });
+
+    document.getElementById('btnSpeed').addEventListener('click', () => {
+      const idx = SPEEDS.indexOf(audioSpeed);
+      audioSpeed = SPEEDS[(idx + 1) % SPEEDS.length];
+      const icons = { 0.75: '🐢 ×0.75', 0.85: '🐢 ×0.85', 1.0: '🚶 ×1.0', 1.15: '🏃 ×1.15' };
+      document.getElementById('btnSpeed').textContent = icons[audioSpeed] || '× ' + audioSpeed;
+    });
+
+    document.getElementById('btnSuivant').addEventListener('click', suivant);
+    document.getElementById('btnRestart').addEventListener('click', () => loadScenario(scIdx));
+
+    if (typeof showXPRules === 'function') showXPRules('Simulation d\'entretien');
+  });
+  </script>
+</body>
+</html>

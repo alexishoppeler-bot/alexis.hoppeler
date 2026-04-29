@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-mail - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/email-ecrire.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+        <div class="page-header fade-up">
+          <div class="page-icon">✉️</div>
+          <h1>Choisir un e-mail</h1>
+          <p>Lisez la situation, puis choisissez l’e-mail qui convient le mieux.</p>
+        </div>
+
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card"><div class="kpi-value" id="kpiCorrect">0</div><div class="kpi-label">Justes</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiErrors">0</div><div class="kpi-label">Erreurs</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiXP">0</div><div class="kpi-label">Points</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiProgress">0%</div><div class="kpi-label">Avance</div></div>
+        </div>
+
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <section class="mail-zone">
+            <p class="mail-progress-label">Exercice <strong id="sNum">0</strong> / <strong id="sTotal">0</strong></p>
+            <div class="series-progress"><div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div></div>
+
+            <div class="mail-mission">
+              <div class="mail-mission-item"><span>1</span><strong>Lisez bien la situation.</strong></div>
+              <div class="mail-mission-item"><span>2</span><strong>Comparez l’objet, le message et les pièces jointes.</strong></div>
+              <div class="mail-mission-item"><span>3</span><strong>Choisissez l’e-mail le plus adapté.</strong></div>
+            </div>
+
+            <article class="situation-box" aria-live="polite">
+              <span class="badge badge-blue" id="sTag"></span>
+              <p class="situation-text" id="sText"></p>
+            </article>
+
+            <section class="mail-choices" id="mailChoices" aria-label="Choix des e-mails"></section>
+            <div class="mail-feedback" id="mailFeedback" aria-live="polite"></div>
+
+            <div class="mail-actions">
+              <button class="btn btn-primary" id="btnNext" type="button" style="display:none;">Continuer</button>
+            </div>
+          </section>
+        </div>
+
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:12px;" id="resEmoji">✉️</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Session terminée</h2>
+            <p style="color:var(--text2);margin-bottom:24px;" id="resSubtitle"></p>
+            <div class="kpi-grid" style="margin-bottom:24px;">
+              <div class="kpi-card"><div class="kpi-value" id="resCorrect">0</div><div class="kpi-label">Justes</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resErrors">0</div><div class="kpi-label">Erreurs</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resXP">0</div><div class="kpi-label">Points</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resAccuracy">0%</div><div class="kpi-label">Précision</div></div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Rejouer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/data/email-ecrire-data.js"></script>
+  <script src="../js/email-ecrire.js"></script>
+</body>
+</html>

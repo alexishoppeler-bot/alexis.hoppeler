@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="fr-CH"><head>
+<meta charset="UTF-8">
+<link rel="icon" href="../assets/logo.png" type="image/png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S'orienter - AH</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/layout.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/utilities.css">
+<link rel="stylesheet" href="../css/pages/orientation.css">
+</head><body>
+<div id="root">
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <a href="accueil.html" class="logo" style="text-decoration:none;flex-shrink:0;opacity:.75;transition:opacity .15s;" title="Retour à la plateforme" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.75">
+      <span style="font-size:15px;">←</span>
+      <span style="font-size:11px;font-weight:600;color:var(--text2);">Plateforme</span>
+    </a>
+    <div class="top-sep"></div>
+    <div class="logo">
+      <div class="logo-icon">🗺</div>
+      <div><div class="logo-text">Nowhereland</div><div class="logo-sub">Se déplacer dans la ville</div></div>
+    </div>
+    <div class="top-sep"></div>
+    <div id="active-hud">
+      <div>
+        <div class="ah-label">Session XP</div>
+        <div class="ah-name" id="ah-name">Orientation</div>
+      </div>
+      <div class="ah-score" id="ah-score">0 XP</div>
+    </div>
+    <div id="timer-wrap">
+      <span>⏱</span>
+      <span id="timer-val">00:00</span>
+      <button class="tbtn" id="tbtn-start" onclick="timerToggle()">▶</button>
+      <button class="tbtn" onclick="timerReset()">↺</button>
+    </div>
+    <div id="top-status">🗺 Navigue jusqu'à la destination !</div>
+    <span id="pos-pill" style="display:none"><span id="pos-dir">▶</span><span id="pos-coord">A4</span></span>
+    <div class="top-sep"></div>
+    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+      <span style="font-size:12px;">🔍</span>
+      <input type="range" id="zoom-slider" min="0" max="100" value="0" style="width:72px;accent-color:var(--acc);cursor:pointer;" oninput="onZoom(this.value)">
+    </div>
+    <button class="tbtn" id="bigmap-btn" onclick="toggleBigMap()" style="font-size:13px;padding:3px 10px;">⛶ Plein écran</button>
+    <button class="tbtn" onclick="openPlanWindow()" style="font-size:13px;padding:3px 10px;">📺 Projecteur</button>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div id="sidebar">
+
+    <!-- PROGRESSION SOLO -->
+    <div id="solo-panel" style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;">
+      <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text2);">🎯 Progression</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:10px 12px;overflow-y:auto;">
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px 12px;text-align:center;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">XP cette session</div>
+          <div id="solo-xp" style="font-family:var(--fo);font-size:28px;font-weight:900;color:var(--green);">0</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:11px;color:var(--text3);">Destinations</span>
+          <span id="solo-correct" style="font-family:var(--fm);font-size:14px;font-weight:700;color:var(--acc);">0</span>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:11px;color:var(--text3);">XP total (global)</span>
+          <span id="solo-total-xp" style="font-family:var(--fm);font-size:14px;font-weight:700;color:var(--blue);">0</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;padding:6px 8px;border-top:1px solid var(--border);flex-shrink:0;">
+        <button class="btn a" onclick="gen()" style="flex:1;font-size:10px;">🎲 Nouveau</button>
+        <button class="btn" onclick="endSession()" style="flex:1;font-size:10px;">✅ Terminer</button>
+      </div>
+    </div>
+
+    <!-- FORMATEUR & SCÉNARIO -->
+    <div class="acc">
+      <div class="acc-hdr" onclick="tog('asf','chsf')">
+        <span>🔒</span><span>Paramètres formateur</span>
+        <span class="acc-chev" id="chsf">▾</span>
+      </div>
+      <div class="acc-body hidden" id="asf">
+        <div class="frow">
+          <label>🎯 Destinations</label>
+          <select id="nb-pts" class="s" style="max-width:50px">
+            <option value="5">5</option><option value="8">8</option>
+            <option value="10">10</option><option value="15" selected>15</option>
+          </select>
+          <label>🚧 Obstacles</label>
+          <select id="nb-trav" class="s" style="max-width:50px">
+            <option value="5">5</option><option value="10">10</option>
+            <option value="15">15</option><option value="20" selected>20</option>
+            <option value="25">25</option><option value="99">Max</option>
+          </select>
+          <button class="btn a" onclick="gen()">🎲 Nouveau parcours</button>
+          <button class="btn d" onclick="clearAll()" style="padding:5px 7px">✕</button>
+        </div>
+        <div class="frow">
+          <button class="btn a" onclick="exportScenario()" style="flex:1">💾 Sauvegarder</button>
+          <button class="btn" onclick="importScenario()" style="flex:1">📂 Charger</button>
+        </div>
+        <div id="gwarn" class="warn-t" style="display:none"></div>
+        <div class="flabel">🏁 Point de départ</div>
+        <div class="frow" style="gap:4px">
+          <select id="s0c" class="s" style="max-width:52px" onchange="setStart()"></select>
+          <select id="s0r" class="s" style="max-width:52px" onchange="setStart()"></select>
+          <button class="btn a" onclick="randomStart()" style="padding:4px 7px">🎲</button>
+        </div>
+        <div id="pts-list"><span style="font-size:10px;color:var(--text3)">En cours…</span></div>
+        <div class="flabel">🚧 Ajouter un obstacle</div>
+        <div id="trav-chips"><span style="font-size:10px;color:var(--text3)">Aucun.</span></div>
+        <div class="frow">
+          <select id="tc" class="s" style="max-width:50px"></select>
+          <select id="tr" class="s" style="max-width:50px"></select>
+          <button class="btn a" onclick="addTrav()">+ 🚧</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MAP + DIRECTION BUTTONS AROUND IT -->
+  <div id="map-area">
+    <button id="nav-fwd" class="dnav" onclick="aC('forward')">
+      <span class="dnav-icon">⬆️</span>
+      <div><div class="dnav-label">Ajouter<br>tout droit</div></div>
+    </button>
+    <button id="nav-left" class="dnav" onclick="aC('left')">
+      <span class="dnav-icon">⬅️</span>
+      <div class="dnav-label">Ajouter<br>gauche</div>
+    </button>
+    <div id="map-center">
+      <span class="plan-banner">📺 VUE PROJECTEUR</span>
+      <canvas id="city-canvas"></canvas>
+      <div id="compass">
+        <span class="cmp-n">N</span><span class="cmp-s">S</span>
+        <span class="cmp-e">E</span><span class="cmp-o">O</span>
+        <span class="cmp-arrow" id="cmp-arrow">↑</span>
+      </div>
+      <div id="dest-badge">
+        <span id="dest-ico">🏥</span>
+        <div><div id="dest-label-sm">Destination</div><div id="dest-name">—</div></div>
+      </div>
+      <div id="map-help">Le point orange, c'est vous. Les boutons autour du plan ajoutent des actions; le trajet démarre avec "Lancer".</div>
+      <button id="legend-btn" onclick="toggleLegend()">🏛 Légende</button>
+      <div id="legend-panel" onclick="event.stopPropagation()"></div>
+      <div id="exec-overlay"><div id="exec-who"></div><div id="exec-cmd"></div></div>
+    </div>
+    <button id="nav-right" class="dnav" onclick="aC('right')">
+      <span class="dnav-icon">➡️</span>
+      <div class="dnav-label">Ajouter<br>droite</div>
+    </button>
+    <button id="nav-back" class="dnav" onclick="aC('back')">
+      <span class="dnav-icon">⬇️</span>
+      <div class="dnav-label">Ajouter<br>reculer</div>
+    </button>
+    <button id="nav-uturn" class="dnav" onclick="aC('uturn')">
+      <span class="dnav-icon">🔄</span>
+      <div class="dnav-label">Ajouter<br>demi-tour</div>
+    </button>
+    <div id="nav-prec">
+      <div class="prec-row">
+        <span class="prec-ico">⬆️</span>
+        <label>Avancer de</label>
+        <select id="sn" class="csel"></select>
+        <label>rue(s)</label>
+        <button class="abtn" onclick="aSteps()">+ Ajouter</button>
+      </div>
+      <div class="prec-row">
+        <span class="prec-ico">↩️</span>
+        <label>A la</label>
+        <select id="nn" class="csel"></select>
+        <label>rue, tourner</label>
+        <select id="nd" class="csel"><option value="left">⬅ à gauche</option><option value="right">➡ à droite</option></select>
+        <button class="abtn" onclick="aNth()">+ Ajouter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV PANEL RIGHT -->
+  <div id="nav-panel">
+    <div id="nav">
+
+      <div class="sec-label">📋 La consigne</div>
+      <div class="guide-box" id="guide-box" aria-live="polite">
+        <div class="guide-title">Votre mission</div>
+        <div class="mission-card">
+          <div class="mission-line"><span>1</span><strong>Regardez le point orange : c'est vous.</strong></div>
+          <div class="mission-line"><span>2</span><strong>Repérez la destination affichée sur le plan.</strong></div>
+          <div class="mission-line"><span>3</span><strong>Ajoutez des actions, puis lancez le trajet.</strong></div>
+        </div>
+        <div class="guide-steps">
+          <span class="guide-step active" id="guide-step-1">1. Regarde la destination</span>
+          <span class="guide-step" id="guide-step-2">2. Ajoute les actions</span>
+          <span class="guide-step" id="guide-step-3">3. Lance et observe</span>
+        </div>
+        <div class="guide-text" id="guide-text">Choisis une destination pour commencer.</div>
+      </div>
+      <div class="ibox-wrap">
+        <div class="route-summary" aria-live="polite">
+          <div>
+            <span>Départ</span>
+            <strong id="route-start">A4</strong>
+          </div>
+          <div>
+            <span>Destination</span>
+            <strong id="route-dest">A choisir</strong>
+          </div>
+          <div>
+            <span>Actions</span>
+            <strong id="route-actions">0</strong>
+          </div>
+        </div>
+        <div class="cmd-icons" id="ci0"><span style="font-size:10px;color:var(--text3);font-style:italic">Appuie sur les flèches…</span></div>
+        <div class="cbox" id="cb0"><span class="cph">Appuie sur les flèches pour composer la consigne…</span></div>
+      </div>
+
+      <div id="acts">
+        <button class="ab dl" onclick="delLast()">⌫ Effacer le dernier</button>
+        <button class="ab rst" onclick="resetAll()">↺ Recommencer</button>
+        <button class="ab go" id="exec0" onclick="execPlayer()" disabled>▶ Lancer le trajet</button>
+        <button class="ab arr" onclick="arriveManuel()">🏁 Arrivés !</button>
+        <button class="ab stp" id="step-btn" onclick="toggleStepMode()" style="grid-column:span 2">👣 Étape par étape : OFF</button>
+        <button class="ab nxt" id="step-next" onclick="nextStep()" style="grid-column:span 2;display:none">→ Action suivante</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- RESULT OVERLAY -->
+<div id="ov"><div id="rc">
+  <div id="re">🎉</div>
+  <div id="rt"></div>
+  <div id="pts-earned"></div>
+  <div id="pts-detail"></div>
+  <div id="rs"></div>
+  <div class="ov-btns">
+    <button id="rcl" onclick="awardAndClose()">✅ Valider et gagner les XP</button>
+    <button id="rcl2" onclick="closeOv()">Continuer</button>
+  </div>
+</div></div>
+
+
+<script src="../js/score.js"></script>
+<script src="../js/exercises-config.js"></script>
+<script src="../js/stages.js"></script>
+<script src="../js/exercise-utils.js"></script>
+<script>document.addEventListener('click',()=>document.getElementById('legend-panel').classList.remove('show'));</script>
+<script src="../js/orientation.js"></script>
+</body></html>

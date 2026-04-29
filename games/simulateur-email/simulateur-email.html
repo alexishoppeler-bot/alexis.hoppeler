@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+ <head>
+ <meta charset="utf-8"/>
+  <link rel="icon" href="../../assets/logo.png" type="image/png"/>
+  <title>
+   Simulateur d'e-mails professionnels – Proactif
+  </title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <link rel="stylesheet" href="../../css/theme.css"/>
+  <link rel="stylesheet" href="../../css/layout.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/utilities.css"/>
+  <style>
+   body.page-communication-envoie-mail {
+    background:
+     radial-gradient(circle at top right, rgba(131, 189, 69, 0.12), transparent 28%),
+     linear-gradient(180deg, var(--bg) 0%, #f7f9fc 100%);
+   }
+
+   .container {
+    width: 100%;
+   }
+
+   .breadcrumb {
+    margin-bottom: 16px;
+   }
+
+   .page-header {
+    margin-bottom: 24px;
+   }
+
+   .exercise-shell {
+    display: block;
+   }
+
+   .exercise-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+   }
+
+   .page-intro {
+    padding: 30px 32px 20px;
+    border-bottom: 1px solid var(--border);
+    background:
+     linear-gradient(135deg, rgba(50, 93, 169, 0.08), rgba(131, 189, 69, 0.08));
+   }
+
+   .page-intro h1,
+   .page-intro h2 {
+    margin: 0 0 8px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    line-height: 1.15;
+   }
+
+   .page-subtitle {
+    margin: 0;
+    color: var(--text2);
+    max-width: 72ch;
+   }
+
+   .consigne {
+    margin: 24px 24px 0;
+    padding: 22px 24px;
+    border: 1px solid rgba(50, 93, 169, 0.14);
+    border-radius: var(--r-lg);
+    background: linear-gradient(180deg, rgba(244, 248, 255, 0.92), rgba(255, 255, 255, 0.98));
+   }
+
+   .consigne strong {
+    color: var(--text);
+   }
+
+   .consigne ol {
+    margin: 12px 0 0 20px;
+    color: var(--text2);
+   }
+
+   .consigne li + li {
+    margin-top: 8px;
+   }
+
+   .mail-box {
+    margin: 24px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: linear-gradient(180deg, #ffffff, #fbfcfe);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+   }
+
+   .mail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    font-size: 18px;
+    font-weight: 700;
+   }
+
+   .mail-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    padding: 20px;
+   }
+
+   .mail-fields > input,
+   .mail-fields > select,
+   .mail-fields > .field,
+   .mail-fields > .inline-1 {
+    min-width: 0;
+   }
+
+   .mail-fields > .field {
+    grid-column: 1 / -1;
+   }
+
+   .field {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface2);
+   }
+
+   .label {
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 700;
+   }
+
+   .value {
+    min-height: 24px;
+    color: var(--text);
+    word-break: break-word;
+   }
+
+   #objet {
+    font-weight: 700;
+   }
+
+   #cc-field .value:empty::before,
+   #objet:empty::before {
+    content: "—";
+    color: var(--text3);
+   }
+
+   .copy-text-zone {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 20px 14px;
+   }
+
+   .mail-body {
+    display: block;
+    width: calc(100% - 40px);
+    min-height: 320px;
+    margin: 0 20px;
+    padding: 18px;
+    resize: vertical;
+    border-radius: 16px;
+    background: #fff;
+    line-height: 1.65;
+   }
+
+   .btn-copy,
+   .btn-reset,
+   .btn-envoyer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: var(--r-md);
+    font-weight: 700;
+    transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+   }
+
+   .btn-copy:active,
+   .btn-reset:active,
+   .btn-envoyer:active {
+    transform: scale(0.98);
+   }
+
+   .btn-copy {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+   }
+
+   .btn-copy:hover {
+    background: var(--bg2);
+    color: var(--text);
+   }
+
+   .btn-copy.copied {
+    border-color: rgba(131, 189, 69, 0.45);
+    background: rgba(131, 189, 69, 0.12);
+    color: #3d6d0d;
+   }
+
+   .btn-reset {
+    padding: 10px 14px;
+    border: 1px solid rgba(192, 57, 43, 0.2);
+    background: rgba(192, 57, 43, 0.08);
+    color: var(--danger);
+   }
+
+   .btn-reset:hover {
+    background: rgba(192, 57, 43, 0.14);
+   }
+
+   .btn-envoyer {
+    margin: 20px;
+    padding: 14px 20px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    box-shadow: var(--shadow-accent);
+   }
+
+   .btn-envoyer:hover:not(:disabled) {
+    background: var(--accent2);
+   }
+
+   .btn-envoyer:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+   }
+
+   @media (max-width: 900px) {
+    .mail-fields {
+     grid-template-columns: 1fr;
+    }
+
+    .field {
+     grid-template-columns: 56px minmax(0, 1fr) auto;
+    }
+   }
+
+   @media (max-width: 640px) {
+    .container {
+     width: 100%;
+    }
+
+    .page-intro {
+     padding: 24px 18px 18px;
+    }
+
+    .consigne,
+    .mail-header,
+    .mail-fields,
+    .copy-text-zone {
+     padding-left: 16px;
+     padding-right: 16px;
+    }
+
+    .mail-header {
+     align-items: flex-start;
+     flex-direction: column;
+    }
+
+    .field {
+     grid-template-columns: 1fr;
+    }
+
+    .mail-body {
+     width: calc(100% - 32px);
+     margin: 0 16px;
+     min-height: 260px;
+    }
+
+    .btn-envoyer {
+     width: calc(100% - 32px);
+     margin: 16px;
+    }
+   }
+  </style>
+ </head>
+ <body class="page-communication-envoie-mail">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+  <div class="layout">
+   <main class="main">
+    <div class="container">
+     <nav aria-label="Fil d'Ariane" class="breadcrumb fade-up">
+      <a href="../../games/accueil.html">Accueil</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Simulateur d'e-mails</span>
+     </nav>
+     <div class="page-header fade-up">
+      <div class="page-icon">📧</div>
+      <h1 id="page-title">Simulateur d'e-mails professionnels</h1>
+      <p>Choisissez un sujet, complétez les champs, puis copiez l'objet et le texte.</p>
+     </div>
+     <div class="exercise-shell">
+      <div class="exercise-card fade-up delay-1">
+      <section class="page-intro" aria-labelledby="page-title">
+       <div>
+        <h2>
+         Rédiger un message professionnel
+        </h2>
+        <p class="page-subtitle">
+         Remplissez les champs étape par étape, puis envoyez le message depuis votre messagerie.
+        </p>
+       </div>
+      </section>
+     <div class="consigne">
+      <strong>
+       Consignes
+      </strong>
+      <ol>
+       <li>
+        Écrivez votre
+        <strong>
+         prénom
+        </strong>
+        et votre
+        <strong>
+         nom
+        </strong>
+        .
+       </li>
+       <li>
+        Choisissez votre genre.
+       </li>
+       <li>
+        Choisissez la formule (Madame, Monsieur / Madame / Monsieur).
+       </li>
+       <li>
+        Choisissez le sujet dans la liste.
+       </li>
+       <li>
+        Saisissez l'adresse e-mail du destinataire.
+       </li>
+       <li>
+        Si candidature ciblée : indiquez le site de l'annonce.
+       </li>
+       <li>
+        Si vous postulez, choisissez candidature ciblée ou spontanée + le métier.
+       </li>
+       <li>
+        Lisez le modèle d'e-mail.
+       </li>
+       <li>
+        Utilisez les boutons
+        <strong>
+         Copier
+        </strong>
+        pour l'objet et le texte.
+       </li>
+       <li>
+        Cliquez sur Envoyer pour ouvrir votre messagerie.
+       </li>
+      </ol>
+     </div>
+     <div class="mail-box">
+      <div class="mail-header">
+       Nouveau message
+       <button class="btn-reset" onclick="reinitialiser()">
+        Réinitialiser
+       </button>
+      </div>
+      <div class="mail-fields">
+       <input aria-label="Prénom" id="prenom" oninput="mettreAJourSignatureEtBouton()" placeholder="Prénom" type="text"/>
+       <input aria-label="Nom" id="nom" oninput="mettreAJourSignatureEtBouton()" placeholder="Nom" type="text"/>
+       <select aria-label="Genre" id="genre" onchange="changerGenre();mettreAJourSignatureEtBouton()">
+        <option value="">
+         -- Choisir votre genre --
+        </option>
+        <option value="homme">
+         👨 Homme
+        </option>
+        <option value="femme">
+         👩 Femme
+        </option>
+       </select>
+       <select aria-label="Salutation" id="salutation" onchange="changerSalutation();mettreAJourSignatureEtBouton()" class="inline-1">
+        <option value="">
+         -- Choisir la formule --
+        </option>
+        <option value="madame-monsieur">
+         Madame, Monsieur
+        </option>
+        <option value="madame">
+         Madame
+        </option>
+        <option value="monsieur">
+         Monsieur
+        </option>
+       </select>
+       <select aria-label="Sujet" id="sujet" onchange="changerSujet()" class="inline-1">
+        <option value="">
+         -- Choisir un sujet --
+        </option>
+        <option value="absence">
+         S'excuser d'une absence au travail
+        </option>
+        <option value="retard">
+         S'excuser d'un retard au travail
+        </option>
+        <option value="depart-tot">
+         Demander à partir plus tôt du travail
+        </option>
+        <option value="rdv">
+         Demander de déplacer un rendez-vous ORP
+        </option>
+        <option value="conge-orp">
+         Demander un jour de congé à l'ORP
+        </option>
+        <option value="conge-patron">
+         Demander un jour de congé au patron
+        </option>
+        <option value="jours-vacances-orp">
+         Demander combien de jours de vacances il reste à l'ORP
+        </option>
+        <option value="vacances-orp">
+         Demander des vacances à son conseiller ORP
+        </option>
+        <option value="vacances-patron">
+         Demander des vacances à son patron
+        </option>
+        <option value="remplacement-collegue">
+         Demander à un collègue de vous remplacer
+        </option>
+        <option value="horaire-mois">
+         Demander l'horaire du mois prochain
+        </option>
+        <option value="certificat">
+         Demander un certificat de travail à l'ancien employeur
+        </option>
+        <option value="question-collegue">
+         Poser une question ou demander un service à un collègue
+        </option>
+        <option value="entretien-adresse">
+         Accepter un entretien et demander l'adresse
+        </option>
+        <option value="entretien-ok">
+         Accepter de déplacer un entretien à l'horaire proposé
+        </option>
+        <option value="entretien-autre">
+         Accepter l'entretien mais demander un autre horaire
+        </option>
+        <option value="relance">
+         Relancer une candidature
+        </option>
+        <option value="remerciement">
+         Remercier après un entretien
+        </option>
+        <option value="probleme-travail">
+         Informer d'un problème au travail et proposer une solution
+        </option>
+        <option value="paiement-chomage">
+         Demander une explication à la caisse chômage
+        </option>
+        <option value="perte-feuille-orp">
+         Demander une nouvelle feuille de recherches d'emploi à l'ORP
+        </option>
+        <option value="demande-speciale-orp">
+         Faire une demande spéciale à l'ORP
+        </option>
+        <option value="incapacite">
+         Annoncer une incapacité de travail à l'employeur
+        </option>
+        <option value="explication-sanction">
+         Demander des explications sur une sanction
+        </option>
+        <option value="desaccord">
+         Exprimer un désaccord de manière professionnelle
+        </option>
+        <option value="aide-tache">
+         Demander de l'aide sur une tâche non maîtrisée
+        </option>
+        <option value="candidature">
+         Candidature à un emploi
+        </option>
+       </select>
+       <select aria-label="Type de candidature" id="type" onchange="changerType()" class="inline-1">
+        <option value="">
+         -- Type de candidature --
+        </option>
+        <option value="ciblee">
+         Candidature ciblée
+        </option>
+        <option value="spontanee">
+         Candidature spontanée
+        </option>
+       </select>
+       <input aria-label="Site de l'annonce" id="site-cible" oninput="changerSiteCible()" placeholder="Site de l'annonce (ex: site de l'entreprise)" class="inline-1" type="text"/>
+       <select aria-label="Métier" id="metier" onchange="changerMetier()" class="inline-1">
+       </select>
+       <div class="field">
+        <div class="label">
+         À :
+        </div>
+        <input aria-label="Adresse e-mail" autocapitalize="none" autocomplete="new-password" autocorrect="off" id="email-input" inputmode="email" name="email-dest" oninput="mettreAJourSignatureEtBouton()" placeholder="Adresse e-mail" spellcheck="false" type="text" value=""/>
+       </div>
+       <div class="field inline-1" id="cc-field">
+        <div class="label">
+         Cc :
+        </div>
+        <div class="value" id="cc">
+        </div>
+       </div>
+       <div class="field">
+        <div class="label">
+         Objet :
+        </div>
+        <div class="value" id="objet">
+        </div>
+        <button class="btn-copy" onclick="copierChamp('objet', this)">
+         📋
+        </button>
+       </div>
+      </div>
+      <div class="copy-text-zone">
+       <button class="btn-copy" onclick="copierChamp('texte', this)">
+        📋 Copier le texte
+       </button>
+      </div>
+      <textarea class="mail-body" id="texte" rows="8"></textarea>
+      <button class="btn-envoyer" disabled="" id="btn-envoyer" onclick="envoyerMail()">
+       📨 Envoyer
+      </button>
+     </div>
+     <script>
+
+const PAGE_ID = "simulateur-email";
+
+let genre = "";
+let salutation = "";
+let sujet = "";
+let typeCandidature = "";
+let metier = "";
+let baseTexte = ""; // texte sans la signature
+let lastRenderedText = "";
+let currentCc = "";
+
+const metiersHomme = [
+  "agent de nettoyage","employé polyvalent","plongeur","aide de cuisine",
+  "agent de voirie","employé de production","peintre",
+  "ouvrier en bâtiment","livreur","chauffeur","employé métallurgique"
+];
+const metiersFemme = [
+  "agente de nettoyage","employée polyvalente","plongeuse","aide de cuisine",
+  "agente de voirie","employée de production","blanchisseuse",
+  "peintre","ouvrière en bâtiment","livreuse","chauffeuse","coiffeuse","employée métallurgique"
+];
+
+const mails = {
+  absence:    { to: "entreprise@mail.ch",        toCopy: true,  cc: "",                     ccCopy: true  },
+  retard:     { to: "entreprise@mail.ch",        toCopy: true,  cc: "",                     ccCopy: true  },
+  "depart-tot": { to: "entreprise@mail.ch",    toCopy: true,  cc: "",                     ccCopy: true  },
+  certificat: { to: "entreprise@mail.ch",        toCopy: true,  cc: "",                     ccCopy: true  },
+  rdv:        { to: "orp@vd.ch",                 toCopy: true,  cc: "",                     ccCopy: true  },
+  "conge-orp": { to: "orp@vd.ch",            toCopy: true,  cc: "",                     ccCopy: true  },
+  "conge-patron": { to: "entreprise@mail.ch", toCopy: true,  cc: "",                     ccCopy: true  },
+  "jours-vacances-orp": { to: "orp@vd.ch",   toCopy: true,  cc: "",                     ccCopy: true  },
+  "vacances-orp": { to: "orp@vd.ch",         toCopy: true,  cc: "",                     ccCopy: true  },
+  "vacances-patron": { to: "entreprise@mail.ch", toCopy: true,  cc: "",                  ccCopy: true  },
+  "remplacement-collegue": { to: "collegue@mail.ch", toCopy: true, cc: "",           ccCopy: true  },
+  "horaire-mois": { to: "entreprise@mail.ch", toCopy: true,  cc: "",                    ccCopy: true  },
+  "question-collegue": { to: "collegue@mail.ch", toCopy: true,  cc: "",               ccCopy: true  },
+  "entretien-adresse": { to: "entreprise@mail.ch", toCopy: true, cc: "",             ccCopy: true  },
+  "entretien-ok": { to: "entreprise@mail.ch",  toCopy: true,  cc: "",                  ccCopy: true  },
+  "entretien-autre": { to: "entreprise@mail.ch", toCopy: true, cc: "",               ccCopy: true  },
+  relance:    { to: "entreprise@mail.ch",        toCopy: true,  cc: "",                     ccCopy: true  },
+  remerciement:{ to: "entreprise@mail.ch",       toCopy: true,  cc: "",                     ccCopy: true  },
+  "probleme-travail": { to: "entreprise@mail.ch", toCopy: true, cc: "",              ccCopy: true  },
+  "paiement-chomage": { to: "caisse@chomage.ch", toCopy: true,  cc: "",               ccCopy: true  },
+  "perte-feuille-orp": { to: "orp@vd.ch",    toCopy: true,  cc: "",                     ccCopy: true  },
+  "demande-speciale-orp": { to: "orp@vd.ch", toCopy: true,  cc: "",                     ccCopy: true  },
+  incapacite: { to: "entreprise@mail.ch",        toCopy: true,  cc: "",                     ccCopy: true  },
+  "explication-sanction": { to: "orp@vd.ch", toCopy: true,  cc: "",                    ccCopy: true  },
+  desaccord:  { to: "entreprise@mail.ch",        toCopy: true,  cc: "",                     ccCopy: true  },
+  "aide-tache": { to: "entreprise@mail.ch",  toCopy: true,  cc: "",                     ccCopy: true  },
+  candidature:{ to: "entreprise@mail.ch",        toCopy: true,  cc: "",                     ccCopy: true  }
+};
+window.addEventListener("load", () => {
+ document.getElementById("sujet").style.display = "none";
+ document.getElementById("type").style.display = "none";
+ document.getElementById("metier").style.display = "none";
+ document.getElementById("site-cible").style.display = "none";
+ document.getElementById("salutation").style.display = "none";
+ document.getElementById("cc-field").style.display = "none";
+});
+
+function getSignature() {
+ const prenom = document.getElementById("prenom").value.trim();
+ const nom = document.getElementById("nom").value.trim();
+ if (!prenom || !nom) return "[Prénom Nom]";
+ return prenom + " " + nom.toUpperCase();
+}
+
+function changerGenre() {
+ genre = document.getElementById("genre").value;
+ const metierSelect = document.getElementById("metier");
+ metierSelect.innerHTML = "";
+
+ if (!genre) {
+  document.getElementById("sujet").style.display = "none";
+  document.getElementById("salutation").style.display = "none";
+  document.getElementById("type").style.display = "none";
+  document.getElementById("metier").style.display = "none";
+  document.getElementById("site-cible").style.display = "none";
+  return;
+ }
+
+ const liste = genre === "femme" ? metiersFemme : metiersHomme;
+ let options = "<option value=''>-- Choisir un métier --</option>";
+  liste.forEach(m => {
+  options += `<option value="${m}">${m.charAt(0).toUpperCase() + m.slice(1)}</option>`;
+  });
+  metierSelect.innerHTML = options;
+  document.getElementById("salutation").style.display = "block";
+  document.getElementById("sujet").style.display = "block";
+
+  if (sujet) afficherInfos();
+}
+
+function changerSalutation() {
+  salutation = document.getElementById("salutation").value;
+  afficherInfos();
+}
+
+
+function changerSujet() {
+  sujet = document.getElementById("sujet").value;
+  document.getElementById("type").style.display   = sujet === "candidature" ? "block" : "none";
+  document.getElementById("metier").style.display = sujet === "candidature" ? "block" : "none";
+  if (sujet !== "candidature") {
+    document.getElementById("site-cible").style.display = "none";
+    document.getElementById("site-cible").value = "";
+  }
+  afficherInfos();
+}
+
+function changerType() {
+  typeCandidature = document.getElementById("type").value;
+  document.getElementById("site-cible").style.display = typeCandidature === "ciblee" ? "block" : "none";
+  if (typeCandidature !== "ciblee") {
+    document.getElementById("site-cible").value = "";
+  }
+  afficherInfos();
+}
+
+function changerSiteCible() {
+  afficherInfos();
+}
+
+function changerMetier() {
+  metier = document.getElementById("metier").value;
+  afficherInfos();
+}
+
+function articleAvantMot(mot) {
+  if (!mot) return "de ";
+  const voyelles = ["a","e","i","o","u","h"];
+  return voyelles.includes(mot[0].toLowerCase()) ? "d'" : "de ";
+}
+
+function afficherInfos() {
+  const data      = mails[sujet];
+  const emailInput = document.getElementById("email-input");
+  const ccDiv     = document.getElementById("cc");
+  const ccField   = document.getElementById("cc-field");
+  const objetDiv  = document.getElementById("objet");
+  const texteDiv  = document.getElementById("texte");
+  const btnEnv    = document.getElementById("btn-envoyer");
+
+  if (!data || !sujet) {
+    objetDiv.textContent = "";
+    texteDiv.value = "";
+    baseTexte = "";
+    lastRenderedText = "";
+    currentCc = "";
+    ccDiv.textContent = "";
+    ccField.style.display = "none";
+    if (emailInput) { emailInput.value = ""; }
+    btnEnv.disabled = true;
+    return;
+  }
+
+  // Cc
+  currentCc = data.cc || "";
+  if (data.cc) {
+    ccField.style.display = "flex";
+    ccDiv.textContent = data.cc;
+  } else {
+    ccField.style.display = "none";
+    ccDiv.textContent = "";
+  }
+  let texte = "";
+  let objet = "";
+  let salut = "Bonjour Madame, Monsieur,";
+  if (salutation === "madame") {
+    salut = "Bonjour Madame,";
+  } else if (salutation === "monsieur") {
+    salut = "Bonjour Monsieur,";
+  }
+
+  switch (sujet) {
+    case "absence":
+      objet = "Absence au travail";
+      texte = `${salut}\n\nJe suis malade aujourd'hui et ne peux pas venir travailler.\n\nMerci de votre compréhension.`;
+      break;
+    case "retard":
+      objet = "Retard ce matin";
+      texte = `${salut}\n\nJe suis en retard, (train en retard / problème de bus).\n\nMerci et à tout à l'heure.`;
+      break;
+    case "depart-tot":
+      objet = "Demande de départ anticipé";
+      texte = `${salut}\n\nJe voudrais demander l'autorisation de partir à [heure] aujourd'hui pour une raison personnelle.\n\nJe peux rattraper le temps si besoin.\n\nMerci pour votre accord.`;
+      break;
+    case "certificat":
+      objet = "Demande de certificat de travail";
+      texte = `${salut}\n\nJe vous écris pour demander un certificat de travail.\n\nIdentité : [Prénom Nom].\nPériode : [novembre 2023 au septembre 2025].\nPoste : [poste occupé].\nRaison : [demande administrative / nouvelle candidature].\n\nMerci beaucoup et bonne journée.`;
+      break;
+    case "rdv":
+      objet = "Changement de rendez-vous ORP";
+      texte = `${salut}\n\nJe souhaite changer la date de mon rendez-vous à l'ORP. \n\nEst-il possible de le déplacer à un autre jour ?\n\nMerci de votre réponse.`;
+      break;
+    case "conge-orp":
+      objet = "Demande d'un jour de congé";
+      texte = `${salut}\n\nJe souhaite demander un jour de congé le [date]. \n\nEst-ce possible ?\n\nMerci pour votre réponse.`;
+      break;
+    case "conge-patron":
+      objet = "Demande d'un jour de congé";
+      texte = `${salut}\n\nJe souhaite prendre un jour de congé le [date]. \n\nEst-ce possible ?\n\nMerci d'avance.`;
+      break;
+    case "jours-vacances-orp":
+      objet = "Demande d'information sur mes jours de vacances";
+      texte = `${salut}\n\nPouvez-vous me dire combien de jours de vacances il me reste à l'ORP ?\n\nMerci pour votre retour.`;
+      break;
+    case "vacances-orp":
+      objet = "Demande de vacances à l'ORP";
+      texte = `${salut}\n\nJe souhaite prendre des vacances du [date début] au [date fin]. \n\nEst-ce possible ?\n\nMerci beaucoup.`;
+      break;
+    case "vacances-patron":
+      objet = "Demande de vacances";
+      texte = `${salut}\n\nJe souhaite prendre des vacances du [date début] au [date fin]. \n\nEst-ce possible ?\n\nMerci d'avance.`;
+      break;
+    case "remplacement-collegue":
+      objet = "Demande de remplacement";
+      texte = `${salut}\n\nPeux-tu me remplacer le [date] sur [tâche / poste] ? Je te remercie d'avance.\nDis-moi si c'est possible.`;
+      break;
+    case "horaire-mois":
+      objet = "Horaire du mois prochain";
+      texte = `${salut}\n\nPouvez-vous me communiquer mon horaire de travail pour le mois prochain ?\nMerci d'avance.`;
+      break;
+    case "question-collegue":
+      objet = "Petite question";
+      texte = `${salut}\n\nJ'aurais une question concernant [sujet] / pourrais-tu me rendre un service sur [tâche] ?\nMerci d'avance pour ton aide.`;
+      break;
+    case "entretien-adresse":
+      objet = "Confirmation d'entretien";
+      texte = `${salut}\n\nMerci pour votre invitation. Je confirme ma présence à l'entretien.\nPouvez-vous m'indiquer l'adresse exacte du rendez-vous ?\nMerci.`;
+      break;
+    case "entretien-ok":
+      objet = "Confirmation de changement d'entretien";
+      texte = `${salut}\n\nMerci pour votre proposition. Je confirme le nouveau rendez-vous à l'horaire proposé.\nMerci.`;
+      break;
+    case "entretien-autre":
+      objet = "Demande d'un autre horaire d'entretien";
+      texte = `${salut}\n\nMerci pour votre invitation. L'horaire proposé ne me convient pas.\nSerait-il possible de fixer un autre horaire ?\nPouvez-vous aussi m'indiquer l'adresse exacte du rendez-vous ?\nMerci.`;
+      break;
+    case "relance":
+      objet = "Relance de candidature";
+      texte = `${salut}\n\nJe me permets de vous relancer concernant ma candidature envoyée le [date].\nAvez-vous bien reçu mon dossier et avez-vous des nouvelles ?\nMerci pour votre retour.`;
+      break;
+    case "remerciement":
+      objet = "Remerciements après entretien";
+      texte = `${salut}\n\nMerci pour l'entretien de [date].\nJe vous remercie pour votre temps et confirme mon intérêt pour le poste.\nBonne journée.`;
+      break;
+    case "probleme-travail":
+      objet = "Point sur un problème au travail";
+      texte = `${salut}\n\nJe souhaite vous informer d'un problème : [problème].\nJe propose la solution suivante : [solution].\nQu'en pensez-vous ?`;
+      break;
+    case "paiement-chomage":
+      objet = "Demande d'explication sur un jour non payé";
+      texte = `${salut}\n\nJe n'ai pas reçu le paiement d'un jour (absence Proactif) pour la période [période].\nPouvez-vous m'expliquer la raison ? Je joins les justificatifs nécessaires.\nMerci pour votre aide.`;
+      break;
+    case "perte-feuille-orp":
+      objet = "Demande d'une nouvelle feuille de recherches d'emploi";
+      texte = `${salut}\n\nJ'ai perdu ma feuille de recherches d'emploi. Pouvez-vous m'en envoyer une nouvelle ?\nMerci.`;
+      break;
+    case "demande-speciale-orp":
+      objet = "Demande spéciale";
+      texte = `${salut}\n\nJe souhaite faire une demande spéciale pour [mariage / décès / voyage / famille].\nLa période concernée est du [date début] au [date fin].\nMerci pour votre retour.`;
+      break;
+    case "incapacite":
+      objet = "Annonce d'incapacité de travail";
+      texte = `${salut}\n\nJe vous informe d'une incapacité de travail du [date début] au [date fin].\nJe suis suivi par un médecin et je fournirai le certificat médical.\nMerci pour votre compréhension.`;
+      break;
+    case "explication-sanction":
+      objet = "Demande d'explications sur une sanction";
+      texte = `${salut}\n\nJe viens de recevoir une sanction / suspension et je ne comprends pas la raison.\nPouvez-vous m'expliquer clairement la décision ?\nMerci.`;
+      break;
+    case "desaccord":
+      objet = "Point de désaccord";
+      texte = `${salut}\n\nJe souhaite exprimer mon désaccord sur [sujet].\nJe reste à disposition pour en discuter de manière constructive.\nMerci.`;
+      break;
+    case "aide-tache":
+      objet = "Demande d'aide sur une tâche";
+      texte = `${salut}\n\nJe rencontre des difficultés sur [tâche].\nPouvez-vous m'aider ou me conseiller une méthode ?\nMerci d'avance.`;
+      break;
+    case "candidature":
+      if (!metier || !typeCandidature) {
+        objetDiv.textContent = "";
+        texteDiv.value = "";
+        baseTexte = "";
+        btnEnv.disabled = true;
+        return;
+      }
+      const art = articleAvantMot(metier);
+      const siteCible = document.getElementById("site-cible").value.trim();
+      if (typeCandidature === "spontanee") {
+        objet = `Candidature spontanée - ${metier}`;
+        texte = `${salut}
+
+Je me permets de vous écrire pour vous proposer ma candidature spontanée.
+Je suis ${genre === "femme" ? "motivée" : "motivé"} et disponible pour un poste ${art}${metier}.
+Vous trouverez mon CV en pièce jointe.
+
+Merci pour votre attention.`;
+      } else {
+        objet = `Candidature au poste ${art}${metier}`;
+        texte = `${salut}
+
+Je vous envoie ma candidature pour le poste ${art}${metier}.
+${siteCible ? `Annonce vue sur : ${siteCible}
+` : ""}Je suis ${genre === "femme" ? "motivée" : "motivé"} et je reste à disposition pour un entretien.
+Merci beaucoup.`;
+      }
+      break;
+  }
+
+  baseTexte = texte;
+  objetDiv.textContent = objet;
+  texteDiv.value = `${baseTexte}\n\nCordialement,\n${getSignature()}`;
+  lastRenderedText = texteDiv.value;
+
+  mettreAJourSignatureEtBouton();
+}
+
+function mettreAJourSignatureEtBouton() {
+  const texteDiv = document.getElementById("texte");
+  const btnEnv   = document.getElementById("btn-envoyer");
+  const prenom   = document.getElementById("prenom").value.trim();
+  const nom      = document.getElementById("nom").value.trim();
+
+  // met à jour la signature si un modèle est affiché
+  if (baseTexte) {
+    const nextText = `${baseTexte}\n\nCordialement,\n${getSignature()}`;
+    if (texteDiv.value === lastRenderedText) {
+      texteDiv.value = nextText;
+    }
+    lastRenderedText = nextText;
+  }
+
+  // conditions pour envoyer
+  let ok = !!(prenom && nom && genre && salutation && sujet);
+  const emailValue = (document.getElementById("email-input") || {}).value || "";
+  ok = ok && !!emailValue.trim();
+  if (sujet === "candidature") {
+    ok = ok && !!(typeCandidature && metier);
+  }
+  btnEnv.disabled = !ok;
+}
+
+function copierChamp(id, button) {
+  const elem = document.getElementById(id);
+  if (!elem) return;
+  const text = elem.value !== undefined ? elem.value.trim() : elem.textContent.trim();
+  if (!text) return;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      button.classList.add("copied");
+      const oldLabel = button.textContent;
+      button.textContent = "✅";
+      setTimeout(() => {
+        button.textContent = oldLabel;
+        button.classList.remove("copied");
+      }, 800);
+    }).catch(() => {
+   alert("Texte copié :\n\n" + text);
+  });
+ } else {
+  alert("Texte copié :\n\n" + text);
+ }
+}
+
+function envoyerMail() {
+ const to = (document.getElementById("email-input") || {}).value || "";
+ const subject = document.getElementById("objet").textContent.trim();
+ const body = document.getElementById("texte").value.trim();
+ const toClean = to.trim();
+ if (!toClean) {
+  alert("Adresse e-mail manquante.");
+  return;
+ }
+ const queryParts = [];
+ if (currentCc) {
+  queryParts.push(`cc=${encodeURIComponent(currentCc)}`);
+ }
+ if (subject) {
+  queryParts.push(`subject=${encodeURIComponent(subject)}`);
+ }
+ if (body) {
+  queryParts.push(`body=${encodeURIComponent(body)}`);
+ }
+ const query = queryParts.join("&");
+ const mailto = `mailto:${toClean}${query ? "?" + query : ""}`;
+ window.location.href = mailto;
+ try {
+  if (typeof recordExerciseProgress === "function") {
+   recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp: 3 });
+  }
+ } catch (e) { }
+}
+
+function reinitialiser() {
+ // reset simple et propre
+ genre = "";
+ salutation = "";
+ sujet = "";
+ typeCandidature = "";
+ metier = "";
+ baseTexte = "";
+ currentCc = "";
+ lastRenderedText = "";
+
+ document.getElementById("prenom").value = "";
+ document.getElementById("nom").value   = "";
+ document.getElementById("genre").value  = "";
+ document.getElementById("salutation").value  = "";
+ document.getElementById("sujet").value  = "";
+ document.getElementById("type").value  = "";
+ document.getElementById("metier").value = "";
+ document.getElementById("site-cible").value = "";
+
+ document.getElementById("sujet").style.display = "none";
+ document.getElementById("salutation").style.display = "none";
+ document.getElementById("type").style.display  = "none";
+ document.getElementById("metier").style.display = "none";
+ document.getElementById("site-cible").style.display = "none";
+
+ if (document.getElementById("email-input")) {
+  document.getElementById("email-input").value = "";
+ }
+ document.getElementById("cc").textContent = "";
+ document.getElementById("cc-field").style.display = "none";
+
+ document.getElementById("objet").textContent = "";
+ document.getElementById("texte").value = "";
+ document.getElementById("btn-envoyer").disabled = true;
+}
+
+     </script>
+      </div>
+     </div>
+    </div>
+   </main>
+   <div id="footer-slot"></div>
+  </div>
+  <script src="../../js/score.js"></script>
+  <script src="../../js/exercises-config.js"></script>
+  <script src="../../js/exercise-utils.js"></script>
+  <script>
+   (function initNestedLayout() {
+    function currentPageId() {
+     return "simulateur-email";
+    }
+
+    function pageUrl(path) {
+     return "../../games/" + path;
+    }
+
+    function renderHeader() {
+     const slot = document.getElementById("header-slot");
+     if (!slot) return;
+     slot.innerHTML = [
+      '<header class="header">',
+      '  <div class="header-logo">',
+      '    <a href="' + pageUrl('accueil.html') + '" class="header-logo" style="text-decoration:none;color:inherit;">',
+      '      <span class="header-logo-icon" aria-hidden="true"></span>',
+      '      <span>Autonomie numerique</span>',
+      '    </a>',
+      '    <div class="header-progress-wrap">',
+      '      <span class="header-progress-label">Mon avance</span>',
+      '      <span id="headerProgressText">0%</span>',
+      '      <div class="header-progress-bar"><div id="headerProgressFill" class="header-progress-fill" style="width:0%"></div></div>',
+      '    </div>',
+      '  </div>',
+      '  <div class="header-right">',
+      '    <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Ouvrir le menu">☰</button>',
+      '  </div>',
+      '</header>'
+     ].join("");
+    }
+
+    function renderSidebar() {
+     const slot = document.getElementById("sidebar-slot");
+     if (!slot) return;
+
+     const pageId = currentPageId();
+     const meta = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.meta) || {};
+     const orderedPages = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.orderedPages) || [];
+     const apps = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.apps) || [];
+     const sections = [
+      { title: "Debut", links: ["accueil", "evaluations", "regles", "donnees"] },
+      { title: "Exercices pas a pas", links: orderedPages }
+     ];
+
+     const parts = ['<aside class="sidebar" id="sidebar">'];
+     sections.forEach((section) => {
+      parts.push('<div class="sidebar-section">');
+      parts.push('<div class="sidebar-section-title">' + section.title + '</div>');
+      section.links.forEach((page) => {
+       const item = meta[page] || { name: page, href: page + ".html", icon: "•" };
+       const active = page === pageId ? " active" : "";
+       let statusAttr = "";
+       if (window.ScoreManager && section.title === "Exercices pas a pas") {
+        const status = window.ScoreManager.readMetrics(page).status;
+        statusAttr = ' data-status="' + status + '"';
+       }
+       parts.push(
+        '<a class="sidebar-link' + active + '" href="' + pageUrl(item.href) + '"' + statusAttr + '>' +
+        '<span class="icon">' + (item.icon || "•") + '</span>' +
+        '<span>' + (item.name || page) + '</span>' +
+        '</a>'
+       );
+      });
+      parts.push("</div>");
+     });
+
+     if (apps.length) {
+      parts.push('<div class="sidebar-section">');
+      parts.push('<div class="sidebar-section-title">Applications</div>');
+      apps.forEach((app) => {
+       const activeApp = (app.href || "").indexOf("simulateur-email/simulateur-email.html") !== -1 ? " active" : "";
+       parts.push(
+        '<a class="sidebar-link' + activeApp + '" href="' + pageUrl(app.href) + '">' +
+        '<span class="icon">' + (app.icon || "•") + '</span>' +
+        '<span>' + app.name + '</span>' +
+        '</a>'
+       );
+      });
+      parts.push("</div>");
+     }
+
+     parts.push("</aside>");
+     slot.innerHTML = parts.join("");
+    }
+
+    function renderFooter() {
+     const slot = document.getElementById("footer-slot");
+     if (!slot) return;
+     slot.innerHTML = [
+      '<footer class="footer">',
+      '  <span>Plateforme simple pour apprendre pas a pas</span>',
+      '  <span>Vos resultats restent sur cet appareil</span>',
+      '</footer>'
+     ].join("");
+    }
+
+    function updateHeaderProgress() {
+     if (!window.ScoreManager || !window.EXERCISE_CONFIG) return;
+     const orderedPages = window.EXERCISE_CONFIG.orderedPages || [];
+     const summary = window.ScoreManager.getGlobalSummary(orderedPages);
+     const total = orderedPages.length || 1;
+     const pct = Math.round((summary.completed / total) * 100);
+     const text = document.getElementById("headerProgressText");
+     const fill = document.getElementById("headerProgressFill");
+     if (text) text.textContent = pct + "%";
+     if (fill) fill.style.width = pct + "%";
+    }
+
+    function initSidebarToggle() {
+     const btn = document.getElementById("sidebarToggle");
+     const sidebar = document.getElementById("sidebar");
+     if (!btn || !sidebar) return;
+     btn.addEventListener("click", () => {
+      const open = sidebar.classList.toggle("open");
+      btn.classList.toggle("active", open);
+     });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+     document.body.classList.add("accessible-ui");
+     renderHeader();
+     renderSidebar();
+     renderFooter();
+     updateHeaderProgress();
+     initSidebarToggle();
+     document.addEventListener("score:updated", () => {
+      updateHeaderProgress();
+      renderSidebar();
+     });
+    });
+   })();
+  </script>
+ </body>
+</html>

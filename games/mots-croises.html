@@ -1,0 +1,864 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mots croisés - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/mots-croises.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🧩</div>
+          <h1>Mots croisés</h1>
+          <p>Trouvez les mots avec les definitions.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="cw-kpi-row fade-up delay-1">
+          <div class="cw-kpi"><div class="val" id="kpiSolved">0</div><div class="lbl">Mots trouvés</div></div>
+          <div class="cw-kpi"><div class="val" id="kpiTotal">0</div><div class="lbl">Mots total</div></div>
+          <div class="cw-kpi"><div class="val" id="kpiErrors">0</div><div class="lbl">Erreurs</div></div>
+          <div class="cw-kpi"><div class="val" id="kpiXP">0</div><div class="lbl">XP gagnés</div></div>
+        </div>
+
+        <div class="series-progress fade-up delay-1" data-ah="1">
+          <div class="quiz-top">
+            <div class="quiz-progress-label" id="cwSessionProgress">Progression 0/0</div>
+            <div class="quiz-timer" id="ahSessionProgressText">0%</div>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="ahSessionProgressBar">
+            <div class="progress-fill" id="ahSessionProgressFill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+
+          <!-- Sélecteur de grille -->
+          <div class="grid-selector" id="gridSelector"></div>
+
+          <div class="crossword-layout">
+            <!-- Grille -->
+            <div>
+              <div class="grid-wrapper">
+                <div class="cw-grid" id="cwGrid"></div>
+              </div>
+              <div class="cw-feedback" id="cwFeedback"></div>
+              <div class="cw-controls">
+                <button class="btn btn-ghost btn-sm" id="btnCheck" type="button">✓ Vérifier</button>
+                <button class="btn btn-ghost btn-sm" id="btnReveal" type="button">👁 Révéler mot</button>
+                <button class="btn btn-ghost btn-sm" id="btnClear" type="button">✕ Effacer grille</button>
+                <button class="btn btn-primary btn-sm" id="btnFinish" type="button">Terminer</button>
+              </div>
+            </div>
+
+            <!-- Définitions -->
+            <div class="clues-panel" id="cluesPanel">
+              <div class="clues-section-title">→ Horizontaux</div>
+              <div id="cluesAcross"></div>
+              <div class="clues-section-title">↓ Verticaux</div>
+              <div id="cluesDown"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">🧩</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Grille terminée !</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle">Voici vos résultats.</p>
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card"><div class="kpi-value" id="resSolved">0</div><div class="kpi-label">Mots trouvés</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resErrors">0</div><div class="kpi-label">Erreurs</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resXP">0</div><div class="kpi-label">XP</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resAccuracy">—</div><div class="kpi-label">Précision</div></div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+            </div>
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Autre grille</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <!-- Input caché pour capturer la frappe -->
+  <input id="cwHiddenInput" type="text" autocomplete="off" spellcheck="false">
+
+  <script src="../js/data/mots-croises-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  /* =========================================================
+     DÉFINITION DES GRILLES
+     Chaque grille :
+       rows, cols : dimensions
+       blacks     : liste de [r,c] cases noires (0-indexé)
+       words      : [{id, dir:'across'|'down', r, c, answer, clue}]
+         r,c = case de départ (0-indexé)
+  ========================================================= */
+  const GRIDS = [
+    {
+      name: 'Grille 1 — Informatique',
+      rows: 9, cols: 9,
+      /*
+        Disposition (. = blanc, # = noir) :
+        C L A V I E R # #
+        # # # # # A # # #
+        S O U R I S # # #
+        # # # # # E # # #
+        E C R A N # # # #
+        # # # # # # # # #
+        R E S E A U # # #
+        # # # # # # # # #
+        # # # # # # # # #
+      */
+      blacks: [
+        [0,7],[0,8],
+        [1,0],[1,1],[1,2],[1,3],[1,4],[1,6],[1,7],[1,8],
+        [2,6],[2,7],[2,8],
+        [3,0],[3,1],[3,2],[3,3],[3,4],[3,6],[3,7],[3,8],
+        [4,5],[4,6],[4,7],[4,8],
+        [5,0],[5,1],[5,2],[5,3],[5,4],[5,5],[5,6],[5,7],[5,8],
+        [6,6],[6,7],[6,8],
+        [7,0],[7,1],[7,2],[7,3],[7,4],[7,5],[7,6],[7,7],[7,8],
+        [8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8],
+      ],
+      words: [
+        { id:1, dir:'across', r:0, c:0, answer:'CLAVIER', clue:'Périphérique de saisie de texte' },
+        { id:2, dir:'across', r:2, c:0, answer:'SOURIS',  clue:'Périphérique de pointage' },
+        { id:3, dir:'across', r:4, c:0, answer:'ECRAN',   clue:'Affichage visuel de l\'ordinateur' },
+        { id:4, dir:'across', r:6, c:0, answer:'RESEAU',  clue:'Ensemble d\'ordinateurs interconnectés' },
+        { id:5, dir:'down',   r:0, c:5, answer:'VIAISE',  clue:null }, // colonne fantôme — retiré
+      ],
+    },
+
+    {
+      name: 'Grille 2 — Bureautique',
+      rows: 11, cols: 11,
+      /*
+        T A B L E A U # # # #
+        # # # # # # # # # # #
+        # F I C H I E R # # #
+        # # # # # # # # # # #
+        # # D O S S I E R # #
+        # # # # # # # # # # #
+        # # # # M A C R O # #
+        # # # # # # # # # # #
+        # # # # # S T Y L E #
+        # # # # # # # # # # #
+        # # # # # # # # # # #
+      */
+      blacks: [],
+      words: [
+        { id:1, dir:'across', r:0,  c:0, answer:'TABLEAU', clue:'Grille de données dans un tableur' },
+        { id:2, dir:'across', r:2,  c:1, answer:'FICHIER',  clue:'Unité de stockage de données numérique' },
+        { id:3, dir:'across', r:4,  c:2, answer:'DOSSIER',  clue:'Répertoire contenant des fichiers' },
+        { id:4, dir:'across', r:6,  c:4, answer:'MACRO',    clue:'Séquence d\'actions automatisées' },
+        { id:5, dir:'across', r:8,  c:5, answer:'STYLE',    clue:'Mise en forme prédéfinie dans Word' },
+        { id:6, dir:'down',   r:0,  c:0, answer:'TDDMS',    clue:null },
+      ],
+    },
+  ];
+
+  /* ------------------------------------------------------------------
+     On construit les grilles proprement depuis les mots (pas de blacks
+     prédéfinis, on calcule). Approche simplifiée : on place les mots
+     sur une grille, les cases non couvertes deviennent noires.
+  ------------------------------------------------------------------ */
+
+  /* Grilles définitives (simples, entièrement manually placées) */
+  const PUZZLES = [
+    {
+      name: 'Grille 1 — Informatique',
+      rows: 7, cols: 9,
+      // '#' = noir, lettre = blanc
+      layout: [
+        'CLAVIER##',
+        '######A##',
+        'SOURIS#A##'.slice(0,9),
+        '######A##',
+        'ECRAN#RAN'.slice(0,9),
+        '#########',
+        'LOGICIEL#',
+      ],
+      words: [
+        { id:1, dir:'across', r:0, c:0, answer:'CLAVIER', clue:'Périphérique de saisie de texte' },
+        { id:2, dir:'across', r:2, c:0, answer:'SOURIS',  clue:'Périphérique de pointage' },
+        { id:3, dir:'across', r:4, c:0, answer:'ECRAN',   clue:'Affichage visuel' },
+        { id:4, dir:'across', r:6, c:0, answer:'LOGICIEL',clue:'Programme informatique' },
+        { id:5, dir:'down',   r:0, c:6, answer:'LARIL',   clue:null }, // interne
+      ],
+    },
+  ];
+
+  /* =========================================================
+     On utilise une approche entièrement data-driven :
+     on définit chaque puzzle avec sa grille de lettres
+     et ses définitions. Simple, robuste, pas de bugs de placement.
+  ========================================================= */
+
+  const ALL_PUZZLES = [
+    /* ---- PUZZLE 1 ---- */
+    {
+      name: 'Informatique',
+      // grille 8×10, '#' = noir
+      grid: [
+        'CLAVIER###',
+        '#######A##',
+        'INTERNET##',
+        '#######E##',
+        'SOURIS#S##',
+        '#######E##',
+        'ECRAN#####',
+        '##########',
+      ],
+      clues: [
+        { id:1, dir:'across', r:0, c:0, len:7, answer:'CLAVIER',  clue:'Périphérique de saisie de texte' },
+        { id:2, dir:'across', r:2, c:0, len:8, answer:'INTERNET', clue:'Réseau mondial de communication' },
+        { id:3, dir:'across', r:4, c:0, len:6, answer:'SOURIS',   clue:'Périphérique de pointage' },
+        { id:4, dir:'across', r:6, c:0, len:5, answer:'ECRAN',    clue:'Affichage visuel de l\'ordinateur' },
+        { id:5, dir:'down',   r:0, c:7, len:6, answer:'AAEESE',   clue:null }, // colonne interne masquée
+      ],
+    },
+    /* ---- PUZZLE 2 ---- */
+    {
+      name: 'Bureautique',
+      grid: [
+        'TABLEAU###',
+        '#A########',
+        '#B########',
+        '#L########',
+        '#E########',
+        '#U########',
+        '#R#MACRO##',
+        '###########',
+      ],
+      clues: [
+        { id:1, dir:'across', r:0, c:0, len:7, answer:'TABLEAU', clue:'Grille de données dans un tableur' },
+        { id:2, dir:'across', r:6, c:3, len:5, answer:'MACRO',   clue:'Séquence d\'actions automatisées' },
+        { id:3, dir:'down',   r:0, c:1, len:7, answer:'TABLEUR', clue:'Logiciel de calcul (ex: Excel)' },
+      ],
+    },
+  ];
+
+  const FINAL_PUZZLES = window.MOTS_CROISES_DATA;
+
+  /* =========================================================
+     MOTEUR DU JEU
+  ========================================================= */
+  const PAGE_ID = 'mots-croises';
+
+  let state = {
+    puzzle:      null,
+    cells:       [],   // state.cells[r][c] = { letter, answer, wordIds, isBlack }
+    userLetters: [],   // userLetters[r][c] = char
+    cursorR:     0,
+    cursorC:     0,
+    curDir:      'across',
+    activeWordId: null,
+    words:       [],   // mot actif
+    solved:      new Set(),
+    errors:      0,
+    xp:          0,
+    typed:       0,
+  };
+  let sessionIdx = 0;
+  let sessionSolved = 0;
+  let sessionErrors = 0;
+  let sessionXP = 0;
+  let sessionTotalWords = 0;
+
+  let xpRulesShown = false;
+
+  /* ---- Construction de la structure de cellules ---- */
+  function buildCells(puzzle) {
+    const { rows, cols, layout, words } = puzzle;
+    const cells = [];
+    for (let r = 0; r < rows; r++) {
+      cells[r] = [];
+      for (let c = 0; c < cols; c++) {
+        const ch = layout[r][c];
+        cells[r][c] = {
+          isBlack:  ch === '#',
+          answer:   ch === '#' ? '' : ch,
+          wordIds:  [],
+          num:      null,
+        };
+      }
+    }
+    // Numéroter et associer les mots aux cellules
+    words.forEach(w => {
+      if (!w.clue) return; // mots internes sans définition : ignorés pour le jeu
+      for (let i = 0; i < w.answer.length; i++) {
+        const r = w.dir === 'across' ? w.r : w.r + i;
+        const c = w.dir === 'across' ? w.c + i : w.c;
+        if (r < rows && c < cols) {
+          cells[r][c].wordIds.push(w.id);
+        }
+      }
+      // Numéro sur la première case
+      if (!cells[w.r][w.c].num) cells[w.r][w.c].num = w.id;
+    });
+    return cells;
+  }
+
+  /* ---- Filtrer les mots jouables (avec clue) ---- */
+  function playableWords(puzzle) {
+    return puzzle.words.filter(w => w.clue);
+  }
+
+  /* =========================================================
+     RENDU DE LA GRILLE
+  ========================================================= */
+  function renderGrid() {
+    const puzzle = state.puzzle;
+    const { rows, cols } = puzzle;
+    const grid = document.getElementById('cwGrid');
+    grid.style.gridTemplateColumns = `repeat(${cols}, 38px)`;
+    grid.innerHTML = '';
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = state.cells[r][c];
+        const div  = document.createElement('div');
+        div.className   = 'cw-cell ' + (cell.isBlack ? 'black' : 'white');
+        div.dataset.r   = r;
+        div.dataset.c   = c;
+
+        if (!cell.isBlack) {
+          if (cell.num) {
+            const num = document.createElement('div');
+            num.className   = 'cw-cell-num';
+            num.textContent = cell.num;
+            div.appendChild(num);
+          }
+          const letter = document.createElement('div');
+          letter.className   = 'cw-cell-letter';
+          letter.id          = 'cell-' + r + '-' + c;
+          letter.textContent = state.userLetters[r][c] || '';
+          div.appendChild(letter);
+
+          div.addEventListener('click', () => onCellClick(r, c));
+        }
+        grid.appendChild(div);
+      }
+    }
+    highlightActive();
+  }
+
+  function getCellDiv(r, c) {
+    return document.querySelector(`.cw-cell[data-r="${r}"][data-c="${c}"]`);
+  }
+
+  function highlightActive() {
+    const puzzle  = state.puzzle;
+    const { rows, cols } = puzzle;
+    const activeW = playableWords(puzzle).find(w => w.id === state.activeWordId);
+
+    // Réinitialiser toutes les classes
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (!state.cells[r][c].isBlack) {
+          const div = getCellDiv(r, c);
+          if (!div) continue;
+          div.classList.remove('active-word', 'active-cursor', 'correct', 'wrong');
+          // Remettre correct/wrong pour les mots résolus
+        }
+      }
+    }
+
+    // Colorer les mots résolus
+    playableWords(puzzle).forEach(w => {
+      if (state.solved.has(w.id)) {
+        for (let i = 0; i < w.answer.length; i++) {
+          const r = w.dir === 'across' ? w.r : w.r + i;
+          const c = w.dir === 'across' ? w.c + i : w.c;
+          const div = getCellDiv(r, c);
+          if (div) div.classList.add('correct');
+        }
+      }
+    });
+
+    // Colorer le mot actif
+    if (activeW) {
+      for (let i = 0; i < activeW.answer.length; i++) {
+        const r = activeW.dir === 'across' ? activeW.r : activeW.r + i;
+        const c = activeW.dir === 'across' ? activeW.c + i : activeW.c;
+        const div = getCellDiv(r, c);
+        if (div && !state.solved.has(activeW.id)) div.classList.add('active-word');
+      }
+    }
+
+    // Curseur
+    const curDiv = getCellDiv(state.cursorR, state.cursorC);
+    if (curDiv && !state.cells[state.cursorR][state.cursorC].isBlack) {
+      curDiv.classList.remove('active-word');
+      curDiv.classList.add('active-cursor');
+    }
+  }
+
+  /* =========================================================
+     INTERACTION
+  ========================================================= */
+  function onCellClick(r, c) {
+    if (state.cells[r][c].isBlack) return;
+
+    // Si on reclique sur la même case : changer de direction
+    if (r === state.cursorR && c === state.cursorC) {
+      state.curDir = state.curDir === 'across' ? 'down' : 'across';
+    }
+
+    state.cursorR = r;
+    state.cursorC = c;
+
+    // Trouver le mot actif dans la direction courante
+    selectWordAtCursor();
+    highlightActive();
+    updateClueHighlight();
+    document.getElementById('cwHiddenInput').focus();
+  }
+
+  function selectWordAtCursor() {
+    const r = state.cursorR, c = state.cursorC;
+    const words = playableWords(state.puzzle);
+
+    // Cherche un mot de la direction courante qui contient (r,c)
+    let found = words.find(w => {
+      if (w.dir !== state.curDir) return false;
+      if (w.dir === 'across') return w.r === r && c >= w.c && c < w.c + w.answer.length;
+      return w.c === c && r >= w.r && r < w.r + w.answer.length;
+    });
+
+    // Si pas trouvé, chercher dans l'autre direction
+    if (!found) {
+      const other = state.curDir === 'across' ? 'down' : 'across';
+      found = words.find(w => {
+        if (w.dir !== other) return false;
+        if (w.dir === 'across') return w.r === r && c >= w.c && c < w.c + w.answer.length;
+        return w.c === c && r >= w.r && r < w.r + w.answer.length;
+      });
+      if (found) state.curDir = other;
+    }
+
+    state.activeWordId = found ? found.id : null;
+  }
+
+  /* ---- Frappe clavier ---- */
+  document.getElementById('cwHiddenInput').addEventListener('keydown', e => {
+    e.preventDefault();
+    const key = e.key.toUpperCase();
+
+    if (key === 'BACKSPACE') {
+      deleteLetter();
+    } else if (key === 'ARROWLEFT' || key === 'ARROWUP') {
+      moveCursor(-1);
+    } else if (key === 'ARROWRIGHT' || key === 'ARROWDOWN') {
+      moveCursor(+1);
+    } else if (key === 'TAB') {
+      nextWord(e.shiftKey ? -1 : 1);
+    } else if (/^[A-Z]$/.test(key)) {
+      typeLetter(key);
+    }
+  });
+
+  function typeLetter(key) {
+    const r = state.cursorR, c = state.cursorC;
+    if (state.cells[r][c].isBlack) return;
+
+    // Ne pas écraser une case d'un mot déjà résolu
+    const cell = state.cells[r][c];
+    const allResolved = cell.wordIds.filter(id => playableWords(state.puzzle).some(w=>w.id===id))
+                                    .every(id => state.solved.has(id));
+    if (allResolved) return;
+
+    state.userLetters[r][c] = key;
+    const el = document.getElementById('cell-' + r + '-' + c);
+    if (el) el.textContent = key;
+
+    // Vérifier si le mot actif est complété
+    checkActiveWord();
+    moveCursor(+1);
+    highlightActive();
+    updateClueHighlight();
+  }
+
+  function deleteLetter() {
+    const r = state.cursorR, c = state.cursorC;
+    if (state.userLetters[r][c]) {
+      state.userLetters[r][c] = '';
+      const el = document.getElementById('cell-' + r + '-' + c);
+      if (el) el.textContent = '';
+    } else {
+      moveCursor(-1);
+    }
+    highlightActive();
+  }
+
+  function moveCursor(dir) {
+    const { rows, cols, layout } = state.puzzle;
+    let r = state.cursorR, c = state.cursorC;
+    let attempts = 0;
+    do {
+      if (state.curDir === 'across') c += dir;
+      else r += dir;
+      if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+      attempts++;
+    } while (state.cells[r][c].isBlack && attempts < 20);
+
+    if (!state.cells[r][c].isBlack) {
+      state.cursorR = r;
+      state.cursorC = c;
+      selectWordAtCursor();
+    }
+  }
+
+  function nextWord(dir) {
+    const words = playableWords(state.puzzle);
+    let idx = words.findIndex(w => w.id === state.activeWordId);
+    idx = (idx + dir + words.length) % words.length;
+    const w = words[idx];
+    state.curDir      = w.dir;
+    state.cursorR     = w.r;
+    state.cursorC     = w.c;
+    state.activeWordId = w.id;
+    highlightActive();
+    updateClueHighlight();
+  }
+
+  /* =========================================================
+     VÉRIFICATION
+  ========================================================= */
+  function checkActiveWord() {
+    const w = playableWords(state.puzzle).find(x => x.id === state.activeWordId);
+    if (!w) return;
+    if (state.solved.has(w.id)) return;
+
+    let complete = true, correct = true;
+    for (let i = 0; i < w.answer.length; i++) {
+      const r = w.dir === 'across' ? w.r : w.r + i;
+      const c = w.dir === 'across' ? w.c + i : w.c;
+      const ul = state.userLetters[r][c] || '';
+      if (!ul) { complete = false; break; }
+      if (ul !== w.answer[i]) correct = false;
+    }
+
+    if (complete && correct) {
+      state.solved.add(w.id);
+      const xp = 5;
+      state.xp += xp;
+      state.typed++;
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+      showToast('✅ ' + w.answer + ' trouvé ! +' + xp + ' XP', 'success');
+      renderClues();
+      updateKPIs();
+
+      if (state.solved.size === playableWords(state.puzzle).length) {
+        setTimeout(finishPuzzle, 600);
+      }
+    }
+  }
+
+  function checkAll() {
+    let errorsThisCheck = 0;
+    const puzzle = state.puzzle;
+    playableWords(puzzle).forEach(w => {
+      if (state.solved.has(w.id)) return;
+      for (let i = 0; i < w.answer.length; i++) {
+        const r = w.dir === 'across' ? w.r : w.r + i;
+        const c = w.dir === 'across' ? w.c + i : w.c;
+        const ul = state.userLetters[r][c] || '';
+        if (ul && ul !== w.answer[i]) {
+          const div = getCellDiv(r, c);
+          if (div) {
+            div.classList.add('wrong');
+            setTimeout(() => div.classList.remove('wrong'), 1000);
+          }
+          errorsThisCheck++;
+        }
+      }
+    });
+
+    if (errorsThisCheck > 0) {
+      state.errors += errorsThisCheck;
+      state.typed  += errorsThisCheck;
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: errorsThisCheck, errors: errorsThisCheck, xp: 0 });
+      document.getElementById('cwFeedback').textContent = '❌ ' + errorsThisCheck + ' lettre(s) incorrecte(s).';
+      document.getElementById('cwFeedback').className   = 'cw-feedback err';
+      updateKPIs();
+    } else {
+      document.getElementById('cwFeedback').textContent = '✅ Tout est correct !';
+      document.getElementById('cwFeedback').className   = 'cw-feedback ok';
+    }
+    setTimeout(() => { document.getElementById('cwFeedback').textContent = ''; }, 2500);
+  }
+
+  function revealWord() {
+    const w = playableWords(state.puzzle).find(x => x.id === state.activeWordId);
+    if (!w) return;
+    for (let i = 0; i < w.answer.length; i++) {
+      const r = w.dir === 'across' ? w.r : w.r + i;
+      const c = w.dir === 'across' ? w.c + i : w.c;
+      state.userLetters[r][c] = w.answer[i];
+      const el = document.getElementById('cell-' + r + '-' + c);
+      if (el) el.textContent = w.answer[i];
+    }
+    state.errors += 3;
+    state.typed++;
+    recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 3, xp: 0 });
+    checkActiveWord();
+    highlightActive();
+    updateKPIs();
+  }
+
+  function clearGrid() {
+    const { rows, cols } = state.puzzle;
+    state.solved.clear();
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        state.userLetters[r][c] = '';
+        const el = document.getElementById('cell-' + r + '-' + c);
+        if (el) el.textContent = '';
+      }
+    }
+    highlightActive();
+    renderClues();
+    updateKPIs();
+  }
+
+  /* =========================================================
+     CLUES (DÉFINITIONS)
+  ========================================================= */
+  function renderClues() {
+    const words    = playableWords(state.puzzle);
+    const across   = words.filter(w => w.dir === 'across');
+    const down     = words.filter(w => w.dir === 'down');
+
+    document.getElementById('cluesAcross').innerHTML = across.map(w => clueHTML(w)).join('');
+    document.getElementById('cluesDown').innerHTML   = down.map(w => clueHTML(w)).join('');
+
+    // Events sur les clues
+    document.querySelectorAll('.clue-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const id  = parseInt(el.dataset.wid);
+        const dir = el.dataset.dir;
+        const w   = words.find(x => x.id === id && x.dir === dir);
+        if (!w) return;
+        state.curDir       = w.dir;
+        state.cursorR      = w.r;
+        state.cursorC      = w.c;
+        state.activeWordId = w.id;
+        highlightActive();
+        updateClueHighlight();
+        document.getElementById('cwHiddenInput').focus();
+      });
+    });
+
+    updateClueHighlight();
+  }
+
+  function clueHTML(w) {
+    const solved = state.solved.has(w.id) ? ' solved' : '';
+    return `<div class="clue-item${solved}" data-wid="${w.id}" data-dir="${w.dir}">
+      <span class="clue-num">${w.id}.</span>
+      <span>${w.clue}</span>
+    </div>`;
+  }
+
+  function updateClueHighlight() {
+    document.querySelectorAll('.clue-item').forEach(el => {
+      el.classList.remove('active');
+      if (parseInt(el.dataset.wid) === state.activeWordId && el.dataset.dir === state.curDir) {
+        el.classList.add('active');
+        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    });
+  }
+
+  /* =========================================================
+     SÉLECTEUR DE GRILLE
+  ========================================================= */
+  function buildGridSelector() {
+    const container = document.getElementById('gridSelector');
+    container.innerHTML = '';
+    FINAL_PUZZLES.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.className   = 'grid-btn' + (i === 0 ? ' active' : '');
+      btn.textContent = p.name;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.grid-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadPuzzle(i);
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  /* =========================================================
+     INIT PUZZLE
+  ========================================================= */
+  function loadPuzzle(idx) {
+    sessionIdx = idx;
+    const puzzle = FINAL_PUZZLES[idx];
+    state.puzzle = puzzle;
+    state.solved = new Set();
+    state.errors = 0;
+    state.xp     = 0;
+    state.typed  = 0;
+
+    // Construire les cellules
+    state.cells = buildCells(puzzle);
+
+    // Initialiser les lettres utilisateur
+    state.userLetters = [];
+    for (let r = 0; r < puzzle.rows; r++) {
+      state.userLetters[r] = [];
+      for (let c = 0; c < puzzle.cols; c++) {
+        state.userLetters[r][c] = '';
+      }
+    }
+
+    // Curseur sur la première case blanche
+    outer: for (let r = 0; r < puzzle.rows; r++) {
+      for (let c = 0; c < puzzle.cols; c++) {
+        if (!state.cells[r][c].isBlack) {
+          state.cursorR = r; state.cursorC = c; break outer;
+        }
+      }
+    }
+    state.curDir = 'across';
+    selectWordAtCursor();
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    document.getElementById('cwFeedback').textContent = '';
+    document.getElementById('cwSessionProgress').textContent = 'Progression ' + (idx + 1) + '/' + FINAL_PUZZLES.length;
+
+    updateKPIs();
+
+    // Afficher les règles XP seulement à la première session (premier puzzle)
+    if (idx === 0 && !xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Mots Croisés');
+    }
+
+    renderGrid();
+    renderClues();
+
+    document.getElementById('kpiTotal').textContent = sessionTotalWords;
+    document.getElementById('cwHiddenInput').focus();
+  }
+
+  /* =========================================================
+     FIN DE PUZZLE
+  ========================================================= */
+  function finishPuzzle() {
+    sessionSolved += state.solved.size;
+    sessionErrors += state.errors;
+    sessionXP += state.xp;
+
+    const isLast = sessionIdx >= FINAL_PUZZLES.length - 1;
+    if (!isLast) {
+      loadPuzzle(sessionIdx + 1);
+      showToast('Grille suivante', 'info');
+      return;
+    }
+
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const accuracy = (sessionSolved + sessionErrors) > 0 ? Math.round((sessionSolved / (sessionSolved + sessionErrors)) * 100) : 100;
+    document.getElementById('resSolved').textContent   = sessionSolved;
+    document.getElementById('resErrors').textContent   = sessionErrors;
+    document.getElementById('resXP').textContent       = sessionXP;
+    document.getElementById('resAccuracy').textContent = accuracy + '%';
+    if (typeof window.updateSessionProgressBar === 'function') {
+      window.updateSessionProgressBar(sessionSolved, sessionTotalWords);
+    }
+
+    if (sessionSolved === sessionTotalWords) launchConfetti();
+  }
+
+  /* =========================================================
+     KPIs
+  ========================================================= */
+  function updateKPIs() {
+    const solvedNow = sessionSolved + state.solved.size;
+    document.getElementById('kpiSolved').textContent = solvedNow;
+    document.getElementById('kpiErrors').textContent = sessionErrors + state.errors;
+    document.getElementById('kpiXP').textContent     = sessionXP + state.xp;
+    document.getElementById('kpiTotal').textContent  = sessionTotalWords;
+    if (typeof window.updateSessionProgressBar === 'function') {
+      window.updateSessionProgressBar(solvedNow, sessionTotalWords);
+    }
+  }
+
+  function startSession() {
+    if (!Array.isArray(FINAL_PUZZLES) || !FINAL_PUZZLES.length) {
+      showToast('Aucune grille disponible dans les données.', 'error');
+      return;
+    }
+    sessionIdx = 0;
+    sessionSolved = 0;
+    sessionErrors = 0;
+    sessionXP = 0;
+    sessionTotalWords = FINAL_PUZZLES.reduce((sum, p) => sum + playableWords(p).length, 0);
+    loadPuzzle(0);
+  }
+
+  /* =========================================================
+     EVENTS
+  ========================================================= */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+        
+    document.getElementById('gridSelector').style.display = 'none';
+    startSession();
+
+    document.getElementById('btnCheck').addEventListener('click', checkAll);
+    document.getElementById('btnReveal').addEventListener('click', revealWord);
+    document.getElementById('btnClear').addEventListener('click', clearGrid);
+    document.getElementById('btnFinish').addEventListener('click', finishPuzzle);
+    document.getElementById('btnRestart').addEventListener('click', () => {
+      document.getElementById('resultZone').classList.remove('show');
+      document.getElementById('gameZone').classList.remove('hidden');
+      startSession();
+    });
+
+    // Clic sur la grille pour focus l'input caché
+    document.getElementById('cwGrid').addEventListener('click', () => {
+      document.getElementById('cwHiddenInput').focus();
+    });
+  });
+  </script>
+</body>
+</html>
+

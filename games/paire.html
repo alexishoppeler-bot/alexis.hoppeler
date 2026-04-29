@@ -1,0 +1,383 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu des paires - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/paire.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🃏</div>
+          <h1>Jeu des paires</h1>
+          <p>Retrouvez si les deux cartes vont ensemble.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiCorrect">0</div>
+            <div class="kpi-label">Corrects</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiErrors">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiXP">0</div>
+            <div class="kpi-label">XP gagnés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiAccuracy">—</div>
+            <div class="kpi-label">Précision</div>
+          </div>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="paire-zone">
+
+            <div class="quiz-top">
+              <div class="quiz-progress-label">Progression <strong id="roundNum">1</strong> / <strong id="roundTotal">16</strong></div>
+              <span id="roundCategory" class="badge badge-blue"></span>
+            </div>
+            <div class="series-progress">
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            </div>
+
+            <div class="paire-question" id="paireQuestion">Ces deux éléments vont-ils ensemble ?</div>
+            <div class="paire-sub">Indique si c'est une paire correcte ou non.</div>
+
+            <!-- Deux cartes -->
+            <div class="cards-area" id="cardsArea">
+              <div class="flip-card" id="card1">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">🃏</div>
+                  <div class="flip-card-back">
+                    <div class="card-emoji" id="card1Emoji"></div>
+                    <div class="card-text"  id="card1Text"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;font-size:28px;color:var(--text3);font-weight:700;">+</div>
+              <div class="flip-card" id="card2">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">🃏</div>
+                  <div class="flip-card-back">
+                    <div class="card-emoji" id="card2Emoji"></div>
+                    <div class="card-text"  id="card2Text"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback-row">
+              <span class="feedback-msg" id="feedbackMsg"></span>
+            </div>
+
+            <!-- Explication -->
+            <div class="explication-box" id="explicBox"></div>
+
+            <!-- Boutons -->
+            <div class="answer-btns">
+              <button class="btn-oui" id="btnOui" type="button">✅ Oui, c'est une paire</button>
+              <button class="btn-non" id="btnNon" type="button">❌ Non, pas une paire</button>
+            </div>
+
+            <div class="key-hint">
+              Raccourcis : <kbd>O</kbd> = Oui &nbsp;|&nbsp; <kbd>N</kbd> = Non
+            </div>
+
+            <div style="margin-top:16px;">
+              <button class="btn btn-secondary btn-sm" id="btnNext" type="button" style="display:none;">Suivant →</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">🃏</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Exercice terminé !</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle">Voici vos résultats.</p>
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card"><div class="kpi-value" id="resCorrect">0</div><div class="kpi-label">Corrects</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resErrors">0</div><div class="kpi-label">Erreurs</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resXP">0</div><div class="kpi-label">XP</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resAccuracy">—</div><div class="kpi-label">Précision</div></div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+            </div>
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Recommencer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/paire-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  /* =========================================================
+     FONCTION D'ACCESSIBILITÉ CLAVIER
+  ========================================================= */
+  function makeKeyboardAccessible(el, clickHandler) {
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        clickHandler();
+      }
+    });
+  }
+
+  /* =========================================================
+     DONNÉES
+     Chaque entrée est soit une vraie paire (isPair:true)
+     soit une fausse paire (isPair:false).
+     card1 / card2 : { emoji, text }
+     explication : pourquoi c'est correct ou non
+  ========================================================= */
+  const QUESTIONS = window.PAIRE_DATA;
+
+  const PAGE_ID = 'paire';
+  const TOTAL   = QUESTIONS.length;
+
+  let session = {
+    questions: [],
+    index:     0,
+    correct:   0,
+    errors:    0,
+    xp:        0,
+    typed:     0,
+    answered:  false,
+  };
+  let autoAdvanceTimer = null;
+
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function scheduleAutoAdvance(callback, delay = 1300) {
+    clearAutoAdvance();
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      callback();
+    }, delay);
+  }
+
+  let xpRulesShown = false;
+
+  /* ===== UTILITAIRES ===== */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /* ===== INIT ===== */
+  function startSession() {
+    clearAutoAdvance();
+    session.questions = shuffle(QUESTIONS);
+    session.index     = 0;
+    session.correct   = 0;
+    session.errors    = 0;
+    session.xp        = 0;
+    session.typed     = 0;
+    session.answered  = false;
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    updateKPIs();
+
+    // Afficher les règles XP seulement à la première session
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Paire');
+    }
+
+    loadRound();
+  }
+
+  /* ===== CHARGER UNE QUESTION ===== */
+  function loadRound() {
+    clearAutoAdvance();
+    session.answered = false;
+    const q = session.questions[session.index];
+
+    document.getElementById('roundNum').textContent      = session.index + 1;
+    document.getElementById('roundTotal').textContent    = TOTAL;
+    document.getElementById('roundCategory').textContent = q.category;
+    document.getElementById('feedbackMsg').textContent   = '';
+    document.getElementById('feedbackMsg').className     = 'feedback-msg';
+    document.getElementById('explicBox').classList.remove('show');
+    document.getElementById('explicBox').className       = 'explication-box';
+    document.getElementById('btnNext').style.display     = 'none';
+    document.getElementById('btnOui').disabled           = false;
+    document.getElementById('btnNon').disabled           = false;
+
+    const pct = Math.round((session.index / TOTAL) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    // Remplir les cartes
+    document.getElementById('card1Emoji').textContent = q.card1.emoji;
+    document.getElementById('card1Text').textContent  = q.card1.text;
+    document.getElementById('card2Emoji').textContent = q.card2.emoji;
+    document.getElementById('card2Text').textContent  = q.card2.text;
+
+    // Retourner les cartes (reset puis flip avec délai)
+    const c1 = document.getElementById('card1');
+    const c2 = document.getElementById('card2');
+    c1.classList.remove('flipped', 'match', 'no-match');
+    c2.classList.remove('flipped', 'match', 'no-match');
+
+    // Retourner les cartes avec un léger délai
+    setTimeout(() => {
+      c1.classList.add('flipped');
+      setTimeout(() => c2.classList.add('flipped'), 150);
+    }, 100);
+  }
+
+  /* ===== RÉPONDRE ===== */
+  function answer(userSaysPair) {
+    if (session.answered) return;
+    session.answered = true;
+    session.typed++;
+
+    const q    = session.questions[session.index];
+    const isOk = (userSaysPair === q.isPair);
+
+    document.getElementById('btnOui').disabled = true;
+    document.getElementById('btnNon').disabled = true;
+    const fb  = document.getElementById('feedbackMsg');
+    const c1  = document.getElementById('card1');
+    const c2  = document.getElementById('card2');
+    const exp = document.getElementById('explicBox');
+
+    if (isOk) {
+      session.correct++;
+      const xp = 2;
+      session.xp += xp;
+
+      fb.textContent = '✅ Correct ! +' + xp + ' XP';
+      fb.className   = 'feedback-msg ok';
+
+      c1.classList.add('match');
+      c2.classList.add('match');
+
+      exp.textContent = q.explication;
+      exp.className   = 'explication-box ok show';
+
+      showToast('+' + xp + ' XP', 'success');
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+    } else {
+      session.errors++;
+
+      fb.textContent = '❌ Incorrect !';
+      fb.className   = 'feedback-msg err';
+
+      c1.classList.add('no-match');
+      c2.classList.add('no-match');
+
+      // Shake
+      const area = document.getElementById('cardsArea');
+      area.classList.add('shake');
+      setTimeout(() => area.classList.remove('shake'), 400);
+
+      exp.textContent = q.explication;
+      exp.className   = 'explication-box err show';
+
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+    }
+
+    updateKPIs();
+    scheduleAutoAdvance(nextRound);
+  }
+
+  /* ===== SUIVANT ===== */
+  function nextRound() {
+    session.index++;
+    if (session.index >= TOTAL) {
+      finishSession();
+    } else {
+      loadRound();
+    }
+  }
+
+  /* ===== FIN ===== */
+  function finishSession() {
+    clearAutoAdvance();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const accuracy = calcAccuracy(session.correct, session.typed);
+    document.getElementById('resCorrect').textContent  = session.correct;
+    document.getElementById('resErrors').textContent   = session.errors;
+    document.getElementById('resXP').textContent       = session.xp;
+    document.getElementById('resAccuracy').textContent = accuracy + '%';
+
+    if (accuracy >= 80) launchConfetti();
+  }
+
+  /* ===== KPIs ===== */
+  function updateKPIs() {
+    updateExerciseScoreKpis(session);
+  }
+
+  /* ===== EVENTS ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+    document.getElementById('btnOui').addEventListener('click', () => answer(true));
+    document.getElementById('btnNon').addEventListener('click', () => answer(false));
+    document.getElementById('btnNext').addEventListener('click', nextRound);
+    setupRestartButton(startSession);
+
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT') return;
+      const key = e.key.toLowerCase();
+      if (key === 'o' && !session.answered) answer(true);
+      else if (key === 'n' && !session.answered) answer(false);
+    });
+
+    startSession();
+  });
+  </script>
+</body>
+</html>

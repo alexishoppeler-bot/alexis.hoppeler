@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <title>Test Cherche-Clique</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .section { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+    .error { color: red; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <h1>Test Cherche-Clique</h1>
+
+  <div class="section">
+    <h2>1. Chargement des données</h2>
+    <div id="dataStatus">Vérification...</div>
+  </div>
+
+  <div class="section">
+    <h2>2. Contenu des données</h2>
+    <div id="dataContent">Chargement...</div>
+  </div>
+
+  <div class="section">
+    <h2>3. État du jeu</h2>
+    <div id="gameStatus">À déterminer...</div>
+  </div>
+
+  <script src="../js/data/cherche-clique-data.js"></script>
+  <script>
+    console.log('Script test chargé');
+
+    // Test 1: Vérifier données
+    const dataSection = document.getElementById('dataStatus');
+    if (window.CHERCHE_CLIQUE_DATA && window.CHERCHE_CLIQUE_DATA.length > 0) {
+      dataSection.innerHTML = `<span class="success">✅ Données chargées: ${window.CHERCHE_CLIQUE_DATA.length} items</span>`;
+    } else {
+      dataSection.innerHTML = `<span class="error">❌ Données NON chargées</span>`;
+    }
+
+    // Test 2: Afficher contenu
+    const contentSection = document.getElementById('dataContent');
+    if (window.CHERCHE_CLIQUE_DATA && window.CHERCHE_CLIQUE_DATA.length > 0) {
+      const items = window.CHERCHE_CLIQUE_DATA.slice(0, 5).map(item =>
+        `<div>${item.icon} ${item.label}</div>`
+      ).join('');
+      contentSection.innerHTML = `<p>Premiers items:</p>${items}`;
+    } else {
+      contentSection.innerHTML = `<span class="error">Pas de données à afficher</span>`;
+    }
+
+    // Test 3: État jeu
+    const gameSection = document.getElementById('gameStatus');
+    gameSection.innerHTML = `
+      <p>window.CHERCHE_CLIQUE_DATA = ${typeof window.CHERCHE_CLIQUE_DATA}</p>
+      <p>Longueur = ${window.CHERCHE_CLIQUE_DATA ? window.CHERCHE_CLIQUE_DATA.length : 'undefined'}</p>
+      <p>Vérifiez la console (F12) pour plus de détails</p>
+    `;
+
+    console.log('CHERCHE_CLIQUE_DATA:', window.CHERCHE_CLIQUE_DATA);
+  </script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tri rapide - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/trier.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">📂</div>
+          <h1>Tri rapide</h1>
+          <p>Glissez chaque element dans la bonne categorie.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiCorrect">0</div>
+            <div class="kpi-label">Bien classés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiErrors">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiXP">0</div>
+            <div class="kpi-label">XP gagnés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiAccuracy">—</div>
+            <div class="kpi-label">Précision</div>
+          </div>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="trier-zone">
+
+            <div class="quiz-top">
+              <div class="quiz-progress-label">Progression <strong id="roundNum">1</strong> / <strong id="roundTotal">5</strong></div>
+              <span id="roundTheme" class="badge badge-purple"></span>
+            </div>
+            <div class="series-progress">
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            </div>
+
+            <!-- Banque -->
+            <div class="items-bank-label">Éléments à classer</div>
+            <div class="items-bank" id="itemsBank"></div>
+
+            <!-- Groupes -->
+            <div class="groups-grid" id="groupsGrid"></div>
+
+            <!-- Feedback -->
+            <div class="feedback-row">
+              <span class="feedback-msg" id="feedbackMsg"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="action-row">
+              <button class="btn btn-ghost btn-sm" id="btnReset" type="button">↺ Réinitialiser</button>
+              <button class="btn btn-primary" id="btnValidate" type="button">Valider ✓</button>
+              <button class="btn btn-secondary" id="btnNext" type="button" style="display:none;">Série suivante →</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">📂</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Exercice terminé !</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle">Voici vos résultats.</p>
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card"><div class="kpi-value" id="resCorrect">0</div><div class="kpi-label">Bien classés</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resErrors">0</div><div class="kpi-label">Erreurs</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resXP">0</div><div class="kpi-label">XP</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resAccuracy">—</div><div class="kpi-label">Précision</div></div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+            </div>
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Recommencer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/trier-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  /* =========================================================
+     DONNÉES
+     groups : [{label, emoji, items:[]}]
+     Chaque série a N groupes avec leurs éléments.
+  ========================================================= */
+  const SERIES = window.TRIER_DATA;
+
+  const PAGE_ID = 'trier';
+
+  /* =========================================================
+     ÉTAT
+  ========================================================= */
+  let session = {
+    seriesIdx:  0,
+    correct:    0,
+    errors:     0,
+    xp:         0,
+    typed:      0,
+    answered:   false,
+    // état du round
+    currentSeries: null,
+    placed: {},      // {itemText: groupIdx} — où l'utilisateur a mis chaque item
+    dragItem: null,
+    dragOrigin: null, // 'bank' | groupIdx
+  };
+  let autoAdvanceTimer = null;
+
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function scheduleAutoAdvance(callback, delay = 1700) {
+    clearAutoAdvance();
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      callback();
+    }, delay);
+  }
+
+  let xpRulesShown = false;
+
+  /* ===== UTILS ===== */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function allItems(series) {
+    return series.groups.flatMap(g => g.items);
+  }
+
+  /* ===== INIT ===== */
+  function startSession() {
+    clearAutoAdvance();
+    session.seriesIdx = 0;
+    session.correct   = 0;
+    session.errors    = 0;
+    session.xp        = 0;
+    session.typed     = 0;
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    updateKPIs();
+
+    // Afficher les règles XP seulement à la première session
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Trier');
+    }
+
+    loadRound();
+  }
+
+  /* ===== CHARGER UNE SÉRIE ===== */
+  function loadRound() {
+    clearAutoAdvance();
+    session.answered = false;
+    session.placed   = {};
+    session.dragItem = null;
+
+    const series = SERIES[session.seriesIdx];
+    session.currentSeries = series;
+
+    document.getElementById('roundNum').textContent   = session.seriesIdx + 1;
+    document.getElementById('roundTotal').textContent = SERIES.length;
+    document.getElementById('roundTheme').textContent = series.theme;
+    document.getElementById('feedbackMsg').textContent = '';
+    document.getElementById('feedbackMsg').className   = 'feedback-msg';
+    document.getElementById('btnNext').style.display   = 'none';
+    document.getElementById('btnValidate').style.display = 'inline-flex';
+    document.getElementById('btnValidate').disabled    = false;
+    document.getElementById('btnReset').disabled       = false;
+
+    const pct = Math.round((session.seriesIdx / SERIES.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    renderBank(series);
+    renderGroups(series);
+  }
+
+  /* ===== BANQUE ===== */
+  function renderBank(series) {
+    const bank = document.getElementById('itemsBank');
+    bank.innerHTML = '';
+    const items = shuffle(allItems(series));
+    items.forEach(item => {
+      bank.appendChild(makeChip(item, 'bank'));
+    });
+    setupDropZone(bank, 'bank');
+  }
+
+  /* ===== GROUPES ===== */
+  function renderGroups(series) {
+    const grid = document.getElementById('groupsGrid');
+    grid.innerHTML = '';
+    series.groups.forEach((g, gi) => {
+      const col = document.createElement('div');
+      col.className = 'group-col group-' + gi;
+
+      const header = document.createElement('div');
+      header.className   = 'group-header';
+      header.innerHTML   = `<span>${g.emoji}</span><span>${g.label}</span>`;
+
+      const drop = document.createElement('div');
+      drop.className  = 'group-drop';
+      drop.id         = 'group-drop-' + gi;
+      setupDropZone(drop, gi);
+
+      col.appendChild(header);
+      col.appendChild(drop);
+      grid.appendChild(col);
+    });
+  }
+
+  /* ===== CHIP ===== */
+  function makeChip(text, origin) {
+    const chip = document.createElement('div');
+    chip.className    = 'sort-chip';
+    chip.textContent  = text;
+    chip.draggable    = true;
+    chip.dataset.item = text;
+
+    chip.addEventListener('dragstart', e => {
+      session.dragItem   = text;
+      session.dragOrigin = origin;
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', text);
+    });
+    chip.addEventListener('dragend', () => {
+      chip.classList.remove('dragging');
+      session.dragItem = null;
+    });
+
+    // Tactile : clic pour sélectionner puis clic sur groupe
+    chip.addEventListener('click', () => onChipClick(chip, text, origin));
+
+    return chip;
+  }
+
+  /* ===== SÉLECTION PAR CLIC (mobile) ===== */
+  let selectedChip = null;
+
+  function onChipClick(chip, text, origin) {
+    if (session.answered) return;
+
+    // Si un chip est déjà sélectionné, le désélectionner
+    if (selectedChip && selectedChip !== chip) {
+      selectedChip.style.outline = '';
+      selectedChip.style.boxShadow = '';
+    }
+
+    if (selectedChip === chip) {
+      // Désélectionner
+      chip.style.outline   = '';
+      chip.style.boxShadow = '';
+      selectedChip = null;
+    } else {
+      // Sélectionner
+      chip.style.outline   = '2px solid var(--accent)';
+      chip.style.boxShadow = '0 0 0 4px rgba(79,142,247,0.2)';
+      selectedChip = chip;
+      session.dragItem   = text;
+      session.dragOrigin = origin;
+    }
+  }
+
+  /* ===== DROP ZONES ===== */
+  function setupDropZone(el, groupId) {
+    el.addEventListener('dragover', e => {
+      e.preventDefault();
+      el.classList.add('drag-over');
+    });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      const item = e.dataTransfer.getData('text/plain') || session.dragItem;
+      if (!item) return;
+      moveItem(item, groupId);
+    });
+
+    // Clic sur zone (pour mobile avec chip sélectionné)
+    el.addEventListener('click', () => {
+      if (!selectedChip || !session.dragItem) return;
+      moveItem(session.dragItem, groupId);
+      selectedChip.style.outline   = '';
+      selectedChip.style.boxShadow = '';
+      selectedChip = null;
+      session.dragItem = null;
+    });
+  }
+
+  /* ===== DÉPLACER UN ITEM ===== */
+  function moveItem(itemText, targetGroup) {
+    if (session.answered) return;
+
+    // Retirer le chip de partout
+    removeChipFromDOM(itemText);
+
+    // Mettre à jour le placement
+    if (targetGroup === 'bank') {
+      delete session.placed[itemText];
+      document.getElementById('itemsBank').appendChild(makeChip(itemText, 'bank'));
+    } else {
+      session.placed[itemText] = targetGroup;
+      const drop = document.getElementById('group-drop-' + targetGroup);
+      if (drop) drop.appendChild(makeChip(itemText, targetGroup));
+    }
+  }
+
+  function removeChipFromDOM(itemText) {
+    document.querySelectorAll(`.sort-chip[data-item="${CSS.escape(itemText)}"]`).forEach(el => el.remove());
+  }
+
+  /* ===== VALIDER ===== */
+  function validate() {
+    if (session.answered) return;
+
+    const series = session.currentSeries;
+    // Vérifier que tous les items sont placés
+    const total = allItems(series).length;
+    if (Object.keys(session.placed).length < total) {
+      showToast('Place tous les éléments avant de valider !', 'info');
+      return;
+    }
+
+    session.answered = true;
+    session.typed += total;
+
+    let roundCorrect = 0;
+    let roundErrors  = 0;
+
+    // Vérifier chaque placement
+    series.groups.forEach((g, gi) => {
+      g.items.forEach(item => {
+        const placedIn = session.placed[item];
+        const chip = document.querySelector(`.sort-chip[data-item="${CSS.escape(item)}"]`);
+        if (placedIn === gi) {
+          roundCorrect++;
+          if (chip) chip.classList.add('correct');
+        } else {
+          roundErrors++;
+          if (chip) chip.classList.add('wrong');
+          // Montrer où ça aurait dû aller
+          const correctDrop = document.getElementById('group-drop-' + gi);
+          if (correctDrop && placedIn !== gi) {
+            const correctChip = document.createElement('div');
+            correctChip.className   = 'sort-chip correct';
+            correctChip.textContent = '✓ ' + item;
+            correctChip.style.fontSize = '11px';
+            correctDrop.appendChild(correctChip);
+          }
+        }
+      });
+    });
+
+    session.correct += roundCorrect;
+    session.errors  += roundErrors;
+
+    const xp = Math.max(0, roundCorrect * 2 - roundErrors);
+    session.xp += xp;
+
+    const fb = document.getElementById('feedbackMsg');
+    if (roundErrors === 0) {
+      fb.textContent = '✅ Parfait ! Tout est bien classé. +' + xp + ' XP';
+      fb.className   = 'feedback-msg ok';
+      launchConfetti();
+    } else {
+      fb.textContent = roundCorrect + '/' + total + ' corrects. +' + xp + ' XP';
+      fb.className   = roundCorrect >= total / 2 ? 'feedback-msg ok' : 'feedback-msg err';
+    }
+
+    recordExerciseProgress(PAGE_ID, { correct: roundCorrect, typed: total, errors: roundErrors, xp });
+
+    document.getElementById('btnValidate').style.display = 'none';
+    document.getElementById('btnReset').disabled         = true;
+    // Bloquer les drags
+    document.querySelectorAll('.sort-chip').forEach(c => { c.draggable = false; });
+
+    updateKPIs();
+    showToast(roundErrors === 0 ? 'Parfait ! +' + xp + ' XP' : roundCorrect + '/' + total + ' corrects', roundErrors === 0 ? 'success' : 'info');
+    scheduleAutoAdvance(nextRound);
+  }
+
+  /* ===== RESET ===== */
+  function resetRound() {
+    if (session.answered) return;
+    session.placed   = {};
+    selectedChip     = null;
+    session.dragItem = null;
+    renderBank(session.currentSeries);
+    renderGroups(session.currentSeries);
+    document.getElementById('feedbackMsg').textContent = '';
+  }
+
+  /* ===== SUIVANT ===== */
+  function nextRound() {
+    session.seriesIdx++;
+    if (session.seriesIdx >= SERIES.length) {
+      finishSession();
+    } else {
+      loadRound();
+    }
+  }
+
+  /* ===== FIN ===== */
+  function finishSession() {
+    clearAutoAdvance();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const accuracy = calcAccuracy(session.correct, session.typed);
+    document.getElementById('resCorrect').textContent  = session.correct;
+    document.getElementById('resErrors').textContent   = session.errors;
+    document.getElementById('resXP').textContent       = session.xp;
+    document.getElementById('resAccuracy').textContent = accuracy + '%';
+
+    if (accuracy >= 80) launchConfetti();
+  }
+
+  /* ===== KPIs ===== */
+  function updateKPIs() {
+    updateExerciseScoreKpis(session);
+  }
+
+  /* ===== EVENTS ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+    document.getElementById('btnValidate').addEventListener('click', validate);
+    document.getElementById('btnReset').addEventListener('click', resetRound);
+    document.getElementById('btnNext').addEventListener('click', nextRound);
+    setupRestartButton(startSession);
+
+    startSession();
+  });
+  </script>
+</body>
+</html>
+

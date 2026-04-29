@@ -1,0 +1,469 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classement - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/classement.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">📊</div>
+          <h1>Classement</h1>
+          <p>Place les éléments dans le bon ordre.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiCorrect">0</div>
+            <div class="kpi-label">Séries réussies</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiErrors">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiXP">0</div>
+            <div class="kpi-label">XP gagnés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiAccuracy">—</div>
+            <div class="kpi-label">Précision</div>
+          </div>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="rank-zone">
+
+            <div class="quiz-top">
+              <div class="quiz-progress-label">Progression <strong id="roundNum">1</strong> / <strong id="roundTotal">8</strong></div>
+              <span id="roundCategory" class="badge badge-purple"></span>
+            </div>
+
+            <div class="series-progress">
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            </div>
+
+            <div class="rank-question" id="rankQuestion"></div>
+            <div class="rank-instruction" id="rankInstruction"></div>
+
+            <div class="rank-list" id="rankList"></div>
+
+            <div class="feedback-row">
+              <span class="feedback-msg" id="feedbackMsg"></span>
+            </div>
+
+            <div class="correction-box" id="correctionBox"></div>
+
+            <div class="action-row" style="margin-top: 16px;">
+              <button class="btn btn-ghost btn-sm" id="btnReset" type="button">↺ Remélanger</button>
+              <button class="btn btn-primary" id="btnValidate" type="button">Valider ✓</button>
+              <button class="btn btn-secondary" id="btnNext" type="button" style="display:none;">Suivant →</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">🏆</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Exercice terminé !</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle">Voici vos résultats pour cette session.</p>
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card">
+                <div class="kpi-value" id="resCorrect">0</div>
+                <div class="kpi-label">Séries réussies</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resErrors">0</div>
+                <div class="kpi-label">Erreurs</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resXP">0</div>
+                <div class="kpi-label">XP</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resAccuracy">—</div>
+                <div class="kpi-label">Précision</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+            </div>
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Recommencer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/classement-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  /* ===== DONNÉES =====
+     items : ordre croissant du rang 1 → N (du plus petit/premier au plus grand/dernier)
+     label : description de l'ordre attendu
+  */
+  const QUESTIONS = window.CLASSEMENT_DATA;
+
+  const PAGE_ID = 'classement';
+  const TOTAL   = QUESTIONS.length;
+
+  let session = {
+    questions: [],
+    index:     0,
+    correct:   0,
+    errors:    0,
+    xp:        0,
+    typed:     0,
+    answered:  false,
+    // drag state
+    dragSrc:   null,
+  };
+  let autoAdvanceTimer = null;
+
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function scheduleAutoAdvance(callback, delay = 1700) {
+    clearAutoAdvance();
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      callback();
+    }, delay);
+  }
+
+  let xpRulesShown = false;
+
+  /* ===== UTILITAIRES ===== */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function arraysEqual(a, b) {
+    return a.length === b.length && a.every((v, i) => v === b[i]);
+  }
+
+  /* ===== INIT ===== */
+  function startSession() {
+    clearAutoAdvance();
+    session.questions = shuffle(QUESTIONS);
+    session.index     = 0;
+    session.correct   = 0;
+    session.errors    = 0;
+    session.xp        = 0;
+    session.typed     = 0;
+    session.answered  = false;
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    updateKPIs();
+
+    // Afficher les règles XP seulement à la première session
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Classement');
+    }
+
+    loadRound();
+  }
+
+  /* ===== CHARGER UNE QUESTION ===== */
+  function loadRound() {
+    clearAutoAdvance();
+    session.answered = false;
+    session.dragSrc  = null;
+
+    const q = session.questions[session.index];
+
+    document.getElementById('roundNum').textContent      = session.index + 1;
+    document.getElementById('roundTotal').textContent    = TOTAL;
+    document.getElementById('roundCategory').textContent = q.category;
+    document.getElementById('rankQuestion').textContent  = q.question;
+    document.getElementById('rankInstruction').textContent = '↕ ' + q.label;
+    document.getElementById('feedbackMsg').textContent   = '';
+    document.getElementById('feedbackMsg').className     = 'feedback-msg';
+    document.getElementById('correctionBox').classList.remove('show');
+    document.getElementById('btnNext').style.display     = 'none';
+    document.getElementById('btnValidate').style.display = 'inline-flex';
+    document.getElementById('btnValidate').disabled      = false;
+    document.getElementById('btnReset').disabled         = false;
+
+    // Progress bar
+    const pct = Math.round((session.index / TOTAL) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    renderList(shuffle(q.items));
+  }
+
+  /* ===== RENDU DE LA LISTE ===== */
+  function renderList(items) {
+    const list = document.getElementById('rankList');
+    list.innerHTML = '';
+
+    items.forEach((text, i) => {
+      const item = document.createElement('div');
+      item.className       = 'rank-item';
+      item.draggable       = true;
+      item.dataset.text    = text;
+
+      const num = document.createElement('div');
+      num.className = 'rank-num';
+      num.textContent = i + 1;
+
+      const label = document.createElement('span');
+      label.textContent = text;
+      label.style.flex  = '1';
+
+      const arrows = document.createElement('div');
+      arrows.className = 'rank-arrows';
+
+      const up = document.createElement('button');
+      up.className   = 'rank-arrow-btn';
+      up.textContent = '▲';
+      up.title       = 'Monter';
+      up.addEventListener('click', (e) => { e.stopPropagation(); moveItem(item, -1); });
+
+      const down = document.createElement('button');
+      down.className   = 'rank-arrow-btn';
+      down.textContent = '▼';
+      down.title       = 'Descendre';
+      down.addEventListener('click', (e) => { e.stopPropagation(); moveItem(item, +1); });
+
+      arrows.appendChild(up);
+      arrows.appendChild(down);
+
+      const handle = document.createElement('span');
+      handle.className   = 'rank-drag-handle';
+      handle.textContent = '⠿';
+      handle.title       = 'Glisser-déposer';
+
+      item.appendChild(num);
+      item.appendChild(label);
+      item.appendChild(arrows);
+
+      // Drag & drop events
+      item.addEventListener('dragstart', onDragStart);
+      item.addEventListener('dragover',  onDragOver);
+      item.addEventListener('dragleave', onDragLeave);
+      item.addEventListener('drop',      onDrop);
+      item.addEventListener('dragend',   onDragEnd);
+
+      list.appendChild(item);
+    });
+
+    updateNums();
+  }
+
+  /* ===== DÉPLACER AVEC FLÈCHES ===== */
+  function moveItem(item, dir) {
+    if (session.answered) return;
+    const list = document.getElementById('rankList');
+    const items = [...list.children];
+    const idx = items.indexOf(item);
+    const target = idx + dir;
+    if (target < 0 || target >= items.length) return;
+    if (dir === -1) {
+      list.insertBefore(item, items[target]);
+    } else {
+      list.insertBefore(item, items[target].nextSibling);
+    }
+    updateNums();
+  }
+
+  function updateNums() {
+    const list = document.getElementById('rankList');
+    [...list.children].forEach((item, i) => {
+      item.querySelector('.rank-num').textContent = i + 1;
+    });
+  }
+
+  /* ===== DRAG & DROP ===== */
+  function onDragStart(e) {
+    if (session.answered) { e.preventDefault(); return; }
+    session.dragSrc = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function onDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (this !== session.dragSrc) this.classList.add('drag-over');
+  }
+
+  function onDragLeave() {
+    this.classList.remove('drag-over');
+  }
+
+  function onDrop(e) {
+    e.stopPropagation();
+    this.classList.remove('drag-over');
+    if (!session.dragSrc || this === session.dragSrc) return;
+
+    const list  = document.getElementById('rankList');
+    const items = [...list.children];
+    const srcIdx = items.indexOf(session.dragSrc);
+    const dstIdx = items.indexOf(this);
+
+    if (srcIdx < dstIdx) {
+      list.insertBefore(session.dragSrc, this.nextSibling);
+    } else {
+      list.insertBefore(session.dragSrc, this);
+    }
+    updateNums();
+  }
+
+  function onDragEnd() {
+    this.classList.remove('dragging');
+    document.querySelectorAll('.rank-item').forEach(el => el.classList.remove('drag-over'));
+    session.dragSrc = null;
+  }
+
+  /* ===== VALIDER ===== */
+  function validate() {
+    if (session.answered) return;
+    session.answered = true;
+    session.typed++;
+
+    const q       = session.questions[session.index];
+    const list    = document.getElementById('rankList');
+    const current = [...list.children].map(el => el.dataset.text);
+    const isOk    = arraysEqual(current, q.items);
+
+    document.getElementById('btnValidate').style.display = 'none';
+    document.getElementById('btnReset').disabled         = true;
+    // Colorer les items
+    [...list.children].forEach((item, i) => {
+      if (item.dataset.text === q.items[i]) {
+        item.classList.add('correct');
+      } else {
+        item.classList.add('wrong');
+      }
+      item.draggable = false;
+      item.querySelectorAll('.rank-arrow-btn').forEach(b => b.disabled = true);
+    });
+
+    const fb = document.getElementById('feedbackMsg');
+
+    if (isOk) {
+      session.correct++;
+      const xp = 5;
+      session.xp += xp;
+      fb.textContent = '✅ Parfait ! Bon ordre. +' + xp + ' XP';
+      fb.className   = 'feedback-msg ok';
+      showToast('Parfait ! +' + xp + ' XP', 'success');
+      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+      launchConfetti();
+    } else {
+      session.errors++;
+      fb.textContent = '❌ Pas tout à fait…';
+      fb.className   = 'feedback-msg err';
+
+      // Afficher la correction
+      const corrBox = document.getElementById('correctionBox');
+      corrBox.innerHTML = '📋 Ordre correct : <strong>' + q.items.join(' → ') + '</strong>';
+      corrBox.classList.add('show');
+
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+    }
+
+    updateKPIs();
+    scheduleAutoAdvance(nextRound);
+  }
+
+  /* ===== SUIVANT ===== */
+  function nextRound() {
+    session.index++;
+    if (session.index >= TOTAL) {
+      finishSession();
+    } else {
+      loadRound();
+    }
+  }
+
+  /* ===== FIN ===== */
+  function finishSession() {
+    clearAutoAdvance();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+
+    // Progress bar 100%
+    document.getElementById('progressFill').style.width = '100%';
+
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const accuracy = calcAccuracy(session.correct, session.typed);
+    document.getElementById('resCorrect').textContent  = session.correct;
+    document.getElementById('resErrors').textContent   = session.errors;
+    document.getElementById('resXP').textContent       = session.xp;
+    document.getElementById('resAccuracy').textContent = accuracy + '%';
+
+    if (accuracy >= 80) launchConfetti();
+  }
+
+  /* ===== KPIs ===== */
+  function updateKPIs() {
+    updateExerciseScoreKpis(session);
+  }
+
+  /* ===== EVENTS ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+    document.getElementById('btnValidate').addEventListener('click', validate);
+    document.getElementById('btnNext').addEventListener('click', nextRound);
+    setupRestartButton(startSession);
+    document.getElementById('btnReset').addEventListener('click', () => {
+      if (session.answered) return;
+      const q = session.questions[session.index];
+      renderList(shuffle(q.items));
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !session.answered) validate();
+    });
+
+    startSession();
+  });
+  </script>
+</body>
+</html>
+
+

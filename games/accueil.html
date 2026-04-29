@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accueil - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/accueil.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <section class="site-status-banner fade-up" aria-label="Information sur le statut du site">
+          <div class="site-status-badge">Information</div>
+          <div class="site-status-content">
+            <strong>Site en construction</strong>
+            <p>Cette plateforme est actuellement en phase de test. Certains contenus, exercices ou fonctionnalités peuvent encore changer.</p>
+          </div>
+        </section>
+
+        <!-- Présentation -->
+        <div class="next-card fade-up">
+          <div class="hero-orb hero-orb-a"></div>
+          <div class="hero-orb hero-orb-b"></div>
+          <div class="next-card-body">
+            <div class="next-card-topline">
+              <div class="next-card-label">Bienvenue</div>
+              <div class="hero-pills" aria-hidden="true">
+                <span class="hero-pill">Simple</span>
+                <span class="hero-pill">Pas à pas</span>
+                <span class="hero-pill">Sans stress</span>
+              </div>
+            </div>
+            <div class="next-card-title">Apprendre pas à pas dans un espace clair, rassurant et utile</div>
+            <p class="next-card-desc">
+              Vous pouvez vous entraîner pas à pas sur l'ordinateur, la recherche d'emploi et le français,
+              puis suivre vos résultats sur cet appareil.
+            </p>
+            <div class="platform-summary">
+              <div class="platform-summary-item">
+                <div class="platform-summary-icon" aria-hidden="true">⌨️</div>
+                <strong>S'exercer</strong>
+                <span>Cliquer, écrire, compléter, lire et comprendre des consignes simples.</span>
+              </div>
+              <div class="platform-summary-item">
+                <div class="platform-summary-icon" aria-hidden="true">💼</div>
+                <strong>Préparer l'emploi</strong>
+                <span>Travailler le CV, les e-mails, les formulaires et les démarches de candidature.</span>
+              </div>
+              <div class="platform-summary-item">
+                <div class="platform-summary-icon" aria-hidden="true">📈</div>
+                <strong>Suivre ses progrès</strong>
+                <span>Voir les évaluations, faire une autoévaluation et reprendre calmement les points fragiles.</span>
+              </div>
+            </div>
+            <p class="next-card-note">Utilisez la barre de gauche pour ouvrir un exercice, voir vos résultats ou lancer l'autoévaluation.</p>
+          </div>
+          <aside class="hero-side" aria-label="Résumé rapide">
+            <div class="hero-side-card hero-side-card-main">
+              <div class="hero-side-kicker">Ici, vous pouvez</div>
+              <div class="hero-side-title">Avancer à votre rythme</div>
+              <p>Chaque activité est pensée pour travailler une compétence utile du quotidien.</p>
+            </div>
+            <div class="hero-side-list">
+              <div class="hero-side-item">
+                <span class="hero-side-dot" aria-hidden="true"></span>
+                <span>Comprendre des consignes</span>
+              </div>
+              <div class="hero-side-item">
+                <span class="hero-side-dot" aria-hidden="true"></span>
+                <span>Préparer des démarches simples</span>
+              </div>
+              <div class="hero-side-item">
+                <span class="hero-side-dot" aria-hidden="true"></span>
+                <span>Revoir vos points forts et vos priorités</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="home-info-card fade-up delay-1">
+          <div class="section-label">Comment commencer</div>
+          <h2 class="section-heading">Trois repères simples pour bien commencer</h2>
+          <p class="home-section-intro">La plateforme est faite pour rester lisible et calme. Vous n'avez pas besoin de tout faire d'un coup.</p>
+          <div class="home-info-grid">
+            <div class="home-info-box">
+              <div class="home-info-step">1</div>
+              <strong>Exercices</strong>
+              <span>Choisissez une activité en bureautique, emploi ou français.</span>
+            </div>
+            <div class="home-info-box">
+              <div class="home-info-step">2</div>
+              <strong>Évaluations</strong>
+              <span>Consultez vos progrès et votre évolution au fil des séances.</span>
+            </div>
+            <div class="home-info-box">
+              <div class="home-info-step">3</div>
+              <strong>Autoévaluation</strong>
+              <span>Répondez à quelques situations pour repérer vos points forts et vos priorités.</span>
+            </div>
+          </div>
+          <div class="home-bottom-strip">
+            <div class="home-bottom-chip">Navigation depuis la barre de gauche</div>
+            <div class="home-bottom-chip">Résultats conservés sur cet appareil</div>
+            <div class="home-bottom-chip">Petites étapes, progression visible</div>
+          </div>
+        </section>
+
+        <div class="footer-info fade-up delay-2">
+          <p>
+            Resultats sur cet appareil ·
+            <a href="evaluations.html">Mes resultats</a> ·
+            <a href="autoevaluation.html">Autoevaluation</a> ·
+            <a href="donnees.html">Donnees</a>
+          </p>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', function () {
+      renderAccueil();
+    });
+
+    function renderAccueil() {
+      return;
+    }
+  </script>
+</body>
+</html>

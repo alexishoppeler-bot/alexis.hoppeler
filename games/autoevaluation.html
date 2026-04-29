@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autoévaluation — AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/autoevaluation.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <!-- ── En-tête de page ── -->
+        <div class="page-header fade-up">
+          <div class="page-icon">🧭</div>
+          <h1>Autoévaluation intelligente</h1>
+          <p>Bureautique et recherche d emploi. Chaque situation compte differemment selon son importance, et les bases fragiles font baisser le niveau global.</p>
+        </div>
+
+        <!-- ── Navigation rapide ── -->
+        <div class="auto-actions">
+          <a href="accueil.html" class="btn btn-secondary btn-sm">Accueil</a>
+          <a href="evaluations.html" class="btn btn-secondary btn-sm">Évaluations</a>
+          <a href="donnees.html" class="btn btn-secondary btn-sm">Données</a>
+          <a href="regles.html" class="btn btn-secondary btn-sm">Règles XP</a>
+        </div>
+
+        <div class="card auto-intro-card">
+          <div class="card-title">Comment utiliser cette page</div>
+          <p>
+            Répondez aux 10 mises en situation, puis enregistrez deux évaluations si vous voulez comparer l'évolution.
+            Le diagnostic met davantage de poids sur les bases importantes du quotidien.
+          </p>
+        </div>
+
+        <!-- ── KPI compteur réponses ── -->
+        <div class="kpi-grid auto-kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:20px;">
+          <div class="kpi-card">
+            <div class="kpi-value" id="answeredCount">0</div>
+            <div class="kpi-label">Réponses données</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="totalCount">0</div>
+            <div class="kpi-label">Mises en situation</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="globalScoreKpi" style="color:var(--accent)">--</div>
+            <div class="kpi-label">Score global</div>
+          </div>
+        </div>
+
+        <!-- ── Grille principale ── -->
+        <div class="auto-grid auto-main-grid">
+
+          <!-- Colonne gauche : quiz -->
+          <div>
+            <div class="card" id="quiz"></div>
+          </div>
+
+          <!-- Colonne droite : résultats + analyse + radars + comparaison -->
+          <div class="auto-side-column">
+
+            <!-- Résultats automatiques -->
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+                <div class="card-title" style="margin:0;">Résultat automatique</div>
+                <span class="badge badge-blue">Diagnostic plus fiable</span>
+              </div>
+
+              <div class="auto-result-box">
+                <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px;">Bureautique</div>
+                <div id="officeLevel" class="auto-level low">À évaluer</div>
+                <div class="auto-score" id="officeScore">--</div>
+                <div class="auto-bar"><div class="auto-bar-fill" id="officeFill"></div></div>
+                <p id="officeText" style="font-size:13px;color:var(--text3);margin:4px 0 0;">Repondez pour afficher le niveau.</p>
+              </div>
+
+              <div class="auto-result-box">
+                <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px;">Recherche d'emploi</div>
+                <div id="jobLevel" class="auto-level low">À évaluer</div>
+                <div class="auto-score" id="jobScore">--</div>
+                <div class="auto-bar"><div class="auto-bar-fill" id="jobFill"></div></div>
+                <p id="jobText" style="font-size:13px;color:var(--text3);margin:4px 0 0;">Repondez pour afficher le niveau.</p>
+              </div>
+
+              <div class="auto-result-box" style="margin-bottom:0;">
+                <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px;">Niveau global logique</div>
+                <div id="globalLevel" class="auto-level low">À évaluer</div>
+                <div class="auto-score" id="globalScore">--</div>
+                <div class="auto-bar"><div class="auto-bar-fill" id="globalFill"></div></div>
+                <p id="globalText" style="font-size:13px;color:var(--text3);margin:4px 0 0;">Le niveau global depend des deux domaines et des bases critiques.</p>
+              </div>
+            </div>
+
+            <!-- Analyse intelligente -->
+            <div class="card">
+              <div class="card-title mb-4">Analyse intelligente</div>
+              <div class="auto-mini-grid">
+                <div>
+                  <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Forces</div>
+                  <ul id="strengths" style="padding-left:18px;margin:0;font-size:14px;color:var(--text2);line-height:1.7;">
+                    <li style="color:var(--text3);">Les points forts apparaissent ici.</li>
+                  </ul>
+                </div>
+                <div>
+                  <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Priorités</div>
+                  <ul id="priorities" style="padding-left:18px;margin:0;font-size:14px;color:var(--text2);line-height:1.7;">
+                    <li style="color:var(--text3);">Les priorites apparaissent ici.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="auto-footer-note" id="logicNote">
+                Les taches critiques comptent plus. Le niveau global baisse si les bases manquent.
+              </div>
+            </div>
+
+            <!-- Graphique radar -->
+            <div class="card">
+              <div class="card-title mb-4">Graphique radar</div>
+
+              <div class="auto-radar-box">
+                <div style="font-size:14px;font-weight:700;margin-bottom:10px;">Vue rapide du profil actuel</div>
+                <div id="radarCurrent"></div>
+                <div class="auto-radar-legend">
+                  <span class="auto-radar-chip">
+                    <span class="auto-radar-dot" style="background:var(--accent)"></span>Profil calculé
+                  </span>
+                </div>
+              </div>
+
+              <div class="auto-radar-box" style="margin-bottom:0;">
+                <div style="font-size:14px;font-weight:700;margin-bottom:10px;">Comparaison visuelle avant / après</div>
+                <div id="radarCompare"></div>
+                <div class="auto-radar-legend">
+                  <span class="auto-radar-chip">
+                    <span class="auto-radar-dot" style="background:#94a3b8"></span>Évaluation 1
+                  </span>
+                  <span class="auto-radar-chip">
+                    <span class="auto-radar-dot" style="background:var(--accent)"></span>Évaluation 2
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comparaison avant / après -->
+            <div class="card">
+              <div class="card-title mb-4">Comparaison avant / après</div>
+              <div class="auto-compare-grid">
+                <div class="auto-date-box">
+                  <label for="date1">Date d'évaluation 1</label>
+                  <input type="date" id="date1">
+                </div>
+                <div class="auto-date-box">
+                  <label for="date2">Date d'évaluation 2</label>
+                  <input type="date" id="date2">
+                </div>
+              </div>
+              <div class="flex gap-8 flex-wrap mb-16">
+                <button class="btn btn-ghost btn-sm" id="saveEval1Btn" type="button">Enregistrer comme évaluation 1</button>
+                <button class="btn btn-ghost btn-sm" id="saveEval2Btn" type="button">Enregistrer comme évaluation 2</button>
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="auto-compare-table">
+                  <thead>
+                    <tr>
+                      <th>Domaine</th>
+                      <th>Évaluation 1</th>
+                      <th>Évaluation 2</th>
+                      <th>Écart</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Bureautique</td>
+                      <td id="cmpOffice1">--</td>
+                      <td id="cmpOffice2">--</td>
+                      <td id="cmpOfficeDelta">--</td>
+                    </tr>
+                    <tr>
+                      <td>Recherche d'emploi</td>
+                      <td id="cmpJob1">--</td>
+                      <td id="cmpJob2">--</td>
+                      <td id="cmpJobDelta">--</td>
+                    </tr>
+                    <tr>
+                      <td>Niveau global</td>
+                      <td id="cmpGlobal1">--</td>
+                      <td id="cmpGlobal2">--</td>
+                      <td id="cmpGlobalDelta">--</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Progression observée -->
+            <div class="card">
+              <div class="card-title mb-4">Progression observée</div>
+              <div class="auto-progress-box" id="progressBox">
+                <p id="progressObserved" style="margin:0;font-size:14px;color:var(--text3);">Enregistrez deux evaluations pour voir la progression.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title mb-4">Parcours recommande</div>
+              <p id="recommendedPathIntro" style="font-size:14px;color:var(--text3);margin:0 0 14px;">Repondez pour afficher 3 activites conseillees.</p>
+              <div class="auto-path-list" id="recommendedPath">
+                <div class="auto-path-empty">Le parcours recommande apparaitra ici.</div>
+              </div>
+            </div>
+
+            <!-- Conseil formateur + export -->
+            <div class="card">
+              <div class="card-title mb-4">Conseil formateur</div>
+              <p id="trainerAdvice" style="font-size:14px;color:var(--text3);">Le conseil apparait ici.</p>
+              <div class="flex gap-8 flex-wrap mt-16">
+                <button class="btn btn-primary btn-sm" id="exportBtn" type="button">Exporter le résultat en texte</button>
+                <button class="btn btn-secondary btn-sm" id="resetBtn" type="button">Recommencer</button>
+              </div>
+              <div class="auto-copy-box" id="copyBox">
+                <p id="copyStatus" style="font-size:13px;color:var(--text3);margin:0 0 10px;"></p>
+                <textarea id="exportText" readonly></textarea>
+              </div>
+              <div class="auto-tests" id="testsBox">
+                <strong>Auto-tests internes</strong>
+                <div id="testsOutput" style="margin-top:8px;color:var(--text3);">Tests en attente…</div>
+              </div>
+            </div>
+
+          </div><!-- fin colonne droite -->
+        </div><!-- fin auto-grid -->
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/shared.js"></script>
+  <script>
+  'use strict';
+
+  /* ════════════════════════════════════════════
+     DONNÉES
+  ════════════════════════════════════════════ */
+  const SELF_OPTIONS = [
+    { label: 'Je ne sais pas',       value: 0   },
+    { label: 'Jamais fait',          value: 0.5 },
+    { label: 'Avec beaucoup d\'aide', value: 1   },
+    { label: 'Avec un peu d\'aide',   value: 2   },
+    { label: 'Seul(e)',              value: 3   }
+  ];
+
+  const questions = [
+    { id: 'open_file',               domain: 'office', axis: 'files',    title: 'Tu reçois la consigne : « Ouvre le CV enregistré sur l\'ordinateur. »',                                                                    tag: 'Base',                    weight: 3, critical: true  },
+    { id: 'save_file',               domain: 'office', axis: 'files',    title: 'Après avoir corrigé un document, tu dois l\'enregistrer avec le bon nom dans le bon dossier.',                                              tag: 'Base',                    weight: 3, critical: true  },
+    { id: 'email_attach',            domain: 'office', axis: 'email',    title: 'Une entreprise demande : « Envoyez votre CV par e-mail. » Tu dois écrire le message et joindre le fichier.',                               tag: 'Essentiel',               weight: 3, critical: true  },
+    { id: 'format_text',             domain: 'office', axis: 'text',     title: 'Ton CV est mal présenté. Tu dois corriger une faute, mettre le titre en gras et aligner le texte.',                                         tag: 'Texte',                   weight: 1, critical: false },
+    { id: 'fill_form',               domain: 'office', axis: 'internet', title: 'Tu dois remplir un petit formulaire en ligne avec ton nom, ton e-mail et ton numéro de téléphone.',                                         tag: 'Internet',                weight: 2, critical: false },
+    { id: 'find_offer',              domain: 'job',    axis: 'search',   title: 'Tu cherches un travail d\'aide de cuisine. Tu dois trouver une annonce sur internet.',                                                      tag: 'Recherche',               weight: 2, critical: true  },
+    { id: 'read_offer',              domain: 'job',    axis: 'reading',  title: 'Tu regardes une annonce et tu dois trouver : le poste, le lieu de travail et comment envoyer la candidature.',                             tag: 'Lecture',                 weight: 3, critical: true  },
+    { id: 'cv_ready',                domain: 'job',    axis: 'cv',       title: 'Tu dois préparer un CV simple avec tes coordonnées, tes expériences et tes formations.',                                                   tag: 'CV',                      weight: 3, critical: true  },
+    { id: 'targeted_vs_spontaneous', domain: 'job',    axis: 'strategy', title: 'Tu vois une offre sur internet, puis une autre entreprise sans annonce. Tu dois dire si la candidature est ciblée ou spontanée.',          tag: 'Choisir comment postuler', weight: 2, critical: false },
+    { id: 'send_application',        domain: 'job',    axis: 'strategy', title: 'Tu as trouvé une annonce. Maintenant tu dois envoyer une candidature complète : message, CV et lettre.',                                   tag: 'Essentiel',               weight: 3, critical: true  }
+  ];
+
+  const AXIS_LABELS = {
+    files:    'Fichiers',
+    email:    'E-mail',
+    text:     'Texte',
+    internet: 'Internet',
+    search:   'Recherche',
+    reading:  'Lecture annonce',
+    cv:       'CV',
+    strategy: 'Candidature'
+  };
+
+  const RECOMMENDATION_LIBRARY = {
+    open_file: [
+      { kind: 'page', page: 'cliquer', focus: 'reperer calmement ou agir a l ecran' },
+      { kind: 'page', page: 'orientation', focus: 'suivre un chemin simple sans se perdre' }
+    ],
+    save_file: [
+      { kind: 'page', page: 'orientation', focus: 'garder les etapes dans le bon ordre' },
+      { kind: 'page', page: 'clavier', focus: 'mieux controler les actions de base' }
+    ],
+    email_attach: [
+      { kind: 'page', page: 'email-pro', focus: 'ecrire un e-mail professionnel simple' },
+      { kind: 'app', href: 'simulateur-email/simulateur-email.html', focus: 's entrainer avec un message complet' }
+    ],
+    format_text: [
+      { kind: 'page', page: 'retaper', focus: 'corriger et relire un texte' },
+      { kind: 'app', href: 'generateur-cv/generateur-cv.html', focus: 'modifier un document utile' }
+    ],
+    fill_form: [
+      { kind: 'page', page: 'formulaire', focus: 'remplir des informations importantes' },
+      { kind: 'page', page: 'completer', focus: 'completer la bonne information' }
+    ],
+    find_offer: [
+      { kind: 'page', page: 'quiz', focus: 'reperer les bonnes informations emploi' },
+      { kind: 'page', page: 'vrai-faux', focus: 'consolider les regles de candidature' }
+    ],
+    read_offer: [
+      { kind: 'page', page: 'vrai-faux', focus: 'mieux comprendre une annonce' },
+      { kind: 'page', page: 'quiz', focus: 'trouver les informations importantes' }
+    ],
+    cv_ready: [
+      { kind: 'app', href: 'generateur-cv/generateur-cv.html', focus: 'preparer un CV simple et utile' },
+      { kind: 'page', page: 'cv-competences', focus: 'choisir des competences pertinentes' }
+    ],
+    targeted_vs_spontaneous: [
+      { kind: 'page', page: 'simulations-dialogues', focus: 'choisir la bonne reponse selon la situation' },
+      { kind: 'page', page: 'trier', focus: 'mettre les etapes d une candidature dans l ordre' }
+    ],
+    send_application: [
+      { kind: 'page', page: 'email-pro', focus: 'envoyer une candidature complete' },
+      { kind: 'app', href: 'simulateur-email/simulateur-email.html', focus: 's entrainer avec un envoi complet' }
+    ]
+  };
+
+  const AUTOEVAL_STORAGE_KEY = 'ah:autoevaluation:v1';
+
+  /* ════════════════════════════════════════════
+     ÉTAT
+  ════════════════════════════════════════════ */
+  const state = { selfAnswers: {}, eval1: null, eval2: null };
+
+  function safeParse(raw, fallback) {
+    try {
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (_) {
+      return fallback;
+    }
+  }
+
+  function loadSavedState() {
+    if (!window.localStorage) return;
+    const saved = safeParse(window.localStorage.getItem(AUTOEVAL_STORAGE_KEY), null);
+    if (!saved || typeof saved !== 'object') return;
+
+    if (saved.selfAnswers && typeof saved.selfAnswers === 'object') {
+      state.selfAnswers = Object.assign({}, saved.selfAnswers);
+    }
+    if (saved.eval1 && typeof saved.eval1 === 'object') {
+      state.eval1 = saved.eval1;
+    }
+    if (saved.eval2 && typeof saved.eval2 === 'object') {
+      state.eval2 = saved.eval2;
+    }
+
+    if (saved.date1) {
+      document.getElementById('date1').value = saved.date1;
+    }
+    if (saved.date2) {
+      document.getElementById('date2').value = saved.date2;
+    }
+  }
+
+  function persistState() {
+    if (!window.localStorage) return;
+
+    const office = computeDomain('office');
+    const job = computeDomain('job');
+    const global = computeGlobal(office, job);
+    const recommendedPath = buildRecommendedPath();
+    const weakestDomain = [office, job]
+      .map(function(result, index) {
+        return {
+          key: index === 0 ? 'office' : 'job',
+          label: index === 0 ? 'Bureautique' : 'Recherche d emploi',
+          score: result.score
+        };
+      })
+      .filter(function(item) { return item.score !== null; })
+      .sort(function(a, b) { return a.score - b.score; })[0] || null;
+
+    const payload = {
+      updatedAt: Date.now(),
+      answeredCount: getAnsweredCount(),
+      selfAnswers: Object.assign({}, state.selfAnswers),
+      eval1: state.eval1,
+      eval2: state.eval2,
+      date1: document.getElementById('date1').value || '',
+      date2: document.getElementById('date2').value || '',
+      summary: {
+        office: { score: office.score, label: office.label },
+        job: { score: job.score, label: job.label },
+        global: { score: global.score, label: global.label },
+        weakestDomain: weakestDomain,
+        recommendedPath: recommendedPath
+      }
+    };
+
+    try {
+      window.localStorage.setItem(AUTOEVAL_STORAGE_KEY, JSON.stringify(payload));
+    } catch (_) {
+      // ignore storage errors
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     INIT COMPTEURS
+  ════════════════════════════════════════════ */
+  document.getElementById('totalCount').textContent = String(questions.length);
+
+  /* ════════════════════════════════════════════
+     RENDU QUIZ
+  ════════════════════════════════════════════ */
+  function renderQuiz() {
+    const quiz = document.getElementById('quiz');
+    quiz.innerHTML = [
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;">',
+        '<div class="card-title" style="margin:0;">Mises en situation à évaluer</div>',
+        '<span class="badge badge-blue">Autoévaluation guidée</span>',
+      '</div>',
+      '<p style="margin:0 0 14px;font-size:14px;color:var(--text2);line-height:1.7;">Lis chaque situation puis choisis une réponse. Une seule réponse est possible par ligne.</p>',
+      '<div class="auto-legend">',
+        '<span class="auto-radar-chip"><span class="auto-radar-dot" style="background:var(--accent)"></span>Réponse choisie</span>',
+        '<span class="auto-radar-chip">Poids 3 = très important</span>',
+        '<span class="auto-radar-chip">Jamais fait = à découvrir</span>',
+      '</div>',
+      questions.map(function(q, index) {
+        return [
+          '<div class="auto-question">',
+            '<div class="auto-question-top">',
+              '<p class="auto-question-title">' + (index + 1) + '. ' + escapeHtml(q.title) + '</p>',
+              '<div class="auto-meta">',
+                '<span class="badge badge-gray">' + escapeHtml(q.tag) + '</span>',
+                '<span class="badge badge-weight">Poids ' + q.weight + '</span>',
+                q.critical ? '<span class="badge badge-critical">Critique</span>' : '',
+              '</div>',
+            '</div>',
+            '<div class="auto-options">',
+              SELF_OPTIONS.map(function(opt) {
+                const sel = state.selfAnswers[q.id] === opt.value ? ' selected' : '';
+                return '<button type="button" class="auto-option' + sel + '" data-id="' + q.id + '" data-val="' + opt.value + '">' + escapeHtml(opt.label) + '</button>';
+              }).join(''),
+            '</div>',
+          '</div>'
+        ].join('');
+      }).join(''),
+    ].join('');
+
+    /* Délégation d'événements pour les boutons option */
+    quiz.querySelectorAll('.auto-option').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const id  = btn.dataset.id;
+        const val = parseFloat(btn.dataset.val);
+        state.selfAnswers[id] = val;
+        renderQuiz();
+        updateResults();
+      });
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ════════════════════════════════════════════
+     CALCULS
+  ════════════════════════════════════════════ */
+  function getEffectiveValue(question, sourceSelf) {
+    sourceSelf = sourceSelf || state.selfAnswers;
+    return Object.prototype.hasOwnProperty.call(sourceSelf, question.id) ? sourceSelf[question.id] : null;
+  }
+
+  function getAnsweredCount(sourceSelf) {
+    sourceSelf = sourceSelf || state.selfAnswers;
+    return questions.filter(function(q) { return getEffectiveValue(q, sourceSelf) !== null; }).length;
+  }
+
+  function getPageMeta(page) {
+    return (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.meta && window.EXERCISE_CONFIG.meta[page]) || {};
+  }
+
+  function getAppMeta(href) {
+    const apps = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.apps) || [];
+    return apps.find(function(app) { return app.href === href; }) || null;
+  }
+
+  function buildRecommendationTarget(entry) {
+    if (!entry) return null;
+    if (entry.kind === 'page') {
+      const meta = getPageMeta(entry.page);
+      return {
+        href: meta.href || (entry.page + '.html'),
+        name: meta.name || entry.page,
+        badge: meta.section || meta.cat || 'Exercice',
+        focus: entry.focus
+      };
+    }
+    if (entry.kind === 'app') {
+      const app = getAppMeta(entry.href);
+      return {
+        href: entry.href,
+        name: app ? app.name : 'Outil',
+        badge: 'Application',
+        focus: entry.focus
+      };
+    }
+    return null;
+  }
+
+  function computeDomain(domain, sourceSelf) {
+    sourceSelf = sourceSelf || state.selfAnswers;
+    const qs       = questions.filter(function(q) { return q.domain === domain; });
+    const answered = qs.filter(function(q) { return getEffectiveValue(q, sourceSelf) !== null; });
+
+    if (!answered.length) {
+      return { score: null, label: 'À évaluer', className: 'low', text: 'Repondez pour afficher le niveau.', strengths: [], priorities: [], criticalBlocked: false };
+    }
+
+    let weightedSum = 0, totalWeight = 0;
+    const values = {}, strengths = [], priorities = [];
+
+    answered.forEach(function(q) {
+      const value = getEffectiveValue(q, sourceSelf);
+      values[q.id]  = value;
+      weightedSum  += value * q.weight;
+      totalWeight  += q.weight;
+    });
+
+    let score = totalWeight ? Math.round((weightedSum / (totalWeight * 3)) * 100) : 0;
+    let penalty = 0, criticalBlocked = false;
+
+    if (domain === 'office') {
+      const open   = values.open_file   != null ? values.open_file   : null;
+      const save   = values.save_file   != null ? values.save_file   : null;
+      const attach = values.email_attach != null ? values.email_attach : null;
+      const format = values.format_text  != null ? values.format_text  : null;
+      const form   = values.fill_form    != null ? values.fill_form    : null;
+
+      if (attach !== null && attach >= 2 && ((open || 0) < 2 || (save || 0) < 2)) penalty += 18;
+      if (format !== null && format >= 2 && (save || 0) < 1) penalty += 8;
+      if (form   !== null && form   >= 2 && (open || 0) < 1) penalty += 6;
+      if ((open || 0) < 1 || (save || 0) < 1 || (attach || 0) < 1) criticalBlocked = true;
+
+      if ((open || 0) <= 1 || (save || 0) <= 1) priorities.push('Renforcer l\'ouverture, l\'enregistrement et le repérage des fichiers.');
+      if ((attach || 0) <= 1)                   priorities.push('Travailler l\'envoi d\'e-mail avec pièce jointe.');
+      if ((open || 0) === 0.5 || (save || 0) === 0.5 || (attach || 0) === 0.5) priorities.push('Faire une première vraie mise en pratique sur des tâches jamais faites.');
+      if ((open || 0) >= 2 && (save || 0) >= 2) strengths.push('Base ordinateur assez solide.');
+      if ((attach || 0) >= 2) strengths.push('Capacité utile pour les démarches en ligne et les candidatures.');
+      if ((format || 0) >= 2) strengths.push('Peut corriger et présenter un document simple.');
+    }
+
+    if (domain === 'job') {
+      const find     = values.find_offer              != null ? values.find_offer              : null;
+      const read     = values.read_offer              != null ? values.read_offer              : null;
+      const cv       = values.cv_ready                != null ? values.cv_ready                : null;
+      const strategy = values.targeted_vs_spontaneous != null ? values.targeted_vs_spontaneous : null;
+      const send     = values.send_application        != null ? values.send_application        : null;
+
+      if (send     !== null && send     >= 2 && ((cv   || 0) < 2 || (read || 0) < 2)) penalty += 20;
+      if (strategy !== null && strategy >= 2 && (find  || 0) < 1) penalty += 7;
+      if (read     !== null && read     >= 2 && (find  || 0) < 1) penalty += 5;
+      if ((find || 0) < 1 || (read || 0) < 1 || (cv || 0) < 1 || (send || 0) < 1) criticalBlocked = true;
+
+      if ((find || 0) <= 1) priorities.push('Travailler la recherche d\'offres et le repérage des sites utiles.');
+      if ((read || 0) <= 1) priorities.push('Travailler la lecture d\'annonce : poste, lieu, contact, manière de postuler.');
+      if ((cv   || 0) <= 1) priorities.push('Renforcer la préparation d\'un CV simple.');
+      if ((send || 0) <= 1) priorities.push('Travailler l\'envoi complet d\'une candidature.');
+      if ((find || 0) === 0.5 || (read || 0) === 0.5 || (cv || 0) === 0.5 || (send || 0) === 0.5) priorities.push('Prévoir une première mise en situation réelle sur des tâches jamais faites.');
+      if ((find || 0) >= 2 && (read || 0) >= 2) strengths.push('Repère assez bien une annonce et ses informations importantes.');
+      if ((strategy || 0) >= 2) strengths.push('Comprend la différence entre candidature ciblée et spontanée.');
+      if ((send || 0) >= 2) strengths.push('Peut avancer vers une candidature complète.');
+    }
+
+    score = Math.max(0, Math.min(100, Math.round(score - penalty)));
+
+    let label = 'Accompagnement nécessaire', className = 'low';
+    let text   = 'La personne a besoin d\'un guidage régulier pour réaliser les tâches.';
+
+    if (score >= 70) { label = 'Autonome';      className = 'high'; text = 'La personne peut réaliser seule des tâches simples et utiles.'; }
+    else if (score >= 40) { label = 'Semi-autonome'; className = 'mid';  text = 'La personne avance, mais certaines étapes bloquent encore.'; }
+
+    if (criticalBlocked && label === 'Autonome')  { label = 'Semi-autonome'; className = 'mid'; text = 'Le niveau est limité par une base critique encore fragile.'; }
+    if (criticalBlocked && score < 40) text = 'Les tâches critiques de base ne sont pas encore assez solides.';
+    if (penalty >= 12) text += ' Le calcul a baissé le score car certaines compétences avancées ne sont pas encore soutenues par les bases.';
+
+    if (!strengths.length)  strengths.push('Le profil est encore en construction.');
+    if (!priorities.length) priorities.push('Continuer à s\'exercer pour stabiliser les automatismes.');
+
+    return { score, label, className, text, strengths, priorities, criticalBlocked };
+  }
+
+  function computeGlobal(office, job) {
+    if (office.score === null && job.score === null) {
+      return { score: null, label: 'À évaluer', className: 'low', text: 'Repondez pour afficher le niveau global.' };
+    }
+
+    const oScore = office.score != null ? office.score : 0;
+    const jScore = job.score    != null ? job.score    : 0;
+    let base = Math.round(oScore * 0.45 + jScore * 0.55);
+
+    if (office.criticalBlocked && base > 65) base = 65;
+    if (job.criticalBlocked    && base > 60) base = 60;
+    if (office.criticalBlocked && job.criticalBlocked && base > 45) base = 45;
+
+    let label = 'Accompagnement nécessaire', className = 'low';
+    let text  = 'L\'autonomie globale reste fragile.';
+
+    if (base >= 70) { label = 'Autonome';      className = 'high'; text = 'Le profil est cohérent et assez autonome pour des démarches simples.'; }
+    else if (base >= 40) { label = 'Semi-autonome'; className = 'mid';  text = 'Le profil progresse, mais il faut encore consolider des étapes clés.'; }
+
+    if (office.criticalBlocked || job.criticalBlocked) text += ' Un blocage critique limite le niveau global.';
+
+    return { score: base, label, className, text };
+  }
+
+  function buildRecommendedPath(sourceSelf) {
+    sourceSelf = sourceSelf || state.selfAnswers;
+    const answeredCount = getAnsweredCount(sourceSelf);
+    if (!answeredCount) return [];
+
+    const weakQuestions = questions
+      .map(function(q) {
+        const value = getEffectiveValue(q, sourceSelf);
+        if (value === null || value > 1) return null;
+        return {
+          question: q,
+          value: value,
+          priority: (q.weight * 10) + (q.critical ? 5 : 0) + (value === 0 || value === 0.5 ? 3 : 0)
+        };
+      })
+      .filter(Boolean)
+      .sort(function(a, b) { return b.priority - a.priority; });
+
+    const path = [];
+    const seen = new Set();
+
+    weakQuestions.forEach(function(item) {
+      const targets = RECOMMENDATION_LIBRARY[item.question.id] || [];
+      targets.forEach(function(entry) {
+        const target = buildRecommendationTarget(entry);
+        if (!target || seen.has(target.href) || path.length >= 3) return;
+        path.push({
+          href: target.href,
+          name: target.name,
+          badge: target.badge,
+          reason: 'Pour travailler : ' + entry.focus + '.'
+        });
+        seen.add(target.href);
+      });
+    });
+
+    if (path.length < 3) {
+      [
+        { kind: 'page', page: 'formulaire', focus: 'reprendre une tache utile et concrete' },
+        { kind: 'page', page: 'email-pro', focus: 'mieux structurer un message simple' },
+        { kind: 'page', page: 'quiz', focus: 'verifier la comprehension des consignes' }
+      ].forEach(function(entry) {
+        const target = buildRecommendationTarget(entry);
+        if (!target || seen.has(target.href) || path.length >= 3) return;
+        path.push({
+          href: target.href,
+          name: target.name,
+          badge: target.badge,
+          reason: 'Bonne activite de consolidation pour continuer sans se perdre.'
+        });
+        seen.add(target.href);
+      });
+    }
+
+    return path.slice(0, 3);
+  }
+
+  /* ════════════════════════════════════════════
+     AFFICHAGE RÉSULTATS
+  ════════════════════════════════════════════ */
+  function setBox(prefix, result) {
+    const level = document.getElementById(prefix + 'Level');
+    const score = document.getElementById(prefix + 'Score');
+    const fill  = document.getElementById(prefix + 'Fill');
+    const text  = document.getElementById(prefix + 'Text');
+
+    if (result.score === null) {
+      level.className = 'auto-level low';
+      level.textContent = 'À évaluer';
+      score.textContent = '--';
+      if (fill) fill.style.width = '0%';
+      text.textContent = result.text;
+      return;
+    }
+
+    level.className   = 'auto-level ' + result.className;
+    level.textContent = result.label;
+    score.textContent = result.score + '/100';
+    if (fill) fill.style.width = result.score + '%';
+    text.textContent = result.text;
+  }
+
+  function updateList(id, items) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = items.map(function(item) { return '<li>' + escapeHtml(item) + '</li>'; }).join('');
+  }
+
+  function renderRecommendedPath(sourceSelf) {
+    const intro = document.getElementById('recommendedPathIntro');
+    const list = document.getElementById('recommendedPath');
+    if (!intro || !list) return;
+
+    const items = buildRecommendedPath(sourceSelf);
+    if (!items.length) {
+      intro.textContent = 'Repondez aux questions pour afficher 3 exercices conseilles.';
+      list.innerHTML = '<div class="auto-path-empty">Le parcours recommande apparaitra ici.</div>';
+      return;
+    }
+
+    intro.textContent = 'Ces 3 activites sont choisies pour transformer le diagnostic en petite seance de travail.';
+    list.innerHTML = items.map(function(item, index) {
+      return [
+        '<a class="auto-path-card" href="' + escapeHtml(item.href) + '">',
+          '<div class="auto-path-step">Etape ' + (index + 1) + '</div>',
+          '<div class="auto-path-badge">' + escapeHtml(item.badge) + '</div>',
+          '<div class="auto-path-name">' + escapeHtml(item.name) + '</div>',
+          '<p>' + escapeHtml(item.reason) + '</p>',
+          '<span class="auto-path-link">Ouvrir</span>',
+        '</a>'
+      ].join('');
+    }).join('');
+  }
+
+  /* ════════════════════════════════════════════
+     RADAR
+  ════════════════════════════════════════════ */
+  function getRadarAxes(sourceSelf) {
+    sourceSelf = sourceSelf || state.selfAnswers;
+    const groups = {
+      files:    ['open_file', 'save_file'],
+      email:    ['email_attach'],
+      text:     ['format_text'],
+      internet: ['fill_form'],
+      search:   ['find_offer'],
+      reading:  ['read_offer'],
+      cv:       ['cv_ready'],
+      strategy: ['targeted_vs_spontaneous', 'send_application']
+    };
+
+    return Object.entries(groups).map(function(entry) {
+      const axisKey = entry[0], ids = entry[1];
+      const axisQuestions = questions.filter(function(q) { return ids.indexOf(q.id) !== -1; });
+      let weightedSum = 0, totalWeight = 0;
+      axisQuestions.forEach(function(q) {
+        const value = getEffectiveValue(q, sourceSelf);
+        if (value !== null) { weightedSum += value * q.weight; totalWeight += q.weight; }
+      });
+      const score = totalWeight ? Math.round((weightedSum / (totalWeight * 3)) * 100) : 0;
+      return { label: AXIS_LABELS[axisKey], score };
+    });
+  }
+
+  function polarPoint(cx, cy, radius, angle) {
+    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+  }
+
+  function buildRadarSvg(datasets, emptyText) {
+    const usable = datasets.filter(function(d) { return d.axes && d.axes.some(function(a) { return a.score > 0; }); });
+    const axes   = (datasets[0] && datasets[0].axes) || (usable[0] && usable[0].axes) || [];
+
+    if (!axes.length || !usable.length) {
+      return '<div style="padding:20px;text-align:center;font-size:14px;color:var(--text3);">' + escapeHtml(emptyText) + '</div>';
+    }
+
+    const size = 460, cx = size / 2, cy = size / 2, maxRadius = 136;
+    const rings = [25, 50, 75, 100];
+
+    const axisLines = axes.map(function(axis, i) {
+      const angle  = -Math.PI / 2 + (i * Math.PI * 2 / axes.length);
+      const pt     = polarPoint(cx, cy, maxRadius, angle);
+      const lPt    = polarPoint(cx, cy, maxRadius + 32, angle);
+      return '<line x1="' + cx + '" y1="' + cy + '" x2="' + pt.x + '" y2="' + pt.y + '" stroke="var(--border)" stroke-width="1" />' +
+             '<text x="' + lPt.x + '" y="' + lPt.y + '" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="var(--text2)">' + escapeHtml(axis.label) + '</text>';
+    }).join('');
+
+    const ringPolygons = rings.map(function(ring) {
+      const points = axes.map(function(axis, i) {
+        const angle = -Math.PI / 2 + (i * Math.PI * 2 / axes.length);
+        const pt    = polarPoint(cx, cy, maxRadius * (ring / 100), angle);
+        return pt.x + ',' + pt.y;
+      }).join(' ');
+      return '<polygon points="' + points + '" fill="none" stroke="var(--border)" stroke-width="1" />';
+    }).join('');
+
+    const ringLabels = rings.map(function(ring) {
+      return '<text x="' + (cx + 8) + '" y="' + (cy - maxRadius * (ring / 100) + 4) + '" font-size="11" fill="var(--text3)">' + ring + '</text>';
+    }).join('');
+
+    const datasetPolygons = usable.map(function(dataset) {
+      const points = dataset.axes.map(function(axis, i) {
+        const angle = -Math.PI / 2 + (i * Math.PI * 2 / dataset.axes.length);
+        const pt    = polarPoint(cx, cy, maxRadius * (axis.score / 100), angle);
+        return pt.x + ',' + pt.y;
+      }).join(' ');
+      const dots = dataset.axes.map(function(axis, i) {
+        const angle = -Math.PI / 2 + (i * Math.PI * 2 / dataset.axes.length);
+        const pt    = polarPoint(cx, cy, maxRadius * (axis.score / 100), angle);
+        return '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="3.5" fill="' + dataset.color + '" />';
+      }).join('');
+      return '<polygon points="' + points + '" fill="' + dataset.fill + '" stroke="' + dataset.color + '" stroke-width="2" />' + dots;
+    }).join('');
+
+    return '<svg viewBox="0 0 ' + size + ' ' + size + '" class="auto-radar-svg" role="img" aria-label="Graphique radar des compétences">' +
+           ringPolygons + axisLines + ringLabels + datasetPolygons +
+           '<circle cx="' + cx + '" cy="' + cy + '" r="3" fill="var(--text3)" /></svg>';
+  }
+
+  function renderRadar() {
+    const currentAxes = getRadarAxes();
+    const elCurrent   = document.getElementById('radarCurrent');
+    if (elCurrent) {
+      elCurrent.innerHTML = buildRadarSvg(
+        [{ axes: currentAxes, color: 'var(--accent)', fill: 'rgba(50,93,169,0.18)' }],
+        'Repondez pour afficher le graphique radar.'
+      );
+    }
+
+    const compareDatasets = [];
+    if (state.eval1) compareDatasets.push({ axes: getRadarAxes(state.eval1.selfAnswers), color: '#94a3b8', fill: 'rgba(148,163,184,0.18)' });
+    if (state.eval2) compareDatasets.push({ axes: getRadarAxes(state.eval2.selfAnswers), color: 'var(--accent)', fill: 'rgba(50,93,169,0.18)' });
+
+    const elCompare = document.getElementById('radarCompare');
+    if (elCompare) {
+      elCompare.innerHTML = buildRadarSvg(
+        compareDatasets,
+        'Enregistrez deux evaluations pour comparer le profil.'
+      );
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     COMPARAISON
+  ════════════════════════════════════════════ */
+  function formatSnapshot(result) {
+    if (!result || result.score === null) return '--';
+    return result.label + ' (' + result.score + '/100)';
+  }
+
+  function formatDelta(a, b) {
+    if (!a || !b || a.score === null || b.score === null) return '<span class="auto-delta-same">--</span>';
+    const diff = b.score - a.score;
+    if (diff > 0) return '<span class="auto-delta-up">+' + diff + '</span>';
+    if (diff < 0) return '<span class="auto-delta-down">' + diff + '</span>';
+    return '<span class="auto-delta-same">0</span>';
+  }
+
+  function getCurrentSnapshot() {
+    const office = computeDomain('office');
+    const job    = computeDomain('job');
+    const global = computeGlobal(office, job);
+    return {
+      office, job, global,
+      selfAnswers: Object.assign({}, state.selfAnswers)
+    };
+  }
+
+  function updateComparison() {
+    document.getElementById('cmpOffice1').textContent     = formatSnapshot(state.eval1 && state.eval1.office);
+    document.getElementById('cmpOffice2').textContent     = formatSnapshot(state.eval2 && state.eval2.office);
+    document.getElementById('cmpJob1').textContent        = formatSnapshot(state.eval1 && state.eval1.job);
+    document.getElementById('cmpJob2').textContent        = formatSnapshot(state.eval2 && state.eval2.job);
+    document.getElementById('cmpGlobal1').textContent     = formatSnapshot(state.eval1 && state.eval1.global);
+    document.getElementById('cmpGlobal2').textContent     = formatSnapshot(state.eval2 && state.eval2.global);
+    document.getElementById('cmpOfficeDelta').innerHTML   = formatDelta(state.eval1 && state.eval1.office, state.eval2 && state.eval2.office);
+    document.getElementById('cmpJobDelta').innerHTML      = formatDelta(state.eval1 && state.eval1.job,    state.eval2 && state.eval2.job);
+    document.getElementById('cmpGlobalDelta').innerHTML   = formatDelta(state.eval1 && state.eval1.global, state.eval2 && state.eval2.global);
+
+    const progressText = document.getElementById('progressObserved');
+    const progressBox  = document.getElementById('progressBox');
+
+    if (!state.eval1 || !state.eval2) {
+      progressBox.className = 'auto-progress-box';
+      progressText.textContent = 'Enregistrez deux evaluations pour voir la progression.';
+      renderRadar();
+      return;
+    }
+
+    const officeDiff = (state.eval2.office.score || 0) - (state.eval1.office.score || 0);
+    const jobDiff    = (state.eval2.job.score    || 0) - (state.eval1.job.score    || 0);
+    const globalDiff = (state.eval2.global.score || 0) - (state.eval1.global.score || 0);
+    const messages   = [];
+
+    if      (globalDiff >= 10) { progressBox.className = 'auto-progress-box';       messages.push('Progression globale nette observée.'); }
+    else if (globalDiff  > 0)  { progressBox.className = 'auto-progress-box warn';  messages.push('Petite progression globale observée.'); }
+    else if (globalDiff === 0) { progressBox.className = 'auto-progress-box warn';  messages.push('Résultat global stable entre les deux évaluations.'); }
+    else                       { progressBox.className = 'auto-progress-box alert'; messages.push('Baisse du niveau global observée entre les deux évaluations.'); }
+
+    messages.push(officeDiff > 0 ? 'La bureautique progresse.' : officeDiff < 0 ? 'La bureautique demande une nouvelle consolidation.' : 'La bureautique reste stable.');
+    messages.push(jobDiff    > 0 ? 'La recherche d\'emploi progresse.' : jobDiff < 0 ? 'La recherche d\'emploi reste fragile ou régresse.' : 'La recherche d\'emploi reste stable.');
+
+    if (state.eval1.global.label !== state.eval2.global.label) {
+      messages.push('Passage de « ' + state.eval1.global.label + ' » à « ' + state.eval2.global.label + ' ».');
+    }
+
+    progressText.textContent = messages.join(' ');
+    renderRadar();
+  }
+
+  /* ════════════════════════════════════════════
+     MISE À JOUR GLOBALE
+  ════════════════════════════════════════════ */
+  function updateResults() {
+    document.getElementById('answeredCount').textContent = String(getAnsweredCount());
+
+    const office = computeDomain('office');
+    const job    = computeDomain('job');
+    const global = computeGlobal(office, job);
+
+    setBox('office', office);
+    setBox('job',    job);
+    setBox('global', global);
+
+    /* KPI global en haut */
+    const kpiEl = document.getElementById('globalScoreKpi');
+    if (kpiEl) kpiEl.textContent = global.score !== null ? global.score + '/100' : '--';
+
+    /* Forces et priorités (max 6 items) */
+    const allStrengths  = office.strengths.concat(job.strengths).slice(0, 6);
+    const allPriorities = Array.from(new Set(office.priorities.concat(job.priorities))).slice(0, 6);
+    updateList('strengths',  allStrengths);
+    updateList('priorities', allPriorities);
+
+    /* Conseil formateur */
+    let advice = 'Commencer par les bases utiles du quotidien.';
+    if (global.score !== null) {
+      if      (global.score < 40) advice = 'Priorité : ouvrir un fichier, enregistrer, joindre une pièce jointe, lire une annonce et préparer un CV simple. Faire des démonstrations puis des essais guidés.';
+      else if (global.score < 70) advice = 'Le profil progresse. Travailler les enchaînements complets : chercher une annonce, comprendre les consignes, préparer les documents, puis envoyer correctement.';
+      else                        advice = 'Le profil est assez autonome pour des tâches simples. Proposer maintenant des démarches complètes proches du réel et vérifier la stabilité sans aide.';
+    }
+    document.getElementById('trainerAdvice').textContent = advice;
+
+    renderRecommendedPath();
+    renderRadar();
+    updateComparison();
+    persistState();
+  }
+
+  /* ════════════════════════════════════════════
+     EXPORT
+  ════════════════════════════════════════════ */
+  function buildExportText() {
+    const office = computeDomain('office');
+    const job    = computeDomain('job');
+    const global = computeGlobal(office, job);
+
+    const strengths  = Array.from(document.querySelectorAll('#strengths li')).map(function(li) { return '- ' + li.textContent; });
+    const priorities = Array.from(document.querySelectorAll('#priorities li')).map(function(li) { return '- ' + li.textContent; });
+    const recommendedPathLines = buildRecommendedPath().map(function(item, index) {
+      return (index + 1) + '. ' + item.name + ' - ' + item.reason;
+    });
+
+    return [
+      'AUTOÉVALUATION INTELLIGENTE',
+      '',
+      'Date évaluation 1 : ' + (document.getElementById('date1').value || '-'),
+      'Date évaluation 2 : ' + (document.getElementById('date2').value || '-'),
+      '',
+      'Bureautique       : ' + office.label + (office.score !== null ? ' (' + office.score + '/100)' : ''),
+      'Recherche emploi  : ' + job.label    + (job.score    !== null ? ' (' + job.score    + '/100)' : ''),
+      'Niveau global     : ' + global.label + (global.score !== null ? ' (' + global.score + '/100)' : ''),
+      '',
+      'Forces :',
+    ].concat(strengths).concat([
+      '',
+      'Priorités :',
+    ]).concat(priorities).concat([
+      '',
+      'Parcours recommande :',
+    ]).concat(recommendedPathLines).concat([
+      '',
+      'Progression observée :',
+      document.getElementById('progressObserved').textContent,
+      '',
+      'Conseil formateur :',
+      document.getElementById('trainerAdvice').textContent,
+    ]).join('\n');
+  }
+
+  async function exportResult() {
+    const text  = buildExportText();
+    const box   = document.getElementById('copyBox');
+    const area  = document.getElementById('exportText');
+    const label = document.getElementById('copyStatus');
+    area.value = text;
+
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function' && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        box.classList.add('visible');
+        label.textContent = 'Résultat copié dans le presse-papiers. Le texte reste aussi affiché ici.';
+        return;
+      }
+      throw new Error('clipboard_unavailable');
+    } catch (_) {
+      box.classList.add('visible');
+      label.textContent = 'Copie automatique indisponible. Le texte exporté est affiché ci-dessous, vous pouvez le copier manuellement.';
+      area.focus();
+      area.select();
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     AUTO-TESTS
+  ════════════════════════════════════════════ */
+  function runTests() {
+    const results = [];
+    function assert(name, condition) { results.push({ name, condition }); }
+
+    const savedSelf  = Object.assign({}, state.selfAnswers);
+    const savedEval1 = state.eval1;
+    const savedEval2 = state.eval2;
+
+    /* Test 1 : vide */
+    state.selfAnswers = {};
+    const emptyO = computeDomain('office'), emptyJ = computeDomain('job');
+    assert('Domaine vide retourne score nul', emptyO.score === null && emptyJ.score === null);
+    assert('Global vide retourne score nul',  computeGlobal(emptyO, emptyJ).score === null);
+
+    /* Test 2 : profil fort */
+    state.selfAnswers = { open_file: 3, save_file: 3, email_attach: 3, format_text: 3, fill_form: 3, find_offer: 3, read_offer: 3, cv_ready: 3, targeted_vs_spontaneous: 3, send_application: 3 };
+    const sO = computeDomain('office'), sJ = computeDomain('job');
+    assert('Profil fort bureautique → Autonome', sO.label === 'Autonome');
+    assert('Profil fort emploi → Autonome',      sJ.label === 'Autonome');
+    assert('Profil fort global → Autonome',      computeGlobal(sO, sJ).label === 'Autonome');
+
+    /* Test 3 : jamais fait */
+    state.selfAnswers = { open_file: 0.5, save_file: 0.5, email_attach: 0.5 };
+    const neverO = computeDomain('office');
+    assert('Jamais fait → score > 0 et < 30', neverO.score > 0 && neverO.score < 30);
+
+    /* Test 4 : blocage critique */
+    state.selfAnswers = { open_file: 0, save_file: 0, email_attach: 3, format_text: 2, fill_form: 2 };
+    const blockedO = computeDomain('office');
+    assert('Blocage critique empêche le niveau Autonome', blockedO.label !== 'Autonome');
+
+    /* Test 5 : radar */
+    const radarSample = { open_file: 3, save_file: 0, email_attach: 3, format_text: 2, fill_form: 1, find_offer: 2, read_offer: 2, cv_ready: 1, targeted_vs_spontaneous: 3, send_application: 0 };
+    const radarAxes   = getRadarAxes(radarSample);
+    assert('Radar retourne 8 axes', radarAxes.length === 8);
+    assert('Radar scores 0-100',    radarAxes.every(function(a) { return a.score >= 0 && a.score <= 100; }));
+
+    /* Test 6 : export */
+    const exportText = buildExportText();
+    assert('Export contient titre',       exportText.indexOf('AUTOÉVALUATION INTELLIGENTE') !== -1);
+    assert('Export contient saut ligne',  exportText.indexOf('\n') !== -1);
+
+    /* Test 7 : compteur */
+    assert('Compteur réponses = 10', getAnsweredCount(radarSample) === 10);
+
+    /* Test 8 : parcours recommande */
+    const recommended = buildRecommendedPath(radarSample);
+    assert('Parcours recommande limite a 3 liens', recommended.length > 0 && recommended.length <= 3);
+    assert('Parcours recommande sans doublons', new Set(recommended.map(function(item) { return item.href; })).size === recommended.length);
+
+    /* Restauration */
+    state.selfAnswers = savedSelf;
+    state.eval1       = savedEval1;
+    state.eval2       = savedEval2;
+
+    document.getElementById('testsOutput').innerHTML = results.map(function(r) {
+      return '<div class="' + (r.condition ? 'auto-test-ok' : 'auto-test-ko') + '">' + (r.condition ? '✔' : '✘') + ' ' + escapeHtml(r.name) + '</div>';
+    }).join('');
+  }
+
+  /* ════════════════════════════════════════════
+     ÉVÉNEMENTS
+  ════════════════════════════════════════════ */
+  document.getElementById('saveEval1Btn').addEventListener('click', function() {
+    state.eval1 = getCurrentSnapshot();
+    updateComparison();
+    persistState();
+  });
+  document.getElementById('saveEval2Btn').addEventListener('click', function() {
+    state.eval2 = getCurrentSnapshot();
+    updateComparison();
+    persistState();
+  });
+  document.getElementById('resetBtn').addEventListener('click', function() {
+    state.selfAnswers = {};
+    renderQuiz();
+    updateResults();
+  });
+  document.getElementById('date1').addEventListener('change', persistState);
+  document.getElementById('date2').addEventListener('change', persistState);
+  document.getElementById('exportBtn').addEventListener('click', exportResult);
+
+  /* ════════════════════════════════════════════
+     DÉMARRAGE
+  ════════════════════════════════════════════ */
+  loadSavedState();
+  renderQuiz();
+  updateResults();
+  runTests();
+  </script>
+</body>
+</html>

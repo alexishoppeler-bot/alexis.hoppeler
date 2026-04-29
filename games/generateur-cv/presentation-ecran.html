@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self';">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta name="referrer" content="no-referrer">
+<title>Outil CV & LM pédagogique — Présentation</title>
+<style>
+@import url('fonts/fonts.css');
+
+:root {
+  --ink:#122033; --ink-soft:#5a6b80; --white:#fff;
+  --blue:#2457c5; --blue-deep:#15367c; --teal:#1f7e6c;
+  --gold:#ca8d2b; --mint:#dff2ea; --red:#c0392b;
+  --line:rgba(18,32,51,.12);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Manrope',sans-serif;color:var(--ink);background:#0e1a2e}
+
+/* ── DECK ── */
+.deck{width:100vw;height:100vh;position:relative}
+.slide{
+  position:absolute;inset:0;
+  display:none;
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:52px 80px;
+  background:radial-gradient(circle at top left,rgba(202,141,43,.12),transparent 30%),
+    radial-gradient(circle at 85% 10%,rgba(36,87,197,.14),transparent 26%),
+    linear-gradient(180deg,#fbf8f2 0%,#f0ebe2 100%);
+}
+.slide.active{display:flex}
+
+/* ── NAV ── */
+.nav{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  z-index:100;display:flex;align-items:center;gap:14px;
+  background:rgba(14,26,46,.82);backdrop-filter:blur(12px);
+  border-radius:999px;padding:10px 18px;color:#fff;
+}
+.nav-btn{
+  background:none;border:none;color:#fff;font-size:1.2rem;
+  cursor:pointer;width:36px;height:36px;border-radius:50%;
+  display:grid;place-items:center;transition:background .15s;
+  font-family:inherit;
+}
+.nav-btn:hover{background:rgba(255,255,255,.15)}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.nav-counter{font-size:.88rem;font-weight:800;min-width:60px;text-align:center;letter-spacing:.04em;opacity:.8}
+.nav-dots{display:flex;gap:6px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.28);cursor:pointer;transition:background .15s,transform .15s}
+.dot.active{background:#fff;transform:scale(1.3)}
+
+/* ── PROGRESS ── */
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .3s;z-index:200}
+
+/* ── FULLSCREEN BTN ── */
+.fs-btn{
+  position:fixed;top:18px;right:22px;z-index:100;
+  background:rgba(14,26,46,.6);backdrop-filter:blur(8px);
+  border:none;color:#fff;font-size:.8rem;font-weight:700;
+  cursor:pointer;padding:7px 12px;border-radius:999px;
+  font-family:inherit;letter-spacing:.04em;transition:background .15s;
+}
+.fs-btn:hover{background:rgba(14,26,46,.85)}
+
+/* ── SLIDE NUM BADGE ── */
+.slide-badge{position:absolute;top:22px;left:32px;font-size:.78rem;font-weight:800;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase}
+
+/* ════════════════════════════
+   COMPOSANTS COMMUNS
+═══════════════════════════════ */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.85);border:1px solid rgba(18,32,51,.1);color:var(--blue-deep);font-weight:800;font-size:.82rem;margin-bottom:16px}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.6rem,4.2vw,4.2rem);line-height:.96;letter-spacing:-.05em;margin-bottom:16px}
+h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,2.6vw,2.6rem);line-height:1.05;letter-spacing:-.04em;margin-bottom:12px}
+h3{font-size:1rem;font-weight:800;margin-bottom:10px}
+.sub{color:var(--ink-soft);font-size:1rem;line-height:1.65;font-weight:600;max-width:640px}
+.section-head{text-align:center;margin-bottom:32px}
+.section-head h2{margin-bottom:10px}
+.section-head p{color:var(--ink-soft);font-weight:600;font-size:.96rem;line-height:1.6;max-width:680px;margin:0 auto}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid rgba(18,32,51,.1);font-size:.84rem;font-weight:700}
+
+/* metrics */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;max-width:1020px}
+.metric-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 20px;text-align:center}
+.metric-value{font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;color:var(--blue-deep);letter-spacing:-.04em;margin-bottom:6px}
+.metric-label{color:var(--ink-soft);font-size:.82rem;font-weight:700;line-height:1.4}
+
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:1060px}
+.split-col{border-radius:18px;padding:22px 24px;border:1px solid var(--line);background:#fff}
+.split-col.bad{background:linear-gradient(180deg,#fff5f5,#ffe8e8);border-color:#f0c0c0}
+.split-col.good{background:linear-gradient(180deg,#f0fff5,#dff2ea);border-color:#a0d8b8}
+.split-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.split-list li{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;font-weight:600;line-height:1.4}
+.split-list li span{font-size:1rem;flex-shrink:0;margin-top:1px}
+
+/* steps */
+.steps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;width:100%;max-width:1060px}
+.step-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.step-img{width:100%;height:140px;object-fit:cover;object-position:top;display:block}
+.step-foot{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-size:.78rem;font-weight:800;display:grid;place-items:center;flex-shrink:0}
+
+/* outputs */
+.outputs{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:840px}
+.output-wrap{text-align:center}
+.output-wrap img{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:0 16px 48px rgba(16,32,55,.14)}
+.output-label{display:block;margin-top:10px;font-weight:800;font-size:.9rem;color:var(--ink-soft)}
+
+/* sec-grid */
+.sec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;max-width:1060px}
+.sec-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 16px;text-align:center}
+.sec-card .ico{font-size:1.6rem;margin-bottom:8px}
+.sec-card h3{font-size:.92rem;margin-bottom:6px}
+.sec-card p{font-size:.82rem;color:var(--ink-soft);font-weight:600;line-height:1.4}
+
+/* hero screenshots */
+.hero-shots{position:relative;width:100%;height:100%;min-height:360px}
+.shot{position:absolute;border-radius:14px;overflow:hidden;box-shadow:0 20px 56px rgba(16,32,55,.22);border:1px solid var(--line)}
+.shot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.shot-cv{width:68%;bottom:0;left:0;aspect-ratio:3/4}
+.shot-lm{width:60%;bottom:0;right:0;aspect-ratio:3/4}
+.shot-label{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(14,26,46,.78);color:#fff;font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap}
+
+/* 3-col formateurs */
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:1060px}
+
+/* feat cards */
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:1060px;margin-top:16px}
+.feat-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.feat-card .icon{font-size:1.5rem;margin-bottom:8px}
+.feat-card strong{display:block;font-size:.88rem;font-weight:800;margin-bottom:5px}
+.feat-card p{font-size:.8rem;color:var(--ink-soft);font-weight:600;line-height:1.45}
+
+/* band */
+.band{width:100%;max-width:900px;background:linear-gradient(135deg,var(--blue-deep),var(--blue));border-radius:24px;padding:44px 52px;color:#fff;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+.band h2{color:#fff;font-size:2rem}
+.band p{opacity:.82;font-weight:600;font-size:.96rem;margin-top:8px}
+.cta-btn{border:none;cursor:pointer;font-family:'Manrope',sans-serif;display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:999px;font-weight:800;font-size:1rem;background:#fff;color:var(--blue-deep)}
+
+/* sec-banner */
+.sec-banner{display:flex;gap:20px;align-items:flex-start;background:linear-gradient(135deg,#dff2ea,#c8ead8);border:1px solid #a0d8b8;border-radius:18px;padding:22px 24px;width:100%;max-width:1060px;margin-bottom:20px}
+.sec-banner .icon{font-size:2rem;flex-shrink:0}
+.sec-banner strong{font-size:1rem;font-weight:800;display:block;margin-bottom:4px}
+.sec-banner p{font-size:.88rem;font-weight:600;color:var(--ink-soft);line-height:1.5}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress" id="progress"></div>
+
+<!-- FULLSCREEN BUTTON -->
+<button class="fs-btn" onclick="toggleFS()">⛶ Plein écran</button>
+
+<!-- ══════════════════════════════════
+     SLIDES
+══════════════════════════════════ -->
+<div class="deck" id="deck">
+
+  <!-- ── SLIDE 1 : TITRE ── -->
+  <div class="slide active" data-slide="1">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;width:100%;max-width:1100px">
+      <div>
+        <div class="eyebrow">Outil pédagogique · Opérationnel</div>
+        <h1>Générateur de CV & Lettre de motivation</h1>
+        <p class="sub">Un outil interne, sans internet ni serveur, pour produire des CV Word modernes avec les participants — en deux fois moins de temps.</p>
+        <div class="chips">
+          <span class="chip">CV + LM en Word</span>
+          <span class="chip">Mode ATS</span>
+          <span class="chip">🔒 0 donnée transmise</span>
+          <span class="chip">Utilisable en séance</span>
+          <span class="chip">Aucune installation</span>
+        </div>
+      </div>
+      <div class="hero-shots" style="height:420px">
+        <div class="shot shot-cv"><img src="cv.png" alt="CV"><span class="shot-label">CV Word</span></div>
+        <div class="shot shot-lm"><img src="LM.png" alt="LM"><span class="shot-label">Lettre de motivation</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 2 : MÉTRIQUES ── -->
+  <div class="slide" data-slide="2">
+    <div class="section-head">
+      <h2>Ce que ça change, concrètement</h2>
+      <p>Moins de temps sur la forme — plus de temps sur le fond.</p>
+    </div>
+    <div class="metrics">
+      <article class="metric-card">
+        <div class="metric-value">−60 min</div>
+        <div class="metric-label">par dossier CV + lettre vs. production manuelle dans Word</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-value">10 dossiers</div>
+        <div class="metric-label">≈ 10 h économisées, réaffectées à l'accompagnement</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-value">CV + LM</div>
+        <div class="metric-label">Les deux documents exportés ensemble, en Word modifiable</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-value">0 serveur</div>
+        <div class="metric-label">Aucune donnée bénéficiaire ne quitte l'appareil</div>
+      </article>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 3 : POSITIONNEMENT ── -->
+  <div class="slide" data-slide="3">
+    <div class="section-head">
+      <h2>Les générateurs en ligne ne sont pas adaptés à votre contexte.</h2>
+      <p>Ils envoient les données des participants sur des serveurs externes, nécessitent un compte, et dépendent d'une connexion.</p>
+    </div>
+    <div class="split">
+      <div class="split-col bad">
+        <h3>🌐 Générateurs en ligne</h3>
+        <ul class="split-list">
+          <li><span>☁️</span>Données des participants envoyées sur des serveurs tiers</li>
+          <li><span>🔐</span>Compte obligatoire — email, mot de passe, CGU</li>
+          <li><span>📶</span>Dépendant d'une connexion internet stable</li>
+          <li><span>💸</span>Export souvent payant ou limité</li>
+          <li><span>🎨</span>Résultat en PDF figé, difficile à retoucher</li>
+          <li><span>🔒</span>Aucun contrôle sur ce qui est fait des données</li>
+        </ul>
+      </div>
+      <div class="split-col good">
+        <h3>🖥️ Cet outil — logiciel interne</h3>
+        <ul class="split-list">
+          <li><span>✅</span>Fonctionne sans internet — utilisable hors ligne</li>
+          <li><span>✅</span>Aucun compte, aucune inscription, aucun tiers</li>
+          <li><span>✅</span>Données des participants qui ne quittent jamais l'appareil</li>
+          <li><span>✅</span>Export Word modifiable, sans abonnement</li>
+          <li><span>✅</span>Déployable sur n'importe quel poste, sans installation</li>
+          <li><span>✅</span>Sous le contrôle total de l'organisation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 4 : AVANT / APRÈS ── -->
+  <div class="slide" data-slide="4">
+    <div class="section-head">
+      <h2>Le problème actuel en formation</h2>
+      <p>Trop de temps perdu sur la mise en page, pas assez sur le fond du dossier.</p>
+    </div>
+    <div class="split">
+      <div class="split-col bad">
+        <h3>❌ Workflow actuel</h3>
+        <ul class="split-list">
+          <li><span>⏱️</span>45–75 min pour produire un CV dans Word depuis zéro</li>
+          <li><span>📐</span>Marges, tableaux, polices : le formateur perd du temps sur la forme</li>
+          <li><span>📄</span>Modèles Word datés, mal lus par les ATS des recruteurs</li>
+          <li><span>✍️</span>20–40 min supplémentaires pour structurer la lettre</li>
+          <li><span>🔁</span>Chaque bénéficiaire recommence le même travail technique</li>
+        </ul>
+      </div>
+      <div class="split-col good">
+        <h3>✅ Avec cet outil</h3>
+        <ul class="split-list">
+          <li><span>⚡</span>12–20 min de saisie guidée pour un premier jet complet</li>
+          <li><span>🎨</span>Mise en page automatique — le formateur se concentre sur le fond</li>
+          <li><span>📋</span>Modèles modernes, mode ATS disponible</li>
+          <li><span>💌</span>CV + lettre exportés ensemble dans le même outil</li>
+          <li><span>👁️</span>Prévisualisation en temps réel, utilisable en séance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 5 : ÉTAPES ── -->
+  <div class="slide" data-slide="5">
+    <div class="section-head">
+      <h2>5 étapes guidées — du profil à l'export</h2>
+      <p>Utilisable seul ou animé en séance collective.</p>
+    </div>
+    <div class="steps-grid">
+      <article class="step-card">
+        <img class="step-img" src="mes infos.png" alt="Mes infos">
+        <div class="step-foot"><span class="step-num">1</span><h3>Mes informations</h3></div>
+      </article>
+      <article class="step-card">
+        <img class="step-img" src="expériences.png" alt="Expériences">
+        <div class="step-foot"><span class="step-num">2</span><h3>Expériences</h3></div>
+      </article>
+      <article class="step-card">
+        <img class="step-img" src="formation.png" alt="Formation">
+        <div class="step-foot"><span class="step-num">3</span><h3>Formation</h3></div>
+      </article>
+      <article class="step-card">
+        <img class="step-img" src="compétences.png" alt="Compétences">
+        <div class="step-foot"><span class="step-num">4</span><h3>Compétences</h3></div>
+      </article>
+      <article class="step-card">
+        <img class="step-img" src="télécharger.png" alt="Export">
+        <div class="step-foot"><span class="step-num" style="background:var(--teal)">✓</span><h3>Export Word</h3></div>
+      </article>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 6 : RÉSULTAT ── -->
+  <div class="slide" data-slide="6">
+    <div class="section-head">
+      <h2>Résultat : deux documents Word prêts à envoyer</h2>
+      <p>Le CV et la lettre de motivation sont générés ensemble, modifiables dans Word, LibreOffice ou Google Docs.</p>
+    </div>
+    <div class="outputs">
+      <div class="output-wrap">
+        <img src="cv.png" alt="CV Word">
+        <span class="output-label">CV Word exporté</span>
+      </div>
+      <div class="output-wrap">
+        <img src="LM.png" alt="Lettre de motivation">
+        <span class="output-label">Lettre Word exportée</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 7 : FORMATEURS ── -->
+  <div class="slide" data-slide="7">
+    <div class="section-head">
+      <h2>Conçu pour les formateurs</h2>
+      <p>Adapté à tous les contextes d'accompagnement — en groupe, en individuel ou en autonomie.</p>
+    </div>
+    <div class="cols3">
+      <div class="split-col good" style="background:linear-gradient(180deg,#f0f6ff,#e6eeff);border-color:#c8d8f0">
+        <h3 style="color:var(--blue-deep)">👥 En groupe</h3>
+        <ul class="split-list">
+          <li><span>👥</span>Chaque participant produit son CV guidé pas à pas</li>
+          <li><span>📋</span>Résultat homogène pour tout le groupe, sans niveau Word requis</li>
+          <li><span>⚡</span>Premier jet exploitable en 20 min</li>
+          <li><span>🖨️</span>Export immédiat, chacun repart avec son fichier</li>
+        </ul>
+      </div>
+      <div class="split-col good" style="background:linear-gradient(180deg,#f5f0ff,#ede6ff);border-color:#c8b8f0">
+        <h3 style="color:#4a2b9a">🎯 En accompagnement individuel</h3>
+        <ul class="split-list">
+          <li><span>💬</span>Le formateur remplit avec le participant en temps réel</li>
+          <li><span>🔄</span>Adapter le CV à chaque candidature en quelques minutes</li>
+          <li><span>📝</span>Phrases de profil proposées automatiquement</li>
+          <li><span>💾</span>Sauvegarde locale — profil disponible à la prochaine séance</li>
+        </ul>
+      </div>
+      <div class="split-col good">
+        <h3>🔓 En autonomie</h3>
+        <ul class="split-list">
+          <li><span>🚀</span>Accessible sans formation technique préalable</li>
+          <li><span>🏗️</span>Compétences métier suggérées par secteur</li>
+          <li><span>📂</span>CV + lettre générés ensemble, dossier complet prêt</li>
+          <li><span>✏️</span>Exemples intégrés pour débloquer la page blanche</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 8 : FONCTIONNALITÉS ── -->
+  <div class="slide" data-slide="8">
+    <div class="section-head">
+      <h2>Fonctionnalités pédagogiques intégrées</h2>
+      <p>Pensées pour guider même les participants les moins à l'aise à l'écrit.</p>
+    </div>
+    <div class="feat-grid" style="grid-template-columns:repeat(4,1fr);display:grid;gap:16px;max-width:1060px">
+      <div class="feat-card">
+        <div class="icon">💬</div>
+        <strong>Phrases proposées</strong>
+        <p>Formulations de profil et d'accroche suggérées selon le secteur et le niveau d'expérience.</p>
+      </div>
+      <div class="feat-card">
+        <div class="icon">🏷️</div>
+        <strong>Compétences par métier</strong>
+        <p>Listes prêtes à cocher : cuisine, logistique, admin, vente, bâtiment, aide à la personne…</p>
+      </div>
+      <div class="feat-card">
+        <div class="icon">📄</div>
+        <strong>Exemples intégrés</strong>
+        <p>Un profil exemple complet chargeable en 1 clic pour montrer le résultat ou débloquer un participant.</p>
+      </div>
+      <div class="feat-card">
+        <div class="icon">🎨</div>
+        <strong>Adapter à chaque poste</strong>
+        <p>Modifier le titre, le profil et les compétences pour cibler une offre sans reprendre tout le CV.</p>
+      </div>
+    </div>
+    <div class="feat-grid" style="grid-template-columns:repeat(4,1fr);display:grid;gap:16px;max-width:1060px;margin-top:14px">
+      <div class="feat-card">
+        <div class="icon">👁️</div>
+        <strong>Prévisualisation temps réel</strong>
+        <p>Le CV se met à jour à chaque frappe — le participant voit directement le rendu final.</p>
+      </div>
+      <div class="feat-card">
+        <div class="icon">📑</div>
+        <strong>Mode ATS</strong>
+        <p>CV sobre et structuré, optimisé pour les logiciels de tri automatique des recruteurs.</p>
+      </div>
+      <div class="feat-card">
+        <div class="icon">📥</div>
+        <strong>Import de CV existant</strong>
+        <p>Importer un CV PDF pour en extraire le texte et pré-remplir le formulaire.</p>
+      </div>
+      <div class="feat-card">
+        <div class="icon">💾</div>
+        <strong>Sauvegarde automatique</strong>
+        <p>Le profil est sauvegardé localement — retrouvé intact à la prochaine ouverture.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 9 : SÉCURITÉ ── -->
+  <div class="slide" data-slide="9">
+    <div class="section-head">
+      <h2>Sécurité des données bénéficiaires</h2>
+      <p>Les données saisies ne quittent jamais l'appareil utilisé.</p>
+    </div>
+    <div class="sec-banner" style="max-width:900px">
+      <span class="icon">🔒</span>
+      <div>
+        <strong>Aucun serveur. Aucune base de données. Aucun compte.</strong>
+        <p>Le CV est généré dans le navigateur et téléchargé directement. Conforme aux exigences de confidentialité en accompagnement professionnel.</p>
+      </div>
+    </div>
+    <div class="sec-grid" style="max-width:900px">
+      <div class="sec-card">
+        <div class="ico">💾</div>
+        <h3>Stockage local</h3>
+        <p>Données en localStorage — sur l'appareil uniquement, jamais en réseau.</p>
+      </div>
+      <div class="sec-card">
+        <div class="ico">🗑️</div>
+        <h3>Effacement en 1 clic</h3>
+        <p>Bouton "Effacer mes données" visible en permanence. Proposé après chaque export.</p>
+      </div>
+      <div class="sec-card">
+        <div class="ico">🛡️</div>
+        <h3>CSP + SRI</h3>
+        <p>Politique de sécurité stricte. Bibliothèques vérifiées par empreinte SHA-384.</p>
+      </div>
+      <div class="sec-card">
+        <div class="ico">🌐</div>
+        <h3>Zéro tracker</h3>
+        <p>Aucun Google Analytics, aucun pixel pub. Polices hébergées localement.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 10 : FIN ── -->
+  <div class="slide" data-slide="10">
+    <div class="band">
+      <div>
+        <h2>L'outil est opérationnel.</h2>
+        <p>Utilisable immédiatement, sans installation, sur n'importe quel ordinateur. Données des participants 100 % locales.</p>
+        <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px">
+          <span class="chip" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.2);color:#fff">Opérationnel maintenant</span>
+          <span class="chip" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.2);color:#fff">Aucune installation</span>
+          <span class="chip" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.2);color:#fff">🔒 0 donnée transmise</span>
+          <span class="chip" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.2);color:#fff">CV + LM en Word</span>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:4rem;margin-bottom:12px">📄</div>
+        <div style="font-size:.88rem;font-weight:800;opacity:.7;letter-spacing:.06em;text-transform:uppercase">Outil CV & LM pédagogique</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- ── NAVIGATION ── -->
+<nav class="nav">
+  <button class="nav-btn" id="btn-prev" onclick="go(-1)" disabled>&#8592;</button>
+  <div class="nav-dots" id="dots"></div>
+  <span class="nav-counter" id="counter">1 / 10</span>
+  <button class="nav-btn" id="btn-next" onclick="go(1)">&#8594;</button>
+</nav>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+// Build dots
+const dotsEl = document.getElementById('dots');
+slides.forEach((_,i)=>{
+  const d = document.createElement('span');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  dotsEl.appendChild(d);
+});
+
+function goTo(n){
+  slides[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('active');
+  cur = Math.max(0,Math.min(n,total-1));
+  slides[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('active');
+  document.getElementById('counter').textContent=(cur+1)+' / '+total;
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===total-1;
+  document.getElementById('progress').style.width=((cur+1)/total*100)+'%';
+}
+
+function go(d){ goTo(cur+d); }
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+});
+
+// Init progress
+document.getElementById('progress').style.width=(1/total*100)+'%';
+
+// Fullscreen
+function toggleFS(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+</script>
+<div style="position:fixed;bottom:72px;right:22px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.04em;pointer-events:none">© Alexis Höppeler</div>
+</body>
+</html>

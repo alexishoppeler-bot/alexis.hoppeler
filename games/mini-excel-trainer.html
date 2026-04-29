@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Excel Trainer - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root {
+      --mx-bg: #f4efe6;
+      --mx-panel: rgba(255, 251, 245, 0.96);
+      --mx-line: #d8cdb8;
+      --mx-text: #2d2a26;
+      --mx-muted: #6f665c;
+      --mx-accent: #217346;
+      --mx-accent-soft: #dff2e6;
+      --mx-blue: #2f6690;
+      --mx-blue-soft: #dbeaf7;
+      --mx-gold: #d8a728;
+      --mx-gold-soft: #fbefc7;
+      --mx-ok: #237a46;
+      --mx-ok-soft: #d9f1df;
+      --mx-warn: #c77d11;
+      --mx-warn-soft: #fff0d4;
+      --mx-bad: #b3403d;
+      --mx-bad-soft: #f8dada;
+      --mx-shadow: 0 18px 40px rgba(45, 42, 38, 0.08);
+      --mx-radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body.mini-excel-page {
+      margin: 0;
+      color: var(--mx-text);
+      background:
+        radial-gradient(circle at top right, #f7e2c0 0, transparent 26%),
+        radial-gradient(circle at top left, #dbe9f8 0, transparent 22%),
+        linear-gradient(180deg, #f8f4ed 0%, #f1ece3 100%);
+      font-family: "Trebuchet MS", Verdana, sans-serif;
+    }
+
+    .mini-excel-shell {
+      max-width: 1460px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .mini-excel-hero,
+    .mini-excel-card {
+      background: var(--mx-panel);
+      border: 1px solid rgba(216, 205, 184, 0.95);
+      border-radius: var(--mx-radius);
+      box-shadow: var(--mx-shadow);
+    }
+
+    .mini-excel-hero {
+      padding: 22px 24px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--mx-accent-soft);
+      color: var(--mx-accent);
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .mini-excel-lead,
+    .mini-excel-helper,
+    .mini-excel-feedback,
+    .mini-excel-callout,
+    .mini-excel-grid,
+    button,
+    select {
+      font-size: clamp(17px, 1.7vw, 22px);
+      line-height: 1.35;
+    }
+
+    .mini-excel-hero p {
+      color: var(--mx-muted);
+      margin-bottom: 0;
+    }
+
+    .mini-excel-stats {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mini-excel-stat {
+      background: #fff;
+      border: 1px solid var(--mx-line);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .mini-excel-stat strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .mini-excel-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .mini-excel-card {
+      padding: 20px;
+    }
+
+    .mini-excel-sidebar {
+      position: sticky;
+      top: 16px;
+    }
+
+    .mini-excel-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--mx-blue-soft);
+      color: var(--mx-blue);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .mini-excel-callout,
+    .mini-excel-feedback {
+      background: #fff;
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--mx-line);
+      margin-bottom: 12px;
+    }
+
+    .mini-excel-visual {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .mini-excel-feedback.ok { background: var(--mx-ok-soft); border-color: var(--mx-ok); color: var(--mx-ok); }
+    .mini-excel-feedback.warn { background: var(--mx-warn-soft); border-color: var(--mx-warn); color: var(--mx-warn); }
+    .mini-excel-feedback.bad { background: var(--mx-bad-soft); border-color: var(--mx-bad); color: var(--mx-bad); }
+
+    .mini-excel-actions,
+    .mini-excel-nav {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-excel-nav {
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 10px;
+    }
+
+    .mini-excel-actions {
+      grid-template-columns: 1fr;
+    }
+
+    button,
+    select {
+      width: 100%;
+      border: 2px solid var(--mx-line);
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-family: inherit;
+      background: #fff;
+      color: var(--mx-text);
+    }
+
+    button {
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--mx-accent);
+      outline: none;
+    }
+
+    button.primary { background: var(--mx-accent); color: #fff; border-color: var(--mx-accent); }
+    button.secondary { background: var(--mx-blue-soft); border-color: var(--mx-blue); color: var(--mx-blue); }
+    button.warning { background: var(--mx-gold-soft); border-color: var(--mx-gold); }
+    button.active-tool { background: var(--mx-accent-soft); border-color: var(--mx-accent); }
+
+    .mini-excel-map {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mini-excel-map button {
+      min-height: 44px;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    .mini-excel-map button.done {
+      background: var(--mx-ok-soft);
+      border-color: var(--mx-ok);
+    }
+
+    .mini-excel-map button.current {
+      background: var(--mx-blue-soft);
+      border-color: var(--mx-blue);
+    }
+
+    .mini-excel-workspace {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .mini-excel-topbar {
+      padding: 16px;
+      border-bottom: 1px solid var(--mx-line);
+      background: linear-gradient(180deg, #fff7dd, #f7edd8);
+    }
+
+    .mini-excel-tools {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mini-excel-sheet-wrap {
+      padding: 18px;
+      overflow: auto;
+      background: linear-gradient(180deg, #fdf9f0 0%, #f6f8fb 100%);
+    }
+
+    .mini-excel-grid {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 16px 32px rgba(0,0,0,.08);
+    }
+
+    .mini-excel-grid th,
+    .mini-excel-grid td {
+      border: 1px solid #d9dfd2;
+      min-width: 120px;
+      height: 56px;
+      padding: 0;
+    }
+
+    .mini-excel-grid th {
+      background: #edf5ee;
+      color: #24412c;
+      text-align: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .row-head {
+      width: 64px;
+      background: #f5f6f7 !important;
+    }
+
+    .cell {
+      width: 100%;
+      height: 100%;
+      padding: 10px 12px;
+      outline: none;
+      background: #fff;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .cell.selected {
+      box-shadow: inset 0 0 0 3px var(--mx-accent);
+      background: #f3fff6;
+    }
+
+    .cell.border {
+      box-shadow: inset 0 0 0 2px #5c6f5e;
+    }
+
+    .cell.center { text-align: center; }
+    .cell.right { text-align: right; }
+    .cell.bold { font-weight: 800; }
+
+    .mini-excel-note {
+      color: var(--mx-muted);
+      font-size: 15px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1100px) {
+      .mini-excel-hero,
+      .mini-excel-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-excel-sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .mini-excel-shell {
+        padding: 12px;
+      }
+
+      .mini-excel-tools {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .mini-excel-map {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body class="mini-excel-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="mini-excel-shell">
+        <section class="mini-excel-hero">
+          <div>
+            <div class="eyebrow">Bureautique</div>
+            <h1>Mini Excel Trainer</h1>
+            <p class="mini-excel-lead">Une feuille simple pour apprendre Excel pas à pas: écrire, ranger, calculer et présenter un petit tableau.</p>
+          </div>
+          <div class="mini-excel-stats">
+            <div class="mini-excel-stat"><strong id="mxMissionCount">1 / 20</strong><span>Mission</span></div>
+            <div class="mini-excel-stat"><strong id="mxScoreValue">0 / 20</strong><span>Score</span></div>
+            <div class="mini-excel-stat" style="grid-column: 1 / -1;"><strong id="mxProgressValue">0 %</strong><span>Progression</span></div>
+          </div>
+        </section>
+
+        <section class="mini-excel-layout">
+          <aside class="mini-excel-card mini-excel-sidebar">
+            <div class="mini-excel-badge" id="mxBadge">Mission 1</div>
+            <h2 id="mxMissionTitle">Écrire son prénom dans une cellule</h2>
+
+            <div class="mini-excel-callout">
+              <strong>Consigne</strong>
+              <div id="mxInstruction"></div>
+            </div>
+
+            <div class="mini-excel-callout">
+              <strong>Exemple visuel</strong>
+              <div class="mini-excel-visual" id="mxVisual">🟩 A1 = Maria</div>
+            </div>
+
+            <div class="mini-excel-callout">
+              <strong>Aide</strong>
+              <div id="mxHint"></div>
+            </div>
+
+            <div class="mini-excel-feedback" id="mxFeedback">Clique dans une case, puis écris.</div>
+
+            <div class="mini-excel-nav">
+              <button id="mxPrev" class="secondary">Mission avant</button>
+              <button id="mxNext" class="secondary">Mission après</button>
+            </div>
+
+            <div class="mini-excel-actions">
+              <button id="mxCheck" class="primary">Vérifier</button>
+              <button id="mxReset">Recommencer</button>
+              <button id="mxExport" class="warning">Exporter en CSV</button>
+            </div>
+
+            <div class="mini-excel-callout" style="margin-top: 12px;">
+              <strong>Parcours</strong>
+              <div class="mini-excel-map" id="mxMap"></div>
+            </div>
+          </aside>
+
+          <section class="mini-excel-card mini-excel-workspace">
+            <div class="mini-excel-topbar">
+              <strong>Feuille d'entraînement</strong>
+              <div class="mini-excel-tools">
+                <button data-tool="bold">Gras</button>
+                <button data-tool="color">Couleur</button>
+                <button data-tool="align">Centrer</button>
+                <button data-tool="border">Bordures</button>
+                <button data-tool="number">Nombre</button>
+                <button data-tool="chf">CHF</button>
+                <button data-tool="sum">SOMME</button>
+                <button data-tool="clear">Effacer case</button>
+              </div>
+              <div class="mini-excel-note">Colonnes A à E, lignes 1 à 20. Clique une case pour la sélectionner.</div>
+            </div>
+
+            <div class="mini-excel-sheet-wrap">
+              <table class="mini-excel-grid" id="mxGrid"></table>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+    'use strict';
+
+    (function () {
+      const PAGE_KEY = 'mini-excel-trainer';
+      const STORAGE_KEY = 'mini-excel-trainer-state-v1';
+      const COLS = ['A', 'B', 'C', 'D', 'E'];
+      const ROWS = 20;
+      let selectedCell = 'A1';
+      let state = {
+        currentMission: 0,
+        completed: Array(20).fill(false),
+        cells: {},
+        score: 0
+      };
+
+      const missions = [
+        { title: 'Écrire son prénom dans une cellule', instruction: 'Écris ton prénom dans A1.', visual: '🟩 A1 = Maria', hint: 'Clique A1, puis écris un prénom.', setup: () => clearSheet(), check: () => hasWords('A1', 1) },
+        { title: 'Écrire une date', instruction: 'Écris une date dans B1.', visual: '📅 B1 = 29.04.2026', hint: 'Tu peux écrire 29.04.2026 ou 29/04/2026.', setup: () => clearSheet(), check: () => isDate('B1') },
+        { title: 'Écrire une liste de prénoms', instruction: 'Écris 3 prénoms dans A1, A2, A3.', visual: '👤 A1 Ali, A2 Sara, A3 Nadia', hint: 'Une case = un prénom.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3']) },
+        { title: 'Écrire une liste de métiers', instruction: 'Écris 3 métiers dans B1, B2, B3.', visual: '💼 cuisine, vente, nettoyage', hint: 'Exemples: cuisine, vente, bâtiment.', setup: () => clearSheet(), check: () => filledCells(['B1', 'B2', 'B3']) },
+        { title: 'Créer une liste de courses', instruction: 'Écris 4 courses dans A1 à A4.', visual: '🛒 riz, lait, pain, pommes', hint: 'Une course par ligne.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3', 'A4']) },
+        { title: 'Ajouter des prix simples', instruction: 'Écris 3 prix dans B1, B2, B3.', visual: '💰 2, 4, 6', hint: 'Écris seulement des nombres.', setup: () => clearSheet(), check: () => numericCells(['B1', 'B2', 'B3']) },
+        { title: 'Calculer un total avec SOMME', instruction: 'Mets 5, 3, 2 en B1 à B3. Puis fais la somme en B4.', visual: '∑ B4 = 10', hint: 'Clique B4 puis bouton SOMME.', setup: () => preset({ B1: '5', B2: '3', B3: '2' }), check: () => numericValue('B4') === 10 },
+        { title: 'Calculer une différence', instruction: 'Mets 10 en C1, 4 en C2, résultat en C3.', visual: '➖ C3 = 6', hint: 'Tu peux écrire =10-4 dans C3.', setup: () => preset({ C1: '10', C2: '4' }), check: () => numericValue('C3') === 6 },
+        { title: 'Calculer un salaire journalier', instruction: 'Mets 8 heures, 20 CHF, puis total.', visual: '🧹 8 x 20 = 160', hint: 'D1 = 8, D2 = 20, D3 = 160.', setup: () => preset({ D1: '8', D2: '20' }), check: () => numericValue('D3') === 160 },
+        { title: 'Calculer des heures travaillées', instruction: 'Mets 3, 4, 5 heures et le total.', visual: '⏰ total = 12', hint: 'Exemple nettoyage: lundi, mardi, mercredi.', setup: () => preset({ A1: '3', A2: '4', A3: '5' }), check: () => numericValue('A4') === 12 },
+        { title: 'Calculer un budget transport', instruction: 'Écris 3 prix de transport et un total.', visual: '🚌 4 + 4 + 8 = 16', hint: 'B1, B2, B3 puis total en B4.', setup: () => clearSheet(), check: () => numericCells(['B1', 'B2', 'B3', 'B4']) && numericValue('B4') === numericValue('B1') + numericValue('B2') + numericValue('B3') },
+        { title: 'Créer un petit tableau de nettoyage', instruction: 'Écris lieu, heures, tâche sur 3 lignes.', visual: '🧽 lieu | heures | tâche', hint: 'Exemple: école, 2, sol.', setup: () => clearSheet(), check: () => filledCells(['A1', 'B1', 'C1', 'A2', 'B2', 'C2']) },
+        { title: 'Mettre un titre en gras', instruction: 'Écris un titre en A1 et mets-le en gras.', visual: '𝐓 A1 en gras', hint: 'Clique A1 puis bouton Gras.', setup: () => clearSheet(), check: () => isStyled('A1', 'bold') && hasWords('A1', 1) },
+        { title: 'Ajouter des bordures', instruction: 'Écris un petit tableau et ajoute des bordures.', visual: '⬛ cases encadrées', hint: 'Sélectionne quelques cases puis bouton Bordures.', setup: () => preset({ A1: 'Produit', B1: 'Prix', A2: 'Riz', B2: '3' }), check: () => hasAnyBorder(['A1', 'B1', 'A2', 'B2']) },
+        { title: 'Centrer un titre', instruction: 'Écris un titre en A1 et centre-le.', visual: '↔ titre au milieu', hint: 'Bouton Centrer.', setup: () => clearSheet(), check: () => isStyled('A1', 'align', 'center') && hasWords('A1', 1) },
+        { title: 'Mettre les prix en CHF', instruction: 'Écris 2 prix et mets-les en CHF.', visual: '💵 12 CHF', hint: 'Bouton CHF sur une case avec nombre.', setup: () => preset({ B1: '12', B2: '25' }), check: () => isStyled('B1', 'format', 'chf') || isStyled('B2', 'format', 'chf') },
+        { title: 'Trier une liste par ordre alphabétique', instruction: 'Range 3 mots dans l’ordre alphabétique.', visual: 'A, B, C', hint: 'Exemple: Ali, Nadia, Sara.', setup: () => clearSheet(), check: () => alphabetical(['A1', 'A2', 'A3']) },
+        { title: 'Repérer une erreur dans un tableau', instruction: 'Corrige la case rouge dans ton tableau.', visual: '🔎 trouve l’erreur', hint: 'La bonne somme attendue est 9.', setup: () => preset({ A1: '2', A2: '3', A3: '4', A4: '8' }, { A4: { color: '#d94841' } }), check: () => numericValue('A4') === 9 },
+        { title: 'Compléter une feuille de présence', instruction: 'Écris 3 noms et 3 dates.', visual: '🗓️ présence simple', hint: 'Colonnes A et B.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3']) && isDate('B1') && isDate('B2') && isDate('B3') },
+        { title: 'Créer un mini budget mensuel', instruction: 'Écris 3 dépenses et un total.', visual: '🏠 loyer, transport, nourriture', hint: 'Nom en A, prix en B, total en B4.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3']) && numericCells(['B1', 'B2', 'B3', 'B4']) && numericValue('B4') === numericValue('B1') + numericValue('B2') + numericValue('B3') }
+      ];
+
+      function emptyCellState() {
+        return { value: '', bold: false, color: '', align: 'left', border: false, format: 'text' };
+      }
+
+      function getCellState(ref) {
+        if (!state.cells[ref]) state.cells[ref] = emptyCellState();
+        return state.cells[ref];
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (saved) {
+            state.currentMission = saved.currentMission || 0;
+            state.completed = Array.isArray(saved.completed) ? saved.completed.slice(0, 20) : Array(20).fill(false);
+            state.cells = saved.cells || {};
+            state.score = saved.score || 0;
+          }
+        } catch (error) {
+          console.warn('Mini Excel Trainer: sauvegarde invalide.', error);
+        }
+      }
+
+      function renderGrid() {
+        const grid = document.getElementById('mxGrid');
+        let html = '<thead><tr><th class="row-head"></th>';
+        COLS.forEach((col) => { html += '<th>' + col + '</th>'; });
+        html += '</tr></thead><tbody>';
+        for (let row = 1; row <= ROWS; row += 1) {
+          html += '<tr><th class="row-head">' + row + '</th>';
+          COLS.forEach((col) => {
+            const ref = col + row;
+            html += '<td><div class="cell" data-cell="' + ref + '" contenteditable="true"></div></td>';
+          });
+          html += '</tr>';
+        }
+        html += '</tbody>';
+        grid.innerHTML = html;
+
+        grid.querySelectorAll('.cell').forEach((cell) => {
+          cell.addEventListener('focus', () => selectCell(cell.dataset.cell));
+          cell.addEventListener('click', () => selectCell(cell.dataset.cell));
+          cell.addEventListener('input', () => {
+            getCellState(cell.dataset.cell).value = cell.innerText.replace(/\n/g, ' ').trim();
+            saveState();
+          });
+        });
+        paintGrid();
+      }
+
+      function paintGrid() {
+        document.querySelectorAll('.cell').forEach((cellEl) => {
+          const ref = cellEl.dataset.cell;
+          const cell = getCellState(ref);
+          cellEl.innerText = displayValue(cell);
+          cellEl.classList.toggle('selected', ref === selectedCell);
+          cellEl.classList.toggle('bold', !!cell.bold);
+          cellEl.classList.toggle('center', cell.align === 'center');
+          cellEl.classList.toggle('right', cell.align === 'right');
+          cellEl.classList.toggle('border', !!cell.border);
+          cellEl.style.color = cell.color || '';
+        });
+      }
+
+      function displayValue(cell) {
+        if (cell.format === 'chf' && isFiniteNumber(cell.value)) return Number(cell.value).toFixed(2) + ' CHF';
+        if (cell.format === 'number' && isFiniteNumber(cell.value)) return String(Number(cell.value));
+        return cell.value || '';
+      }
+
+      function selectCell(ref) {
+        selectedCell = ref;
+        paintGrid();
+      }
+
+      function setFeedback(level, text) {
+        const box = document.getElementById('mxFeedback');
+        box.className = 'mini-excel-feedback' + (level ? ' ' + level : '');
+        box.textContent = text;
+      }
+
+      function updateProgress() {
+        state.score = state.completed.filter(Boolean).length;
+        document.getElementById('mxMissionCount').textContent = (state.currentMission + 1) + ' / 20';
+        document.getElementById('mxScoreValue').textContent = state.score + ' / 20';
+        document.getElementById('mxProgressValue').textContent = Math.round((state.score / 20) * 100) + ' %';
+        if (window.ScoreManager) {
+          window.ScoreManager.writeMetrics(PAGE_KEY, {
+            status: state.score === 0 ? 'not_started' : state.score === 20 ? 'completed' : 'in_progress',
+            correct: state.score,
+            errors: 0,
+            xp: state.score * 5
+          });
+        }
+        saveState();
+      }
+
+      function renderMissionMap() {
+        const map = document.getElementById('mxMap');
+        map.innerHTML = '';
+        missions.forEach((mission, index) => {
+          const button = document.createElement('button');
+          button.textContent = index + 1;
+          if (state.completed[index]) button.classList.add('done');
+          if (state.currentMission === index) button.classList.add('current');
+          button.addEventListener('click', () => {
+            state.currentMission = index;
+            loadMission();
+          });
+          map.appendChild(button);
+        });
+      }
+
+      function loadMission() {
+        const mission = missions[state.currentMission];
+        document.getElementById('mxBadge').textContent = 'Mission ' + (state.currentMission + 1);
+        document.getElementById('mxMissionTitle').textContent = mission.title;
+        document.getElementById('mxInstruction').textContent = mission.instruction;
+        document.getElementById('mxVisual').textContent = mission.visual;
+        document.getElementById('mxHint').textContent = mission.hint;
+        if (!state.cells.__missionLoaded || state.cells.__missionLoaded !== state.currentMission) {
+          mission.setup();
+          state.cells.__missionLoaded = state.currentMission;
+        }
+        paintGrid();
+        renderMissionMap();
+        updateProgress();
+        setFeedback('', state.completed[state.currentMission] ? 'Mission déjà réussie.' : 'Clique dans une case, puis écris.');
+      }
+
+      function clearSheet() {
+        state.cells = { __missionLoaded: state.currentMission };
+        selectedCell = 'A1';
+      }
+
+      function preset(values, styles) {
+        clearSheet();
+        Object.keys(values).forEach((ref) => {
+          getCellState(ref).value = values[ref];
+        });
+        Object.keys(styles || {}).forEach((ref) => {
+          Object.assign(getCellState(ref), styles[ref]);
+        });
+      }
+
+      function hasWords(ref, minWords) {
+        const words = (getCellState(ref).value || '').trim().split(/\s+/).filter(Boolean);
+        return feedback(words.length >= minWords, words.length > 0);
+      }
+
+      function isDate(ref) {
+        const value = (getCellState(ref).value || '').trim();
+        return feedback(/\d{1,2}[./-]\d{1,2}[./-]\d{2,4}/.test(value), value.length > 0);
+      }
+
+      function filledCells(refs) {
+        const filled = refs.filter((ref) => (getCellState(ref).value || '').trim().length > 0).length;
+        return feedback(filled === refs.length, filled > 0);
+      }
+
+      function numericCells(refs) {
+        const count = refs.filter((ref) => isFiniteNumber(getCellState(ref).value)).length;
+        return feedback(count === refs.length, count > 0);
+      }
+
+      function numericValue(ref) {
+        return Number(String(getCellState(ref).value || '').replace(',', '.'));
+      }
+
+      function isFiniteNumber(value) {
+        return Number.isFinite(Number(String(value).replace(',', '.')));
+      }
+
+      function isStyled(ref, key, expected) {
+        const cell = getCellState(ref);
+        if (key === 'bold') return feedback(!!cell.bold, !!cell.value);
+        return feedback(cell[key] === expected, !!cell.value);
+      }
+
+      function hasAnyBorder(refs) {
+        const yes = refs.some((ref) => !!getCellState(ref).border);
+        return feedback(yes, refs.some((ref) => !!getCellState(ref).value));
+      }
+
+      function alphabetical(refs) {
+        const values = refs.map((ref) => (getCellState(ref).value || '').trim()).filter(Boolean);
+        if (values.length < refs.length) return { level: 'bad', text: 'Essaie encore. Complète les cases.' };
+        const sorted = values.slice().sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
+        return feedback(JSON.stringify(values) === JSON.stringify(sorted), true);
+      }
+
+      function feedback(success, partial) {
+        if (success) return { level: 'ok', text: 'Bravo' };
+        if (partial) return { level: 'warn', text: 'Presque' };
+        return { level: 'bad', text: 'Essaie encore' };
+      }
+
+      function applyTool(tool) {
+        const cell = getCellState(selectedCell);
+        if (!cell) return;
+        if (tool === 'bold') cell.bold = !cell.bold;
+        if (tool === 'color') cell.color = cell.color ? '' : '#1f7a45';
+        if (tool === 'align') cell.align = cell.align === 'center' ? 'left' : 'center';
+        if (tool === 'border') cell.border = !cell.border;
+        if (tool === 'number' && isFiniteNumber(cell.value)) cell.format = 'number';
+        if (tool === 'chf' && isFiniteNumber(cell.value)) cell.format = 'chf';
+        if (tool === 'sum') {
+          const col = selectedCell.charAt(0);
+          const row = Number(selectedCell.slice(1));
+          let sum = 0;
+          for (let r = 1; r < row; r += 1) {
+            const ref = col + r;
+            if (isFiniteNumber(getCellState(ref).value)) sum += numericValue(ref);
+          }
+          cell.value = String(sum);
+          cell.format = 'number';
+        }
+        if (tool === 'clear') state.cells[selectedCell] = emptyCellState();
+        paintGrid();
+        saveState();
+      }
+
+      function checkMission() {
+        const result = missions[state.currentMission].check();
+        setFeedback(result.level, result.text);
+        if (result.level === 'ok' && !state.completed[state.currentMission]) {
+          state.completed[state.currentMission] = true;
+          updateProgress();
+          renderMissionMap();
+        } else {
+          saveState();
+        }
+      }
+
+      function exportCsv() {
+        const rows = [];
+        rows.push(['', ...COLS].join(';'));
+        for (let row = 1; row <= ROWS; row += 1) {
+          const values = [row];
+          COLS.forEach((col) => {
+            const raw = (getCellState(col + row).value || '').replace(/"/g, '""');
+            values.push('"' + raw + '"');
+          });
+          rows.push(values.join(';'));
+        }
+        const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'mini-excel-trainer.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }
+
+      function bindUi() {
+        document.querySelectorAll('[data-tool]').forEach((button) => {
+          button.addEventListener('click', () => applyTool(button.dataset.tool));
+        });
+        document.getElementById('mxPrev').addEventListener('click', () => {
+          state.currentMission = Math.max(0, state.currentMission - 1);
+          state.cells.__missionLoaded = null;
+          loadMission();
+        });
+        document.getElementById('mxNext').addEventListener('click', () => {
+          state.currentMission = Math.min(missions.length - 1, state.currentMission + 1);
+          state.cells.__missionLoaded = null;
+          loadMission();
+        });
+        document.getElementById('mxCheck').addEventListener('click', checkMission);
+        document.getElementById('mxReset').addEventListener('click', () => {
+          if (!window.confirm('Recommencer tout le parcours ?')) return;
+          localStorage.removeItem(STORAGE_KEY);
+          state = { currentMission: 0, completed: Array(20).fill(false), cells: {}, score: 0 };
+          renderGrid();
+          loadMission();
+        });
+        document.getElementById('mxExport').addEventListener('click', exportCsv);
+      }
+
+      function init() {
+        loadState();
+        renderGrid();
+        bindUi();
+        loadMission();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Word Trainer - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root {
+      --mw-bg: #f4efe4;
+      --mw-panel: #fffdf8;
+      --mw-panel-2: #f8f2e8;
+      --mw-line: #d9ccb9;
+      --mw-ink: #24303a;
+      --mw-accent: #1864ab;
+      --mw-ok: #2b8a3e;
+      --mw-warn: #e67700;
+      --mw-bad: #c92a2a;
+      --mw-shadow: 0 14px 38px rgba(47, 39, 27, 0.12);
+      --mw-radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body.mini-word-page {
+      background:
+        radial-gradient(circle at top left, #fff4d6 0, transparent 25%),
+        radial-gradient(circle at bottom right, #d9f1ff 0, transparent 28%),
+        linear-gradient(180deg, #f7f2e8 0%, #eee5d6 100%);
+      color: var(--mw-ink);
+      font-family: "Trebuchet MS", Verdana, sans-serif;
+    }
+
+    .mini-word-page .main {
+      padding-bottom: 24px;
+    }
+
+    .mini-word-app {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .mini-word-hero {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .mini-word-panel {
+      background: rgba(255, 253, 248, 0.96);
+      border: 1px solid rgba(217, 204, 185, 0.95);
+      border-radius: var(--mw-radius);
+      box-shadow: var(--mw-shadow);
+    }
+
+    .mini-word-hero-card {
+      padding: 22px;
+    }
+
+    .mini-word-hero h1,
+    .mini-word-hero h2,
+    .mini-word-hero h3,
+    .mini-word-hero p,
+    .mini-word-workspace h2,
+    .mini-word-workspace h3,
+    .mini-word-workspace p {
+      margin-top: 0;
+    }
+
+    .mini-word-hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+
+    .mini-word-lead {
+      font-size: 1.1rem;
+      line-height: 1.55;
+      margin-bottom: 0;
+      color: #5f564b;
+    }
+
+    .mini-word-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .mini-word-stat-box {
+      background: var(--mw-panel-2);
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid var(--mw-line);
+    }
+
+    .mini-word-stat-label {
+      font-size: .95rem;
+      opacity: .75;
+      margin-bottom: 6px;
+    }
+
+    .mini-word-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .mini-word-progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #e7dccb;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--mw-line);
+      margin-top: 10px;
+    }
+
+    .mini-word-progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #ffd43b, #4dabf7);
+      transition: width .25s ease;
+    }
+
+    .mini-word-workspace {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .mini-word-sidebar {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .mini-word-badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #e7f5ff;
+      color: var(--mw-accent);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .mini-word-mission-title {
+      font-size: 1.5rem;
+      margin-bottom: 14px;
+    }
+
+    .mini-word-callout {
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--mw-line);
+      background: #fff;
+    }
+
+    .mini-word-callout strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 1rem;
+    }
+
+    .mini-word-visual {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .mini-word-feedback {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 16px;
+      border: 2px dashed var(--mw-line);
+      background: #fffaf1;
+    }
+
+    .mini-word-feedback.ok { color: var(--mw-ok); border-color: #8fd19e; background: #ebfbee; }
+    .mini-word-feedback.warn { color: var(--mw-warn); border-color: #ffd8a8; background: #fff4e6; }
+    .mini-word-feedback.bad { color: var(--mw-bad); border-color: #ffc9c9; background: #fff5f5; }
+
+    .mini-word-nav-buttons,
+    .mini-word-action-buttons {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-word-nav-buttons {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .mini-word-action-buttons {
+      grid-template-columns: 1fr;
+    }
+
+    .mini-word-page button,
+    .mini-word-page select,
+    .mini-word-page input[type="color"] {
+      font: inherit;
+      border-radius: 14px;
+      border: 2px solid var(--mw-line);
+      background: #fff;
+      color: var(--mw-ink);
+    }
+
+    .mini-word-page button {
+      min-height: 54px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .12s ease, background .12s ease;
+    }
+
+    .mini-word-page button:hover,
+    .mini-word-page button:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      background: #fff9db;
+    }
+
+    .mini-word-page button.primary {
+      background: var(--mw-accent);
+      color: #fff;
+      border-color: #0b508b;
+    }
+
+    .mini-word-page button.secondary {
+      background: #fff4e6;
+    }
+
+    .mini-word-page button.active {
+      background: #d0ebff;
+      border-color: #74c0fc;
+    }
+
+    .mini-word-editor-shell {
+      overflow: hidden;
+    }
+
+    .mini-word-window-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      background: linear-gradient(180deg, #fff7dd, #f7edd8);
+      border-bottom: 1px solid var(--mw-line);
+    }
+
+    .mini-word-window-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mini-word-window-dots span {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 2px solid rgba(0,0,0,.1);
+    }
+
+    .mini-word-window-dots span:nth-child(1) { background: #ff8787; }
+    .mini-word-window-dots span:nth-child(2) { background: #ffd43b; }
+    .mini-word-window-dots span:nth-child(3) { background: #69db7c; }
+
+    .mini-word-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px;
+      border-bottom: 1px solid var(--mw-line);
+      background: #fcf7ef;
+    }
+
+    .mini-word-tool-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-right: 10px;
+      margin-right: 4px;
+      border-right: 2px solid #eadfce;
+    }
+
+    .mini-word-tool-group:last-child {
+      border-right: 0;
+      margin-right: 0;
+      padding-right: 0;
+    }
+
+    .mini-word-tool-btn {
+      min-width: 58px;
+      min-height: 58px;
+      font-size: 1.05rem;
+    }
+
+    .mini-word-page select {
+      min-height: 58px;
+      padding: 0 14px;
+      min-width: 102px;
+      font-weight: 700;
+    }
+
+    .mini-word-page input[type="color"] {
+      width: 64px;
+      height: 58px;
+      padding: 4px;
+      background: #fff;
+    }
+
+    .mini-word-document-wrap {
+      padding: 24px;
+      background:
+        linear-gradient(90deg, transparent 0 48px, #f3d9fa 48px 50px, transparent 50px 100%),
+        linear-gradient(180deg, #f6f8fb 0 38px, #e8eef5 38px 39px, #f6f8fb 39px 78px);
+      min-height: 860px;
+    }
+
+    .mini-word-document {
+      width: min(100%, 860px);
+      margin: 0 auto;
+      background: #fff;
+      min-height: 760px;
+      padding: 50px 56px;
+      border-radius: 8px;
+      box-shadow: 0 18px 36px rgba(0,0,0,.1);
+      outline: none;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    .mini-word-document:empty:before {
+      content: attr(data-placeholder);
+      color: #8a8f98;
+    }
+
+    .mini-word-mission-map {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .mini-word-mission-dot {
+      min-height: 44px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .mini-word-mission-dot.done {
+      background: #d3f9d8;
+      border-color: #8ce99a;
+    }
+
+    .mini-word-mission-dot.current {
+      background: #d0ebff;
+      border-color: #74c0fc;
+    }
+
+    .mini-word-helper,
+    .mini-word-mini-note {
+      color: #6f665c;
+    }
+
+    .mini-word-helper {
+      font-size: .98rem;
+      line-height: 1.5;
+    }
+
+    .mini-word-mini-note {
+      margin-top: 10px;
+      font-size: .94rem;
+    }
+
+    @media (max-width: 1100px) {
+      .mini-word-hero,
+      .mini-word-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-word-sidebar {
+        position: static;
+      }
+
+      .mini-word-mission-map {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .mini-word-app {
+        padding: 12px;
+      }
+
+      .mini-word-document-wrap {
+        padding: 12px;
+      }
+
+      .mini-word-document {
+        min-height: 560px;
+        padding: 28px 22px;
+        font-size: 18px;
+      }
+
+      .mini-word-mission-map {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body class="mini-word-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="mini-word-app">
+        <section class="mini-word-hero">
+          <div class="mini-word-panel mini-word-hero-card">
+            <div class="eyebrow">Bureautique</div>
+            <h1>Mini Word Trainer</h1>
+            <p class="mini-word-lead">Un entraînement simple et visuel pour apprendre les gestes de base dans un traitement de texte, pas à pas, avec de grosses commandes et des missions progressives.</p>
+          </div>
+          <div class="mini-word-panel mini-word-hero-card mini-word-stats">
+            <div class="mini-word-stat-box">
+              <div class="mini-word-stat-label">Mission</div>
+              <div class="mini-word-stat-value" id="missionCount">1 / 20</div>
+            </div>
+            <div class="mini-word-stat-box">
+              <div class="mini-word-stat-label">Score</div>
+              <div class="mini-word-stat-value" id="scoreValue">0 / 20</div>
+            </div>
+            <div class="mini-word-stat-box" style="grid-column: 1 / -1;">
+              <div class="mini-word-stat-label">Progression</div>
+              <div class="mini-word-progress-bar"><div class="mini-word-progress-fill" id="progressFill"></div></div>
+              <div class="mini-word-mini-note" id="progressText">0 mission réussie</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mini-word-workspace">
+          <aside class="mini-word-panel mini-word-sidebar">
+            <div class="mini-word-badge" id="badgeMission">Mission 1</div>
+            <h2 class="mini-word-mission-title" id="missionTitle">Écrire son prénom et nom</h2>
+
+            <div class="mini-word-callout">
+              <strong>Consigne</strong>
+              <div id="missionInstruction"></div>
+            </div>
+
+            <div class="mini-word-callout">
+              <strong>Objectif</strong>
+              <div id="missionObjective"></div>
+            </div>
+
+            <div class="mini-word-callout">
+              <strong>Aide visuelle</strong>
+              <div class="mini-word-visual" id="missionVisual">👤</div>
+              <div class="mini-word-helper" id="missionHint"></div>
+            </div>
+
+            <div class="mini-word-feedback" id="feedbackBox">Prêt ? Écris dans la grande page blanche.</div>
+
+            <div class="mini-word-nav-buttons">
+              <button id="prevMission" class="secondary">Mission avant</button>
+              <button id="nextMission" class="secondary">Mission après</button>
+            </div>
+
+            <div class="mini-word-action-buttons">
+              <button id="checkMission" class="primary">Vérifier</button>
+              <button id="resetAll">Recommencer</button>
+              <button id="exportHtml">Exporter en .html</button>
+              <button id="exportDoc">Exporter en .doc</button>
+            </div>
+
+            <div class="mini-word-callout" style="margin-top: 14px;">
+              <strong>Parcours</strong>
+              <div class="mini-word-mission-map" id="missionMap"></div>
+            </div>
+          </aside>
+
+          <div class="mini-word-panel mini-word-editor-shell">
+            <div class="mini-word-window-top">
+              <div class="mini-word-window-dots"><span></span><span></span><span></span></div>
+              <strong>Document d'entraînement</strong>
+              <div class="mini-word-helper">Grandes icônes, gestes simples</div>
+            </div>
+
+            <div class="mini-word-toolbar">
+              <div class="mini-word-tool-group">
+                <button class="mini-word-tool-btn" data-cmd="bold" title="Gras"><strong>G</strong></button>
+                <button class="mini-word-tool-btn" data-cmd="italic" title="Italique"><em>I</em></button>
+                <button class="mini-word-tool-btn" data-cmd="underline" title="Souligné"><u>S</u></button>
+              </div>
+
+              <div class="mini-word-tool-group">
+                <button class="mini-word-tool-btn" data-cmd="justifyLeft" title="Aligner à gauche">⬅</button>
+                <button class="mini-word-tool-btn" data-cmd="justifyCenter" title="Centrer">↔</button>
+                <button class="mini-word-tool-btn" data-cmd="justifyRight" title="Aligner à droite">➡</button>
+                <button class="mini-word-tool-btn" data-cmd="insertUnorderedList" title="Liste à puces">• Liste</button>
+              </div>
+
+              <div class="mini-word-tool-group">
+                <select id="fontSize">
+                  <option value="3">Taille 14</option>
+                  <option value="4" selected>Taille 18</option>
+                  <option value="5">Taille 24</option>
+                  <option value="6">Taille 32</option>
+                  <option value="7">Taille 40</option>
+                </select>
+                <input type="color" id="textColor" value="#000000" title="Couleur">
+              </div>
+
+              <div class="mini-word-tool-group">
+                <button class="mini-word-tool-btn" id="copyBtn" title="Copier">Copier</button>
+                <button class="mini-word-tool-btn" id="pasteBtn" title="Coller">Coller</button>
+                <button class="mini-word-tool-btn" data-cmd="undo" title="Annuler">↶</button>
+                <button class="mini-word-tool-btn" id="insertTableBtn" title="Insérer un tableau">Tableau</button>
+              </div>
+            </div>
+
+            <div class="mini-word-document-wrap">
+              <div id="editor" class="mini-word-document" contenteditable="true" spellcheck="false" data-placeholder="Écris ici..."></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/mini-word-trainer.js"></script>
+</body>
+</html>

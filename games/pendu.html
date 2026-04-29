@@ -1,0 +1,557 @@
+﻿<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Pendu - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/pendu.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🪝</div>
+          <h1>Le Pendu</h1>
+          <p>Trouvez le mot lettre par lettre avant la fin des essais.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiWon">0</div>
+            <div class="kpi-label">Gagnés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiLost">0</div>
+            <div class="kpi-label">Perdus</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiXP">0</div>
+            <div class="kpi-label">XP gagnés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpiAccuracy">—</div>
+            <div class="kpi-label">Précision</div>
+          </div>
+        </div>
+
+        <!-- Quick Play Toggle (Phase 5) -->
+        <div class="quick-play-toggle fade-up delay-1" style="display:flex;gap:8px;justify-content:center;margin-bottom:24px;">
+          <button id="btnModeComplete" class="btn btn-secondary btn-sm active" type="button">Session complète</button>
+          <button id="btnModeQuick" class="btn btn-secondary btn-sm" type="button">Rapide (5 questions)</button>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="pendu-layout">
+
+            <!-- Pendu SVG + vies -->
+            <div class="pendu-svg-wrap">
+              <svg id="penduSvg" viewBox="0 0 200 220">
+                <!-- Structure (toujours visible) -->
+                <line class="pendu-structure" x1="20" y1="210" x2="180" y2="210"/>
+                <line class="pendu-structure" x1="60" y1="210" x2="60" y2="20"/>
+                <line class="pendu-structure" x1="60" y1="20"  x2="130" y2="20"/>
+                <line class="pendu-structure" x1="130" y1="20" x2="130" y2="45"/>
+                <!-- Parties du pendu (apparaissent progressivement) -->
+                <circle id="part-head" cx="130" cy="60" r="16"/>
+                <line id="part-body"  class="pendu-part" x1="130" y1="76"  x2="130" y2="130"/>
+                <line id="part-arm-l" class="pendu-part" x1="130" y1="90"  x2="105" y2="115"/>
+                <line id="part-arm-r" class="pendu-part" x1="130" y1="90"  x2="155" y2="115"/>
+                <line id="part-leg-l" class="pendu-part" x1="130" y1="130" x2="105" y2="165"/>
+                <line id="part-leg-r" class="pendu-part" x1="130" y1="130" x2="155" y2="165"/>
+              </svg>
+              <div class="pendu-lives" id="penduLives"></div>
+              <div style="font-size:12px;color:var(--text3);" id="livesLabel">6 essais restants</div>
+            </div>
+
+            <!-- Jeu -->
+            <div class="pendu-game">
+              <div class="pendu-category">
+                <span class="badge badge-purple" id="wordCategory"></span>
+              </div>
+              <div class="quiz-top">
+                <div class="quiz-progress-label" id="wordProgress">Progression 0/0</div>
+                <div class="quiz-timer" id="prog-pct">0%</div>
+              </div>
+              <div class="series-progress">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+              </div>
+              <div class="pendu-hint" id="wordHint" aria-label="Piste">
+                <span class="pendu-hint-icon">💡</span>
+                <div class="pendu-hint-body">
+                  <div class="pendu-hint-label">Piste</div>
+                  <div class="pendu-hint-text" id="wordHintText"></div>
+                </div>
+              </div>
+
+              <!-- Mot à deviner -->
+              <div class="word-display" id="wordDisplay"></div>
+
+              <!-- Feedback -->
+              <div class="pendu-feedback" id="penduFeedback"></div>
+
+              <!-- Clavier virtuel -->
+              <div class="virtual-keyboard" id="virtualKeyboard"></div>
+
+              <!-- Actions -->
+              <div class="pendu-actions">
+                <button class="btn btn-ghost btn-sm" id="btnHint" type="button">💡 Indice</button>
+                <button class="btn btn-primary" id="btnNext" type="button" style="display:none;">Mot suivant →</button>
+                <button class="btn btn-secondary btn-sm" id="btnSkip" type="button">Passer ce mot</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:16px;" id="resEmoji">🪝</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;" id="resTitle">Session terminée !</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle">Voici vos résultats.</p>
+            <div class="kpi-grid" style="margin-bottom:28px;">
+              <div class="kpi-card"><div class="kpi-value" id="resWon">0</div><div class="kpi-label">Gagnés</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resLost">0</div><div class="kpi-label">Perdus</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resXP">0</div><div class="kpi-label">XP</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resAccuracy">—</div><div class="kpi-label">Précision</div></div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-ghost btn-sm btn-share" type="button">Copier mon résumé</button>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-lg" id="btnNextExercise" type="button">Exercice suivant</button>
+              <button class="btn btn-secondary btn-lg" id="btnRestart" type="button">Rejouer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/data/pendu-data.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  /* =========================================================
+     MOTS
+  ========================================================= */
+  const WORDS = window.PENDU_DATA;
+
+  const KB_ROWS = [
+    'AZERTYUIOP',
+    'QSDFGHJKLM',
+    'WXCVBN',
+  ];
+
+  const MAX_ERRORS = 6;
+  const PARTS = ['part-head','part-body','part-arm-l','part-arm-r','part-leg-l','part-leg-r'];
+  const SESSION_SIZE = Array.isArray(WORDS) ? WORDS.length : 0;
+  const PAGE_ID = 'pendu';
+
+  let quickPlayMode = false;
+
+  let session = {
+    words:    [],
+    index:    0,
+    won:      0,
+    lost:     0,
+    xp:       0,
+    typed:    0,
+    correct:  0,
+    // état du mot courant
+    word:     '',
+    guessed:  new Set(),
+    errors:   0,
+    hintUsed: false,
+    over:     false,
+  };
+  let autoAdvanceTimer = null;
+
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function scheduleAutoAdvance(callback, delay = 1500) {
+    clearAutoAdvance();
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      callback();
+    }, delay);
+  }
+
+  let xpRulesShown = false;
+
+  function updateProgressUI(done, total) {
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('prog-pct').textContent = pct + '%';
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  /* ===== UTILS ===== */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /* ===== PHASE 5: ADAPTIVE DIFFICULTY ===== */
+  function getAdaptiveDifficulty(page) {
+    const m = typeof ScoreManager !== 'undefined' ? ScoreManager.readMetrics(page) : { typed: 0, correct: 0 };
+    const acc = m.typed > 0 ? Math.round((m.correct / m.typed) * 100) : 0;
+    return acc > 85 ? 'hard' : acc > 60 ? 'medium' : 'easy';
+  }
+
+  function filterByDifficulty(words, targetDiff) {
+    if (targetDiff === 'hard') return words;
+    if (targetDiff === 'medium') return words.filter(w => w.difficulty !== 'hard');
+    return words.filter(w => w.difficulty === 'easy');
+  }
+
+  /* ===== INIT SESSION ===== */
+  function startSession() {
+    clearAutoAdvance();
+    if (!SESSION_SIZE) {
+      showToast('Aucun mot disponible dans les données.', 'error');
+      return;
+    }
+    // Phase 5.3: Adaptive difficulty
+    const targetDiff = getAdaptiveDifficulty(PAGE_ID);
+    let filtered = filterByDifficulty(WORDS, targetDiff);
+    if (filtered.length === 0) filtered = WORDS; // fallback
+
+    // Phase 5.2: Mode Quick Play - prendre seulement 5 mots si activé
+    const pool = quickPlayMode ? shuffle(filtered).slice(0, 5) : shuffle(filtered);
+
+    session.words   = pool;
+    session.index   = 0;
+    session.won     = 0;
+    session.lost    = 0;
+    session.xp      = 0;
+    session.typed   = 0;
+    session.correct = 0;
+
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('gameZone').classList.remove('hidden');
+    updateKPIs();
+    updateProgressUI(0, pool.length);
+
+    // Afficher les règles XP seulement à la première session
+    if (!xpRulesShown) {
+      xpRulesShown = true;
+      showXPRules('Pendu');
+    }
+
+    loadWord();
+  }
+
+  /* ===== CHARGER UN MOT ===== */
+  function loadWord() {
+    clearAutoAdvance();
+    session.word     = session.words[session.index].word;
+    session.guessed  = new Set();
+    session.errors   = 0;
+    session.hintUsed = false;
+    session.over     = false;
+
+    document.getElementById('penduFeedback').textContent = '';
+    document.getElementById('penduFeedback').className   = 'pendu-feedback';
+    document.getElementById('btnNext').style.display     = 'none';
+    document.getElementById('btnSkip').style.display     = 'inline-flex';
+    document.getElementById('btnHint').disabled          = false;
+    document.getElementById('btnHint').textContent       = '💡 Indice';
+
+    const entry = session.words[session.index];
+    document.getElementById('wordCategory').textContent = entry.category;
+    document.getElementById('wordProgress').textContent = 'Progression ' + (session.index + 1) + '/' + session.words.length;
+    document.getElementById('wordHintText').textContent  = entry.hint;
+
+    renderPendu();
+    renderWordDisplay();
+    renderKeyboard();
+    renderLives();
+  }
+
+  /* ===== RENDU PENDU ===== */
+  function renderPendu() {
+    PARTS.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('visible', i < session.errors);
+    });
+  }
+
+  /* ===== VIES ===== */
+  function renderLives() {
+    const container = document.getElementById('penduLives');
+    container.innerHTML = '';
+    for (let i = 0; i < MAX_ERRORS; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'life-dot' + (i < session.errors ? ' lost' : '');
+      container.appendChild(dot);
+    }
+    const rem = MAX_ERRORS - session.errors;
+    document.getElementById('livesLabel').textContent =
+      rem + ' essai' + (rem > 1 ? 's' : '') + ' restant' + (rem > 1 ? 's' : '');
+  }
+
+  /* ===== AFFICHAGE DU MOT ===== */
+  function renderWordDisplay() {
+    const display = document.getElementById('wordDisplay');
+    display.innerHTML = '';
+    session.word.split('').forEach(letter => {
+      const slot = document.createElement('div');
+      slot.className = 'letter-slot';
+      if (session.guessed.has(letter)) {
+        slot.textContent = letter;
+        slot.classList.add('revealed');
+      }
+      display.appendChild(slot);
+    });
+  }
+
+  function revealWord(won) {
+    const slots = document.querySelectorAll('.letter-slot');
+    session.word.split('').forEach((letter, i) => {
+      if (!session.guessed.has(letter)) {
+        slots[i].textContent = letter;
+        slots[i].classList.add(won ? 'revealed' : 'wrong-end');
+      }
+    });
+  }
+
+  /* ===== CLAVIER VIRTUEL ===== */
+  function renderKeyboard() {
+    const kb = document.getElementById('virtualKeyboard');
+    kb.innerHTML = '';
+    KB_ROWS.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'kb-row';
+      row.split('').forEach(letter => {
+        const key = document.createElement('div');
+        key.className   = 'kb-key';
+        key.textContent = letter;
+        key.id          = 'kb-' + letter;
+        key.addEventListener('click', () => guessLetter(letter));
+        rowDiv.appendChild(key);
+      });
+      kb.appendChild(rowDiv);
+    });
+  }
+
+  function updateKey(letter, correct) {
+    const key = document.getElementById('kb-' + letter);
+    if (key) {
+      key.classList.add('used', correct ? 'correct' : 'wrong');
+    }
+  }
+
+  /* ===== DEVINER UNE LETTRE ===== */
+  function guessLetter(letter) {
+    if (session.over || session.guessed.has(letter)) return;
+    session.guessed.add(letter);
+    session.typed++;
+
+    const inWord = session.word.includes(letter);
+    updateKey(letter, inWord);
+
+    if (inWord) {
+      session.correct++;
+      const fb = document.getElementById('penduFeedback');
+      fb.textContent = '✅ La lettre ' + letter + ' est dans le mot !';
+      fb.className   = 'pendu-feedback ok';
+      renderWordDisplay();
+
+      // Vérifier si le mot est complet
+      const allRevealed = session.word.split('').every(l => session.guessed.has(l));
+      if (allRevealed) winWord();
+    } else {
+      session.errors++;
+      const fb = document.getElementById('penduFeedback');
+      fb.textContent = '❌ La lettre ' + letter + ' n\'est pas dans le mot.';
+      fb.className   = 'pendu-feedback err';
+      renderPendu();
+      renderLives();
+
+      if (session.errors >= MAX_ERRORS) loseWord();
+    }
+  }
+
+  /* ===== VICTOIRE / DÉFAITE ===== */
+  function winWord() {
+    session.over = true;
+    session.won++;
+    const xp = session.hintUsed ? 3 : 5;
+    session.xp += xp;
+
+    revealWord(true);
+    const fb = document.getElementById('penduFeedback');
+    fb.textContent = '🎉 Bravo ! Tu as trouvé "' + session.word + '" ! +' + xp + ' XP';
+    fb.className   = 'pendu-feedback win';
+
+    recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: session.errors, xp });
+    disableKeyboard();
+    showNextBtn();
+    updateKPIs();
+    showToast('Mot trouvé ! +' + xp + ' XP', 'success');
+    launchConfetti();
+  }
+
+  function loseWord() {
+    session.over = true;
+    session.lost++;
+
+    revealWord(false);
+    const fb = document.getElementById('penduFeedback');
+    fb.textContent = '💀 Perdu ! Le mot était : ' + session.word;
+    fb.className   = 'pendu-feedback lose';
+
+    recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: MAX_ERRORS, xp: 0 });
+    disableKeyboard();
+    showNextBtn();
+    updateKPIs();
+  }
+
+  function disableKeyboard() {
+    document.querySelectorAll('.kb-key').forEach(k => {
+      k.classList.add('used');
+      k.style.pointerEvents = 'none';
+    });
+    document.getElementById('btnHint').disabled = true;
+    document.getElementById('btnSkip').style.display = 'none';
+  }
+
+  function showNextBtn() {
+    scheduleAutoAdvance(nextWord);
+  }
+
+  /* ===== INDICE ===== */
+  function giveHint() {
+    if (session.over || session.hintUsed) return;
+    session.hintUsed = true;
+    document.getElementById('btnHint').disabled    = true;
+    document.getElementById('btnHint').textContent = '💡 Utilisé';
+
+    // Révéler une lettre non devinée
+    const remaining = session.word.split('').filter(l => !session.guessed.has(l));
+    const unique = [...new Set(remaining)];
+    if (!unique.length) return;
+    const letter = unique[Math.floor(Math.random() * unique.length)];
+    guessLetter(letter);
+    showToast('Indice : la lettre ' + letter + ' est révélée.', 'info');
+  }
+
+  /* ===== PASSER ===== */
+  function skipWord() {
+    session.lost++;
+    revealWord(false);
+    recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: MAX_ERRORS, xp: 0 });
+    disableKeyboard();
+    session.over = true;
+    showNextBtn();
+    updateKPIs();
+  }
+
+  /* ===== SUIVANT / FIN ===== */
+  function nextWord() {
+    session.index++;
+    if (session.index >= session.words.length) {
+      finishSession();
+    } else {
+      loadWord();
+    }
+  }
+
+  function finishSession() {
+    clearAutoAdvance();
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    document.getElementById('gameZone').classList.add('hidden');
+    document.getElementById('resultZone').classList.add('show');
+
+    const total    = session.won + session.lost;
+    const accuracy = total > 0 ? Math.round((session.won / total) * 100) : 0;
+
+    document.getElementById('resEmoji').textContent    = session.won >= session.words.length / 2 ? '🏆' : '💀';
+    document.getElementById('resWon').textContent      = session.won;
+    document.getElementById('resLost').textContent     = session.lost;
+    document.getElementById('resXP').textContent       = session.xp;
+    document.getElementById('resAccuracy').textContent = accuracy + '%';
+    updateProgressUI(session.words.length, session.words.length);
+
+    if (accuracy >= 75) launchConfetti();
+  }
+
+  /* ===== KPIs ===== */
+  function updateKPIs() {
+    const total = session.won + session.lost;
+    const acc   = total > 0 ? Math.round((session.won / total) * 100) : 0;
+    updateExerciseScoreKpis({
+      correctId: 'kpiWon',
+      errorsId: 'kpiLost',
+      correct: session.won,
+      errors: session.lost,
+      xp: session.xp,
+      typed: total,
+      accuracy: acc,
+      accuracyBase: total
+    });
+    updateProgressUI(total, session.words.length);
+  }
+
+  /* ===== EVENTS ===== */
+  document.addEventListener('DOMContentLoaded', () => {
+    setupNextExerciseButton(PAGE_ID);
+        
+    // Phase 5: Quick Play toggle
+    document.getElementById('btnModeComplete').addEventListener('click', () => {
+      quickPlayMode = false;
+      document.getElementById('btnModeComplete').classList.add('active');
+      document.getElementById('btnModeQuick').classList.remove('active');
+    });
+    document.getElementById('btnModeQuick').addEventListener('click', () => {
+      quickPlayMode = true;
+      document.getElementById('btnModeQuick').classList.add('active');
+      document.getElementById('btnModeComplete').classList.remove('active');
+    });
+
+    document.getElementById('btnHint').addEventListener('click', giveHint);
+    document.getElementById('btnNext').addEventListener('click', nextWord);
+    document.getElementById('btnSkip').addEventListener('click', skipWord);
+    setupRestartButton(startSession);
+
+    // Clavier physique
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT') return;
+      const key = e.key.toUpperCase();
+      if (/^[A-Z]$/.test(key)) guessLetter(key);
+    });
+
+    startSession();
+  });
+  </script>
+</body>
+</html>
