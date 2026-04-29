@@ -1,0 +1,450 @@
+/* ===== AUTOEVALUATION.CSS — Styles spécifiques à l'autoévaluation ===== */
+
+/* ── Grille principale ── */
+.auto-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.auto-intro-card {
+  margin-bottom: 20px;
+}
+
+.auto-intro-card p {
+  margin: 0;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+.auto-kpi-grid,
+.auto-main-grid {
+  opacity: 1;
+}
+
+.auto-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.auto-side-column {
+  display: grid;
+  gap: 20px;
+}
+
+/* ── Questions ── */
+.auto-question {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  margin-bottom: 14px;
+  background: var(--surface);
+  transition: box-shadow .18s ease;
+}
+.auto-question:last-child {
+  margin-bottom: 0;
+}
+.auto-question:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.auto-question-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.auto-question-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.auto-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Options boutons ── */
+.auto-options {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.auto-option {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  background: var(--bg2);
+  color: var(--text2);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s, transform .12s;
+  font-family: var(--font-body);
+}
+.auto-option:hover {
+  background: var(--bg3);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+.auto-option.selected {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+/* ── Badge critique ── */
+.badge-critical {
+  background: #fff0f0;
+  border-color: #fca5a5;
+  color: var(--danger);
+}
+
+/* ── Badge poids ── */
+.badge-weight {
+  background: #ecfeff;
+  border-color: #bae6fd;
+  color: #0f766e;
+}
+
+/* ── Résultat ── */
+.auto-result-box {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  margin-bottom: 14px;
+  background: var(--surface2);
+}
+.auto-result-box:last-child {
+  margin-bottom: 0;
+}
+
+.auto-score {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--accent);
+  margin: 8px 0 4px;
+}
+
+/* ── Niveaux ── */
+.auto-level {
+  display: inline-block;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.auto-level.low {
+  background: #fee2e2;
+  color: var(--danger);
+}
+.auto-level.mid {
+  background: #fef3c7;
+  color: #92400e;
+}
+.auto-level.high {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* ── Barre de progression ── */
+.auto-bar {
+  width: 100%;
+  height: 10px;
+  background: var(--bg3);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 8px 0 4px;
+}
+.auto-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--danger), #f59e0b, var(--success));
+  width: 0%;
+  transition: width .5s ease;
+}
+
+/* ── Mini-grille pour forces/priorités ── */
+.auto-mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ── Radar ── */
+.auto-radar-box {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  margin-bottom: 14px;
+  background: var(--surface2);
+}
+.auto-radar-box:last-child {
+  margin-bottom: 0;
+}
+
+.auto-radar-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface2) 100%);
+  border-radius: var(--r-md);
+}
+
+.auto-radar-legend {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 10px;
+}
+
+.auto-radar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.auto-radar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ── Comparaison ── */
+.auto-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.auto-date-box {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface2);
+  padding: 14px;
+}
+.auto-date-box label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+.auto-date-box input[type="date"] {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ── Table comparaison ── */
+.auto-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.auto-compare-table th,
+.auto-compare-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 8px;
+  text-align: left;
+  vertical-align: top;
+  color: var(--text2);
+}
+.auto-compare-table th {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.auto-delta-up   { color: var(--success); font-weight: 800; }
+.auto-delta-down { color: var(--danger); font-weight: 800; }
+.auto-delta-same { color: var(--text3); font-weight: 700; }
+
+/* ── Progression observée ── */
+.auto-progress-box {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  padding: 14px;
+  background: #f0fdf4;
+}
+.auto-progress-box.warn  { background: #fff7ed; }
+.auto-progress-box.alert { background: #fef2f2; }
+
+/* ── Parcours recommande ── */
+.auto-path-list {
+  display: grid;
+  gap: 12px;
+}
+
+.auto-path-card {
+  display: block;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--surface2), var(--surface));
+  text-decoration: none;
+  color: inherit;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.auto-path-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--accent);
+}
+
+.auto-path-step {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.auto-path-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(50, 93, 169, 0.10);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.auto-path-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.auto-path-card p {
+  margin: 0 0 12px;
+  color: var(--text2);
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.auto-path-link {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.auto-path-empty {
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+  color: var(--text3);
+  background: var(--surface2);
+  font-size: 14px;
+}
+
+/* ── Export ── */
+.auto-copy-box {
+  display: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  background: var(--surface2);
+  margin-top: 14px;
+}
+.auto-copy-box.visible { display: block; }
+
+.auto-copy-box textarea {
+  width: 100%;
+  min-height: 160px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  resize: vertical;
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* ── Auto-tests ── */
+.auto-tests {
+  font-size: 12px;
+  background: var(--bg2);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md);
+  padding: 12px;
+  margin-top: 14px;
+}
+.auto-test-ok { color: var(--success); font-weight: 700; }
+.auto-test-ko { color: var(--danger);  font-weight: 700; }
+
+/* ── Pill légende ── */
+.auto-legend {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* ── Note formateur ── */
+.auto-footer-note {
+  border-left: 4px solid var(--accent);
+  background: #eff6ff;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  color: var(--text2);
+  margin-top: 14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .auto-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .auto-options { grid-template-columns: 1fr 1fr; }
+  .auto-mini-grid,
+  .auto-compare-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .auto-options { grid-template-columns: 1fr; }
+  .auto-question-top { flex-direction: column; }
+  .auto-path-name { font-size: 18px; }
+}

@@ -1,0 +1,333 @@
+﻿/* Auto-extrait depuis games/clavier.html */
+/* ── KPI ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    .kpi-card { background: var(--surface); border-radius: var(--r-lg); padding: 16px;
+                text-align: center; border: 1px solid var(--border); }
+    .kpi-val  { font-size: 22px; font-weight: 700; color: var(--accent); }
+    .kpi-lbl  { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
+
+    .keyboard-options {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding: 16px;
+    }
+    .keyboard-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text3);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+    .keyboard-option select {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      letter-spacing: 0;
+      min-height: 36px;
+      padding: 6px 10px;
+      text-transform: none;
+    }
+    .keyboard-option-note {
+      color: var(--text2);
+      flex-basis: 100%;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* ── Phrase display ── */
+    .exercise-zone {
+      background: var(--surface);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .exercise-phrase {
+      font-size: 22px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+      line-height: 1.8;
+      margin-bottom: 16px;
+      word-break: break-all;
+    }
+    .char { display: inline; transition: color 0.08s; }
+    .char.correct { color: var(--success); }
+    .char.wrong   { color: var(--danger); text-decoration: underline; }
+    .char.current { background: var(--accent); color: #fff; border-radius: 3px; padding: 0 1px; animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+    /* ── Input ── */
+    #typing-input {
+      width: 100%; max-width: 500px; display: block; margin: 0 auto;
+      font-family: 'Courier New', monospace;
+      font-size: 18px; text-align: left; letter-spacing: 0.5px;
+      padding: 10px 16px; border-radius: var(--r-lg);
+      border: 2px solid var(--border); background: var(--bg2); color: var(--text1);
+      outline: none; transition: border-color 0.2s;
+    }
+    #typing-input:focus   { border-color: var(--accent); }
+    #typing-input.correct { border-color: var(--success); }
+    #typing-input.wrong   { border-color: var(--danger); animation: shake-input 0.3s ease; }
+    @keyframes shake-input { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+    .input-helper {
+      color: var(--text3);
+      font-size: 12px;
+      line-height: 1.4;
+      margin: 8px auto 0;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .typing-target-row {
+      display: flex;
+      gap: 10px 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+      color: var(--text2);
+      font-size: 13px;
+      margin: -6px 0 14px;
+      text-align: center;
+    }
+    .typing-target-row strong {
+      color: var(--accent);
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+    }
+
+    .keyboard-result-details {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      color: var(--text2);
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 12px;
+      padding: 14px;
+      text-align: left;
+    }
+    .keyboard-result-details:empty {
+      display: none;
+    }
+    .keyboard-result-details strong {
+      color: var(--text);
+    }
+
+    /* ── Virtual keyboard ── */
+    .keyboard { margin-top: 20px; display: flex; flex-direction: column; gap: 4px; align-items: center; }
+    .keyboard-row { display: flex; gap: 4px; }
+    .key {
+      min-width: 36px; height: 36px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border-radius: var(--r); border: 1px solid var(--border);
+      background: var(--surface); font-size: 11px; cursor: default;
+      user-select: none; transition: background 0.1s, transform 0.1s;
+      padding: 0 4px; line-height: 1.2;
+    }
+    .key.duo { font-size: 10px; }
+    .key-top { font-size: 9px; color: var(--text3); line-height: 1; }
+    .key-btm { font-size: 11px; line-height: 1; }
+    .key.highlight { background: var(--accent); color: #fff; box-shadow: 0 0 0 2px color-mix(in srgb,var(--accent) 40%,transparent); }
+    .key.highlight .key-top { color: rgba(255,255,255,0.7); }
+    /* Shift requis → teinte orange */
+    .key.highlight-shift { background: #f97316; box-shadow: 0 0 0 2px color-mix(in srgb,#f97316 40%,transparent); }
+    /* AltGr requis → teinte violette */
+    .key.highlight-altgr { background: #8b5cf6; box-shadow: 0 0 0 2px color-mix(in srgb,#8b5cf6 40%,transparent); }
+    /* Touche morte → teinte cyan */
+    .key.highlight-dead  { background: #06b6d4; box-shadow: 0 0 0 2px color-mix(in srgb,#06b6d4 40%,transparent); }
+    .key.pressed   { background: var(--success); color: #fff; transform: scale(0.9); }
+    .key.error     { background: var(--danger);  color: #fff; transform: scale(0.9); }
+    .wide-1 { min-width: 52px; }
+    .wide-2 { min-width: 70px; }
+    .wide-3 { min-width: 80px; }
+    .space-key { min-width: 220px; }
+
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-progress-label {
+      font-size: 13px;
+      color: var(--text2);
+    }
+    .quiz-progress-label strong { color: var(--text); }
+
+    /* ── WPM live ── */
+    #wpm-live { font-size: 12px; color: var(--text3); margin-top: 6px; text-align: center; min-height: 18px; }
+
+    /* ── Shift hint ── */
+    #shift-hint { font-size: 12px; color: var(--text3); text-align: center; margin-top: 6px; min-height: 16px; }
+
+    /* ── Result ring ── */
+    .result-ring-wrap { display: flex; justify-content: center; margin: 8px 0 16px; }
+    .result-ring { position: relative; width: 90px; height: 90px; }
+    .result-ring svg { transform: rotate(-90deg); }
+    .result-ring circle { fill: none; stroke-width: 8; }
+    .result-ring .bg  { stroke: var(--border); }
+    .result-ring .arc { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 220; stroke-dashoffset: 220; transition: stroke-dashoffset 1s ease; }
+    .result-ring .lbl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: var(--accent); }
+
+    /* ── Pause cognitive ── */
+    #train-pause-overlay {
+      display: none;
+      position: absolute; inset: 0;
+      background: var(--surface);
+      border-radius: var(--r-lg);
+      z-index: 10;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #train-pause-overlay.show { display: flex; }
+    .train-breath-ring {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: transparent;
+      border: 4px solid var(--accent);
+      opacity: 0.15;
+      animation: train-breath 3s ease-in-out infinite;
+    }
+    @keyframes train-breath {
+      0%,100% { transform: scale(0.7); opacity: 0.15; }
+      50%      { transform: scale(1.2); opacity: 0.55; }
+    }
+    .train-pause-dots {
+      display: flex; gap: 6px;
+    }
+    .train-pause-dots span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); opacity: 0.3;
+      animation: train-dot-pulse 1.2s ease-in-out infinite;
+    }
+    .train-pause-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .train-pause-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes train-dot-pulse {
+      0%,100% { opacity: 0.2; transform: scaleY(0.6); }
+      50%      { opacity: 0.8; transform: scaleY(1); }
+    }
+
+    /* ── Two-column layout: exercise left / keyboard right ── */
+    @media (min-width: 1000px) {
+      .container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+          "header   header"
+          "options  keyboard"
+          "kpi      keyboard"
+          "progress keyboard"
+          "exercise keyboard"
+          "train    keyboard"
+          "alert    keyboard";
+        column-gap: 28px;
+        align-items: start;
+      }
+
+      .page-header                 { grid-area: header; }
+      .keyboard-options            { grid-area: options; }
+      .kpi-grid                    { grid-area: kpi; }
+      #progress-card               { grid-area: progress; }
+      .container > .exercise-zone  { grid-area: exercise; }
+      #train-zone                  { grid-area: train; }
+      #virtual-keyboard            { grid-area: keyboard; position: sticky; top: calc(var(--header-h) + 16px); margin-top: 0; }
+      .container > .alert          { grid-area: alert; }
+
+      /* Compact page header in two-column mode */
+      .container .page-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 20px;
+        margin-bottom: 4px;
+      }
+      .container .page-header .page-icon { font-size: 26px; }
+      .container .page-header h1         { font-size: 20px; margin: 0; }
+      .container .page-header p          { font-size: 13px; margin: 0; flex: 1; }
+      .container .page-header #btn-train-start { margin-top: 0; flex-shrink: 0; }
+    }
+
+    @media (min-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .kpi-card {
+        padding: 18px;
+      }
+
+      .kpi-val {
+        font-size: 28px;
+      }
+
+      .exercise-zone {
+        padding: 32px;
+      }
+
+      .exercise-phrase {
+        font-size: 26px;
+        margin-bottom: 20px;
+      }
+
+      #typing-input {
+        max-width: 620px;
+        font-size: 20px;
+        padding: 12px 18px;
+      }
+
+      .keyboard {
+        gap: 6px;
+      }
+
+      .key {
+        min-width: 40px;
+        height: 40px;
+      }
+
+      .wide-1 { min-width: 58px; }
+      .wide-2 { min-width: 80px; }
+      .wide-3 { min-width: 92px; }
+      .space-key { min-width: 280px; }
+    }
+
+    @media (max-width: 700px) {
+      .keyboard-options,
+      .keyboard-option {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .keyboard-options .btn,
+      .keyboard-option select {
+        width: 100%;
+      }
+      .exercise-phrase {
+        font-size: 18px;
+        letter-spacing: 1px;
+        word-break: break-word;
+      }
+      #typing-input {
+        font-size: 16px;
+        max-width: none;
+      }
+    }
+

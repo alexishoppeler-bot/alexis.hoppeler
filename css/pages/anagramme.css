@@ -1,0 +1,216 @@
+﻿/* Auto-extrait depuis games/anagramme.html */
+/* === ANAGRAMME SPÉCIFIQUE === */
+    .anagram-zone {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px;
+      text-align: center;
+    }
+
+    /* ── Piste pédagogique ── */
+    .anagram-hint {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: color-mix(in srgb, var(--accent) 10%, var(--bg2));
+      border: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+      border-radius: var(--r-lg);
+      padding: 12px 16px;
+      margin-top: 14px;
+      margin-bottom: 22px;
+      animation: hint-appear 0.35s ease;
+    }
+    @keyframes hint-appear {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anagram-hint-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+    .anagram-hint-body {
+      text-align: left;
+    }
+    .anagram-hint-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      margin-bottom: 3px;
+    }
+    .anagram-hint-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text1);
+      line-height: 1.5;
+    }
+
+    /* Lettres mélangées */
+    .letters-pool {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      min-height: 64px;
+      margin-bottom: 28px;
+    }
+
+    .letter-tile {
+      width: 52px;
+      height: 52px;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--text);
+      box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+      user-select: none;
+    }
+    .letter-tile:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 0 rgba(79,142,247,0.4);
+    }
+    .letter-tile:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    }
+    .letter-tile.used {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Zone de réponse */
+    .answer-zone {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      min-height: 64px;
+      padding: 16px;
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: var(--r-lg);
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .answer-zone:empty::before {
+      content: 'Clique sur les lettres pour former le mot…';
+      color: var(--text3);
+      font-size: 13px;
+      align-self: center;
+    }
+    .answer-zone.correct-anim {
+      border-color: var(--success);
+      background: rgba(52,211,153,0.06);
+    }
+    .answer-zone.wrong-anim {
+      border-color: var(--danger);
+      background: rgba(248,113,113,0.06);
+    }
+
+    .answer-tile {
+      width: 52px;
+      height: 52px;
+      background: var(--accent);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+      color: white;
+      transition: all 0.15s;
+      box-shadow: 0 3px 0 rgba(79,142,247,0.4);
+      user-select: none;
+    }
+    .answer-tile:hover {
+      background: var(--danger);
+      border-color: var(--danger);
+      transform: translateY(-2px);
+    }
+    .answer-tile.correct {
+      background: linear-gradient(135deg,#34d399,#059669);
+      border-color: #34d399;
+      box-shadow: 0 3px 0 rgba(52,211,153,0.4);
+    }
+    .answer-tile.wrong {
+      background: linear-gradient(135deg,#f87171,#dc2626);
+      border-color: #f87171;
+      box-shadow: 0 3px 0 rgba(248,113,113,0.4);
+    }
+
+    /* Feedback */
+    .feedback-row {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .feedback-msg {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .feedback-msg.ok  { color: var(--success); }
+    .feedback-msg.err { color: var(--danger); }
+
+    /* Boutons d'action */
+    .action-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Info mot */
+    .word-info {
+      margin-top: 20px;
+      padding: 14px 20px;
+      background: rgba(79,142,247,0.08);
+      border: 1px solid rgba(79,142,247,0.2);
+      border-radius: var(--r-md);
+      font-size: 13px;
+      color: var(--text2);
+      display: none;
+    }
+    .word-info.show { display: block; }
+    .word-info strong { color: var(--accent); }
+
+    /* Progression */
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-progress-label { font-size: 13px; color: var(--text2); }
+    .quiz-progress-label strong { color: var(--text); }
+
+    /* Résultat final */
+    .result-zone {
+      display: none;
+    }
+    .result-zone.show { display: block; }
+    .game-zone { display: block; }
+    .game-zone.hidden { display: none; }
+

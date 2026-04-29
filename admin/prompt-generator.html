@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Generateur de Prompt Codex</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/pages/admin-prompt-generator.css">
+</head>
+<body>
+  <div class="wrap">
+    <section class="header">
+      <h1>Generateur de Prompt Codex (Admin)</h1>
+      <p class="note">Page locale separee, non liee au site. Genere un prompt a copier-coller dans Codex pour automatiser modifications HTML, JS, data-js, CSS, etc.</p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>1) Objectif principal</h2>
+        <div class="field">
+          <label for="goal">Ce que tu veux faire</label>
+          <textarea id="goal" placeholder="Ex: Creer un nouveau jeu, ajuster la logique score, ajouter des donnees dans js/data, corriger UI mobile..."></textarea>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="pages">Pages HTML cibles (separe par virgule)</label>
+            <input id="pages" type="text" placeholder="games/email-pro.html, games/dossiers-explorateur.html">
+          </div>
+          <div class="field">
+            <label for="scripts">Scripts JS cibles</label>
+            <input id="scripts" type="text" placeholder="js/email-pro.js, js/dossiers-explorateur.js">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="dataFiles">Fichiers data-js cibles</label>
+            <input id="dataFiles" type="text" placeholder="js/data/ecouter-data.js">
+          </div>
+          <div class="field">
+            <label for="styles">Fichiers CSS cibles</label>
+            <input id="styles" type="text" placeholder="css/email-pro.css">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="deleteTargets">Fichiers a supprimer (optionnel, separe par virgule)</label>
+          <input id="deleteTargets" type="text" placeholder="games/ancien-jeu.html, js/legacy.js">
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="addTargets">Fichiers a ajouter (optionnel)</label>
+            <input id="addTargets" type="text" placeholder="games/nouveau-jeu.html, js/nouveau-jeu.js">
+          </div>
+          <div class="field">
+            <label for="updateTargets">Fichiers a modifier (optionnel)</label>
+            <input id="updateTargets" type="text" placeholder="games/quiz.html, js/quiz.js, css/pages/quiz.css">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="contentChanges">Modifications de contenu (textes, labels, messages, sections)</label>
+          <textarea id="contentChanges" placeholder="Ex: Remplacer les textes d accueil niveau A1, ajouter un bloc d aide, harmoniser les boutons, corriger les messages d erreur..."></textarea>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2) Type de travail</h2>
+        <div class="checks" id="workTypes">
+          <label class="check"><input type="checkbox" value="Modifier des fichiers existants" checked>Modifier fichiers existants</label>
+          <label class="check"><input type="checkbox" value="Ajouter de nouveaux fichiers">Ajouter nouveaux fichiers</label>
+          <label class="check"><input type="checkbox" value="Supprimer les fichiers obsoletes">Supprimer fichiers obsoletes</label>
+          <label class="check"><input type="checkbox" value="Modifier le contenu (textes, labels, messages)" checked>Modifier contenu</label>
+          <label class="check"><input type="checkbox" value="Mettre a jour la logique JS" checked>Mettre a jour logique JS</label>
+          <label class="check"><input type="checkbox" value="Creer ou enrichir des donnees dans js/data" checked>Maj data-js</label>
+          <label class="check"><input type="checkbox" value="Ameliorer UX/UI responsive">Ameliorer UI responsive</label>
+          <label class="check"><input type="checkbox" value="Nettoyer ou refactoriser du code">Refactoriser</label>
+          <label class="check"><input type="checkbox" value="Verifier et executer des tests locaux">Executer tests</label>
+          <label class="check"><input type="checkbox" value="Expliquer les changements avec references de fichiers" checked>Resume technique</label>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="constraints">Contraintes a respecter</label>
+            <textarea id="constraints" placeholder="Ex: Ne pas toucher au menu, garder le style actuel, pas de dependance externe, ASCII only..."></textarea>
+          </div>
+          <div class="field">
+            <label for="acceptance">Definition de termine (done)</label>
+            <textarea id="acceptance" placeholder="Ex: Le jeu fonctionne, donnees chargees, aucun bug console, mobile ok, score sauvegarde..."></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="mode">Mode de reponse attendu</label>
+          <select id="mode">
+            <option value="execute">Execution directe (modifier les fichiers tout de suite)</option>
+            <option value="plan">Commencer par un mini plan, puis executer</option>
+            <option value="review">Mode review: trouver bugs/risques avant modifs</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label class="check"><input id="autoLive" type="checkbox" checked>Generation auto en direct</label>
+          <label class="check"><input id="autoMax" type="checkbox" checked>Auto-pilot max (pre-remplissage intelligent)</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3) Prompt final (copier-coller dans Codex)</h2>
+        <textarea id="output" class="output" placeholder="Clique sur Generer le prompt..."></textarea>
+        <div class="output-counter" id="outputCounter">0 caractere</div>
+        <div class="actions">
+          <button class="btn-preset" id="btnPresetAutomation">Preset automatisation plateforme</button>
+          <button class="btn-preset" id="btnPresetRevision">Preset revision complete</button>
+          <button class="btn-main" id="btnGenerate">Generer <kbd>Ctrl+&#8629;</kbd></button>
+          <button class="btn-auto" id="btnAutoRun">Auto-run complet</button>
+          <button class="btn-copy" id="btnCopy">Copier</button>
+          <button class="btn-export" id="btnExportMd">Exporter .md</button>
+          <button class="btn-clear" id="btnClear">Vider</button>
+        </div>
+        <div class="status" id="status"></div>
+        <div class="quality">
+          <span>Qualite du prompt:</span>
+          <strong id="qualityScore">0/100</strong>
+          <div class="quality-bar-wrap">
+            <div class="quality-bar" id="qualityBar"></div>
+          </div>
+        </div>
+        <div class="hint">Astuce: garde cette page hors navigation publique. Ouvre-la directement via son chemin: <code>admin/prompt-generator.html</code>.</div>
+        <div class="history-head">
+          <strong>Historique local</strong>
+          <button class="btn-clear-history" id="btnClearHistory" type="button">Vider historique</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/admin-prompt-generator.js"></script>
+</body>
+</html>

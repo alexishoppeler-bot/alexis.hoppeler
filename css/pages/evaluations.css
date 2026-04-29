@@ -1,0 +1,171 @@
+﻿/* Auto-extrait depuis games/evaluations.html */
+/* ── Ring SVG ── */
+    .ring-svg { display: block; overflow: visible; transform: rotate(-90deg); }
+    .ring-bg   { fill: none; stroke: var(--border); stroke-width: 8; }
+    .ring-fill {
+      fill: none; stroke-width: 8; stroke-linecap: round;
+      transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);
+    }
+    .ring-label {
+      font-size: 17px; font-weight: 800;
+      fill: var(--text);
+      transform-box: fill-box;
+    }
+
+    /* ── Ring card ── */
+    .eval-ring-card {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 24px 16px; text-align: center;
+    }
+    .ring-pct-label {
+      font-family: var(--font-head); font-size: 13px; font-weight: 700;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      margin-top: 6px;
+    }
+    .ring-title { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+
+    /* ── Level hero ── */
+    .level-hero { padding: 32px 24px; text-align: center; }
+    .level-number {
+      font-family: var(--font-head); font-size: 60px; font-weight: 900; line-height: 1;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .badge-rank {
+      display: inline-block; padding: 7px 22px; border-radius: 999px;
+      font-size: 15px; font-weight: 700; border: 2px solid; margin-top: 10px;
+      letter-spacing: 0.3px;
+    }
+    .xp-next { font-size: 12px; color: var(--text3); margin-top: 14px; }
+
+    /* ── KPI grid ── */
+    .kpi-grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 24px; }
+    @media (max-width: 900px) { .kpi-grid-7 { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 540px) { .kpi-grid-7 { grid-template-columns: repeat(2, 1fr); } }
+    .kpi-card2 { background: var(--surface); border-radius: var(--r-lg); padding: 16px 10px;
+                 text-align: center; border: 1px solid var(--border); }
+    .kpi-val2  { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .kpi-lbl2  { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 3px; }
+
+    /* ── Table ── */
+    .eval-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .eval-table th {
+      text-align: left; padding: 10px 14px;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 700;
+    }
+    .eval-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: middle; }
+    .eval-table tbody tr { transition: background 0.1s; }
+    .eval-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
+    .eval-table td:first-child { color: var(--text); font-weight: 600; }
+
+    /* ── Mini progress ── */
+    .mini-bar { height: 5px; border-radius: 99px; background: var(--border); overflow: hidden; margin-top: 4px; width: 80px; }
+    .mini-bar-fill { height: 100%; border-radius: 99px; background: var(--gradient); transition: width 0.8s ease; }
+
+    /* ── Status dot ── */
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+    .dot-green  { background: var(--success); }
+    .dot-yellow { background: var(--warning); }
+    .dot-gray   { background: var(--text3); }
+
+    /* ── Filter tabs ── */
+    .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-tab  { padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--border);
+                   background: var(--surface); color: var(--text2); font-size: 12px; font-weight: 600;
+                   cursor: pointer; transition: all 0.15s; }
+    .filter-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Sparkline ── */
+    .sparkline-wrap { overflow-x: auto; }
+    .sparkline-bar-row { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 0 4px; }
+    .sparkline-bar { flex: 1; min-width: 28px; border-radius: 4px 4px 0 0;
+                     background: var(--gradient); opacity: 0.85;
+                     transition: height 0.8s ease, opacity 0.2s; cursor: pointer; }
+    .sparkline-bar:hover { opacity: 1; }
+    .sparkline-labels { display: flex; gap: 6px; padding: 4px 4px 0; }
+    .sparkline-lbl { flex: 1; min-width: 28px; font-size: 9px; color: var(--text3); text-align: center;
+                     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Link cell ── */
+    .link-cell { color: var(--accent); text-decoration: none; font-size: 11px; font-weight: 600;
+                 padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--accent);
+                 white-space: nowrap; transition: background 0.15s; }
+    .link-cell:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+
+    /* ── Medals ── */
+    .medal { font-size: 18px; }
+
+    /* ── Grid 3 ── */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 700px) { .grid-3 { grid-template-columns: 1fr; } }
+
+    /* ── Collapsible sections ── */
+    .detail-section { display: none; }
+    .detail-section.show { display: block; }
+    .btn-toggle-details { margin: 16px 0; }
+
+    /* ── Milestone badges ── */
+    .milestone-badge { display: flex; flex-direction: column; align-items: center; gap: 4px;
+                       padding: 12px 16px; border-radius: var(--r-md); background: var(--surface);
+                       border: 1.5px solid var(--border); opacity: 0.4; transition: opacity 0.3s; }
+    .milestone-badge.unlocked { opacity: 1; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .milestone-emoji { font-size: 24px; }
+    .milestone-text { font-size: 11px; font-weight: 600; color: var(--text2); text-align: center; }
+
+    .pedagogical-card {
+      background:
+        radial-gradient(circle at top right, rgba(131, 189, 69, 0.12), transparent 32%),
+        linear-gradient(135deg, rgba(50, 93, 169, 0.05), rgba(255, 255, 255, 0.98));
+    }
+
+    .pedagogical-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .pedagogical-box {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .pedagogical-box-accent {
+      background:
+        radial-gradient(circle at top right, rgba(131, 189, 69, 0.18), transparent 42%),
+        rgba(255, 255, 255, 0.92);
+    }
+
+    .pedagogical-label {
+      margin-bottom: 10px;
+      font-size: 10px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .pedagogical-value {
+      margin-bottom: 8px;
+      font-size: 22px;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .pedagogical-box p {
+      min-height: 72px;
+      margin-bottom: 12px;
+      color: var(--text2);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .milestone-badge { padding: 10px 12px; }
+      .milestone-emoji { font-size: 20px; }
+      .pedagogical-grid { grid-template-columns: 1fr; }
+    }
+

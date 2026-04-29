@@ -1,0 +1,302 @@
+﻿/* Auto-extrait depuis games/pendu.html */
+/* === PENDU === */
+    .pendu-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .pendu-layout { grid-template-columns: 1fr; }
+    }
+
+    /* --- Dessin pendu SVG --- */
+    .pendu-svg-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #penduSvg {
+      width: 200px;
+      height: 220px;
+    }
+
+    .pendu-lives {
+      display: flex;
+      gap: 6px;
+    }
+    .life-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--success);
+      transition: background 0.3s;
+    }
+    .life-dot.lost { background: var(--danger); }
+
+    /* --- Zone de jeu --- */
+    .pendu-game {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 28px;
+    }
+
+    .pendu-category {
+      margin-bottom: 6px;
+    }
+
+    /* ── Piste pédagogique ── */
+    .pendu-hint {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: color-mix(in srgb, var(--accent) 10%, var(--bg2));
+      border: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+      border-radius: var(--r-lg);
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      animation: hint-appear 0.35s ease;
+    }
+    @keyframes hint-appear {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .pendu-hint-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+    .pendu-hint-body {
+      text-align: left;
+    }
+    .pendu-hint-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      margin-bottom: 3px;
+    }
+    .pendu-hint-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text1);
+      line-height: 1.5;
+    }
+
+    /* Lettres du mot */
+    .word-display {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .letter-slot {
+      width: 36px;
+      height: 46px;
+      border-bottom: 3px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      transition: all 0.2s;
+      position: relative;
+    }
+    .letter-slot.revealed {
+      border-color: var(--success);
+      color: var(--success);
+    }
+    .letter-slot.revealed::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0; right: 0;
+      height: 3px;
+      background: var(--success);
+      border-radius: 2px;
+    }
+    .letter-slot.wrong-end {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* Clavier virtuel */
+    .virtual-keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .kb-row {
+      display: flex;
+      gap: 5px;
+    }
+
+    .kb-key {
+      width: 38px;
+      height: 38px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+    }
+    .kb-key:hover:not(.used) {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .kb-key:active:not(.used) { transform: translateY(1px); box-shadow: none; }
+    .kb-key.correct {
+      background: rgba(52,211,153,0.2);
+      border-color: var(--success);
+      color: var(--success);
+      cursor: default;
+    }
+    .kb-key.wrong {
+      background: rgba(248,113,113,0.15);
+      border-color: var(--danger);
+      color: var(--danger);
+      cursor: default;
+      opacity: 0.6;
+    }
+    .kb-key.used { pointer-events: none; }
+
+    /* Feedback */
+    .pendu-feedback {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      min-height: 24px;
+      margin-bottom: 12px;
+    }
+    .pendu-feedback.ok  { color: var(--success); }
+    .pendu-feedback.err { color: var(--danger); }
+    .pendu-feedback.win { color: var(--accent); font-size: 18px; }
+    .pendu-feedback.lose { color: var(--danger); font-size: 18px; }
+
+    .pendu-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-progress-label { font-size: 13px; color: var(--text2); }
+    .quiz-progress-label strong { color: var(--text); }
+    .quiz-timer {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 4px 12px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .series-progress { margin-bottom: 18px; }
+
+    /* Résultats */
+    .result-zone { display: none; }
+    .result-zone.show { display: block; }
+    .game-zone.hidden { display: none; }
+
+    /* SVG pendu styles */
+    .pendu-part {
+      stroke: var(--text);
+      stroke-width: 3;
+      stroke-linecap: round;
+      fill: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .pendu-part.visible { opacity: 1; }
+    .pendu-structure {
+      stroke: var(--text2);
+      stroke-width: 3;
+      stroke-linecap: round;
+      fill: none;
+    }
+    /* Tête = cercle */
+    #part-head {
+      fill: none;
+      stroke: var(--text);
+      stroke-width: 3;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #part-head.visible { opacity: 1; }
+
+    @media (min-width: 1200px) {
+      .pendu-layout {
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: 30px;
+      }
+
+      .pendu-svg-wrap {
+        padding: 24px;
+      }
+
+      #penduSvg {
+        width: 240px;
+        height: 260px;
+      }
+
+      .pendu-game {
+        padding: 36px;
+      }
+
+      .pendu-hint {
+        padding: 14px 18px;
+      }
+
+      .pendu-hint-text {
+        font-size: 15px;
+      }
+
+      .letter-slot {
+        width: 42px;
+        height: 54px;
+        font-size: 26px;
+      }
+
+      .kb-key {
+        width: 42px;
+        height: 42px;
+        font-size: 14px;
+      }
+    }
+

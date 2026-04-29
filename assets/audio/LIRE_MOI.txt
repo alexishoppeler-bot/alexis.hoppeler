@@ -1,0 +1,25 @@
+DOSSIER AUDIO — Compréhension orale
+=====================================
+
+Placer ici les fichiers audio au format MP3 (recommandé), WAV ou OGG.
+
+Les noms de fichiers doivent correspondre exactement à ceux définis
+dans js/data/ecouter-data.js (champ "audio").
+
+Exemples :
+  episode-01.mp3   → Histoire : La candidature de Sophie
+  episode-02.mp3   → Dialogue : Appel à l'ORP
+  episode-03.mp3   → Histoire : Une journée en informatique
+  episode-04.mp3   → Dialogue : Entretien d'embauche
+
+Outils gratuits pour créer les MP3 :
+  - ElevenLabs.io        (voix IA très naturelles, 10 000 car/mois gratuits)
+  - TTSMaker.com         (gratuit, voix française correcte)
+  - Narakeet.com         (coller le texte, télécharger le MP3)
+  - Audacity             (enregistrement microphone)
+  - Lame / ffmpeg        (conversion d'autres formats)
+
+Durée recommandée : 30 à 90 secondes par épisode.
+
+Le texte de chaque histoire est disponible dans ecouter-data.js
+(champ "transcript") pour faciliter la création des audios.

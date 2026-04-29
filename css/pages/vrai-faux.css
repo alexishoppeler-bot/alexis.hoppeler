@@ -1,0 +1,199 @@
+﻿/* Auto-extrait depuis games/vrai-faux.html */
+/* === VRAI OU FAUX === */
+    .vf-zone {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px;
+      text-align: center;
+    }
+
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-progress-label { font-size: 13px; color: var(--text2); }
+    .quiz-progress-label strong { color: var(--text); }
+
+    .series-progress { margin-bottom: 28px; }
+
+    /* Carte affirmation */
+    .vf-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px 28px;
+      margin-bottom: 32px;
+      transition: border-color 0.3s, background 0.3s;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .vf-card.result-vrai {
+      border-color: var(--success);
+      background: rgba(52,211,153,0.06);
+    }
+    .vf-card.result-faux {
+      border-color: var(--danger);
+      background: rgba(248,113,113,0.06);
+    }
+
+    .vf-category { margin-bottom: 4px; }
+
+    .vf-statement {
+      font-family: var(--font-head);
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Boutons Vrai / Faux */
+    .vf-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-vrai {
+      min-width: 160px;
+      padding: 18px 32px;
+      background: linear-gradient(135deg, #34d399, #059669);
+      color: white;
+      border: none;
+      border-radius: var(--r-lg);
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 20px rgba(52,211,153,0.3);
+      letter-spacing: 0.5px;
+    }
+    .btn-vrai:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(52,211,153,0.4); }
+    .btn-vrai:active:not(:disabled) { transform: translateY(1px); }
+
+    .btn-faux {
+      min-width: 160px;
+      padding: 18px 32px;
+      background: linear-gradient(135deg, #f87171, #dc2626);
+      color: white;
+      border: none;
+      border-radius: var(--r-lg);
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 20px rgba(248,113,113,0.3);
+      letter-spacing: 0.5px;
+    }
+    .btn-faux:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(248,113,113,0.4); }
+    .btn-faux:active:not(:disabled) { transform: translateY(1px); }
+
+    .btn-vrai:disabled, .btn-faux:disabled { opacity: 0.4; cursor: default; transform: none !important; }
+
+    /* Résultat après réponse */
+    .vf-result {
+      display: none;
+      padding: 14px 20px;
+      border-radius: var(--r-md);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .vf-result.ok {
+      display: block;
+      background: rgba(52,211,153,0.08);
+      border: 1px solid rgba(52,211,153,0.25);
+      color: var(--text2);
+    }
+    .vf-result.err {
+      display: block;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      color: var(--text2);
+    }
+
+    .vf-feedback {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      min-height: 28px;
+      margin-bottom: 12px;
+    }
+    .vf-feedback.ok  { color: var(--success); }
+    .vf-feedback.err { color: var(--danger); }
+
+    /* Streak bar */
+    .streak-bar {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .streak-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .streak-dot.ok   { background: var(--success); border-color: var(--success); }
+    .streak-dot.err  { background: var(--danger);  border-color: var(--danger); }
+    .streak-dot.skip { background: var(--text3);   border-color: var(--text3); }
+
+    /* Raccourcis */
+    .key-hint {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 8px;
+    }
+    .key-hint kbd {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+    }
+
+    .vf-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Résultats */
+    .result-zone { display: none; }
+    .result-zone.show { display: block; }
+    .game-zone.hidden { display: none; }
+
+    /* Animation entrée de la carte */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .vf-card { animation: slideIn 0.3s ease; }
+
+    /* Animation shake */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-5px); }
+      80%      { transform: translateX(5px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+

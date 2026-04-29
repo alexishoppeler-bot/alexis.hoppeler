@@ -1,0 +1,678 @@
+.fw-header {
+  margin-bottom: 22px;
+}
+
+.fw-header h1 {
+  font-size: clamp(30px, 4vw, 40px);
+  margin-bottom: 8px;
+}
+
+.fw-header p {
+  color: var(--text2);
+  max-width: 68ch;
+  line-height: 1.7;
+}
+
+.fw-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.fw-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 255, 0.98)),
+    var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.fw-mission,
+.fw-scene-card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.fw-mission {
+  margin-top: 14px;
+  padding: 16px;
+  background:
+    radial-gradient(circle at top right, rgba(50, 93, 169, 0.1), transparent 35%),
+    linear-gradient(180deg, #ffffff, #f5f8ff);
+}
+
+.fw-mission-top,
+.fw-scene-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.fw-mission-label,
+.fw-scene-label,
+.fw-meta-label,
+.fw-shortcuts-title {
+  color: var(--text3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fw-progress-pill,
+.fw-scene-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(50, 93, 169, 0.1);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fw-instruction {
+  margin-top: 14px;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.fw-mission-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.fw-meta-card {
+  padding: 12px;
+  border: 1px solid rgba(50, 93, 169, 0.1);
+  border-radius: 14px;
+  background: rgba(50, 93, 169, 0.04);
+}
+
+.fw-meta-card strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.fw-feedback {
+  min-height: 52px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text2);
+}
+
+.fw-feedback[data-state="ok"] {
+  border-color: rgba(57, 142, 90, 0.2);
+  background: rgba(57, 142, 90, 0.08);
+  color: var(--success);
+}
+
+.fw-feedback[data-state="error"] {
+  border-color: rgba(210, 74, 74, 0.2);
+  background: rgba(210, 74, 74, 0.08);
+  color: var(--danger);
+}
+
+.fw-feedback[data-state="info"] {
+  border-color: rgba(50, 93, 169, 0.14);
+  background: rgba(50, 93, 169, 0.06);
+  color: var(--text2);
+}
+
+.fw-scene-card {
+  margin-top: 14px;
+  padding: 14px;
+}
+
+.fw-scene-note {
+  margin-top: 10px;
+  color: var(--text2);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.fw-kpi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.fw-shortcuts {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(18, 31, 52, 0.03);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.6;
+}
+
+.fw-shortcuts p {
+  margin-top: 8px;
+}
+
+.fw-shortcuts kbd {
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 11px;
+  background: var(--bg2);
+  color: var(--text);
+}
+
+.fw-kpi .k {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg2);
+  padding: 10px;
+  text-align: center;
+}
+
+.fw-kpi .v {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.fw-kpi .l {
+  color: var(--text3);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.fw-desktop {
+  position: relative;
+  min-height: 580px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(116, 184, 255, 0.2), transparent 28%),
+    radial-gradient(circle at 82% 14%, rgba(131, 189, 69, 0.18), transparent 24%),
+    linear-gradient(145deg, #22324d, #162032 62%, #101827);
+  box-shadow: 0 24px 60px rgba(9, 17, 29, 0.34);
+}
+
+.fw-desktop::before {
+  content: '';
+  position: absolute;
+  inset: 72px 18px 72px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02) 0,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 120px
+    );
+  pointer-events: none;
+}
+
+.fw-desktop-top {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 1;
+}
+
+.fw-os-pill,
+.fw-os-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: #eef4ff;
+  background: rgba(7, 13, 24, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fw-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #89d46b;
+  box-shadow: 0 0 0 4px rgba(137, 212, 107, 0.18);
+}
+
+.fw-desktop-help {
+  position: absolute;
+  top: 68px;
+  left: 22px;
+  max-width: 360px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(8, 12, 20, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(240, 246, 255, 0.86);
+  font-size: 12px;
+  line-height: 1.55;
+  backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+.fw-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  background: rgba(8, 12, 20, 0.76);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.fw-launch,
+.fw-task {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f0f6ff;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 7px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.fw-launch:hover,
+.fw-task:hover {
+  background: rgba(255, 255, 255, 0.17);
+  transform: translateY(-1px);
+}
+
+.fw-launch:focus-visible,
+.fw-task:focus-visible {
+  outline: 2px solid #d7e8ff;
+  outline-offset: 2px;
+}
+
+.fw-window {
+  position: absolute;
+  top: 118px;
+  width: 420px;
+  border-radius: 18px;
+  border: 1px solid rgba(195, 209, 232, 0.9);
+  background: #f7faff;
+  box-shadow: 0 20px 40px rgba(3, 9, 18, 0.3);
+  overflow: hidden;
+}
+
+.fw-window[data-id="browser"] { left: 44px; }
+.fw-window[data-id="email"] { left: 220px; top: 174px; width: 360px; }
+.fw-window[data-id="ad"] {
+  right: 34px;
+  left: auto;
+  top: 136px;
+  width: 290px;
+  border-color: #f59e0b;
+}
+
+.fw-window.maximized {
+  top: 88px;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  height: calc(100% - 160px);
+}
+
+.fw-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #edf3ff, #e5edf9);
+  border-bottom: 1px solid #d7dfef;
+}
+
+.fw-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #273145;
+}
+
+.fw-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.fw-controls button {
+  width: 26px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1px solid #c6d0e4;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.fw-controls button:hover {
+  background: #f0f5ff;
+}
+
+.fw-controls button:focus-visible,
+.fw-tab:focus-visible,
+.fw-titlebar:focus-visible,
+.fw-content:focus-visible {
+  outline: 2px solid #6aa4ff;
+  outline-offset: 1px;
+}
+
+.fw-controls button[data-action="close"] {
+  color: #b42318;
+  border-color: #f6b7b1;
+}
+
+.fw-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 10px 10px 0;
+  background: #f3f6fd;
+}
+
+.fw-tab {
+  border: 1px solid #d3dcee;
+  background: #ffffff;
+  color: #2b3a56;
+  border-radius: 8px 8px 0 0;
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.fw-tab.active {
+  background: #dbe8ff;
+  border-color: #aac7ff;
+}
+
+.fw-content {
+  min-height: 180px;
+  padding: 16px;
+  font-size: 13px;
+  color: #34445f;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(245, 249, 255, 0.96));
+}
+
+.fw-window[data-id="ad"] .fw-content {
+  background: #fff4da;
+  color: #6e3a03;
+  font-weight: 600;
+}
+
+.fw-window.active {
+  outline: 3px solid rgba(106, 164, 255, 0.9);
+  z-index: 3;
+}
+
+.fw-task.is-minimized {
+  opacity: 0.72;
+}
+
+.fw-task.is-active {
+  background: rgba(106, 164, 255, 0.24);
+  border-color: rgba(144, 187, 255, 0.58);
+}
+
+.fw-browser-ui {
+  display: grid;
+  gap: 12px;
+}
+
+.fw-addressbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #eef4ff;
+  border: 1px solid #d9e4fb;
+  color: #476181;
+}
+
+.fw-addressbar strong {
+  flex: 1;
+  color: #253550;
+  font-size: 12px;
+}
+
+.fw-browser-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr;
+  gap: 12px;
+}
+
+.fw-browser-card,
+.fw-email-card,
+.fw-email-item,
+.fw-ad-card {
+  border: 1px solid #d8e3f6;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.fw-browser-card {
+  padding: 14px;
+}
+
+.fw-browser-card h3,
+.fw-email-card h3 {
+  margin-bottom: 8px;
+  color: #22324d;
+  font-size: 15px;
+}
+
+.fw-browser-card p,
+.fw-email-card p,
+.fw-email-item p,
+.fw-ad-card p {
+  color: #50627f;
+  line-height: 1.6;
+}
+
+.fw-browser-side {
+  display: grid;
+  gap: 10px;
+}
+
+.fw-chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.fw-chip {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #33527b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.fw-email-layout {
+  display: grid;
+  gap: 10px;
+}
+
+.fw-email-card {
+  padding: 14px;
+}
+
+.fw-email-item {
+  padding: 12px;
+}
+
+.fw-email-item strong {
+  display: block;
+  color: #22324d;
+  margin-bottom: 4px;
+}
+
+.fw-ad-card {
+  padding: 16px;
+  background: linear-gradient(180deg, #fff6e4, #ffe9bd);
+  border-color: #f6ce72;
+}
+
+.fw-ad-card strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #7c4204;
+  font-size: 16px;
+}
+
+.fw-hidden {
+  display: none;
+}
+
+.fw-result {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  font-size: 14px;
+}
+
+.fw-result strong {
+  color: var(--success);
+}
+
+@media (min-width: 1200px) {
+  .fw-header {
+    margin-bottom: 28px;
+  }
+
+  .fw-grid {
+    grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  .fw-panel {
+    padding: 22px;
+  }
+
+  .fw-mission,
+  .fw-scene-card,
+  .fw-shortcuts {
+    padding: 18px;
+  }
+
+  .fw-instruction {
+    font-size: 18px;
+  }
+
+  .fw-desktop {
+    min-height: 700px;
+    border-radius: 32px;
+  }
+
+  .fw-desktop::before {
+    inset: 82px 22px 78px;
+  }
+
+  .fw-desktop-help {
+    max-width: 420px;
+    font-size: 13px;
+  }
+
+  .fw-window {
+    width: 470px;
+  }
+
+  .fw-window[data-id="browser"] {
+    left: 52px;
+  }
+
+  .fw-window[data-id="email"] {
+    left: 268px;
+    top: 186px;
+    width: 400px;
+  }
+
+  .fw-window[data-id="ad"] {
+    right: 42px;
+    top: 148px;
+    width: 320px;
+  }
+
+  .fw-content {
+    min-height: 210px;
+    padding: 18px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 900px) {
+  .fw-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fw-desktop {
+    min-height: 620px;
+  }
+
+  .fw-mission-meta,
+  .fw-browser-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fw-window[data-id="browser"],
+  .fw-window[data-id="email"],
+  .fw-window[data-id="ad"] {
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+
+  .fw-desktop-top {
+    position: static;
+    padding: 16px 16px 0;
+  }
+
+  .fw-desktop-help {
+    top: 118px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+}

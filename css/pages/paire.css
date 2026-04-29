@@ -1,0 +1,227 @@
+﻿/* Auto-extrait depuis games/paire.html */
+/* === PAIRE OU PAS === */
+    .paire-zone {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px;
+      text-align: center;
+    }
+
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-progress-label { font-size: 13px; color: var(--text2); }
+    .quiz-progress-label strong { color: var(--text); }
+
+    .series-progress { margin-bottom: 28px; }
+
+    /* === Cartes retournées === */
+    .cards-area {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .flip-card {
+      width: 160px;
+      height: 190px;
+      perspective: 800px;
+      cursor: default;
+    }
+
+    .flip-card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--r-xl);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border: 2px solid var(--border);
+    }
+
+    .flip-card-front {
+      background: var(--surface2);
+      font-size: 48px;
+    }
+
+    .flip-card-back {
+      background: var(--surface);
+      transform: rotateY(180deg);
+      border-color: var(--accent);
+    }
+
+    .flip-card-back .card-emoji {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .flip-card-back .card-text {
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    /* États après réponse */
+    .flip-card.match .flip-card-back {
+      border-color: var(--success);
+      background: rgba(52,211,153,0.1);
+    }
+    .flip-card.no-match .flip-card-back {
+      border-color: var(--danger);
+      background: rgba(248,113,113,0.08);
+    }
+
+    /* Question */
+    .paire-question {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .paire-sub {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 28px;
+    }
+
+    /* Boutons Oui/Non */
+    .answer-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .btn-oui {
+      background: linear-gradient(135deg, #34d399, #059669);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 36px;
+      border-radius: var(--r-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-head);
+      box-shadow: 0 4px 16px rgba(52,211,153,0.3);
+    }
+    .btn-oui:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-oui:active { transform: translateY(1px); }
+
+    .btn-non {
+      background: linear-gradient(135deg, #f87171, #dc2626);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 36px;
+      border-radius: var(--r-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-head);
+      box-shadow: 0 4px 16px rgba(248,113,113,0.3);
+    }
+    .btn-non:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-non:active { transform: translateY(1px); }
+
+    .btn-oui:disabled, .btn-non:disabled {
+      opacity: 0.4; cursor: default; transform: none;
+    }
+
+    /* Feedback */
+    .feedback-row {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .feedback-msg {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .feedback-msg.ok  { color: var(--success); }
+    .feedback-msg.err { color: var(--danger); }
+
+    /* Explication */
+    .explication-box {
+      display: none;
+      padding: 12px 18px;
+      border-radius: var(--r-md);
+      font-size: 13px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .explication-box.ok  {
+      background: rgba(52,211,153,0.08);
+      border: 1px solid rgba(52,211,153,0.25);
+      color: var(--text2);
+    }
+    .explication-box.err {
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      color: var(--text2);
+    }
+    .explication-box.show { display: block; }
+
+    /* Touches clavier hint */
+    .key-hint {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 8px;
+    }
+    .key-hint kbd {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: var(--font-head);
+      font-size: 11px;
+    }
+
+    /* Résultats */
+    .result-zone { display: none; }
+    .result-zone.show { display: block; }
+    .game-zone.hidden { display: none; }
+
+    /* Animation shake pour mauvaise réponse */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+

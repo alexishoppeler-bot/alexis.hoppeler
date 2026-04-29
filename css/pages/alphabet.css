@@ -1,0 +1,207 @@
+﻿/* Auto-extrait depuis games/alphabet.html */
+/* ── KPI ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-top: 4px;
+    }
+
+    /* ── Sortable list ── */
+    .alphabet-zone {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      margin-bottom: 20px;
+      min-height: 300px;
+    }
+
+    .alphabet-mission {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .alphabet-mission-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--bg2);
+    }
+
+    .alphabet-mission-item span {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(50, 93, 169, 0.12);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .alphabet-mission-item strong {
+      color: var(--text1);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .alphabet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .alphabet-item {
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 16px;
+      cursor: move;
+      user-select: none;
+      font-weight: 600;
+      color: var(--text1);
+      transition: all 0.2s;
+      touch-action: none;
+    }
+
+    .alphabet-item:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md);
+      transform: translateX(4px);
+    }
+
+    .alphabet-item.dragging {
+      opacity: 0.6;
+      transform: scale(0.98);
+    }
+
+    .alphabet-item.over {
+      border-color: var(--accent);
+      background: var(--bg3);
+    }
+
+    .alphabet-feedback {
+      min-height: 48px;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-radius: var(--r-md);
+      background: var(--bg2);
+      color: var(--text2);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .alphabet-feedback.ok {
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      background: rgba(52, 211, 153, 0.08);
+      color: var(--text1);
+    }
+
+    .alphabet-feedback.err {
+      border: 1px solid rgba(248, 113, 113, 0.28);
+      background: rgba(248, 113, 113, 0.08);
+      color: var(--text1);
+    }
+
+    /* ── Result zone ── */
+    .result-zone {
+      display: none;
+    }
+
+    .result-zone.show {
+      display: block;
+    }
+
+    /* ── Action buttons ── */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .action-buttons .btn {
+      min-width: 140px;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      .alphabet-zone {
+        padding: 16px;
+        min-height: 250px;
+      }
+
+      .alphabet-mission {
+        grid-template-columns: 1fr;
+      }
+
+      .alphabet-item {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .action-buttons .btn {
+        width: 100%;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .kpi-card {
+        padding: 16px;
+      }
+
+      .kpi-value {
+        font-size: 28px;
+      }
+
+      .alphabet-zone {
+        padding: 28px;
+        min-height: 360px;
+      }
+
+      .alphabet-list {
+        gap: 12px;
+      }
+
+      .alphabet-item {
+        padding: 18px;
+        font-size: 15px;
+      }
+    }
+

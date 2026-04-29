@@ -1,0 +1,180 @@
+﻿/* Auto-extrait depuis games/classement.html */
+/* === CLASSEMENT SPÉCIFIQUE === */
+    .rank-zone {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px;
+    }
+
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-progress-label { font-size: 13px; color: var(--text2); }
+    .quiz-progress-label strong { color: var(--text); }
+
+    .rank-question {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .rank-instruction {
+      font-size: 13px;
+      color: var(--text2);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* --- Liste de rangement (drag & drop) --- */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+      min-height: 60px;
+    }
+
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: grab;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+      user-select: none;
+      box-shadow: var(--shadow-sm);
+    }
+    .rank-item:active { cursor: grabbing; }
+    .rank-item.dragging {
+      opacity: 0.45;
+      transform: scale(0.98);
+    }
+    .rank-item.drag-over {
+      border-color: var(--accent);
+      background: rgba(79,142,247,0.07);
+    }
+    .rank-item.correct {
+      border-color: var(--success);
+      background: rgba(52,211,153,0.08);
+      color: var(--success);
+      cursor: default;
+    }
+    .rank-item.wrong {
+      border-color: var(--danger);
+      background: rgba(248,113,113,0.08);
+      color: var(--danger);
+    }
+
+    .rank-num {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+    .rank-item.correct .rank-num {
+      background: rgba(52,211,153,0.2);
+      border-color: var(--success);
+      color: var(--success);
+    }
+    .rank-item.wrong .rank-num {
+      background: rgba(248,113,113,0.2);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .rank-drag-handle {
+      color: var(--text3);
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    /* Boutons déplacer haut/bas (mobile) */
+    .rank-arrows {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .rank-arrow-btn {
+      width: 24px;
+      height: 20px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 10px;
+      color: var(--text2);
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    .rank-arrow-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* Feedback */
+    .feedback-row {
+      min-height: 28px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .feedback-msg {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .feedback-msg.ok  { color: var(--success); }
+    .feedback-msg.err { color: var(--danger); }
+
+    /* Correction affichée */
+    .correction-box {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(79,142,247,0.07);
+      border: 1px solid rgba(79,142,247,0.2);
+      border-radius: var(--r-md);
+      font-size: 13px;
+      color: var(--text2);
+    }
+    .correction-box.show { display: block; }
+    .correction-box strong { color: var(--accent); }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Résultats */
+    .result-zone { display: none; }
+    .result-zone.show { display: block; }
+    .game-zone.hidden { display: none; }
+
+    /* Progress bar de la série */
+    .series-progress {
+      margin-bottom: 20px;
+    }
+

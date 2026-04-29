@@ -1,0 +1,165 @@
+﻿/* Auto-extrait depuis games/apparier.html */
+/* === APPARIER SPÉCIFIQUE === */
+    .match-zone {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px;
+    }
+
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quiz-progress-label { font-size: 13px; color: var(--text2); }
+    .quiz-progress-label strong { color: var(--text); }
+    .series-progress { margin-bottom: 18px; }
+
+    /* Grille de paires */
+    .pairs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .column-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text3);
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .items-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Cartes à apparier */
+    .match-card {
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-align: center;
+      user-select: none;
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .match-card:hover:not(.matched):not(.wrong-flash) {
+      background: var(--surface2);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    .match-card.selected {
+      background: rgba(79,142,247,0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79,142,247,0.2);
+    }
+    .match-card.matched {
+      background: rgba(52,211,153,0.1);
+      border-color: var(--success);
+      color: var(--success);
+      cursor: default;
+      opacity: 0.7;
+    }
+    .match-card.matched::after {
+      content: '✓';
+      position: absolute;
+      top: 4px;
+      right: 8px;
+      font-size: 11px;
+      opacity: 0.6;
+    }
+    @keyframes wrongFlash {
+      0%,100% { background: var(--surface); border-color: var(--border); }
+      30%,70%  { background: rgba(248,113,113,0.15); border-color: var(--danger); }
+    }
+    .match-card.wrong-flash {
+      animation: wrongFlash 0.5s ease;
+    }
+
+    /* Ligne de connexion SVG */
+    #connectionSvg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .pairs-wrapper {
+      position: relative;
+    }
+
+    /* Feedback */
+    .feedback-row {
+      min-height: 28px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .feedback-msg {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .feedback-msg.ok  { color: var(--success); }
+    .feedback-msg.err { color: var(--danger); }
+
+    /* Actions */
+    .action-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Résultat final */
+    .result-zone { display: none; }
+    .result-zone.show { display: block; }
+    .game-zone.hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .pairs-grid { grid-template-columns: 1fr; gap: 16px; }
+      .match-card { font-size: 13px; padding: 12px 14px; }
+    }
+
+    @media (min-width: 1200px) {
+      .match-zone {
+        padding: 40px;
+      }
+
+      .pairs-grid {
+        gap: 30px;
+      }
+
+      .column-label {
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+
+      .items-col {
+        gap: 12px;
+      }
+
+      .match-card {
+        padding: 16px 20px;
+        font-size: 15px;
+      }
+    }
+
