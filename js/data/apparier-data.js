@@ -158,4 +158,28 @@ window.APPARIER_DATA = [
       { term: 'Code PIN', def: 'Code secret personnel pour utiliser une carte bancaire' },
     ]
   },
+  {
+    category: 'Sécurité numérique',
+    difficulty: 'medium',
+    theme: 'numérique',
+    pairs: [
+      { term: 'Lien suspect', def: 'Lien à vérifier avant de cliquer' },
+      { term: 'Sauvegarder', def: 'Enregistrer un document pour ne pas le perdre' },
+      { term: 'Télécharger', def: 'Recevoir un fichier depuis internet' },
+      { term: 'Mot de passe fort', def: 'Code difficile à deviner' },
+      { term: 'Déconnexion', def: 'Action de quitter un compte en sécurité' },
+    ]
+  },
+  {
+    category: 'Vie au travail',
+    difficulty: 'medium',
+    theme: 'emploi',
+    pairs: [
+      { term: 'Badge', def: 'Carte utilisée pour entrer sur le lieu de travail' },
+      { term: 'Planning', def: 'Tableau avec les jours et les horaires' },
+      { term: 'Responsable', def: 'Personne qui organise le travail de l’équipe' },
+      { term: 'Consigne', def: 'Instruction à suivre pendant le travail' },
+      { term: 'Pause', def: 'Moment de repos prévu dans la journée' },
+    ]
+  },
 ];

@@ -187,5 +187,33 @@ window.RETAPER_DATA = [
       femme: { signature: 'Amira Benali' }
     },
     hint: '"Je vous informe que" est une formule utile pour annoncer une situation importante.'
+  },
+
+  {
+    category: 'Disponibilités',
+    difficulty: 'medium',
+    theme: 'emploi',
+    contexte: 'Une agence vous demande quand vous pouvez travailler cette semaine.',
+    sujet: 'Disponibilités pour cette semaine',
+    corps: 'Bonjour,\n\nMerci pour votre message.\nJe suis disponible lundi, mardi et jeudi de 8h00 à 17h00.\nJe peux aussi travailler vendredi matin si besoin.\n\nCordialement,\nPaulo Ferreira',
+    profileVariants: {
+      homme: { signature: 'Paulo Ferreira' },
+      femme: { signature: 'Mina Aydin' }
+    },
+    hint: 'Recopiez bien les jours et les heures.'
+  },
+
+  {
+    category: 'Logement',
+    difficulty: 'medium',
+    theme: 'logement',
+    contexte: 'Vous confirmez une visite d’appartement à la gérance.',
+    sujet: 'Confirmation de visite',
+    corps: 'Madame, Monsieur,\n\nJe vous confirme ma présence pour la visite de l’appartement jeudi à 16h30.\nJe vous remercie pour votre proposition.\n\nCordialement,\nNora Haddad',
+    profileVariants: {
+      homme: { signature: 'Samir Haddad' },
+      femme: { signature: 'Nora Haddad' }
+    },
+    hint: 'Le jour et l’heure doivent être recopiés sans erreur.'
   }
 ];

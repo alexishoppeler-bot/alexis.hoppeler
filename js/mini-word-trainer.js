@@ -17,7 +17,7 @@ let missionObjective;
 let missionVisual;
 let missionHint;
 let missionMap;
-let state = { currentMission: 0, score: 0, completed: Array(20).fill(false), contents: {} };
+let state = { currentMission: 0, score: 0, completed: [], contents: {} };
 let savedRange = null;
 
 function stripText(value) {
@@ -98,8 +98,12 @@ const missions = [
   { title: "Faire une mise en page propre", instruction: "Prépare un document propre avec un titre visible et un texte bien rangé.", objective: "Mieux présenter un document.", visual: "🪄", hint: "Un titre plus grand, du texte lisible, pas de désordre.", setup: () => "", check: () => { if (getPlainText().split(' ').length >= 8 && hasLargeText(24) && (hasBold() || hasCenter())) return { level: 'ok', text: 'Bravo, la mise en page est plus propre.' }; if (getPlainText().length > 10) return { level: 'warn', text: 'Presque. Ajoute un vrai titre visible.' }; return { level: 'bad', text: 'Essaie encore. Fais un titre et organise le texte.' }; } },
   { title: "Créer un mini CV", instruction: "Écris un mini CV avec nom, expérience ou formation, et contact.", objective: "Rassembler des informations utiles pour le travail.", visual: "👔", hint: "Exemple : Nom, expérience, téléphone ou email", setup: () => "", check: () => { const text = getPlainText().toLowerCase(); const hasContact = /\d/.test(text) || text.includes('@'); const hasSection = /expérience|formation|compétence|travail/.test(text); if (text.split(' ').length >= 10 && hasContact && hasSection) return { level: 'ok', text: 'Bravo, le mini CV est prêt.' }; if (text.split(' ').length >= 6) return { level: 'warn', text: 'Presque. Ajoute une rubrique et un contact.' }; return { level: 'bad', text: 'Essaie encore. Mets plusieurs informations utiles.' }; } },
   { title: "Corriger un document mal présenté", instruction: "Améliore ce document: ajoute de l'ordre, un titre, et une présentation plus claire.", objective: "Reprendre un texte mal présenté.", visual: "🔧", hint: "Tu peux mettre un titre, faire une liste, et mieux espacer.", setup: () => "liste de courses pommes bananes riz lait\npenser pharmacie\nappeler la maitresse", check: () => { if ((hasBullets(3) || countParagraphs() >= 3) && (hasBold() || hasLargeText(24))) return { level: 'ok', text: 'Bravo, le document est mieux présenté.' }; if (getPlainText().length > 10) return { level: 'warn', text: 'Presque. Il faut rendre le document plus clair visuellement.' }; return { level: 'bad', text: 'Essaie encore. Organise mieux le document.' }; } },
-  { title: "Préparer un document à imprimer", instruction: "Prépare un document final clair, avec un titre et un contenu lisible.", objective: "Créer un document propre pour l'impression.", visual: "🖨️", hint: "Titre, texte organisé, éventuellement date ou couleur simple", setup: () => "", check: () => { const enoughText = getPlainText().split(' ').length >= 12; if (enoughText && (hasLargeText(24) || hasBold()) && (countParagraphs() >= 3 || hasBullets(2) || hasColor() || hasRight() || hasCenter())) return { level: 'ok', text: 'Bravo, le document semble prêt à imprimer.' }; if (enoughText) return { level: 'warn', text: 'Presque. Ajoute un titre visible ou une meilleure présentation.' }; return { level: 'bad', text: 'Essaie encore. Prépare un vrai document final.' }; } }
+  { title: "Préparer un document à imprimer", instruction: "Prépare un document final clair, avec un titre et un contenu lisible.", objective: "Créer un document propre pour l'impression.", visual: "🖨️", hint: "Titre, texte organisé, éventuellement date ou couleur simple", setup: () => "", check: () => { const enoughText = getPlainText().split(' ').length >= 12; if (enoughText && (hasLargeText(24) || hasBold()) && (countParagraphs() >= 3 || hasBullets(2) || hasColor() || hasRight() || hasCenter())) return { level: 'ok', text: 'Bravo, le document semble prêt à imprimer.' }; if (enoughText) return { level: 'warn', text: 'Presque. Ajoute un titre visible ou une meilleure présentation.' }; return { level: 'bad', text: 'Essaie encore. Prépare un vrai document final.' }; } },
+  { title: "Préparer une convocation", instruction: "Écris une convocation courte avec une date, une heure et un lieu.", objective: "Structurer une information de rendez-vous.", visual: "📅", hint: "Exemple : Rendez-vous le 12 mai à 9h, bureau 3.", setup: () => "", check: () => { const text = getPlainText().toLowerCase(); const hasDate = /\d{1,2}[\/.-]\d{1,2}|\d{1,2}\s*(mai|juin|juillet|août|septembre|octobre|novembre|décembre)/.test(text); const hasHour = /\d{1,2}\s*h/.test(text); const hasPlace = /bureau|salle|orp|agence|cabinet|gérance/.test(text); if (hasDate && hasHour && hasPlace) return { level: 'ok', text: 'Bravo, la convocation contient les informations importantes.' }; if (hasDate || hasHour) return { level: 'warn', text: 'Presque. Ajoute aussi le lieu du rendez-vous.' }; return { level: 'bad', text: 'Essaie encore. Il faut une date, une heure et un lieu.' }; } },
+  { title: "Faire une liste de documents", instruction: "Crée une liste à puces de documents à apporter.", objective: "Organiser une liste utile pour une démarche.", visual: "📎", hint: "Exemple : CV, permis, attestation, certificat.", setup: () => "", check: () => { const text = getPlainText().toLowerCase(); const hasDocs = /cv|permis|attestation|certificat|carte|bail|facture/.test(text); if (hasBullets(3) && hasDocs) return { level: 'ok', text: 'Bravo, la liste de documents est claire.' }; if (hasBullets(3)) return { level: 'warn', text: 'Presque. Ajoute des noms de documents précis.' }; return { level: 'bad', text: 'Essaie encore. Utilise une liste à puces avec au moins 3 documents.' }; } }
 ];
+
+state.completed = Array(missions.length).fill(false);
 
 function saveState() {
   state.contents[state.currentMission] = editor.innerHTML;
@@ -113,10 +117,10 @@ function loadState() {
     state = {
       currentMission: saved.currentMission || 0,
       score: saved.score || 0,
-      completed: Array.isArray(saved.completed) ? saved.completed.slice(0, 20) : Array(20).fill(false),
+      completed: Array.isArray(saved.completed) ? saved.completed.slice(0, missions.length) : Array(missions.length).fill(false),
       contents: saved.contents || {}
     };
-    while (state.completed.length < 20) state.completed.push(false);
+    while (state.completed.length < missions.length) state.completed.push(false);
   } catch (error) {
     console.warn('Sauvegarde introuvable ou invalide.', error);
   }
@@ -166,7 +170,7 @@ function syncScoreManager() {
 function loadMission() {
   const mission = missions[state.currentMission];
   badgeMission.textContent = 'Mission ' + (state.currentMission + 1);
-  missionCount.textContent = (state.currentMission + 1) + ' / 20';
+  missionCount.textContent = (state.currentMission + 1) + ' / ' + missions.length;
   missionTitle.textContent = mission.title;
   missionInstruction.textContent = mission.instruction;
   missionObjective.textContent = mission.objective;
@@ -181,8 +185,8 @@ function loadMission() {
 
 function updateProgress() {
   state.score = state.completed.filter(Boolean).length;
-  scoreValue.textContent = state.score + ' / 20';
-  progressFill.style.width = ((state.score / 20) * 100) + '%';
+  scoreValue.textContent = state.score + ' / ' + missions.length;
+  progressFill.style.width = ((state.score / missions.length) * 100) + '%';
   progressText.textContent = state.score <= 1 ? state.score + ' mission réussie' : state.score + ' missions réussies';
   saveState();
   syncScoreManager();
@@ -315,7 +319,7 @@ function initMiniWordTrainer() {
   document.getElementById('exportDoc').addEventListener('click', () => exportDocument('doc'));
   document.getElementById('resetAll').addEventListener('click', () => {
     if (!window.confirm('Recommencer tout le parcours ?')) return;
-    state = { currentMission: 0, score: 0, completed: Array(20).fill(false), contents: {} };
+    state = { currentMission: 0, score: 0, completed: Array(missions.length).fill(false), contents: {} };
     localStorage.removeItem(STORAGE_KEY);
     loadMission();
   });

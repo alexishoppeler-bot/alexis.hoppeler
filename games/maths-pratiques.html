@@ -593,7 +593,7 @@
       <div class="hero-copy">
         <div class="eyebrow">📘 Maths utiles pour le travail</div>
         <h1>Calculer dans des situations simples de travail</h1>
-        <p>Lis la situation, regarde les nombres, puis choisis la bonne reponse. Les exemples parlent de nettoyage, cuisine, vente, stock et batiment.</p>
+        <p>Lis la situation, regarde les nombres, puis choisis la bonne réponse. Les exemples parlent de nettoyage, cuisine, vente, stock et bâtiment.</p>
       </div>
       <div class="hero-stats">
         <div class="mini-stat">
@@ -644,8 +644,8 @@
           <summary>Outils en plus</summary>
           <p class="compact-note" style="margin:10px 0 14px;">Utilise ces outils seulement si besoin.</p>
           <div class="action-grid" style="margin-bottom:14px;">
-            <button type="button" class="secondary" id="exportBtn">Exporter les resultats</button>
-            <button type="button" id="importBtn">Importer les resultats</button>
+            <button type="button" class="secondary" id="exportBtn">Exporter les résultats</button>
+            <button type="button" id="importBtn">Importer les résultats</button>
           </div>
           <input type="file" id="importFile" accept=".json,application/json" hidden>
           <div class="calc-grid">
@@ -690,7 +690,7 @@
               <div class="numbers-row" id="numbersRow"></div>
               <div id="visualBox"></div>
               <div class="answer-grid" id="answersGrid"></div>
-              <div class="feedback" id="feedbackBox">Choisis une reponse.</div>
+              <div class="feedback" id="feedbackBox">Choisis une réponse.</div>
             </div>
             <details class="exercise-support">
               <summary>Aide et methode</summary>
@@ -705,7 +705,7 @@
           <div class="summary-grid">
             <div class="small-note">
               <div class="summary-line"><strong>Total repondu :</strong> <span id="summaryAnswered">0</span></div>
-              <div class="summary-line"><strong>Bonnes reponses :</strong> <span id="summaryCorrect">0</span></div>
+              <div class="summary-line"><strong>Bonnes réponses :</strong> <span id="summaryCorrect">0</span></div>
             </div>
             <div class="small-note">
               <div class="summary-line"><strong>Taux de reussite :</strong> <span id="summaryRate">0%</span></div>
@@ -723,7 +723,7 @@
 
   <section class="print-sheet" id="printSheet">
     <h1>Fiche participant - Maths pratiques</h1>
-    <p>Exercices sans reponses. A faire sur papier ou en classe.</p>
+    <p>Exercices sans réponses. À faire sur papier ou en classe.</p>
     <div class="print-list" id="printList"></div>
   </section>
 
@@ -821,7 +821,11 @@
       { id: 'job-12', theme: 'Calculs metiers', mode: 'acquis', job: 'Nettoyage', title: 'Produit pour 2 etages', situation: '1 etage demande 3 litres. Il y a 2 etages.', question: 'Combien de litres au total ?', numbers: ['3 L', '2 etages'], help: '3 x 2.', method: '3 x 2 = 6 litres.', choices: ['5 L', '6 L', '7 L', '8 L'], answer: '6 L' },
       { id: 'job-13', theme: 'Calculs metiers', mode: 'acquis', job: 'Batiment', title: 'Peinture et pots', situation: 'Une zone fait 30 m². 1 pot couvre 10 m².', question: 'Combien de pots faut-il ?', numbers: ['30 m²', '10 m² par pot'], help: '30 partage par 10.', method: '30 / 10 = 3. Il faut 3 pots.', choices: ['2 pots', '3 pots', '4 pots', '5 pots'], answer: '3 pots' },
       { id: 'job-14', theme: 'Calculs metiers', mode: 'acquis', job: 'Logistique', title: 'Deux palettes de poids differents', situation: 'Palette A : 24 kg. Palette B : 16 kg.', question: 'Quel poids total ?', numbers: ['24 kg', '16 kg'], help: 'Additionne les deux poids.', method: '24 + 16 = 40 kg.', choices: ['32 kg', '36 kg', '40 kg', '44 kg'], answer: '40 kg' },
-      { id: 'job-15', theme: 'Calculs metiers', mode: 'acquis', job: 'Entretien', title: 'Planning du matin', situation: 'Zone 1 : 20 min. Zone 2 : 25 min. Zone 3 : 15 min.', question: 'Quel temps total ?', numbers: ['20 min', '25 min', '15 min'], help: 'Additionne les 3 durees.', method: '20 + 25 + 15 = 60 minutes.', choices: ['45 min', '55 min', '60 min', '75 min'], answer: '60 min' }
+      { id: 'job-15', theme: 'Calculs metiers', mode: 'acquis', job: 'Entretien', title: 'Planning du matin', situation: 'Zone 1 : 20 min. Zone 2 : 25 min. Zone 3 : 15 min.', question: 'Quel temps total ?', numbers: ['20 min', '25 min', '15 min'], help: 'Additionne les 3 durees.', method: '20 + 25 + 15 = 60 minutes.', choices: ['45 min', '55 min', '60 min', '75 min'], answer: '60 min' },
+      { id: 'job-16', theme: 'Calculs metiers', mode: 'debut', job: 'Entrepot', title: 'Badges prepares', situation: 'Il faut preparer 6 badges le matin et 4 badges l apres-midi.', question: 'Combien de badges au total ?', numbers: ['6 badges', '4 badges'], help: 'Additionne les deux nombres.', method: '6 + 4 = 10 badges.', choices: ['8', '9', '10', '12'], answer: '10' },
+      { id: 'job-17', theme: 'Calculs metiers', mode: 'encours', job: 'Planning', title: 'Heures de formation', situation: 'La formation dure 3 heures le lundi et 4 heures le mardi.', question: 'Combien d heures au total ?', numbers: ['3 h', '4 h'], help: 'Additionne les heures.', method: '3 + 4 = 7 heures.', choices: ['6 h', '7 h', '8 h', '12 h'], answer: '7 h' },
+      { id: 'unit-16', theme: 'Unites', mode: 'encours', job: 'Sante', title: 'Rendez-vous medical', situation: 'Le rendez-vous dure 45 minutes et le trajet 15 minutes.', question: 'Combien de temps faut-il prevoir ?', numbers: ['45 min', '15 min'], help: 'Additionne les minutes.', method: '45 + 15 = 60 minutes, donc 1 heure.', choices: ['45 min', '50 min', '60 min', '90 min'], answer: '60 min' },
+      { id: 'pct-16', theme: 'Pourcentage', mode: 'acquis', job: 'Logement', title: 'Budget loyer', situation: 'Un budget mensuel est de 2000 CHF. Le loyer est de 1000 CHF.', question: 'Quelle part du budget part dans le loyer ?', numbers: ['2000 CHF', '1000 CHF'], help: '1000 est la moitie de 2000.', method: 'La moitie correspond a 50%.', choices: ['25%', '40%', '50%', '75%'], answer: '50%', visual: { type: 'percent', percent: 50, label: '1000 sur 2000' } }
     ];
 
     const INITIAL_STATS = {
@@ -1011,12 +1015,12 @@
       const icon = JOB_ICONS[exercise.job] || '🧩';
       const base = {
         place: icon + ' ' + exercise.job,
-        goal: '🎯 Trouver la bonne reponse',
+        goal: '🎯 Trouver la bonne réponse',
         title: 'Je comprends la situation avant de calculer.',
         steps: [
           'Je regarde les nombres utiles.',
           'Je choisis le bon calcul.',
-          'Je prends la reponse qui correspond.'
+          'Je prends la réponse qui correspond.'
         ]
       };
 
@@ -1050,7 +1054,7 @@
         base.steps = [
           'Je vois ce que je dois preparer ou compter.',
           'Je fais une addition, une multiplication ou une division simple.',
-          'Je choisis la reponse utile pour le travail.'
+          'Je choisis la réponse utile pour le travail.'
         ];
       }
 
@@ -1122,7 +1126,7 @@
       refs.exerciseJobTag.textContent = exercise.job;
       refs.questionCountTag.textContent = exerciseNumberLabel();
       refs.feedbackBox.className = 'feedback';
-      refs.feedbackBox.textContent = 'Choisis une reponse.';
+      refs.feedbackBox.textContent = 'Choisis une réponse.';
       renderNumbers(exercise.numbers);
       renderVisual(exercise);
       renderAnswers(exercise);
@@ -1143,11 +1147,11 @@
         state.stats.byTheme[exercise.theme].correct += 1;
         button.classList.add('correct');
         refs.feedbackBox.className = 'feedback correct';
-        refs.feedbackBox.textContent = 'Bravo. Bonne reponse : ' + exercise.answer;
+        refs.feedbackBox.textContent = 'Bravo. Bonne réponse : ' + exercise.answer;
       } else {
         button.classList.add('wrong');
         refs.feedbackBox.className = 'feedback wrong';
-        refs.feedbackBox.textContent = 'Ce n est pas la bonne reponse. Bonne reponse : ' + exercise.answer;
+        refs.feedbackBox.textContent = 'Ce n’est pas la bonne réponse. Bonne réponse : ' + exercise.answer;
         Array.from(refs.answersGrid.querySelectorAll('button')).forEach((btn) => {
           if (btn.textContent === exercise.answer) btn.classList.add('reveal');
         });
@@ -1245,7 +1249,7 @@
     }
 
     function resetAll() {
-      if (!window.confirm('Effacer tous les resultats ?')) return;
+      if (!window.confirm('Effacer tous les résultats ?')) return;
       state.stats = defaultStats();
       state.currentId = null;
       state.showMethod = false;
@@ -1260,7 +1264,7 @@
       }
       saveState();
       newExercise();
-      showToast('Resultats remis a zero.');
+      showToast('Résultats remis à zéro.');
     }
 
     function showToast(message) {
@@ -1333,7 +1337,7 @@
           '<p><strong>Situation :</strong> ' + item.situation + '</p>' +
           '<p><strong>Question :</strong> ' + item.question + '</p>' +
           '<p><strong>Nombres :</strong> ' + item.numbers.join(', ') + '</p>' +
-          '<p><strong>Reponse :</strong> ________________________</p>';
+          '<p><strong>Réponse :</strong> ________________________</p>';
         list.appendChild(wrap);
       });
     }

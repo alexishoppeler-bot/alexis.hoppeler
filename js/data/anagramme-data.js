@@ -89,4 +89,12 @@ window.ANAGRAMME_DATA = [
   { word: 'VIREMENT',     hint: 'Transfert d’argent d’un compte à un autre',    category: 'Banque',        difficulty: 'hard',   theme: 'numérique' },
   { word: 'IBAN',         hint: 'Numéro de compte international',               category: 'Banque',        difficulty: 'easy',   theme: 'numérique' },
   { word: 'FACTURE',    hint: 'Document indiquant une somme à payer',          category: 'Banque',        difficulty: 'medium', theme: 'numérique' },
+  { word: 'RELEVE',       hint: 'Document qui montre les mouvements du compte', category: 'Banque',        difficulty: 'medium', theme: 'numérique' },
+  { word: 'SOLDE',        hint: 'Argent disponible sur un compte',              category: 'Banque',        difficulty: 'easy',   theme: 'numérique' },
+
+  // Complements emploi et logement
+  { word: 'BADGE',        hint: 'Carte ou objet pour entrer au travail',        category: 'Emploi',        difficulty: 'easy',   theme: 'emploi' },
+  { word: 'EQUIPE',       hint: 'Groupe de personnes qui travaillent ensemble', category: 'Emploi',        difficulty: 'medium', theme: 'emploi' },
+  { word: 'CONCIERGE',    hint: 'Personne qui aide dans un immeuble',           category: 'Logement',      difficulty: 'hard',   theme: 'logement' },
+  { word: 'REPARATION',   hint: 'Action de remettre quelque chose en etat',     category: 'Logement',      difficulty: 'hard',   theme: 'logement' },
 ];

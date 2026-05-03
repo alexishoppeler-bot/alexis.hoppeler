@@ -85,5 +85,14 @@ window.PENDU_DATA = [
   { word: 'COMPTE',      hint: 'Ce qu’on ouvre à la banque',                    category: 'Banque',         difficulty: 'easy',   theme: 'numérique' },
   { word: 'IBAN',        hint: 'Numéro de compte bancaire international',       category: 'Banque',         difficulty: 'easy',   theme: 'numérique' },
   { word: 'FACTURE',     hint: 'Document indiquant une somme à payer',          category: 'Banque',         difficulty: 'medium', theme: 'numérique' },
+  { word: 'RELEVE',      hint: 'Document qui montre les mouvements du compte',  category: 'Banque',         difficulty: 'medium', theme: 'numérique' },
+  { word: 'SOLDE',       hint: 'Argent disponible sur le compte',               category: 'Banque',         difficulty: 'easy',   theme: 'numérique' },
   { word: 'VIREMENT',    hint: 'Transfert d’argent entre deux comptes',         category: 'Banque',         difficulty: 'hard',   theme: 'numérique' },
+
+  // Complements
+  { word: 'BADGE',       hint: 'Objet ou carte pour entrer au travail',         category: 'Emploi',         difficulty: 'easy',   theme: 'emploi' },
+  { word: 'EQUIPE',      hint: 'Groupe de personnes qui travaillent ensemble',  category: 'Emploi',         difficulty: 'medium', theme: 'emploi' },
+  { word: 'DEGAT',       hint: 'Probleme ou dommage dans un logement',          category: 'Logement',       difficulty: 'medium', theme: 'logement' },
+  { word: 'CONCIERGE',   hint: 'Personne qui aide dans un immeuble',            category: 'Logement',       difficulty: 'hard',   theme: 'logement' },
+  { word: 'ATTESTATION', hint: 'Document officiel qui confirme une information', category: 'Document',      difficulty: 'hard',   theme: 'orp' },
 ];

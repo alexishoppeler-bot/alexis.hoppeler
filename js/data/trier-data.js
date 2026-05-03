@@ -193,4 +193,28 @@ window.TRIER_DATA = [
       { label: 'Sécurité', emoji: '🔒', items: ['Ne pas partager son PIN', 'Vérifier ses relevés', 'Signaler un e-mail suspect', 'Utiliser un mot de passe fort'] },
     ],
   },
+
+  {
+    theme: 'Première journée de travail',
+    difficulty: 'easy',
+    topic: 'emploi',
+    groups: [
+      { label: 'À apporter', emoji: '🎒', items: ['Pièce d’identité', 'Contrat', 'Coordonnées bancaires', 'Badge si reçu'] },
+      { label: 'Bonnes attitudes', emoji: '✅', items: ['Arriver à l’heure', 'Écouter les consignes', 'Poser une question', 'Être poli'] },
+      { label: 'Informations à noter', emoji: '📝', items: ['Horaires', 'Nom du responsable', 'Lieu de pause', 'Tâches principales'] },
+      { label: 'À éviter', emoji: '❌', items: ['Partir sans prévenir', 'Regarder son téléphone', 'Ignorer une consigne', 'Arriver en retard'] },
+    ],
+  },
+
+  {
+    theme: 'Dossier logement',
+    difficulty: 'medium',
+    topic: 'logement',
+    groups: [
+      { label: 'Documents personnels', emoji: '🪪', items: ['Pièce d’identité', 'Permis de séjour', 'Attestation de domicile', 'Coordonnées'] },
+      { label: 'Documents financiers', emoji: '💶', items: ['Fiche de salaire', 'Attestation de revenus', 'Extrait de poursuites', 'Garantie de loyer'] },
+      { label: 'Actions', emoji: '📨', items: ['Remplir la demande', 'Signer le formulaire', 'Joindre les copies', 'Envoyer le dossier'] },
+      { label: 'Après réponse', emoji: '🔑', items: ['Lire le bail', 'Payer la caution', 'Fixer l’état des lieux', 'Recevoir les clés'] },
+    ],
+  },
 ];

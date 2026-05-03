@@ -167,5 +167,27 @@ window.MOTS_CROISES_DATA = [
       { id: 3, dir: 'down', r: 0, c: 3, answer: 'LOYER', clue: 'Somme mensuelle payee pour habiter' },
       { id: 4, dir: 'down', r: 3, c: 4, answer: 'BAIL', clue: 'Contrat de location signe avec le proprietaire' },
     ],
+  },
+
+  {
+    name: 'Grille 8 — Travail',
+    difficulty: 'easy',
+    theme: 'emploi',
+    rows: 6,
+    cols: 8,
+    layout: [
+      'BADGE###',
+      '########',
+      'EQUIPE##',
+      '########',
+      'PAUSE###',
+      'ORP#####',
+    ],
+    words: [
+      { id: 1, dir: 'across', r: 0, c: 0, answer: 'BADGE', clue: 'Carte utilisee pour entrer au travail' },
+      { id: 2, dir: 'across', r: 2, c: 0, answer: 'EQUIPE', clue: 'Groupe de personnes qui travaillent ensemble' },
+      { id: 3, dir: 'across', r: 4, c: 0, answer: 'PAUSE', clue: 'Moment de repos pendant la journee' },
+      { id: 4, dir: 'across', r: 5, c: 0, answer: 'ORP', clue: 'Office qui accompagne la recherche d emploi' },
+    ],
   }
 ];

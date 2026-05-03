@@ -45,4 +45,16 @@ window.CHERCHE_CLIQUE_DATA = [
   { id: 'ticket',     icon: '🎫', label: 'Billet',                 category: 'Transports',  difficulty: 'easy',   theme: 'transports' },
   { id: 'timetable',  icon: '⏰', label: 'Horaire',                category: 'Transports',  difficulty: 'easy',   theme: 'transports' },
   { id: 'map',        icon: '🗺️', label: 'Plan / Itinéraire',      category: 'Transports',  difficulty: 'medium', theme: 'transports' }
+  ,
+
+  // Sante / Logement / Banque
+  { id: 'doctor',     icon: '🩺', label: 'Médecin',                category: 'Santé',       difficulty: 'easy',   theme: 'santé' },
+  { id: 'prescription', icon: '💊', label: 'Ordonnance',           category: 'Santé',       difficulty: 'medium', theme: 'santé' },
+  { id: 'hospital',   icon: '🏥', label: 'Hôpital / urgences',     category: 'Santé',       difficulty: 'medium', theme: 'santé' },
+  { id: 'lease',      icon: '📑', label: 'Bail',                   category: 'Logement',    difficulty: 'medium', theme: 'logement' },
+  { id: 'rent',       icon: '💶', label: 'Loyer',                  category: 'Logement',    difficulty: 'easy',   theme: 'logement' },
+  { id: 'repair',     icon: '🛠️', label: 'Réparation',             category: 'Logement',    difficulty: 'medium', theme: 'logement' },
+  { id: 'bank',       icon: '🏦', label: 'Banque',                 category: 'Banque',      difficulty: 'easy',   theme: 'numérique' },
+  { id: 'invoice',    icon: '🧾', label: 'Facture',                category: 'Banque',      difficulty: 'easy',   theme: 'numérique' },
+  { id: 'transfer',   icon: '💳', label: 'Virement',               category: 'Banque',      difficulty: 'medium', theme: 'numérique' }
 ];

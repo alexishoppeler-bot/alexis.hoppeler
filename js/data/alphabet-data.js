@@ -21,5 +21,9 @@ window.ALPHABET_DATA = [
   { words: ['Appartement', 'Banque', 'Courrier', 'Déménagement', 'Électricité', 'Facture', 'Gérance', 'Habitant'],              difficulty: 'easy', theme: 'logement' },
   { words: ['Atelier', 'Boulangerie', 'Cuisine', 'Diplôme', 'Entrepôt', 'Formation', 'Livraison', 'Magasin'],                   difficulty: 'easy', theme: 'emploi' },
   { words: ['Accès', 'Badge', 'Calendrier', 'Clavier', 'Connexion', 'Dossier', 'Fenêtre', 'Imprimante'],                       difficulty: 'easy', theme: 'numérique' },
-  { words: ['Assurance', 'Attestation', 'Certificat', 'Convocation', 'Déclaration', 'Dossier', 'Formulaire', 'Signature'],      difficulty: 'easy', theme: 'orp' }
+  { words: ['Assurance', 'Attestation', 'Certificat', 'Convocation', 'Déclaration', 'Dossier', 'Formulaire', 'Signature'],      difficulty: 'easy', theme: 'orp' },
+  { words: ['Accueil', 'Badge', 'Contrat', 'Disponibilité', 'Employeur', 'Fiche salaire', 'Horaire', 'Poste'],                  difficulty: 'medium', theme: 'emploi' },
+  { words: ['Assuré', 'Cabinet', 'Docteur', 'Examen', 'Franchise', 'Hôpital', 'Ordonnance', 'Pharmacie'],                       difficulty: 'medium', theme: 'santé' },
+  { words: ['Bail', 'Caution', 'Concierge', 'Dégât', 'Gérance', 'Locataire', 'Loyer', 'Réparation'],                            difficulty: 'medium', theme: 'logement' },
+  { words: ['Compte', 'Facture', 'IBAN', 'Paiement', 'Relevé', 'Salaire', 'Solde', 'Virement'],                                  difficulty: 'medium', theme: 'numérique' }
 ];

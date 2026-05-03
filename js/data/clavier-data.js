@@ -21,6 +21,10 @@ window.CLAVIER_DATA = {
     'Je pose ma candidature.',
     'Je suis à l’arrêt de bus.',
     'J’achète mon billet.',
+    'Je note mon horaire.',
+    'Je garde mon badge.',
+    'Je paie ma facture.',
+    'Je vais chez le médecin.',
   ],
   intermediaire: [
     'J’écris ma date de naissance.',
@@ -41,6 +45,10 @@ window.CLAVIER_DATA = {
     'Je regarde l’horaire du bus sur mon téléphone.',
     'Je me rends à l’ORP avec mes documents.',
     'Je confirme mon rendez-vous par e-mail.',
+    'Je sauvegarde mon document avant de fermer.',
+    'Je préviens la gérance pour une réparation.',
+    'Je prépare mon dossier pour visiter un appartement.',
+    'Je note les consignes de mon responsable.',
   ],
   avance: [
     'Je remplis un formulaire en ligne sans aide.',
@@ -61,5 +69,9 @@ window.CLAVIER_DATA = {
     'Je montre mes preuves de recherche d’emploi à l’ORP.',
     'Je prends le train à Vevey et je descends à Lausanne.',
     'Je demande une attestation de domicile à la commune.',
+    'Je confirme mes disponibilités avec des jours et des heures précis.',
+    'Je joins le document scanné à mon e-mail professionnel.',
+    'Je vérifie mon relevé bancaire avant de payer la facture.',
+    'Je demande une ordonnance renouvelée au cabinet médical.',
   ],
 };

@@ -516,6 +516,51 @@ window.QUIZ_DATA = [
     choices: ["Un format de document qui conserve la mise en page sur tous les appareils", 'Un type de dossier pour ranger des photos', 'Un programme pour écrire des e-mails', 'Un logiciel antivirus'],
     answer: 0,
     explication: "Le PDF est un format de fichier très courant. Il préserve la mise en page et peut être ouvert sur la plupart des appareils sans modification."
+  },
+  {
+    category: 'Emploi',
+    difficulty: 'easy',
+    theme: 'emploi',
+    question: 'Que faut-il faire si une consigne de travail n’est pas claire ?',
+    choices: ['Demander poliment une explication', 'Faire semblant de comprendre', 'Partir sans rien dire', 'Changer de tâche sans prévenir'],
+    answer: 0,
+    explication: 'Demander une explication montre que vous voulez faire le travail correctement.'
+  },
+  {
+    category: 'ORP',
+    difficulty: 'medium',
+    theme: 'orp',
+    question: "Pourquoi garder les preuves de recherche d’emploi ?",
+    choices: ['Pour montrer les démarches effectuées', 'Pour décorer son bureau', 'Pour les donner à la pharmacie', 'Pour acheter un billet'],
+    answer: 0,
+    explication: "Les preuves permettent de montrer les postulations et les démarches réalisées."
+  },
+  {
+    category: 'Logement',
+    difficulty: 'medium',
+    theme: 'logement',
+    question: 'Qui faut-il contacter si le chauffage ne fonctionne plus dans un appartement loué ?',
+    choices: ['La gérance ou le propriétaire', 'Le conducteur du bus', 'La caisse du magasin', 'Le guichet de la gare'],
+    answer: 0,
+    explication: 'La gérance ou le propriétaire organise généralement les réparations du logement.'
+  },
+  {
+    category: 'Santé',
+    difficulty: 'medium',
+    theme: 'santé',
+    question: 'Quel document peut être demandé pour obtenir certains médicaments ?',
+    choices: ['Une ordonnance', 'Un bail', 'Un billet', 'Un CV'],
+    answer: 0,
+    explication: 'Une ordonnance est un document du médecin nécessaire pour certains médicaments.'
+  },
+  {
+    category: 'Numérique',
+    difficulty: 'easy',
+    theme: 'numérique',
+    question: 'Pourquoi faut-il se déconnecter après avoir utilisé un compte public ?',
+    choices: ['Pour protéger ses données personnelles', 'Pour agrandir l’écran', 'Pour imprimer plus vite', 'Pour supprimer Internet'],
+    answer: 0,
+    explication: 'Se déconnecter évite qu’une autre personne utilise votre compte.'
   }
 
 ];

@@ -22,7 +22,7 @@
         <div class="page-header fade-up">
           <div class="page-icon">❓</div>
           <h1>Questions simples</h1>
-          <p>Lisez la question, puis choisissez la bonne reponse.</p>
+          <p>Lisez la question, puis choisissez la bonne réponse.</p>
         </div>
 
         <!-- KPIs -->
@@ -322,13 +322,13 @@
       const xp = 3 + streakBonus;
       session.xp += xp;
 
-      fb.textContent = 'Bonne reponse.' + (streakBonus ? ' Serie de ' + session.streak + '.' : '') + ' +' + xp + ' XP';
+      fb.textContent = 'Bonne réponse.' + (streakBonus ? ' Série de ' + session.streak + '.' : '') + ' +' + xp + ' XP';
       fb.className   = 'quiz-feedback ok';
       recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
     } else {
       session.errors++;
       session.streak = 0;
-      fb.textContent = 'Ce n est pas la bonne reponse.';
+      fb.textContent = 'Ce n’est pas la bonne réponse.';
       fb.className   = 'quiz-feedback err';
       recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
     }
@@ -378,7 +378,7 @@
       choices[i].style.pointerEvents = 'none';
     });
 
-    showToast('Aide : deux mauvaises reponses sont cachees.', 'info');
+    showToast('Aide : deux mauvaises réponses sont cachées.', 'info');
   }
 
   /* ===== SUIVANT ===== */
@@ -410,7 +410,7 @@
 
     document.getElementById('resEmoji').textContent    = emoji;
     document.getElementById('resTitle').textContent    = title;
-    document.getElementById('resSubtitle').textContent = session.correct + ' bonne' + (session.correct > 1 ? 's' : '') + ' reponse' + (session.correct > 1 ? 's' : '') + ' sur ' + session.questions.length + ' questions.';
+    document.getElementById('resSubtitle').textContent = session.correct + ' bonne' + (session.correct > 1 ? 's' : '') + ' réponse' + (session.correct > 1 ? 's' : '') + ' sur ' + session.questions.length + ' questions.';
     document.getElementById('resCorrect').textContent  = session.correct;
     document.getElementById('resErrors').textContent   = session.errors;
     document.getElementById('resXP').textContent       = session.xp;

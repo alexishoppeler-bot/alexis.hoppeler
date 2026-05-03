@@ -226,6 +226,105 @@ body.accessible-ui .page-header p {
   line-height: 1.8;
 }
 
+/* === GAME BRIEF === */
+.game-brief {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1.4fr);
+  gap: 20px;
+  margin: -12px 0 28px;
+  padding: 22px;
+  border: 1px solid rgba(50,93,169,0.12);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.98), rgba(247,250,255,0.98)),
+    linear-gradient(90deg, rgba(50,93,169,0.05), rgba(47,125,50,0.05));
+  box-shadow: 0 10px 24px rgba(50,93,169,0.06);
+}
+
+.game-brief-main {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.game-brief-eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.game-brief h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.game-brief-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.game-brief-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: rgba(47,125,50,0.08);
+  color: #27622b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.game-brief-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.game-brief-grid div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-height: 100%;
+  padding: 13px 14px;
+  border: 1px solid rgba(50,93,169,0.10);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.82);
+}
+
+.game-brief-grid dt {
+  color: var(--text3);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.game-brief-grid dd {
+  margin: 0;
+  color: var(--text2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+body.accessible-ui .game-brief {
+  border-width: 2px;
+}
+
+body.accessible-ui .game-brief h2 {
+  font-size: 20px;
+}
+
+body.accessible-ui .game-brief-grid dd {
+  font-size: 15px;
+}
+
 body.accessible-ui .card-title,
 body.accessible-ui .section-title {
   font-size: 20px;
@@ -277,6 +376,13 @@ body.accessible-ui .kpi-label {
     max-width: 74ch;
     font-size: 15px;
     line-height: 1.75;
+  }
+}
+
+@media (max-width: 900px) {
+  .game-brief,
+  .game-brief-grid {
+    grid-template-columns: 1fr;
   }
 }
 

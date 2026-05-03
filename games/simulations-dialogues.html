@@ -344,7 +344,7 @@
         <div class="page-header fade-up">
           <div class="page-icon">🎙️</div>
           <h1>Simulation d’entretien</h1>
-          <p>Entrainez-vous a repondre aux questions d un recruteur.</p>
+          <p>Entraînez-vous à répondre aux questions d’un recruteur.</p>
         </div>
 
         <!-- KPIs globaux -->
@@ -654,6 +654,48 @@
             { texte: 'Absolument. La confidentialité est essentielle dans un poste administratif. Je ne parle jamais des dossiers ou informations internes en dehors du bureau.', qualite: 'bonne', feedback: 'Réponse très professionnelle ! Vous montrez que vous comprenez les enjeux de la discrétion en entreprise.', conseil: 'Conseil : la confidentialité protège l’entreprise, les clients ET vous. C’est une règle non négociable.' },
             { texte: 'En général oui, sauf si c’est avec des amis de confiance.', qualite: 'mauvaise', feedback: 'Partager des informations confidentielles avec des "amis de confiance" constitue une violation grave — même involontaire.', conseil: 'Conseil : en entreprise, aucune information interne ne se partage hors du cadre professionnel, même avec des proches.' },
             { texte: 'Je pense que oui, je ne parle pas trop en général.', qualite: 'moyenne', feedback: 'La discrétion naturelle est une bonne base, mais la réponse manque de conviction.', conseil: 'Conseil : montrez que vous avez réfléchi à la question : "Je sais que c’est une responsabilité importante et je la prends au sérieux."' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'logistique',
+      titre: 'Préparateur / Préparatrice de commandes',
+      icone: '📦',
+      lieu: 'Entrepôt — Renens',
+      recruteur: { nom: 'M. Rossi — Chef d’équipe', avatar: '👨‍💼' },
+      contexte: 'Vous postulez pour un poste en logistique. Le travail demande de préparer des commandes, utiliser un scanner et respecter les consignes de sécurité.',
+      questions: [
+        {
+          q: 'Avez-vous déjà travaillé dans un entrepôt ou avec des commandes ?',
+          choix: [
+            { texte: 'Oui, j’ai préparé des commandes pendant trois ans. Je sais suivre une liste, contrôler les articles et utiliser un scanner.', qualite: 'bonne', feedback: 'Très bonne réponse : vous donnez une expérience concrète et des tâches précises.', conseil: 'Conseil : donnez toujours un exemple de tâche réelle pour rendre votre expérience crédible.' },
+            { texte: 'Non, mais je peux apprendre si on me montre clairement les étapes.', qualite: 'moyenne', feedback: 'Réponse honnête et positive. Elle montre une volonté d’apprendre.', conseil: 'Conseil : ajoutez une qualité utile, par exemple la ponctualité ou l’attention aux détails.' },
+            { texte: 'Je ne sais pas, je cherche seulement un travail.', qualite: 'mauvaise', feedback: 'La réponse ne montre ni motivation ni compréhension du poste.', conseil: 'Conseil : même sans expérience, expliquez pourquoi le poste vous intéresse.' }
+          ]
+        },
+        {
+          q: 'Que faites-vous si le scanner indique un article différent de celui que vous avez pris ?',
+          choix: [
+            { texte: 'Je m’arrête, je vérifie la référence et je demande au responsable si je ne suis pas sûr.', qualite: 'bonne', feedback: 'Excellent : vous évitez l’erreur et vous respectez la procédure.', conseil: 'Conseil : en logistique, vérifier avant de continuer évite des erreurs coûteuses.' },
+            { texte: 'Je continue, car il faut aller vite.', qualite: 'mauvaise', feedback: 'Aller vite sans vérifier peut créer une mauvaise commande.', conseil: 'Conseil : la rapidité est utile, mais la précision passe d’abord.' },
+            { texte: 'Je repose l’article et je cherche un autre produit qui ressemble.', qualite: 'moyenne', feedback: 'Vous essayez de corriger, mais il faut vérifier la référence exacte.', conseil: 'Conseil : utilisez le numéro de référence, pas seulement l’apparence.' }
+          ]
+        },
+        {
+          q: 'Pourquoi les règles de sécurité sont-elles importantes dans un entrepôt ?',
+          choix: [
+            { texte: 'Elles évitent les accidents et protègent les collègues, les produits et moi-même.', qualite: 'bonne', feedback: 'Très bien : vous montrez que la sécurité concerne toute l’équipe.', conseil: 'Conseil : mentionnez les chaussures de sécurité, les zones de passage et le port de charges.' },
+            { texte: 'Elles servent surtout à ralentir le travail.', qualite: 'mauvaise', feedback: 'Cette réponse donne une mauvaise impression : la sécurité est indispensable.', conseil: 'Conseil : les règles existent pour éviter les blessures et les dégâts.' },
+            { texte: 'Je les respecte si le responsable me regarde.', qualite: 'mauvaise', feedback: 'Il faut respecter les règles tout le temps, même sans surveillance.', conseil: 'Conseil : montrez que vous êtes responsable et fiable.' }
+          ]
+        },
+        {
+          q: 'Pouvez-vous travailler debout et porter des charges modérées ?',
+          choix: [
+            { texte: 'Oui, je suis habitué au travail debout. Pour les charges lourdes, je respecte les consignes et je demande de l’aide si nécessaire.', qualite: 'bonne', feedback: 'Bonne réponse : vous montrez votre capacité physique et votre prudence.', conseil: 'Conseil : ne promettez pas de porter trop lourd seul. La sécurité reste importante.' },
+            { texte: 'Oui, je porte tout seul même si c’est très lourd.', qualite: 'moyenne', feedback: 'La motivation est là, mais porter trop lourd seul peut être dangereux.', conseil: 'Conseil : dites que vous respectez les limites et utilisez le matériel adapté.' },
+            { texte: 'Non, je ne veux pas porter de cartons.', qualite: 'mauvaise', feedback: 'Ce poste demande généralement de manipuler des cartons.', conseil: 'Conseil : si cette tâche ne vous convient pas, cherchez un poste moins physique.' }
           ]
         }
       ]

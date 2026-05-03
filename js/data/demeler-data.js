@@ -55,4 +55,9 @@ window.DEMELER_DATA = [
   { cat: 'Banque', difficulty: 'easy', theme: 'numérique', text: 'Je fais un virement pour payer ma facture.' },
   { cat: 'Banque', difficulty: 'medium', theme: 'numérique', text: 'Je vérifie mon relevé de compte chaque mois.' },
   { cat: 'Banque', difficulty: 'medium', theme: 'numérique', text: 'Je ne donne jamais mon code PIN à une autre personne.' },
+  { cat: 'Numérique', difficulty: 'easy', theme: 'numérique', text: 'Je sauvegarde mon document avant de fermer la fenêtre.' },
+  { cat: 'Emploi', difficulty: 'medium', theme: 'emploi', text: 'Je note mes disponibilités avant de répondre à l’agence.' },
+  { cat: 'ORP', difficulty: 'medium', theme: 'orp', text: "Je classe mes preuves de recherche d'emploi dans mon dossier." },
+  { cat: 'Logement', difficulty: 'medium', theme: 'logement', text: 'Je prends une photo du dégât avant d’écrire à la gérance.' },
+  { cat: 'Santé', difficulty: 'medium', theme: 'santé', text: 'Je demande une attestation si mon employeur en a besoin.' },
 ];

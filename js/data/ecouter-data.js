@@ -422,6 +422,50 @@ window.ECOUTER_DATA = [
         explication: 'Fatima arrive cinq minutes avant l’entretien.'
       }
     ]
+  },
+
+  {
+    id: 'ep09',
+    type: 'dialogue',
+    title: 'Première journée de travail',
+    category: 'Emploi',
+    difficulty: 'medium',
+    theme: 'emploi',
+    lines: [
+      { speaker: 'Responsable', gender: 'f', text: 'Bonjour Mina, bienvenue dans l’équipe logistique.' },
+      { speaker: 'Mina', gender: 'f', text: 'Bonjour madame, merci. C’est mon premier jour.' },
+      { speaker: 'Responsable', gender: 'f', text: 'Nous commençons par une visite de l’entrepôt. Ensuite, je vous montre le scanner.' },
+      { speaker: 'Mina', gender: 'f', text: 'D’accord. Est-ce que je dois noter mes horaires ?' },
+      { speaker: 'Responsable', gender: 'f', text: 'Oui. Cette semaine, vous travaillez de 8h à 16h30, avec une pause à midi.' },
+      { speaker: 'Mina', gender: 'f', text: 'Très bien. Si je ne comprends pas une consigne, je peux vous demander ?' },
+      { speaker: 'Responsable', gender: 'f', text: 'Bien sûr. Il vaut mieux demander que faire une erreur.' }
+    ],
+    questions: [
+      {
+        question: 'Où travaille Mina ?',
+        choices: ['Dans une pharmacie', 'Dans une équipe logistique', 'Dans une école', 'Dans une gérance'],
+        answer: 1,
+        explication: 'La responsable souhaite la bienvenue dans l’équipe logistique.'
+      },
+      {
+        question: 'Que va montrer la responsable après la visite ?',
+        choices: ['Le scanner', 'Le bail', 'Le billet', 'Le cabinet médical'],
+        answer: 0,
+        explication: 'Elle dit qu’elle montrera le scanner après la visite de l’entrepôt.'
+      },
+      {
+        question: 'Quels sont les horaires de Mina cette semaine ?',
+        choices: ['7h à 12h', '8h à 16h30', '10h à 18h', '16h à 22h'],
+        answer: 1,
+        explication: 'La responsable indique : de 8h à 16h30.'
+      },
+      {
+        question: 'Que doit faire Mina si elle ne comprend pas une consigne ?',
+        choices: ['Ne rien dire', 'Demander une explication', 'Partir', 'Changer de poste'],
+        answer: 1,
+        explication: 'La responsable dit qu’il vaut mieux demander que faire une erreur.'
+      }
+    ]
   }
 
 ];

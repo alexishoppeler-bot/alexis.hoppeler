@@ -37,5 +37,16 @@ window.CLIQUER_DATA = {
     { label: '🎫 Billet',                  cat: 'transport' },
     { label: '🕐 Horaire',                 cat: 'transport' },
     { label: '🏛️ Gare',                   cat: 'transport' },
+
+    // Sante, logement, banque
+    { label: '🩺 Médecin',                 cat: 'sante' },
+    { label: '💊 Ordonnance',              cat: 'sante' },
+    { label: '🏥 Urgences',                cat: 'sante' },
+    { label: '🏠 Loyer',                   cat: 'logement' },
+    { label: '📑 Bail',                    cat: 'logement' },
+    { label: '🔑 Caution',                 cat: 'logement' },
+    { label: '🏦 Banque',                  cat: 'banque' },
+    { label: '💳 IBAN',                    cat: 'banque' },
+    { label: '🧾 Facture',                 cat: 'banque' },
   ],
 };

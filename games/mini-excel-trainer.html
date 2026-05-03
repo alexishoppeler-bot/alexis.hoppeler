@@ -355,8 +355,8 @@
             <p class="mini-excel-lead">Une feuille simple pour apprendre Excel pas à pas: écrire, ranger, calculer et présenter un petit tableau.</p>
           </div>
           <div class="mini-excel-stats">
-            <div class="mini-excel-stat"><strong id="mxMissionCount">1 / 20</strong><span>Mission</span></div>
-            <div class="mini-excel-stat"><strong id="mxScoreValue">0 / 20</strong><span>Score</span></div>
+            <div class="mini-excel-stat"><strong id="mxMissionCount">1 / 22</strong><span>Mission</span></div>
+            <div class="mini-excel-stat"><strong id="mxScoreValue">0 / 22</strong><span>Score</span></div>
             <div class="mini-excel-stat" style="grid-column: 1 / -1;"><strong id="mxProgressValue">0 %</strong><span>Progression</span></div>
           </div>
         </section>
@@ -443,7 +443,7 @@
       let selectedCell = 'A1';
       let state = {
         currentMission: 0,
-        completed: Array(20).fill(false),
+        completed: [],
         cells: {},
         score: 0
       };
@@ -468,8 +468,12 @@
         { title: 'Trier une liste par ordre alphabétique', instruction: 'Range 3 mots dans l’ordre alphabétique.', visual: 'A, B, C', hint: 'Exemple: Ali, Nadia, Sara.', setup: () => clearSheet(), check: () => alphabetical(['A1', 'A2', 'A3']) },
         { title: 'Repérer une erreur dans un tableau', instruction: 'Corrige la case rouge dans ton tableau.', visual: '🔎 trouve l’erreur', hint: 'La bonne somme attendue est 9.', setup: () => preset({ A1: '2', A2: '3', A3: '4', A4: '8' }, { A4: { color: '#d94841' } }), check: () => numericValue('A4') === 9 },
         { title: 'Compléter une feuille de présence', instruction: 'Écris 3 noms et 3 dates.', visual: '🗓️ présence simple', hint: 'Colonnes A et B.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3']) && isDate('B1') && isDate('B2') && isDate('B3') },
-        { title: 'Créer un mini budget mensuel', instruction: 'Écris 3 dépenses et un total.', visual: '🏠 loyer, transport, nourriture', hint: 'Nom en A, prix en B, total en B4.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3']) && numericCells(['B1', 'B2', 'B3', 'B4']) && numericValue('B4') === numericValue('B1') + numericValue('B2') + numericValue('B3') }
+        { title: 'Créer un mini budget mensuel', instruction: 'Écris 3 dépenses et un total.', visual: '🏠 loyer, transport, nourriture', hint: 'Nom en A, prix en B, total en B4.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3']) && numericCells(['B1', 'B2', 'B3', 'B4']) && numericValue('B4') === numericValue('B1') + numericValue('B2') + numericValue('B3') },
+        { title: 'Faire une feuille de présence', instruction: 'Écris 3 noms en A et coche présent ou absent en B.', visual: '✅ présence', hint: 'Exemple: A1 Mina, B1 présent.', setup: () => clearSheet(), check: () => filledCells(['A1', 'A2', 'A3', 'B1', 'B2', 'B3']) && /présent|present|absent/i.test(getCellState('B1').value + ' ' + getCellState('B2').value + ' ' + getCellState('B3').value) },
+        { title: 'Calculer des heures de semaine', instruction: 'Écris les heures de lundi à vendredi puis le total.', visual: '⏰ 5 jours', hint: 'B1 à B5 pour les heures, total en B6.', setup: () => preset({ A1: 'Lundi', A2: 'Mardi', A3: 'Mercredi', A4: 'Jeudi', A5: 'Vendredi' }), check: () => numericCells(['B1', 'B2', 'B3', 'B4', 'B5', 'B6']) && numericValue('B6') === numericValue('B1') + numericValue('B2') + numericValue('B3') + numericValue('B4') + numericValue('B5') }
       ];
+
+      state.completed = Array(missions.length).fill(false);
 
       function emptyCellState() {
         return { value: '', bold: false, color: '', align: 'left', border: false, format: 'text' };
@@ -489,7 +493,8 @@
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
           if (saved) {
             state.currentMission = saved.currentMission || 0;
-            state.completed = Array.isArray(saved.completed) ? saved.completed.slice(0, 20) : Array(20).fill(false);
+            state.completed = Array.isArray(saved.completed) ? saved.completed.slice(0, missions.length) : Array(missions.length).fill(false);
+            while (state.completed.length < missions.length) state.completed.push(false);
             state.cells = saved.cells || {};
             state.score = saved.score || 0;
           }
@@ -558,9 +563,9 @@
 
       function updateProgress() {
         state.score = state.completed.filter(Boolean).length;
-        document.getElementById('mxMissionCount').textContent = (state.currentMission + 1) + ' / 20';
-        document.getElementById('mxScoreValue').textContent = state.score + ' / 20';
-        document.getElementById('mxProgressValue').textContent = Math.round((state.score / 20) * 100) + ' %';
+        document.getElementById('mxMissionCount').textContent = (state.currentMission + 1) + ' / ' + missions.length;
+        document.getElementById('mxScoreValue').textContent = state.score + ' / ' + missions.length;
+        document.getElementById('mxProgressValue').textContent = Math.round((state.score / missions.length) * 100) + ' %';
         if (window.ScoreManager) {
           window.ScoreManager.writeMetrics(PAGE_KEY, {
             status: state.score === 0 ? 'not_started' : state.score === 20 ? 'completed' : 'in_progress',
@@ -746,7 +751,7 @@
         document.getElementById('mxReset').addEventListener('click', () => {
           if (!window.confirm('Recommencer tout le parcours ?')) return;
           localStorage.removeItem(STORAGE_KEY);
-          state = { currentMission: 0, completed: Array(20).fill(false), cells: {}, score: 0 };
+          state = { currentMission: 0, completed: Array(missions.length).fill(false), cells: {}, score: 0 };
           renderGrid();
           loadMission();
         });

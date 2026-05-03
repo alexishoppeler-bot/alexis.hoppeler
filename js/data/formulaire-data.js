@@ -368,5 +368,51 @@ window.FORMULAIRE_DATA = [
       { type: 'cv', label: 'CV', formats: ['pdf', 'doc', 'docx'], required: true },
       { type: 'certif', label: 'Certificat de travail', formats: ['pdf'], required: false }
     ]
+  },
+  {
+    id: 'form-9',
+    tag: 'Logistique',
+    profile: {
+      firstName: 'Mina',
+      lastName: 'Aydin',
+      birthDate: '1993-09-08',
+      maritalStatus: 'Célibataire',
+      email: 'mina.aydin@email.com',
+      phone: '+41 79 123 45 67',
+      address: 'Route de Prilly 18',
+      npa: '1004',
+      city: 'Lausanne',
+      education: 'Formation en logistique',
+      experienceYears: '3',
+      experienceText: '3 ans en préparation de commandes',
+      drivingLicense: 'Oui',
+      residencePermit: 'Permis B',
+      availability: '1 semaine',
+      qualities: ['Organisation', 'Rapidité', 'Esprit d’équipe'],
+      skills: ['Préparation de commandes', 'Contrôle des stocks', 'Utilisation du scanner']
+    },
+    form: {
+      fields: [
+        { name: 'firstName', label: 'Prénom', expected: 'Mina', type: 'text' },
+        { name: 'lastName', label: 'Nom', expected: 'Aydin', type: 'text' },
+        { name: 'birthDate', label: 'Date de naissance', expected: '08.09.1993', type: 'text' },
+        { name: 'maritalStatus', label: 'État civil', expected: 'Célibataire', type: 'text' },
+        { name: 'email', label: 'E-mail', expected: 'mina.aydin@email.com', type: 'email' },
+        { name: 'phone', label: 'Téléphone', expected: '+41 79 123 45 67', type: 'tel' },
+        { name: 'address', label: 'Adresse', expected: 'Route de Prilly 18', type: 'text' },
+        { name: 'npa', label: 'NPA', expected: '1004', type: 'text' },
+        { name: 'city', label: 'Ville', expected: 'Lausanne', type: 'text' },
+        { name: 'drivingLicense', label: 'Permis de conduire', expected: 'Oui', type: 'text' },
+        { name: 'residencePermit', label: 'Permis de séjour', expected: 'Permis B', type: 'text' },
+        { name: 'availability', label: 'Disponibilité', expected: '1 semaine', type: 'text' },
+        { name: 'experienceYears', label: "Années d'expérience", expected: '3', type: 'number' },
+        { name: 'qualities', label: 'Qualités personnelles', expected: 'Organisation, Rapidité, Esprit d’équipe', type: 'text' },
+        { name: 'skills', label: 'Compétences professionnelles', expected: 'Préparation de commandes, Contrôle des stocks, Utilisation du scanner', type: 'text' }
+      ]
+    },
+    requiredFiles: [
+      { type: 'cv', label: 'CV', formats: ['pdf', 'doc', 'docx'], required: true },
+      { type: 'permit', label: 'Permis de séjour', formats: ['pdf', 'jpg', 'png'], required: true }
+    ]
   }
 ];

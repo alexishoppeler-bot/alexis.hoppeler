@@ -29,8 +29,6 @@
 
         <!-- Présentation -->
         <div class="next-card fade-up">
-          <div class="hero-orb hero-orb-a"></div>
-          <div class="hero-orb hero-orb-b"></div>
           <div class="next-card-body">
             <div class="next-card-topline">
               <div class="next-card-label">Bienvenue</div>
@@ -115,12 +113,44 @@
           </div>
         </section>
 
+        <section class="activity-dossier fade-up delay-2" aria-labelledby="activityDossierTitle">
+          <div class="activity-dossier-head">
+            <div>
+              <div class="section-label">Dossier des activités</div>
+              <h2 class="section-heading" id="activityDossierTitle">Choisir le bon exercice au bon moment</h2>
+              <p class="home-section-intro">
+                Chaque activité travaille une compétence concrète: comprendre, cliquer, écrire, trier,
+                mémoriser ou préparer une démarche d’emploi.
+              </p>
+            </div>
+            <div class="activity-dossier-actions" aria-label="Filtrer les activités">
+              <button class="activity-filter active" type="button" data-section="all">Tout</button>
+              <button class="activity-filter" type="button" data-section="Numérique">Numérique</button>
+              <button class="activity-filter" type="button" data-section="Emploi & ORP">Emploi</button>
+              <button class="activity-filter" type="button" data-section="Français">Français</button>
+            </div>
+          </div>
+          <div class="activity-groups" id="activityGroups"></div>
+        </section>
+
+        <section class="andragogy-strip fade-up delay-2" aria-label="Repères andragogiques">
+          <div class="andragogy-copy">
+            <div class="section-label">Andragogie</div>
+            <h2 class="section-heading">Apprendre adulte, par situations utiles</h2>
+          </div>
+          <div class="andragogy-points">
+            <div><strong>Concret</strong><span>Les exercices partent de gestes et de démarches réelles.</span></div>
+            <div><strong>Progressif</strong><span>On avance par petites étapes, avec répétition et feedback.</span></div>
+            <div><strong>Autonomie</strong><span>La personne voit ses progrès et peut reprendre un point fragile.</span></div>
+          </div>
+        </section>
+
         <div class="footer-info fade-up delay-2">
           <p>
-            Resultats sur cet appareil ·
-            <a href="evaluations.html">Mes resultats</a> ·
-            <a href="autoevaluation.html">Autoevaluation</a> ·
-            <a href="donnees.html">Donnees</a>
+            Résultats sur cet appareil ·
+            <a href="evaluations.html">Mes résultats</a> ·
+            <a href="autoevaluation.html">Autoévaluation</a> ·
+            <a href="donnees.html">Données</a>
           </p>
         </div>
 
@@ -143,7 +173,87 @@
     });
 
     function renderAccueil() {
-      return;
+      const config = window.EXERCISE_CONFIG || {};
+      const meta = config.meta || {};
+      const orderedPages = config.orderedPages || [];
+      const host = document.getElementById('activityGroups');
+      if (!host) return;
+
+      const sectionOrder = ['Numérique', 'Emploi & ORP', 'Français'];
+      const sectionLabels = {
+        'Numérique': 'Numérique',
+        'Emploi & ORP': 'Emploi & ORP',
+        'Français': 'Français'
+      };
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, function (char) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+          }[char];
+        });
+      }
+
+      function activityCard(page) {
+        const item = meta[page] || {};
+        const details = item.details || {};
+        const themes = Array.isArray(item.themes) ? item.themes.slice(0, 3) : [];
+        return [
+          '<article class="activity-card" data-section="' + escapeHtml(item.section || 'Autres') + '">',
+          '  <div class="activity-card-top">',
+          '    <span class="activity-icon" aria-hidden="true">' + escapeHtml(item.icon || '•') + '</span>',
+          '    <div>',
+          '      <h3>' + escapeHtml(item.name || page) + '</h3>',
+          '      <p>' + escapeHtml(details.summary || 'Activité d’entraînement pas à pas.') + '</p>',
+          '    </div>',
+          '  </div>',
+          '  <dl class="activity-facts">',
+          '    <div><dt>Objectif</dt><dd>' + escapeHtml(details.objective || 'S entrainer sur une compétence ciblée.') + '</dd></div>',
+          '    <div><dt>Travaille</dt><dd>' + escapeHtml(details.practice || 'Compréhension, attention et action.') + '</dd></div>',
+          '    <div><dt>Moment utile</dt><dd>' + escapeHtml(details.useWhen || 'Quand cette compétence doit être reprise.') + '</dd></div>',
+          '  </dl>',
+          '  <div class="activity-card-bottom">',
+          '    <div class="activity-tags">' + themes.map(function (theme) { return '<span>' + escapeHtml(theme) + '</span>'; }).join('') + '</div>',
+          '    <a class="activity-link" href="' + escapeHtml(item.href || (page + '.html')) + '">Ouvrir</a>',
+          '  </div>',
+          '</article>'
+        ].join('');
+      }
+
+      host.innerHTML = sectionOrder.map(function (section) {
+        const pages = orderedPages.filter(function (page) {
+          return meta[page] && meta[page].section === section;
+        });
+        if (!pages.length) return '';
+        return [
+          '<section class="activity-group" data-section="' + escapeHtml(section) + '">',
+          '  <div class="activity-group-title">',
+          '    <h3>' + escapeHtml(sectionLabels[section] || section) + '</h3>',
+          '    <span>' + pages.length + ' activités</span>',
+          '  </div>',
+          '  <div class="activity-grid">',
+          pages.map(activityCard).join(''),
+          '  </div>',
+          '</section>'
+        ].join('');
+      }).join('');
+
+      document.querySelectorAll('.activity-filter').forEach(function (button) {
+        button.addEventListener('click', function () {
+          const selected = button.getAttribute('data-section') || 'all';
+          document.querySelectorAll('.activity-filter').forEach(function (btn) {
+            btn.classList.toggle('active', btn === button);
+          });
+          document.querySelectorAll('.activity-group').forEach(function (group) {
+            const visible = selected === 'all' || group.getAttribute('data-section') === selected;
+            group.hidden = !visible;
+          });
+        });
+      });
     }
   </script>
 </body>

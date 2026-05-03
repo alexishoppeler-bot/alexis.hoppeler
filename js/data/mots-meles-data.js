@@ -153,4 +153,23 @@ window.MOTS_MELES_DATA = [
       { word: 'FRAUDE',   r: 9, c: 5, dir: 'H' },
     ],
   },
+
+  {
+    name: 'Premiere journee',
+    difficulty: 'medium',
+    theme: 'emploi',
+    size: 12,
+    words: [
+      { word: 'BADGE',      r: 0, c: 0, dir: 'H' },
+      { word: 'PLANNING',   r: 1, c: 2, dir: 'H' },
+      { word: 'HORAIRE',    r: 2, c: 1, dir: 'H' },
+      { word: 'EQUIPE',     r: 3, c: 4, dir: 'H' },
+      { word: 'CONSIGNE',   r: 4, c: 0, dir: 'H' },
+      { word: 'PAUSE',      r: 5, c: 6, dir: 'H' },
+      { word: 'SCANNER',    r: 6, c: 2, dir: 'H' },
+      { word: 'ENTREPOT',   r: 7, c: 1, dir: 'H' },
+      { word: 'SECURITE',   r: 8, c: 0, dir: 'H' },
+      { word: 'CHEF',       r: 9, c: 5, dir: 'H' },
+    ],
+  },
 ];

@@ -377,5 +377,89 @@ window.EMAIL_PRO_DATA = [
     ],
     answer: 0,
     correctFeedback: 'Bonne pratique\u00a0: la disponibilit\u00e9 est formul\u00e9e clairement et avec un ton professionnel.'
+  },
+
+  {
+    category: 'Logement',
+    received: {
+      from: 'De\u00a0: G\u00e9rance du Lac',
+      subject: 'Votre demande de visite',
+      body: 'Bonjour,\n\nNous pouvons vous proposer une visite de l\u2019appartement jeudi \u00e0 16h30. Merci de confirmer votre pr\u00e9sence.\n\nMeilleures salutations,\nG\u00e9rance du Lac',
+      request: 'Action attendue\u00a0: confirmer ou proposer un autre moment.'
+    },
+    responses: [
+      {
+        subject: 'Re\u00a0: Votre demande de visite',
+        body: 'Bonjour,\n\nJe vous remercie pour votre message. Je vous confirme ma pr\u00e9sence pour la visite de l\u2019appartement jeudi \u00e0 16h30.\n\nMeilleures salutations,\nNora Haddad',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Signature compl\u00e8te',
+        reasonIfWrong: ''
+      },
+      {
+        subject: 'Re\u00a0: Visite',
+        body: 'Bonjour,\n\nOk pour jeudi.\n\nNora',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Pr\u00e9nom uniquement',
+        reasonIfWrong: 'La r\u00e9ponse est trop courte et ne reprend pas l\u2019heure.'
+      },
+      {
+        subject: 'Appartement',
+        body: 'Bonjour,\n\nJe veux venir voir.\n\nNora Haddad',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Signature compl\u00e8te',
+        reasonIfWrong: 'Le ton est trop direct et la confirmation n\u2019est pas assez pr\u00e9cise.'
+      },
+      {
+        subject: 'Re\u00a0: Votre demande de visite',
+        body: 'Bonjour,\n\nJe confirme ma pr\u00e9sence.\n\nMeilleures salutations,\nNora Haddad',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Signature compl\u00e8te',
+        reasonIfWrong: 'La r\u00e9ponse est correcte mais elle ne reprend pas le jour et l\u2019heure.'
+      }
+    ],
+    answer: 0,
+    correctFeedback: 'Tr\u00e8s bien\u00a0: la r\u00e9ponse confirme clairement le jour, l\u2019heure et le sujet.'
+  },
+
+  {
+    category: 'Sant\u00e9',
+    received: {
+      from: 'De\u00a0: Cabinet m\u00e9dical',
+      subject: 'Document \u00e0 apporter',
+      body: 'Bonjour,\n\nPour votre rendez-vous de lundi, merci d\u2019apporter votre carte d\u2019assur\u00e9 et la liste de vos m\u00e9dicaments.\n\nAvec nos salutations,\nCabinet m\u00e9dical',
+      request: 'Action attendue\u00a0: confirmer que les documents seront apport\u00e9s.'
+    },
+    responses: [
+      {
+        subject: 'Re\u00a0: Document \u00e0 apporter',
+        body: 'Bonjour,\n\nJe vous confirme que j\u2019apporterai ma carte d\u2019assur\u00e9 et la liste de mes m\u00e9dicaments lors du rendez-vous de lundi.\n\nMeilleures salutations,\nKarim Belhadj',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Signature compl\u00e8te',
+        reasonIfWrong: ''
+      },
+      {
+        subject: 'Re\u00a0: Document',
+        body: 'Bonjour,\n\nD\u2019accord.\n\nKarim',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Pr\u00e9nom uniquement',
+        reasonIfWrong: 'La r\u00e9ponse ne reprend pas les documents demand\u00e9s et la signature est incompl\u00e8te.'
+      },
+      {
+        subject: 'Rendez-vous',
+        body: 'Bonjour,\n\nJe viendrai lundi.\n\nCordialement,\nKarim Belhadj',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Signature compl\u00e8te',
+        reasonIfWrong: 'Le message confirme la pr\u00e9sence mais pas les documents \u00e0 apporter.'
+      },
+      {
+        subject: 'Re\u00a0: Document \u00e0 apporter',
+        body: 'Bonjour,\n\nJe vais chercher les documents.\n\nKarim Belhadj',
+        attachment: 'Aucune pi\u00e8ce jointe n\u00e9cessaire',
+        signature: 'Signature compl\u00e8te',
+        reasonIfWrong: 'Le message reste vague et ne confirme pas clairement la carte d\u2019assur\u00e9 et la liste des m\u00e9dicaments.'
+      }
+    ],
+    answer: 0,
+    correctFeedback: 'Correct\u00a0: la r\u00e9ponse confirme pr\u00e9cis\u00e9ment les documents demand\u00e9s.'
   }
 ];

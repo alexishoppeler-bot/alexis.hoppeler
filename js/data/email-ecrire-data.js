@@ -380,6 +380,82 @@ window.EMAIL_ECRIRE_DATA = [
     ],
     answer: 0,
     correctFeedback: 'Parfait : la date est précisée, vous mentionnez le certificat médical et le ton est professionnel.'
+  },
+
+  // ── Scénario 11 — Disponibilités (answer=1) ───────────────────────────
+  {
+    category: 'Emploi',
+    situation: 'Une agence vous demande vos disponibilités pour cette semaine. Vous devez répondre avec des jours et des heures précis.',
+    choices: [
+      {
+        subject: 'Disponibilités',
+        body: 'Bonjour,\n\nJe suis disponible.\n\nPaulo',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Prénom uniquement',
+        reasonIfWrong: 'Le message est trop vague et la signature est incomplète.'
+      },
+      {
+        subject: 'Mes disponibilités pour cette semaine – Paulo Ferreira',
+        body: 'Bonjour,\n\nMerci pour votre message. Je suis disponible lundi, mardi et jeudi de 8h00 à 17h00. Je peux aussi me libérer vendredi matin si besoin.\n\nCordialement,\nPaulo Ferreira',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Signature complète',
+        reasonIfWrong: ''
+      },
+      {
+        subject: 'Re: Disponibilités',
+        body: 'Bonjour,\n\nJe peux venir un jour cette semaine.\n\nCordialement,\nPaulo Ferreira',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Signature complète',
+        reasonIfWrong: 'La réponse reste trop vague : elle ne donne ni jour précis ni horaire.'
+      },
+      {
+        subject: 'Travail',
+        body: 'Bonjour,\n\nAppelez-moi pour les horaires.\n\nPaulo Ferreira',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Signature complète',
+        reasonIfWrong: 'Le message ne répond pas vraiment à la demande de disponibilités.'
+      }
+    ],
+    answer: 1,
+    correctFeedback: 'Très bien : les jours et les heures sont indiqués clairement.'
+  },
+
+  // ── Scénario 12 — Visite logement (answer=2) ──────────────────────────
+  {
+    category: 'Logement',
+    situation: 'Vous voulez visiter un appartement. Vous écrivez à la gérance pour demander un rendez-vous.',
+    choices: [
+      {
+        subject: 'Appartement',
+        body: 'Bonjour,\n\nJe veux voir l’appartement.\n\nNora',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Prénom uniquement',
+        reasonIfWrong: 'Le ton est trop direct et la signature est incomplète.'
+      },
+      {
+        subject: 'Demande',
+        body: 'Bonjour,\n\nL’annonce m’intéresse. Merci.\n\nCordialement,\nNora Haddad',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Signature complète',
+        reasonIfWrong: 'Le message ne demande pas clairement une visite.'
+      },
+      {
+        subject: 'Demande de visite pour l’appartement – Nora Haddad',
+        body: 'Madame, Monsieur,\n\nJe vous contacte au sujet de l’appartement annoncé à Lausanne. Je suis intéressée par ce logement et souhaiterais organiser une visite.\n\nSerait-il possible de convenir d’un rendez-vous cette semaine ?\n\nCordialement,\nNora Haddad',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Signature complète',
+        reasonIfWrong: ''
+      },
+      {
+        subject: 'Visite',
+        body: 'Bonjour,\n\nQuand puis-je venir ?\n\nNora Haddad',
+        attachment: 'Aucune pièce jointe nécessaire',
+        signature: 'Signature complète',
+        reasonIfWrong: 'Le message est compréhensible, mais il manque le contexte de l’annonce et une formule plus polie.'
+      }
+    ],
+    answer: 2,
+    correctFeedback: 'Correct : la demande est polie, précise et facile à traiter pour la gérance.'
   }
 
 ];

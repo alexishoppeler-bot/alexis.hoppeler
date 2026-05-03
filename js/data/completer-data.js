@@ -374,4 +374,51 @@ window.COMPLETER_DATA = [
     choices: ['relev\u00e9', 'bail', 'permis', 'horaire'],
     hint: 'Document qui liste toutes les op\u00e9rations bancaires.'
   },
+
+  // Complements
+  {
+    category: 'Emploi',
+    difficulty: 'easy',
+    theme: 'emploi',
+    text: 'Le premier jour, je note mes ___ de travail.',
+    answer: 'horaires',
+    choices: ['horaires', 'loyers', 'ordonnances', 'billets'],
+    hint: 'Les heures auxquelles je commence et termine.'
+  },
+  {
+    category: 'ORP',
+    difficulty: 'medium',
+    theme: 'orp',
+    text: 'Je garde mes ___ de recherche d’emploi dans mon dossier.',
+    answer: 'preuves',
+    choices: ['preuves', 'recettes', 'clefs', 'chaussures'],
+    hint: 'Documents qui montrent ce que j’ai fait.'
+  },
+  {
+    category: 'Numérique',
+    difficulty: 'easy',
+    theme: 'numérique',
+    text: 'Avant de fermer mon document, je clique sur ___.',
+    answer: 'enregistrer',
+    choices: ['enregistrer', 'effacer', 'oublier', 'déchirer'],
+    hint: 'Action pour garder le document.'
+  },
+  {
+    category: 'Logement',
+    difficulty: 'medium',
+    theme: 'logement',
+    text: 'Je contacte la ___ si le chauffage ne fonctionne plus.',
+    answer: 'gérance',
+    choices: ['gérance', 'pharmacie', 'gare', 'cantine'],
+    hint: 'Société qui gère l’immeuble.'
+  },
+  {
+    category: 'Santé',
+    difficulty: 'medium',
+    theme: 'santé',
+    text: 'Pour acheter certains médicaments, il faut une ___.',
+    answer: 'ordonnance',
+    choices: ['ordonnance', 'caution', 'facture', 'lettre'],
+    hint: 'Document donné par le médecin.'
+  },
 ];

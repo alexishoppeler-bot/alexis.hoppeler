@@ -376,5 +376,41 @@ window.PAIRE_DATA = [
     card1: { emoji: '🏠', text: 'Loyer' },
     card2: { emoji: '💼', text: 'Salaire' },
     explication: 'Le loyer est une dépense (ce que vous payez). Le salaire est un revenu (ce que vous recevez).'
+  },
+  {
+    category: 'Banque',
+    difficulty: 'medium',
+    theme: 'numérique',
+    isPair: true,
+    card1: { emoji: '🏦', text: 'IBAN' },
+    card2: { emoji: '💳', text: 'Numéro utilisé pour faire un virement' },
+    explication: 'L’IBAN sert à identifier un compte bancaire pour envoyer ou recevoir de l’argent.'
+  },
+  {
+    category: 'Banque',
+    difficulty: 'medium',
+    theme: 'numérique',
+    isPair: false,
+    card1: { emoji: '🔐', text: 'Code PIN' },
+    card2: { emoji: '📧', text: 'Objet d’un e-mail' },
+    explication: 'Le code PIN est un code secret bancaire. L’objet d’un e-mail sert à annoncer le sujet du message.'
+  },
+  {
+    category: 'Travail',
+    difficulty: 'easy',
+    theme: 'emploi',
+    isPair: true,
+    card1: { emoji: '📅', text: 'Planning' },
+    card2: { emoji: '⏰', text: 'Horaires de travail' },
+    explication: 'Un planning indique les jours et les horaires de travail.'
+  },
+  {
+    category: 'Travail',
+    difficulty: 'medium',
+    theme: 'emploi',
+    isPair: true,
+    card1: { emoji: '🪪', text: 'Badge' },
+    card2: { emoji: '🚪', text: 'Accès au lieu de travail' },
+    explication: 'Un badge peut servir à entrer dans un bâtiment ou à pointer son arrivée.'
   }
 ];

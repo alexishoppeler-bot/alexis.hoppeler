@@ -49,6 +49,18 @@ La plateforme semble etre concue pour des personnes qui ont besoin de renforcer 
 
 Les activites sont formulees de maniere concrete, avec des taches proches de situations reelles : cliquer, taper, completer, ecouter, classer, remplir un formulaire ou preparer un e-mail.
 
+## 3.1. Approche andragogique
+
+La plateforme est pensee pour des adultes en apprentissage. L'enjeu n'est pas seulement de "jouer" ou de "faire juste", mais de relier chaque activite a une situation utile.
+
+Les principes retenus sont :
+
+- partir de gestes concrets : cliquer, ecrire, lire, choisir, verifier
+- travailler par petites etapes, avec repetition et feedback
+- valoriser l'autonomie : l'utilisateur voit ses progres et peut reprendre un point fragile
+- relier les exercices aux usages reels : ORP, candidature, e-mails, formulaires, documents, orientation
+- garder une interface calme, lisible et rassurante
+
 ## 4. Fonctionnement global
 
 La plateforme fonctionne comme un ensemble de pages HTML reliees entre elles, sans backend et sans base de donnees distante.
@@ -92,6 +104,9 @@ Ce bloc regroupe des activites liees a l'usage de l'ordinateur et a la navigatio
 - `cherche-clique`
 - `completer`
 - `orientation`
+- `maths-pratiques`
+- `mini-word-trainer`
+- `mini-excel-trainer`
 
 L'objectif est de travailler les gestes de base et la comprehension d'actions simples a realiser sur ecran.
 
@@ -106,6 +121,7 @@ Ce bloc est centre sur les situations de candidature et de communication profess
 - `quiz`
 - `vrai-faux`
 - `trier`
+- `simulations-dialogues`
 
 L'objectif est de preparer des taches utiles dans la recherche d'emploi : remplir des informations, comprendre un contexte, repondre correctement et produire des contenus simples.
 
@@ -125,6 +141,37 @@ Ce bloc propose des activites de langue et de vocabulaire :
 - `paire`
 
 L'objectif est de renforcer la lecture, l'ecoute, l'ecriture et la memorisation.
+
+## 6.1. Fiches rapides des activites
+
+| Activite | Objectif principal | Situation utile |
+| --- | --- | --- |
+| `formulaire` | Remplir correctement des champs et choisir les bons documents. | Candidature, inscription, demarche ORP. |
+| `email-ecrire` | Reconnaitre un e-mail clair, poli et adapte. | Premier contact, candidature, demande simple. |
+| `email-pro` | Repondre a un message professionnel selon le contexte. | Employeur, ORP, formation, rendez-vous. |
+| `retaper` | Ameliorer la saisie et la precision d'un texte court. | Copier un message, corriger un e-mail, gagner en confiance au clavier. |
+| `alphabet` | Se reperer dans l'ordre alphabetique. | Repertoire, liste de noms, classement de documents. |
+| `clavier` | Construire des automatismes de frappe. | E-mails, formulaires, documents. |
+| `ecouter` | Comprendre une consigne orale courte. | Accueil, appel, rendez-vous, entretien. |
+| `cliquer` | Stabiliser le geste de la souris. | Navigation de base, boutons, choix a l'ecran. |
+| `cherche-clique` | Chercher visuellement une information puis agir. | Page web, formulaire long, interface administrative. |
+| `completer` | Relier le sens d'une phrase a l'information manquante. | Lecture fonctionnelle, consignes, vocabulaire. |
+| `orientation` | Suivre des directions et anticiper un trajet. | Plan, interface, deplacement dans un espace. |
+| `maths-pratiques` | Resoudre des calculs simples du quotidien et du travail. | Horaires, quantites, prix, budget, stock. |
+| `mini-word-trainer` | Realiser de petites actions de mise en forme. | CV, lettre, document administratif. |
+| `mini-excel-trainer` | Comprendre les bases d'un tableau. | Listes, horaires, stocks, donnees simples. |
+| `anagramme` | Recomposer un mot a partir de lettres. | Revision active de vocabulaire. |
+| `apparier` | Associer deux elements qui vont ensemble. | Mot-definition, situation-reponse, image-mot. |
+| `pendu` | Deviner un mot en mobilisant orthographe et hypotheses. | Consolidation de vocabulaire deja rencontre. |
+| `vrai-faux` | Verifier rapidement une affirmation. | Controle de comprehension apres une explication. |
+| `classement` | Ranger des informations dans les bonnes categories. | Tri de notions proches, organisation mentale. |
+| `mots-croises` | Trouver des mots a partir d'indices. | Revision calme, deduction, orthographe. |
+| `mots-meles` | Reperer des mots dans une grille. | Balayage visuel, reconnaissance de vocabulaire. |
+| `demeler` | Remettre des lettres melangees dans l'ordre. | Construction du mot, orthographe. |
+| `quiz` | Repondre a des questions de verification. | Fin de sequence, preparation a une evaluation. |
+| `trier` | Placer des elements dans la bonne colonne. | Decision rapide, distinctions utiles au quotidien. |
+| `simulations-dialogues` | Choisir une reponse dans un dialogue d'entretien. | Entretien, ORP, simulation orale. |
+| `paire` | Memoriser des associations en retrouvant des paires. | Revision ludique de vocabulaire ou de notions. |
 
 ## 7. Configuration centrale des exercices
 
