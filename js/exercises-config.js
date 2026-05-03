@@ -14,6 +14,7 @@
     { page: 'email-pro',   name: 'E-mails professionnels',    icon: '📧', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'orp'] },
     { page: 'retaper',     name: 'Retaper',                   icon: '✍️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
+    { page: 'vocabulaire-metier', name: 'Vocabulaire métier',  icon: '💬', cat: 'Langue',        section: 'Français',           themes: ['emploi', 'français', 'métiers'] },
     { page: 'clavier',     name: 'Clavier',                   icon: '⌨️', cat: 'Langue',        section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'ecouter',     name: 'Écouter',                   icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'orp', 'transports'] },
     { page: 'cliquer',     name: 'Cliquer',                   icon: '🖱️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports'] },
@@ -43,6 +44,7 @@
 
   const XP_RULES_BY_PAGE = {
     'alphabet':        '+5 XP par bonne réponse.',
+    'vocabulaire-metier': '+3 XP par bon verbe choisi.',
     'clavier':         '+1 XP par bonne touche.',
     'cherche-clique':  '+3 XP par clic correct.',
     'apparier':        '+2 XP par paire trouvée.',
@@ -101,6 +103,12 @@
       objective: 'Se repérer dans une liste, un classement ou un répertoire.',
       practice: 'Lettres, ordre, comparaison de mots, lecture attentive.',
       useWhen: 'Avant les activités de recherche, classement ou vocabulaire.'
+    },
+    'vocabulaire-metier': {
+      summary: 'Choisir le bon verbe conjugué dans des phrases liées aux métiers.',
+      objective: 'Renforcer le vocabulaire professionnel et les temps de base.',
+      practice: 'Présent, imparfait, passé composé, passé récent, futur proche et futur simple.',
+      useWhen: 'Pour préparer une séquence sur les métiers, les stages ou l’emploi.'
     },
     'clavier': {
       summary: 'S’entraîner a trouver les touches et a taper plus régulièrement.',

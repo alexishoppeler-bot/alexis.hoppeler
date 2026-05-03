@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocabulaire métier - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/vocabulaire-metier.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">💬</div>
+          <h1>Vocabulaire métier</h1>
+          <p>Choisissez le bon verbe conjugué dans des phrases de travail.</p>
+        </div>
+
+        <section class="vocab-game fade-up delay-2" aria-label="Jeu de vocabulaire métier">
+          <div class="vocab-panel">
+            <div class="vocab-field">
+              <label for="jobSelect">Métier</label>
+              <select id="jobSelect"></select>
+            </div>
+            <div class="vocab-field">
+              <label for="seriesSelect">Série</label>
+              <select id="seriesSelect">
+                <option value="10">10 phrases</option>
+                <option value="20">20 phrases</option>
+                <option value="50">50 phrases</option>
+              </select>
+            </div>
+            <div class="vocab-field vocab-field-wide">
+              <div class="vocab-filter-label">Mode pédagogique</div>
+              <div class="vocab-tense-controls" id="modeControls"></div>
+            </div>
+          </div>
+
+          <div class="vocab-help" id="helpPanel" aria-label="Aide sur les temps"></div>
+
+          <div class="vocab-progress-panel" aria-label="Progression par métier">
+            <div class="vocab-progress-title">Progression par métier</div>
+            <div class="vocab-progress-grid" id="jobProgressGrid"></div>
+          </div>
+
+          <div class="vocab-exercise">
+            <div class="vocab-top">
+              <div class="vocab-status">
+                <span><strong id="seriesTitle">Nettoyage</strong> - <span id="seriesCount">50 phrases</span></span>
+                <span id="seriesTense">Tous les temps</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+              <div class="vocab-counters">
+                <span>Complétées <strong id="liveAnswered">0</strong></span>
+                <span>Correctes <strong id="liveCorrect">0</strong></span>
+                <span>Erreurs <strong id="liveErrors">0</strong></span>
+                <span>XP <strong id="liveXP">0</strong></span>
+              </div>
+            </div>
+
+            <div class="phrase-list" id="phraseList"></div>
+
+            <div class="action-row">
+              <button class="btn btn-primary" id="btnCheck" type="button">Vérifier la série</button>
+              <button class="btn btn-secondary" id="btnReset" type="button">Effacer les réponses</button>
+              <button class="btn btn-secondary" id="btnReviewErrors" type="button" hidden>Voir seulement mes erreurs</button>
+            </div>
+          </div>
+
+          <div class="vocab-results" id="resultZone">
+            <h2 id="resultTitle">Résultat</h2>
+            <p id="resultText"></p>
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-value" id="resCorrect">0</div>
+                <div class="kpi-label">Correctes</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resErrors">0</div>
+                <div class="kpi-label">Erreurs</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resXP">0</div>
+                <div class="kpi-label">XP</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-value" id="resAccuracy">-</div>
+                <div class="kpi-label">Précision</div>
+              </div>
+            </div>
+            <div class="action-row">
+              <a href="#" class="btn btn-primary btn-lg" id="btnNextExercise">Exercice suivant</a>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">Accueil</a>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'vocabulaire-metier';
+  const PROGRESS_KEY = 'vocabulaire_metier_progress_v1';
+  const SERIES_SIZES = [10, 20, 50];
+  const TENSES = [
+    { id: 'present', label: 'Présent' },
+    { id: 'imparfait', label: 'Imparfait' },
+    { id: 'passe-compose', label: 'Passé composé' },
+    { id: 'passe-recent', label: 'Passé récent' },
+    { id: 'futur-proche', label: 'Futur proche' },
+    { id: 'futur-simple', label: 'Futur simple' }
+  ];
+  const TENSE_ORDER = [
+    'present',
+    'passe-compose',
+    'futur-proche',
+    'imparfait',
+    'passe-recent',
+    'futur-simple'
+  ];
+  const TENSE_LABELS = TENSES.reduce((acc, item) => {
+    acc[item.id] = item.label;
+    return acc;
+  }, {});
+  const MODES = [
+    { id: 'present-n1', label: 'Présent niveau 1', tenses: ['present'] },
+    { id: 'passe-compose-n2', label: 'Passé composé niveau 2', tenses: ['passe-compose'] },
+    { id: 'futur-proche-n3', label: 'Futur proche niveau 3', tenses: ['futur-proche'] },
+    { id: 'imparfait-seul', label: 'Imparfait seul', tenses: ['imparfait'] },
+    { id: 'passe-recent-seul', label: 'Passé récent seul', tenses: ['passe-recent'] },
+    { id: 'futur-simple-seul', label: 'Futur simple seul', tenses: ['futur-simple'] },
+    { id: 'melange-n4', label: 'Mélange niveau 4', tenses: TENSE_ORDER },
+    { id: 'facile', label: 'Facile', tenses: ['present', 'futur-proche'] },
+    { id: 'moyen', label: 'Moyen', tenses: ['passe-compose', 'imparfait'] },
+    { id: 'difficile', label: 'Difficile', tenses: TENSE_ORDER }
+  ];
+
+  const VERBS = {
+    assembler: ['assemble', 'assemblais', 'assemblé', 'assemblerai'],
+    accueillir: ['accueille', 'accueillais', 'accueilli', 'accueillerai'],
+    balayer: ['balaie', 'balayais', 'balayé', 'balaierai'],
+    charger: ['charge', 'chargeais', 'chargé', 'chargerai'],
+    classer: ['classe', 'classais', 'classé', 'classerai'],
+    conseiller: ['conseille', 'conseillais', 'conseillé', 'conseillerai'],
+    contrôler: ['contrôle', 'contrôlais', 'contrôlé', 'contrôlerai'],
+    couper: ['coupe', 'coupais', 'coupé', 'couperai'],
+    déplacer: ['déplace', 'déplaçais', 'déplacé', 'déplacerai'],
+    dresser: ['dresse', 'dressais', 'dressé', 'dresserai'],
+    emballer: ['emballe', 'emballais', 'emballé', 'emballerai'],
+    encaisser: ['encaisse', 'encaissais', 'encaissé', 'encaisserai'],
+    enregistrer: ['enregistre', 'enregistrais', 'enregistré', 'enregistrerai'],
+    essuyer: ['essuie', 'essuyais', 'essuyé', 'essuierai'],
+    étiqueter: ['étiquette', 'étiquetais', 'étiqueté', 'étiquetterai'],
+    expliquer: ['explique', 'expliquais', 'expliqué', 'expliquerai'],
+    fabriquer: ['fabrique', 'fabriquais', 'fabriqué', 'fabriquerai'],
+    filmer: ['filme', 'filmais', 'filmé', 'filmerai'],
+    fixer: ['fixe', 'fixais', 'fixé', 'fixerai'],
+    laver: ['lave', 'lavais', 'lavé', 'laverai'],
+    livrer: ['livre', 'livrais', 'livré', 'livrerai'],
+    marquer: ['marque', 'marquais', 'marqué', 'marquerai'],
+    mesurer: ['mesure', 'mesurais', 'mesuré', 'mesurerai'],
+    monter: ['monte', 'montais', 'monté', 'monterai'],
+    nettoyer: ['nettoie', 'nettoyais', 'nettoyé', 'nettoierai'],
+    organiser: ['organise', 'organisais', 'organisé', 'organiserai'],
+    percer: ['perce', 'perçais', 'percé', 'percerai'],
+    préparer: ['prépare', 'préparais', 'préparé', 'préparerai'],
+    présenter: ['présente', 'présentais', 'présenté', 'présenterai'],
+    ranger: ['range', 'rangeais', 'rangé', 'rangerai'],
+    réparer: ['répare', 'réparais', 'réparé', 'réparerai'],
+    régler: ['règle', 'réglais', 'réglé', 'réglerai'],
+    remplir: ['remplis', 'remplissais', 'rempli', 'remplirai'],
+    scanner: ['scanne', 'scannais', 'scanné', 'scannerai'],
+    servir: ['sers', 'servais', 'servi', 'servirai'],
+    signaler: ['signale', 'signalais', 'signalé', 'signalerai'],
+    stocker: ['stocke', 'stockais', 'stocké', 'stockerai'],
+    transporter: ['transporte', 'transportais', 'transporté', 'transporterai'],
+    vérifier: ['vérifie', 'vérifiais', 'vérifié', 'vérifierai'],
+    vendre: ['vends', 'vendais', 'vendu', 'vendrai']
+  };
+
+  const JOB_DATA = [
+    {
+      id: 'nettoyage',
+      label: 'Nettoyage',
+      items: makeItems(`
+nettoyer|les bureaux avant l'ouverture.
+balayer|le couloir principal.
+laver|le sol de la salle de pause.
+essuyer|les tables après le repas.
+ranger|le chariot de nettoyage.
+remplir|le seau avec de l'eau propre.
+vérifier|les produits avant de commencer.
+signaler|une fuite au responsable.
+préparer|les gants et les sacs.
+contrôler|la propreté des toilettes.
+nettoyer|les vitres de l'entrée.
+laver|les lavabos avec soin.
+balayer|les escaliers du bâtiment.
+essuyer|les poignées de porte.
+ranger|les chiffons propres.
+remplir|le distributeur de savon.
+vérifier|la liste des locaux.
+signaler|un produit presque vide.
+préparer|le matériel pour l'étage.
+contrôler|les poubelles à vider.
+nettoyer|la cuisine commune.
+laver|les traces près de la machine.
+balayer|la terrasse extérieure.
+essuyer|les interrupteurs.
+ranger|les produits dans l'armoire.
+remplir|le papier dans les toilettes.
+vérifier|que le sol est sec.
+signaler|un objet cassé.
+préparer|la zone avant le nettoyage.
+contrôler|le résultat avec la fiche.
+nettoyer|les vestiaires.
+laver|les bacs de rangement.
+balayer|l'entrée du dépôt.
+essuyer|les surfaces de contact.
+ranger|les sacs poubelle.
+remplir|le flacon de désinfectant.
+vérifier|les consignes de sécurité.
+signaler|un sol glissant.
+préparer|le panneau de prudence.
+contrôler|les horaires de passage.
+nettoyer|la salle de réunion.
+laver|les traces sur les portes.
+balayer|la zone près des ascenseurs.
+essuyer|les chaises.
+ranger|la réserve après le service.
+remplir|la fiche de nettoyage.
+vérifier|les clés des locaux.
+signaler|une lumière qui ne marche pas.
+préparer|le chariot pour demain.
+contrôler|la fermeture des fenêtres.
+`)
+    },
+    {
+      id: 'transport',
+      label: 'Transport',
+      items: makeItems(`
+charger|les colis dans le véhicule.
+livrer|les commandes au client.
+vérifier|l'adresse avant de partir.
+contrôler|l'état du véhicule.
+transporter|les marchandises fragiles.
+ranger|les caisses dans l'ordre.
+signaler|un retard à la centrale.
+préparer|le trajet de la journée.
+enregistrer|la signature du client.
+déplacer|le véhicule vers la zone de chargement.
+charger|les palettes avec prudence.
+livrer|les médicaments à la pharmacie.
+vérifier|le bon de livraison.
+contrôler|la température du coffre.
+transporter|les dossiers entre deux sites.
+ranger|les documents dans la pochette.
+signaler|un accident sur la route.
+préparer|les clés et les papiers.
+enregistrer|le kilométrage du matin.
+déplacer|les colis vers le quai.
+charger|les sacs légers en dernier.
+livrer|les repas dans les délais.
+vérifier|le niveau de carburant.
+contrôler|les pneus avant le départ.
+transporter|le matériel de chantier.
+ranger|les sangles après usage.
+signaler|une adresse incorrecte.
+préparer|la tournée avec l'équipe.
+enregistrer|l'heure d'arrivée.
+déplacer|les cartons sans les abîmer.
+charger|le matériel selon la liste.
+livrer|les colis express.
+vérifier|la fermeture des portes.
+contrôler|les documents de transport.
+transporter|les personnes avec respect.
+ranger|le coffre après la tournée.
+signaler|un client absent.
+préparer|la livraison suivante.
+enregistrer|le retour des colis.
+déplacer|le véhicule pour libérer l'accès.
+charger|les bacs de linge propre.
+livrer|les pièces au garage.
+vérifier|le nom du destinataire.
+contrôler|la propreté du véhicule.
+transporter|les produits dans des caisses fermées.
+ranger|les bons dans le classeur.
+signaler|une panne au responsable.
+préparer|la feuille de route.
+enregistrer|les remarques du client.
+déplacer|les barrières de sécurité.
+`)
+    },
+    {
+      id: 'logistique',
+      label: 'Logistique',
+      items: makeItems(`
+préparer|les commandes pour l'expédition.
+scanner|le code de chaque colis.
+emballer|les articles fragiles.
+classer|les bons de livraison.
+ranger|les palettes dans la bonne zone.
+contrôler|le stock disponible.
+charger|les cartons sur le chariot.
+étiqueter|les paquets avec soin.
+signaler|une erreur de quantité.
+organiser|les rayons du dépôt.
+préparer|les retours clients.
+scanner|les produits à l'entrée.
+emballer|les pièces détachées.
+classer|les documents par date.
+ranger|les bacs vides.
+contrôler|la référence de l'article.
+charger|les palettes pour le transporteur.
+étiqueter|les cartons urgents.
+signaler|un colis abîmé.
+organiser|la zone de réception.
+préparer|la liste de picking.
+scanner|la palette complète.
+emballer|les commandes en ligne.
+classer|les factures dans le dossier.
+ranger|les outils après usage.
+contrôler|le poids du paquet.
+charger|les bacs dans le camion.
+étiqueter|les produits dangereux.
+signaler|un manque dans le stock.
+organiser|les priorités du matin.
+préparer|les fournitures pour l'équipe.
+scanner|les articles sortants.
+emballer|les objets avec du papier bulle.
+classer|les bons signés.
+ranger|la zone après la livraison.
+contrôler|la date de péremption.
+charger|les colis lourds en bas.
+étiqueter|les rayons du dépôt.
+signaler|une machine bloquée.
+organiser|les commandes par tournée.
+préparer|le poste de travail.
+scanner|les retours au comptoir.
+emballer|les produits avant midi.
+classer|les demandes urgentes.
+ranger|les cartons pliés.
+contrôler|la qualité de l'emballage.
+charger|le chariot avec équilibre.
+étiqueter|les nouveaux articles.
+signaler|un retard de livraison.
+organiser|le nettoyage du dépôt.
+`)
+    },
+    {
+      id: 'restauration',
+      label: 'Restauration',
+      items: makeItems(`
+préparer|les légumes pour le service.
+servir|les plats aux clients.
+nettoyer|le plan de travail.
+dresser|les assiettes avec soin.
+couper|le pain pour la table.
+vérifier|la commande avant l'envoi.
+ranger|la vaisselle propre.
+encaisser|l'addition au comptoir.
+signaler|une allergie en cuisine.
+remplir|les carafes d'eau.
+préparer|la soupe du jour.
+servir|le café après le repas.
+nettoyer|la salle après le service.
+dresser|les tables du midi.
+couper|les fruits pour le dessert.
+vérifier|la température du frigo.
+ranger|les couverts par catégorie.
+encaisser|les paiements par carte.
+signaler|un plat manquant.
+remplir|le stock de serviettes.
+préparer|les sandwichs du matin.
+servir|les boissons fraîches.
+nettoyer|la machine à café.
+dresser|le buffet du petit déjeuner.
+couper|les herbes fraîches.
+vérifier|les dates des produits.
+ranger|les plateaux propres.
+encaisser|les tickets repas.
+signaler|un client pressé.
+remplir|les sauces dans les bols.
+préparer|la mise en place.
+servir|le menu du jour.
+nettoyer|les plaques de cuisson.
+dresser|les desserts en vitrine.
+couper|les portions de gâteau.
+vérifier|le nombre de réservations.
+ranger|les chaises après la fermeture.
+encaisser|la monnaie correctement.
+signaler|une table à nettoyer.
+remplir|le lave-vaisselle.
+préparer|les commandes à emporter.
+servir|les clients au comptoir.
+nettoyer|le sol de la cuisine.
+dresser|la salle pour le soir.
+couper|les légumes en petits morceaux.
+vérifier|les consignes d'hygiène.
+ranger|les produits au frais.
+encaisser|la dernière commande.
+signaler|un équipement en panne.
+remplir|la fiche de contrôle.
+`)
+    },
+    {
+      id: 'batiment',
+      label: 'Bâtiment',
+      items: makeItems(`
+mesurer|le mur avant la pose.
+couper|la planche à la bonne taille.
+percer|le trou avec prudence.
+fixer|la pièce au support.
+monter|l'échafaudage avec l'équipe.
+préparer|les outils du matin.
+ranger|le chantier en fin de journée.
+contrôler|le niveau de la surface.
+signaler|un danger au chef.
+réparer|la marche abîmée.
+mesurer|la distance entre les repères.
+couper|le tuyau selon le plan.
+percer|la plaque de métal.
+fixer|les panneaux de protection.
+monter|les barrières autour du chantier.
+préparer|le mortier dans le seau.
+ranger|les câbles hors du passage.
+contrôler|la solidité de la fixation.
+signaler|une fissure importante.
+réparer|la porte du local.
+mesurer|la hauteur de la fenêtre.
+couper|les carreaux avec soin.
+percer|le béton avec la mèche adaptée.
+fixer|la rampe de sécurité.
+monter|les éléments de la cloison.
+préparer|la zone de travail.
+ranger|les vis dans la boîte.
+contrôler|la qualité de la finition.
+signaler|un outil manquant.
+réparer|le joint autour du lavabo.
+mesurer|l'espace pour l'armoire.
+couper|l'isolant sans le déchirer.
+percer|le plafond pour la lampe.
+fixer|les supports au mur.
+monter|le meuble technique.
+préparer|le matériel de sécurité.
+ranger|les déchets dans la benne.
+contrôler|l'alignement des pièces.
+signaler|une zone humide.
+réparer|le carrelage cassé.
+mesurer|la pente du sol.
+couper|la gaine électrique.
+percer|les trous de fixation.
+fixer|les rails métalliques.
+monter|la structure avec précision.
+préparer|le plan de travail.
+ranger|les outils propres.
+contrôler|les accès du chantier.
+signaler|un bruit anormal.
+réparer|la poignée de porte.
+`)
+    },
+    {
+      id: 'production',
+      label: 'Production',
+      items: makeItems(`
+assembler|les pièces sur la ligne.
+contrôler|la qualité du produit.
+emballer|les articles terminés.
+régler|la machine avant le démarrage.
+fabriquer|les éléments selon la fiche.
+vérifier|les consignes de sécurité.
+ranger|les composants dans les bacs.
+signaler|un défaut au responsable.
+préparer|la matière première.
+marquer|les produits avec le numéro.
+assembler|les petits modules.
+contrôler|la couleur des pièces.
+emballer|les lots par dix.
+régler|la vitesse de la ligne.
+fabriquer|les échantillons demandés.
+vérifier|le compteur de production.
+ranger|les pièces non conformes.
+signaler|une alarme sur l'écran.
+préparer|les cartons vides.
+marquer|les palettes prêtes.
+assembler|les pièces métalliques.
+contrôler|le poids du produit.
+emballer|les commandes spéciales.
+régler|la température de la machine.
+fabriquer|les séries du matin.
+vérifier|le stock de matière.
+ranger|les outils de contrôle.
+signaler|un bruit inhabituel.
+préparer|le poste suivant.
+marquer|la date sur l'étiquette.
+assembler|les supports en plastique.
+contrôler|les dimensions finales.
+emballer|les produits fragiles.
+régler|la pression correctement.
+fabriquer|les pièces de rechange.
+vérifier|la propreté de la zone.
+ranger|les déchets de production.
+signaler|un arrêt de ligne.
+préparer|la fiche de suivi.
+marquer|les cartons pour l'expédition.
+assembler|la dernière série.
+contrôler|la fermeture des boîtes.
+emballer|les accessoires avec le produit.
+régler|le capteur principal.
+fabriquer|les éléments urgents.
+vérifier|les protections de la machine.
+ranger|les produits finis.
+signaler|un manque de matière.
+préparer|le changement de série.
+marquer|les pièces à retoucher.
+`)
+    },
+    {
+      id: 'vente',
+      label: 'Vente',
+      items: makeItems(`
+accueillir|le client avec politesse.
+conseiller|une taille adaptée.
+présenter|les offres de la semaine.
+ranger|les articles en rayon.
+étiqueter|les nouveaux produits.
+encaisser|les achats à la caisse.
+vérifier|le prix affiché.
+remplir|le rayon avant l'ouverture.
+signaler|une rupture de stock.
+vendre|un produit complémentaire.
+accueillir|les clients à l'entrée.
+conseiller|un article plus solide.
+présenter|la garantie du produit.
+ranger|les paniers près de la caisse.
+étiqueter|les promotions du jour.
+encaisser|le paiement en espèces.
+vérifier|la disponibilité en réserve.
+remplir|les présentoirs vides.
+signaler|un client mécontent.
+vendre|un abonnement simple.
+accueillir|un client pressé.
+conseiller|une couleur différente.
+présenter|les conditions de retour.
+ranger|les vêtements par taille.
+étiqueter|les articles soldés.
+encaisser|les achats par carte.
+vérifier|la commande du client.
+remplir|la vitrine du matin.
+signaler|une erreur de caisse.
+vendre|le produit demandé.
+accueillir|une famille dans le magasin.
+conseiller|un modèle moins cher.
+présenter|les nouveautés.
+ranger|les chaussures par pointure.
+étiqueter|les rayons correctement.
+encaisser|un bon cadeau.
+vérifier|l'état de l'article.
+remplir|le stock de sacs.
+signaler|un article abîmé.
+vendre|une carte de fidélité.
+accueillir|les visiteurs du samedi.
+conseiller|un produit d'entretien.
+présenter|les avantages du service.
+ranger|la zone près de l'entrée.
+étiqueter|la marchandise reçue.
+encaisser|la dernière vente.
+vérifier|les retours clients.
+remplir|le formulaire de réservation.
+signaler|une file d'attente.
+vendre|les derniers articles en promotion.
+`)
+    }
+  ];
+
+  let state = {
+    jobId: JOB_DATA[0].id,
+    modeId: 'present-n1',
+    seriesSize: 10,
+    checked: false,
+    reviewOnly: false,
+    reviewItems: [],
+    last: { correct: 0, errors: 0, typed: 0, xp: 0 }
+  };
+
+  function makeItems(raw) {
+    return raw.trim().split('\n').map((line, index) => {
+      const parts = line.split('|');
+      return {
+        index,
+        verb: parts[0].trim(),
+        complement: parts[1].trim(),
+        tense: TENSE_ORDER[index % TENSE_ORDER.length]
+      };
+    });
+  }
+
+  function shuffle(arr) {
+    const copy = arr.slice();
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  function getJob() {
+    return JOB_DATA.find((job) => job.id === state.jobId) || JOB_DATA[0];
+  }
+
+  function getMode() {
+    return MODES.find((mode) => mode.id === state.modeId) || MODES[0];
+  }
+
+  function visibleItems() {
+    const mode = getMode();
+    if (state.reviewOnly) {
+      return state.reviewItems.map((item) => Object.assign({}, item));
+    }
+    return getJob().items.slice(0, state.seriesSize).map((item, position) => (
+      Object.assign({}, item, { tense: mode.tenses[position % mode.tenses.length] })
+    ));
+  }
+
+  function conjugate(verb, tense) {
+    const forms = VERBS[verb];
+    if (!forms) return verb;
+    if (tense === 'present') return forms[0];
+    if (tense === 'imparfait') return forms[1];
+    if (tense === 'passe-compose') return 'ai ' + forms[2];
+    if (tense === 'passe-recent') return 'viens de ' + verb;
+    if (tense === 'futur-proche') return 'vais ' + verb;
+    if (tense === 'futur-simple') return forms[3];
+    return forms[0];
+  }
+
+  function uniqueValues(values) {
+    return values.filter((value, index, arr) => value && arr.indexOf(value) === index);
+  }
+
+  function mistakeFor(verb, tense) {
+    const forms = VERBS[verb];
+    if (!forms) return '';
+    if (tense === 'present') return verb;
+    if (tense === 'imparfait') return forms[0];
+    if (tense === 'passe-compose') return forms[2];
+    if (tense === 'passe-recent') return 'viens ' + verb;
+    if (tense === 'futur-proche') return 'va ' + verb;
+    if (tense === 'futur-simple') return 'vais ' + verb;
+    return '';
+  }
+
+  function choicesFor(item) {
+    const job = getJob();
+    const verbs = Array.from(new Set(job.items.map((entry) => entry.verb)))
+      .filter((verb) => verb !== item.verb);
+    const sameVerbWrongTenses = TENSE_ORDER
+      .filter((tense) => tense !== item.tense)
+      .map((tense) => conjugate(item.verb, tense));
+    const sameTenseOtherVerbs = shuffle(verbs)
+      .slice(0, 6)
+      .map((verb) => conjugate(verb, item.tense));
+    const candidates = uniqueValues([
+      conjugate(item.verb, item.tense),
+      mistakeFor(item.verb, item.tense),
+      ...sameVerbWrongTenses,
+      ...sameTenseOtherVerbs
+    ]);
+    return shuffle(candidates.slice(0, 5));
+  }
+
+  function subjectPrefix(form) {
+    return /^[aeiouyàâéèêëîïôùûü]/i.test(form) ? "J'" : 'Je ';
+  }
+
+  function fullSentence(item) {
+    const answer = conjugate(item.verb, item.tense);
+    return subjectPrefix(answer) + answer + ' ' + item.complement;
+  }
+
+  function phraseHtml(item, optionsHtml) {
+    const answer = conjugate(item.verb, item.tense);
+    return [
+      escapeHtml(subjectPrefix(answer)),
+      '<select class="verb-select" aria-label="Choisir le verbe dans la phrase">',
+      '  <option value="">choisir...</option>',
+      optionsHtml,
+      '</select>',
+      ' ',
+      escapeHtml(item.complement)
+    ].join('');
+  }
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[char]));
+  }
+
+  function notify(message, type) {
+    if (typeof showToast === 'function') {
+      showToast(message, type || 'info');
+    }
+  }
+
+  function safeAccuracy(correct, typed) {
+    if (typeof calcAccuracy === 'function') return calcAccuracy(correct, typed);
+    return typed ? Math.round((correct / typed) * 100) : 0;
+  }
+
+  function safeRecordProgress(delta) {
+    if (typeof recordExerciseProgress === 'function') {
+      recordExerciseProgress(PAGE_ID, delta);
+    }
+  }
+
+  function safePromoteStatus(status) {
+    if (typeof promoteExerciseStatus === 'function') {
+      promoteExerciseStatus(PAGE_ID, status);
+    }
+  }
+
+  function safeConfetti() {
+    if (typeof launchConfetti === 'function') launchConfetti();
+  }
+
+  function readProgress() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function writeProgress(progress) {
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    } catch (e) {}
+  }
+
+  function updateJobProgress(correctIndexes) {
+    const progress = readProgress();
+    const current = progress[state.jobId] && typeof progress[state.jobId] === 'object'
+      ? progress[state.jobId]
+      : { correct: [] };
+    const known = new Set(Array.isArray(current.correct) ? current.correct : []);
+    correctIndexes.forEach((index) => known.add(index));
+    progress[state.jobId] = { correct: Array.from(known).sort((a, b) => a - b) };
+    writeProgress(progress);
+    renderJobProgress();
+    return progress[state.jobId].correct.length;
+  }
+
+  function renderJobProgress() {
+    const progress = readProgress();
+    const grid = document.getElementById('jobProgressGrid');
+    if (!grid) return;
+    grid.innerHTML = JOB_DATA.map((job) => {
+      const correct = progress[job.id] && Array.isArray(progress[job.id].correct)
+        ? progress[job.id].correct.length
+        : 0;
+      const pct = Math.round((correct / job.items.length) * 100);
+      return [
+        '<div class="job-progress-card">',
+        '  <div class="job-progress-row">',
+        '    <strong>' + escapeHtml(job.label) + '</strong>',
+        '    <span>' + (correct === job.items.length ? 'Terminé' : correct + '/' + job.items.length) + '</span>',
+        '  </div>',
+        '  <div class="progress-bar"><div class="progress-fill green" style="width:' + pct + '%"></div></div>',
+        '</div>'
+      ].join('');
+    }).join('');
+  }
+
+  function renderHelp() {
+    const mode = getMode();
+    const panel = document.getElementById('helpPanel');
+    const examples = TENSES.map((tenseInfo) => {
+      const tense = tenseInfo.id;
+      const item = { verb: 'nettoyer', tense, complement: 'la salle.' };
+      return '<span class="' + (mode.tenses.includes(tense) ? 'active' : '') + '"><strong>' + escapeHtml(TENSE_LABELS[tense]) + '</strong> : ' + escapeHtml(fullSentence(item)) + '</span>';
+    }).join('');
+    panel.innerHTML = [
+      '<div class="vocab-help-title">Aide avant l’exercice</div>',
+      '<div class="vocab-help-examples">',
+      examples,
+      '</div>'
+    ].join('');
+  }
+
+  function renderControls() {
+    const jobSelect = document.getElementById('jobSelect');
+    jobSelect.innerHTML = JOB_DATA.map((job) => (
+      '<option value="' + escapeHtml(job.id) + '">' + escapeHtml(job.label) + ' - 50 phrases</option>'
+    )).join('');
+    jobSelect.value = state.jobId;
+
+    const seriesSelect = document.getElementById('seriesSelect');
+    seriesSelect.value = String(state.seriesSize);
+
+    const modeControls = document.getElementById('modeControls');
+    modeControls.innerHTML = MODES.map((mode) => (
+      '<button class="tense-button' + (mode.id === state.modeId ? ' active' : '') + '" type="button" data-mode="' + mode.id + '">' +
+        escapeHtml(mode.label) +
+      '</button>'
+    )).join('');
+    renderHelp();
+    renderJobProgress();
+  }
+
+  function renderPhrases() {
+    const items = visibleItems();
+    const host = document.getElementById('phraseList');
+    const job = getJob();
+    const mode = getMode();
+    document.getElementById('seriesTitle').textContent = job.label;
+    document.getElementById('seriesCount').textContent = items.length + (items.length > 1 ? ' phrases' : ' phrase');
+    document.getElementById('seriesTense').textContent = state.reviewOnly ? 'Reprise des erreurs' : mode.label;
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('liveAnswered').textContent = '0';
+    document.getElementById('liveCorrect').textContent = state.last.correct;
+    document.getElementById('liveErrors').textContent = state.last.errors;
+    document.getElementById('liveXP').textContent = state.last.xp;
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('btnCheck').disabled = false;
+    document.getElementById('btnReviewErrors').hidden = true;
+
+    host.innerHTML = items.map((item, visibleIndex) => {
+      const options = choicesFor(item).map((choice) => (
+        '<option value="' + escapeHtml(choice) + '">' + escapeHtml(choice) + '</option>'
+      )).join('');
+      return [
+        '<article class="phrase-card" data-index="' + item.index + '">',
+        '  <div class="phrase-main">',
+        '    <div class="phrase-meta">',
+        '      <span class="phrase-number">' + (visibleIndex + 1) + '</span>',
+        '      <span class="phrase-tense">' + escapeHtml(TENSE_LABELS[item.tense]) + '</span>',
+        '    </div>',
+        '    <div class="phrase-text">' + phraseHtml(item, options) + '</div>',
+        '    <div class="phrase-feedback" aria-live="polite"></div>',
+        '  </div>',
+        '</article>'
+      ].join('');
+    }).join('');
+
+    document.querySelectorAll('.verb-select').forEach((select) => {
+      select.addEventListener('change', updateLiveProgress);
+    });
+  }
+
+  function updateLiveProgress() {
+    const total = document.querySelectorAll('.verb-select').length;
+    const answered = Array.from(document.querySelectorAll('.verb-select'))
+      .filter((select) => select.value).length;
+    const pct = total ? Math.round((answered / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('liveAnswered').textContent = answered;
+  }
+
+  function checkAnswers() {
+    if (state.checked) {
+      notify('Cette série est déjà vérifiée. Effacez les réponses pour recommencer.', 'info');
+      return;
+    }
+
+    const items = visibleItems();
+    let typed = 0;
+    let correct = 0;
+    let errors = 0;
+    const correctIndexes = [];
+    const errorItems = [];
+
+    document.querySelectorAll('.phrase-card').forEach((card) => {
+      const itemIndex = Number(card.getAttribute('data-index'));
+      const item = items.find((entry) => entry.index === itemIndex);
+      const select = card.querySelector('.verb-select');
+      const feedback = card.querySelector('.phrase-feedback');
+      const selected = select.value;
+      const answer = conjugate(item.verb, item.tense);
+
+      card.classList.remove('correct', 'wrong');
+      if (!selected) {
+        feedback.textContent = 'Phrase non complétée.';
+        return;
+      }
+
+      typed += 1;
+      if (selected === answer) {
+        correct += 1;
+        correctIndexes.push(item.index);
+        card.classList.add('correct');
+        feedback.textContent = 'Correct.';
+      } else {
+        errors += 1;
+        errorItems.push(Object.assign({}, item));
+        card.classList.add('wrong');
+        feedback.textContent = 'Correction : ' + fullSentence(item);
+      }
+    });
+
+    if (!typed) {
+      document.getElementById('resultTitle').textContent = 'Choisissez une réponse';
+      document.getElementById('resultText').textContent = 'Sélectionnez au moins un verbe dans la série, puis cliquez sur Vérifier.';
+      document.getElementById('resultZone').classList.add('show');
+      notify('Choisissez au moins un verbe.', 'info');
+      return;
+    }
+
+    const xp = correct * 3;
+    const accuracy = safeAccuracy(correct, typed);
+    const jobCorrectTotal = updateJobProgress(correctIndexes);
+    state.checked = true;
+    state.reviewItems = errorItems.slice();
+    state.last = { correct, errors, typed, xp };
+    document.getElementById('btnCheck').disabled = true;
+    document.querySelectorAll('.verb-select').forEach((select) => {
+      select.disabled = true;
+    });
+
+    document.getElementById('liveCorrect').textContent = correct;
+    document.getElementById('liveErrors').textContent = errors;
+    document.getElementById('liveXP').textContent = xp;
+    document.getElementById('resCorrect').textContent = correct;
+    document.getElementById('resErrors').textContent = errors;
+    document.getElementById('resXP').textContent = xp;
+    document.getElementById('resAccuracy').textContent = accuracy + '%';
+    document.getElementById('resultTitle').textContent = accuracy >= 80 ? 'Très bon travail' : 'Série vérifiée';
+    document.getElementById('resultText').textContent = 'Vous avez répondu à ' + typed + ' phrase' + (typed > 1 ? 's' : '') + '. Progression ' + getJob().label + ' : ' + jobCorrectTotal + '/50.';
+    document.getElementById('resultZone').classList.add('show');
+    document.getElementById('btnReviewErrors').hidden = errorItems.length === 0;
+
+    safeRecordProgress({ correct, typed, errors, xp });
+    if (jobCorrectTotal >= getJob().items.length) {
+      safePromoteStatus('completed');
+    } else {
+      safePromoteStatus('in_progress');
+    }
+    if (accuracy >= 80 && typed === items.length) safeConfetti();
+    notify('Série vérifiée : ' + correct + ' correcte' + (correct > 1 ? 's' : '') + ', +' + xp + ' XP', 'success');
+  }
+
+  function resetAnswers() {
+    document.querySelectorAll('.phrase-card').forEach((card) => {
+      card.classList.remove('correct', 'wrong');
+      card.querySelector('.verb-select').value = '';
+      card.querySelector('.phrase-feedback').textContent = '';
+    });
+    state.checked = false;
+    state.last = { correct: 0, errors: 0, typed: 0, xp: 0 };
+    document.getElementById('liveCorrect').textContent = '0';
+    document.getElementById('liveErrors').textContent = '0';
+    document.getElementById('liveXP').textContent = '0';
+    document.getElementById('resultZone').classList.remove('show');
+    document.getElementById('btnCheck').disabled = false;
+    document.getElementById('btnReviewErrors').hidden = true;
+    document.querySelectorAll('.verb-select').forEach((select) => {
+      select.disabled = false;
+    });
+    updateLiveProgress();
+  }
+
+  function changeJob(jobId) {
+    state.jobId = jobId;
+    state.checked = false;
+    state.reviewOnly = false;
+    state.reviewItems = [];
+    state.last = { correct: 0, errors: 0, typed: 0, xp: 0 };
+    renderControls();
+    renderPhrases();
+  }
+
+  function changeMode(modeId) {
+    state.modeId = modeId;
+    state.checked = false;
+    state.reviewOnly = false;
+    state.reviewItems = [];
+    state.last = { correct: 0, errors: 0, typed: 0, xp: 0 };
+    renderControls();
+    renderPhrases();
+  }
+
+  function changeSeriesSize(size) {
+    state.seriesSize = SERIES_SIZES.includes(size) ? size : 10;
+    state.checked = false;
+    state.reviewOnly = false;
+    state.reviewItems = [];
+    state.last = { correct: 0, errors: 0, typed: 0, xp: 0 };
+    renderControls();
+    renderPhrases();
+  }
+
+  function reviewErrors() {
+    if (!state.reviewItems.length) return;
+    state.reviewOnly = true;
+    state.checked = false;
+    state.last = { correct: 0, errors: 0, typed: 0, xp: 0 };
+    renderControls();
+    renderPhrases();
+    notify('Reprise des erreurs uniquement.', 'info');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderControls();
+    renderPhrases();
+    if (typeof setupNextExerciseButton === 'function') {
+      setupNextExerciseButton(PAGE_ID);
+    }
+
+    document.getElementById('jobSelect').addEventListener('change', (event) => {
+      changeJob(event.target.value);
+    });
+
+    document.getElementById('seriesSelect').addEventListener('change', (event) => {
+      changeSeriesSize(Number(event.target.value));
+    });
+
+    document.getElementById('modeControls').addEventListener('click', (event) => {
+      const button = event.target.closest('.tense-button');
+      if (!button) return;
+      changeMode(button.getAttribute('data-mode'));
+    });
+
+    document.getElementById('btnCheck').addEventListener('click', checkAnswers);
+    document.getElementById('btnReset').addEventListener('click', resetAnswers);
+    document.getElementById('btnReviewErrors').addEventListener('click', reviewErrors);
+  });
+  </script>
+</body>
+</html>
