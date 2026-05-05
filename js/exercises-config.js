@@ -16,6 +16,7 @@
     { page: 'retaper',     name: 'Retaper',                   icon: '✍️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
     { page: 'vocabulaire-metier', name: 'Vocabulaire métier',  icon: '💬', cat: 'Langue',        section: 'Français',           themes: ['emploi', 'français', 'métiers'] },
+    { page: 'compréhension', name: 'Écouter 2',                icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['français', 'emploi', 'orp', 'écoute'] },
     { page: 'clavier',     name: 'Clavier',                   icon: '⌨️', cat: 'Langue',        section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'ecouter',     name: 'Écouter',                   icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'orp', 'transports'] },
     { page: 'cliquer',     name: 'Cliquer',                   icon: '🖱️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports'] },
@@ -46,6 +47,7 @@
   const XP_RULES_BY_PAGE = {
     'alphabet':        '+5 XP par bonne réponse.',
     'vocabulaire-metier': '+3 XP par bon verbe choisi.',
+    'compréhension':   '+3 XP par texte travaillé.',
     'clavier':         '+1 XP par bonne touche.',
     'cherche-clique':  '+3 XP par clic correct.',
     'apparier':        '+2 XP par paire trouvée.',
@@ -117,6 +119,12 @@
       objective: 'Renforcer le vocabulaire professionnel et les temps de base.',
       practice: 'Présent, imparfait, passé composé, passé récent, futur proche et futur simple.',
       useWhen: 'Pour préparer une séquence sur les métiers, les stages ou l’emploi.'
+    },
+    'compréhension': {
+      summary: 'Écouter un texte A2, répondre aux questions, puis afficher le texte avec le code formateur.',
+      objective: 'Développer la compréhension écrite et orale à partir de situations simples du quotidien.',
+      practice: 'Écoute, lecture, repérage d’informations, réponses courtes, correction guidée.',
+      useWhen: 'Pour travailler le français en groupe, avec lecture cachée puis vérification.'
     },
     'clavier': {
       summary: 'S’entraîner a trouver les touches et a taper plus régulièrement.',

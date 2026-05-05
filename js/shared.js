@@ -8,7 +8,12 @@
 
   function currentPageId() {
     const file = window.location.pathname.split('/').pop() || '';
-    return file.replace(/\.html$/i, '') || 'accueil';
+    const page = file.replace(/\.html$/i, '') || 'accueil';
+    try {
+      return decodeURIComponent(page);
+    } catch (error) {
+      return page;
+    }
   }
 
   function escapeHtml(value) {
