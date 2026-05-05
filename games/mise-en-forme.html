@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mise en forme - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/mise-en-forme.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+        <div class="page-header fade-up">
+          <div class="page-icon">✉️</div>
+          <h1>Mise en forme</h1>
+          <p>Transformez un e-mail brut en message clair, lisible et professionnel.</p>
+        </div>
+
+        <section class="format-zone fade-up delay-2" aria-label="Exercice de mise en forme d e-mail">
+          <div class="format-controls">
+            <div class="format-field">
+              <label for="emailSelect">Bloc d'e-mail</label>
+              <select id="emailSelect"></select>
+            </div>
+            <button class="btn btn-secondary" id="btnLoad" type="button">Charger le bloc</button>
+          </div>
+
+          <div class="format-board">
+            <section class="format-card">
+              <div class="format-label">Texte brut</div>
+              <div class="raw-box" id="rawBox"></div>
+            </section>
+
+            <section class="format-card">
+              <div class="format-label">Votre version</div>
+              <textarea class="work-box" id="workBox" spellcheck="true"></textarea>
+            </section>
+
+            <section class="format-card">
+              <div class="format-label">Modèle final non copiable</div>
+              <div class="model-box" id="modelBox" aria-label="Modele non copiable"></div>
+              <div class="model-note">Le modèle sert de repère visuel. Il ne peut pas être sélectionné ni copié.</div>
+            </section>
+          </div>
+
+          <div class="format-actions">
+            <button class="btn btn-primary" id="btnCheck" type="button">Vérifier la mise en forme</button>
+            <button class="btn btn-secondary" id="btnClear" type="button">Effacer ma version</button>
+            <button class="btn btn-secondary" id="btnNextBlock" type="button">Bloc suivant</button>
+          </div>
+
+          <div class="format-results" id="resultZone" aria-live="polite">
+            <div class="kpi-grid">
+              <div class="kpi-card"><div class="kpi-value" id="resScore">0/6</div><div class="kpi-label">Critères</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resXP">0</div><div class="kpi-label">XP</div></div>
+              <div class="kpi-card"><div class="kpi-value" id="resDone">0</div><div class="kpi-label">Blocs faits</div></div>
+            </div>
+            <div class="check-grid" id="checkGrid"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'mise-en-forme';
+  const DONE_KEY = 'mise_en_forme_done_v1';
+  const EMAILS = [
+    ['Candidature nettoyage', 'bonjour madame je vous envoie ma candidature pour le poste agent de nettoyage je suis disponible rapidement merci pour votre reponse salutations', 'Objet : Candidature au poste d’agent de nettoyage\n\nBonjour Madame,\n\nJe vous envoie ma candidature pour le poste d’agent de nettoyage.\nJe suis disponible rapidement.\n\nMerci pour votre réponse.\n\nSalutations'],
+    ['Retard bus', 'bonjour je vous informe que mon bus a du retard je vais arriver avec quinze minutes de retard merci de votre comprehension salutations', 'Objet : Retard de transport\n\nBonjour,\n\nJe vous informe que mon bus a du retard.\nJe vais arriver avec quinze minutes de retard.\n\nMerci de votre compréhension.\n\nSalutations'],
+    ['Rendez vous ORP', 'bonjour monsieur je confirme ma presence au rendez vous orp de demain merci et bonne journee salutations', 'Objet : Confirmation du rendez-vous ORP\n\nBonjour Monsieur,\n\nJe confirme ma présence au rendez-vous ORP de demain.\n\nMerci et bonne journée.\n\nSalutations'],
+    ['Demande horaire', 'bonjour pouvez vous me confirmer mon horaire pour lundi matin merci beaucoup salutations', 'Objet : Demande d’horaire\n\nBonjour,\n\nPouvez-vous me confirmer mon horaire pour lundi matin ?\n\nMerci beaucoup.\n\nSalutations'],
+    ['Absence maladie', 'bonjour je suis malade aujourd hui et je ne peux pas venir travailler je vous envoie le certificat des que possible salutations', 'Objet : Absence pour maladie\n\nBonjour,\n\nJe suis malade aujourd’hui et je ne peux pas venir travailler.\nJe vous envoie le certificat dès que possible.\n\nSalutations'],
+    ['Piece jointe CV', 'bonjour vous trouvez mon cv en piece jointe je reste disponible pour un entretien salutations', 'Objet : Envoi de mon CV\n\nBonjour,\n\nVous trouvez mon CV en pièce jointe.\nJe reste disponible pour un entretien.\n\nSalutations'],
+    ['Demande stage', 'bonjour je cherche un stage dans votre entreprise je suis motive et disponible pour une rencontre salutations', 'Objet : Demande de stage\n\nBonjour,\n\nJe cherche un stage dans votre entreprise.\nJe suis motivé et disponible pour une rencontre.\n\nSalutations'],
+    ['Changement adresse', 'bonjour je vous informe que mon adresse a change merci de mettre mon dossier a jour salutations', 'Objet : Changement d’adresse\n\nBonjour,\n\nJe vous informe que mon adresse a changé.\nMerci de mettre mon dossier à jour.\n\nSalutations'],
+    ['Question salaire', 'bonjour pouvez vous me dire quand le salaire sera verse merci pour votre retour salutations', 'Objet : Question concernant le salaire\n\nBonjour,\n\nPouvez-vous me dire quand le salaire sera versé ?\n\nMerci pour votre retour.\n\nSalutations'],
+    ['Disponibilites entretien', 'bonjour je suis disponible mardi matin ou jeudi apres midi pour un entretien merci salutations', 'Objet : Disponibilités pour un entretien\n\nBonjour,\n\nJe suis disponible mardi matin ou jeudi après-midi pour un entretien.\n\nMerci.\n\nSalutations'],
+    ['Document manquant', 'bonjour il manque un document dans mon dossier pouvez vous me dire lequel merci salutations', 'Objet : Document manquant\n\nBonjour,\n\nIl manque un document dans mon dossier.\nPouvez-vous me dire lequel ?\n\nMerci.\n\nSalutations'],
+    ['Excuse retard', 'bonjour je m excuse pour mon retard de ce matin le train etait supprime salutations', 'Objet : Excuse pour mon retard\n\nBonjour,\n\nJe m’excuse pour mon retard de ce matin.\nLe train était supprimé.\n\nSalutations'],
+    ['Demande attestation', 'bonjour pouvez vous me transmettre une attestation de travail merci beaucoup salutations', 'Objet : Demande d’attestation\n\nBonjour,\n\nPouvez-vous me transmettre une attestation de travail ?\n\nMerci beaucoup.\n\nSalutations'],
+    ['Commande uniforme', 'bonjour il me faudrait une nouvelle veste de travail taille m merci salutations', 'Objet : Demande d’uniforme\n\nBonjour,\n\nIl me faudrait une nouvelle veste de travail en taille M.\n\nMerci.\n\nSalutations'],
+    ['Confirmation essai', 'bonjour je confirme que je viens faire l essai mercredi a huit heures salutations', 'Objet : Confirmation de l’essai\n\nBonjour,\n\nJe confirme que je viens faire l’essai mercredi à huit heures.\n\nSalutations'],
+    ['Demande formation', 'bonjour je souhaite avoir des informations sur la formation proposee merci salutations', 'Objet : Demande d’information sur la formation\n\nBonjour,\n\nJe souhaite avoir des informations sur la formation proposée.\n\nMerci.\n\nSalutations'],
+    ['Probleme planning', 'bonjour je vois une erreur dans mon planning je travaille deja vendredi matin salutations', 'Objet : Problème dans le planning\n\nBonjour,\n\nJe vois une erreur dans mon planning.\nJe travaille déjà vendredi matin.\n\nSalutations'],
+    ['Retour candidature', 'bonjour je me permets de demander si vous avez bien recu ma candidature merci salutations', 'Objet : Suivi de ma candidature\n\nBonjour,\n\nJe me permets de demander si vous avez bien reçu ma candidature.\n\nMerci.\n\nSalutations'],
+    ['Annulation rendez vous', 'bonjour je dois annuler mon rendez vous de mardi pouvez vous me proposer une autre date salutations', 'Objet : Annulation du rendez-vous\n\nBonjour,\n\nJe dois annuler mon rendez-vous de mardi.\nPouvez-vous me proposer une autre date ?\n\nSalutations'],
+    ['Demande contrat', 'bonjour pouvez vous me transmettre une copie de mon contrat de travail merci salutations', 'Objet : Demande de contrat\n\nBonjour,\n\nPouvez-vous me transmettre une copie de mon contrat de travail ?\n\nMerci.\n\nSalutations'],
+    ['Remerciement entretien', 'bonjour merci pour l entretien de ce matin je reste disponible pour la suite salutations', 'Objet : Remerciement après l’entretien\n\nBonjour,\n\nMerci pour l’entretien de ce matin.\nJe reste disponible pour la suite.\n\nSalutations'],
+    ['Question lieu', 'bonjour pouvez vous me confirmer l adresse exacte du lieu de travail merci salutations', 'Objet : Confirmation du lieu de travail\n\nBonjour,\n\nPouvez-vous me confirmer l’adresse exacte du lieu de travail ?\n\nMerci.\n\nSalutations'],
+    ['Changement telephone', 'bonjour mon numero de telephone a change voici le nouveau numero merci salutations', 'Objet : Changement de numéro de téléphone\n\nBonjour,\n\nMon numéro de téléphone a changé.\nVoici le nouveau numéro.\n\nMerci.\n\nSalutations'],
+    ['Demande vacances', 'bonjour je souhaite demander deux jours de vacances la semaine prochaine salutations', 'Objet : Demande de vacances\n\nBonjour,\n\nJe souhaite demander deux jours de vacances la semaine prochaine.\n\nSalutations'],
+    ['Accident travail', 'bonjour je vous informe que je me suis blesse au travail ce matin salutations', 'Objet : Information concernant un accident\n\nBonjour,\n\nJe vous informe que je me suis blessé au travail ce matin.\n\nSalutations'],
+    ['Poste logistique', 'bonjour je vous ecris pour le poste en logistique annonce sur votre site salutations', 'Objet : Candidature au poste en logistique\n\nBonjour,\n\nJe vous écris pour le poste en logistique annoncé sur votre site.\n\nSalutations'],
+    ['Poste vente', 'bonjour je suis interesse par le poste de vendeur dans votre magasin salutations', 'Objet : Candidature au poste de vendeur\n\nBonjour,\n\nJe suis intéressé par le poste de vendeur dans votre magasin.\n\nSalutations'],
+    ['Poste cuisine', 'bonjour je souhaite postuler pour le poste d aide de cuisine salutations', 'Objet : Candidature au poste d’aide de cuisine\n\nBonjour,\n\nJe souhaite postuler pour le poste d’aide de cuisine.\n\nSalutations'],
+    ['Poste batiment', 'bonjour je vous envoie ma candidature pour le poste d aide dans le batiment salutations', 'Objet : Candidature dans le bâtiment\n\nBonjour,\n\nJe vous envoie ma candidature pour le poste d’aide dans le bâtiment.\n\nSalutations'],
+    ['Poste production', 'bonjour je suis disponible pour travailler en production des la semaine prochaine salutations', 'Objet : Disponibilité pour la production\n\nBonjour,\n\nJe suis disponible pour travailler en production dès la semaine prochaine.\n\nSalutations'],
+    ['Demande explication', 'bonjour je n ai pas compris la consigne pouvez vous me l expliquer merci salutations', 'Objet : Demande d’explication\n\nBonjour,\n\nJe n’ai pas compris la consigne.\nPouvez-vous me l’expliquer ?\n\nMerci.\n\nSalutations'],
+    ['Envoi certificat', 'bonjour vous trouvez mon certificat medical en piece jointe merci salutations', 'Objet : Envoi du certificat médical\n\nBonjour,\n\nVous trouvez mon certificat médical en pièce jointe.\n\nMerci.\n\nSalutations'],
+    ['Disponibilite remplacement', 'bonjour je suis disponible pour remplacer une personne vendredi apres midi salutations', 'Objet : Disponibilité pour un remplacement\n\nBonjour,\n\nJe suis disponible pour remplacer une personne vendredi après-midi.\n\nSalutations'],
+    ['Erreur fiche salaire', 'bonjour je pense qu il y a une erreur sur ma fiche de salaire pouvez vous verifier salutations', 'Objet : Erreur sur la fiche de salaire\n\nBonjour,\n\nJe pense qu’il y a une erreur sur ma fiche de salaire.\nPouvez-vous vérifier ?\n\nSalutations'],
+    ['Demande materiel', 'bonjour il me manque des gants pour travailler pouvez vous m en donner salutations', 'Objet : Demande de matériel\n\nBonjour,\n\nIl me manque des gants pour travailler.\nPouvez-vous m’en donner ?\n\nSalutations'],
+    ['Fin mission', 'bonjour je voulais savoir si ma mission continue la semaine prochaine salutations', 'Objet : Suite de la mission\n\nBonjour,\n\nJe voulais savoir si ma mission continue la semaine prochaine.\n\nSalutations'],
+    ['Retard livraison', 'bonjour la livraison aura du retard je vous tiens informe salutations', 'Objet : Retard de livraison\n\nBonjour,\n\nLa livraison aura du retard.\nJe vous tiens informé.\n\nSalutations'],
+    ['Rappel documents', 'bonjour je vous envoie les documents demandes pour mon dossier salutations', 'Objet : Envoi des documents demandés\n\nBonjour,\n\nJe vous envoie les documents demandés pour mon dossier.\n\nSalutations'],
+    ['Demande badge', 'bonjour mon badge ne fonctionne plus pouvez vous le remplacer merci salutations', 'Objet : Badge à remplacer\n\nBonjour,\n\nMon badge ne fonctionne plus.\nPouvez-vous le remplacer ?\n\nMerci.\n\nSalutations'],
+    ['Demande pause', 'bonjour pouvez vous me dire a quelle heure est ma pause aujourd hui merci salutations', 'Objet : Heure de pause\n\nBonjour,\n\nPouvez-vous me dire à quelle heure est ma pause aujourd’hui ?\n\nMerci.\n\nSalutations'],
+    ['Message responsable', 'bonjour le responsable m a demande de vous envoyer ce message salutations', 'Objet : Message pour information\n\nBonjour,\n\nLe responsable m’a demandé de vous envoyer ce message.\n\nSalutations'],
+    ['Probleme machine', 'bonjour la machine ne fonctionne pas depuis ce matin j ai prevenu l equipe salutations', 'Objet : Problème avec la machine\n\nBonjour,\n\nLa machine ne fonctionne pas depuis ce matin.\nJ’ai prévenu l’équipe.\n\nSalutations'],
+    ['Demande rendez vous', 'bonjour je souhaite prendre un rendez vous avec vous cette semaine salutations', 'Objet : Demande de rendez-vous\n\nBonjour,\n\nJe souhaite prendre un rendez-vous avec vous cette semaine.\n\nSalutations'],
+    ['Confirmation reception', 'bonjour je confirme que j ai bien recu votre message merci salutations', 'Objet : Confirmation de réception\n\nBonjour,\n\nJe confirme que j’ai bien reçu votre message.\n\nMerci.\n\nSalutations'],
+    ['Question assurance', 'bonjour pouvez vous me dire quels documents envoyer pour l assurance salutations', 'Objet : Question concernant l’assurance\n\nBonjour,\n\nPouvez-vous me dire quels documents envoyer pour l’assurance ?\n\nSalutations'],
+    ['Erreur adresse', 'bonjour l adresse indiquee dans le message n est pas correcte salutations', 'Objet : Erreur d’adresse\n\nBonjour,\n\nL’adresse indiquée dans le message n’est pas correcte.\n\nSalutations'],
+    ['Demande confirmation', 'bonjour pouvez vous me confirmer que le rendez vous est bien maintenu salutations', 'Objet : Demande de confirmation\n\nBonjour,\n\nPouvez-vous me confirmer que le rendez-vous est bien maintenu ?\n\nSalutations'],
+    ['Envoi horaires', 'bonjour voici mes disponibilites pour les deux prochaines semaines salutations', 'Objet : Envoi de mes disponibilités\n\nBonjour,\n\nVoici mes disponibilités pour les deux prochaines semaines.\n\nSalutations'],
+    ['Question documents', 'bonjour dois je apporter une piece d identite pour le premier jour salutations', 'Objet : Question pour le premier jour\n\nBonjour,\n\nDois-je apporter une pièce d’identité pour le premier jour ?\n\nSalutations'],
+    ['Message fin journee', 'bonjour la journee est terminee et le poste est range salutations', 'Objet : Fin de journée\n\nBonjour,\n\nLa journée est terminée et le poste est rangé.\n\nSalutations']
+  ].map((item, index) => ({
+    id: index + 1,
+    title: item[0],
+    raw: item[1],
+    model: item[2]
+  }));
+
+  let currentIndex = 0;
+
+  function getDoneSet() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(DONE_KEY) || '[]');
+      return new Set(Array.isArray(parsed) ? parsed : []);
+    } catch (e) {
+      return new Set();
+    }
+  }
+
+  function saveDoneSet(done) {
+    try {
+      localStorage.setItem(DONE_KEY, JSON.stringify(Array.from(done)));
+    } catch (e) {}
+  }
+
+  function preventCopy(element) {
+    ['copy', 'cut', 'contextmenu', 'dragstart', 'selectstart'].forEach((eventName) => {
+      element.addEventListener(eventName, (event) => event.preventDefault());
+    });
+  }
+
+  function renderSelect() {
+    const done = getDoneSet();
+    const select = document.getElementById('emailSelect');
+    select.innerHTML = EMAILS.map((item, index) => (
+      '<option value="' + index + '">' +
+      String(item.id).padStart(2, '0') + ' - ' + item.title + (done.has(item.id) ? ' ✓' : '') +
+      '</option>'
+    )).join('');
+    select.value = String(currentIndex);
+  }
+
+  function loadEmail(index) {
+    currentIndex = Math.max(0, Math.min(EMAILS.length - 1, Number(index) || 0));
+    const item = EMAILS[currentIndex];
+    document.getElementById('rawBox').textContent = item.raw;
+    document.getElementById('modelBox').textContent = item.model;
+    document.getElementById('workBox').value = item.raw;
+    document.getElementById('resultZone').classList.remove('show');
+    renderSelect();
+  }
+
+  function hasCapitalAfterBreak(text) {
+    return text.split(/\n+/).some((line) => /^[A-ZÀÂÇÉÈÊËÎÏÔÙÛÜ]/.test(line.trim()));
+  }
+
+  function checkWork() {
+    const text = document.getElementById('workBox').value.trim();
+    const checks = [
+      { label: 'Objet séparé', ok: /^objet\s*:/i.test(text) },
+      { label: 'Salutation présente', ok: /bonjour/i.test(text) },
+      { label: 'Plusieurs lignes', ok: text.split(/\n/).filter((line) => line.trim()).length >= 5 },
+      { label: 'Ponctuation ajoutée', ok: /[.!?:]/.test(text) },
+      { label: 'Formule finale', ok: /salutations|cordialement|bonne journee/i.test(text) },
+      { label: 'Majuscules visibles', ok: hasCapitalAfterBreak(text) }
+    ];
+    const score = checks.filter((check) => check.ok).length;
+    const xp = score >= 5 ? 3 : score >= 3 ? 1 : 0;
+
+    const done = getDoneSet();
+    if (score >= 5) {
+      done.add(EMAILS[currentIndex].id);
+      saveDoneSet(done);
+      if (typeof recordExerciseProgress === 'function') {
+        recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+      }
+      if (done.size >= EMAILS.length && typeof promoteExerciseStatus === 'function') {
+        promoteExerciseStatus(PAGE_ID, 'completed');
+      }
+    } else if (typeof recordExerciseProgress === 'function') {
+      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp });
+    }
+
+    document.getElementById('resScore').textContent = score + '/6';
+    document.getElementById('resXP').textContent = xp;
+    document.getElementById('resDone').textContent = done.size;
+    document.getElementById('checkGrid').innerHTML = checks.map((check) => (
+      '<div class="check-item ' + (check.ok ? 'ok' : 'missing') + '">' +
+      (check.ok ? '✓ ' : 'À revoir : ') + check.label +
+      '</div>'
+    )).join('');
+    document.getElementById('resultZone').classList.add('show');
+    renderSelect();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    preventCopy(document.getElementById('modelBox'));
+    renderSelect();
+    loadEmail(0);
+
+    document.getElementById('emailSelect').addEventListener('change', (event) => {
+      loadEmail(event.target.value);
+    });
+    document.getElementById('btnLoad').addEventListener('click', () => {
+      loadEmail(document.getElementById('emailSelect').value);
+    });
+    document.getElementById('btnCheck').addEventListener('click', checkWork);
+    document.getElementById('btnClear').addEventListener('click', () => {
+      document.getElementById('workBox').value = '';
+      document.getElementById('resultZone').classList.remove('show');
+    });
+    document.getElementById('btnNextBlock').addEventListener('click', () => {
+      loadEmail((currentIndex + 1) % EMAILS.length);
+    });
+  });
+  </script>
+</body>
+</html>

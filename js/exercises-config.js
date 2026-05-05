@@ -11,6 +11,7 @@
     { page: 'accueil',     name: 'Accueil',                  icon: '🏠', cat: 'Navigation',   section: null,                 themes: [] },
     { page: 'formulaire',  name: 'Formulaire',                icon: '📝', cat: 'Candidature',  section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'orp'] },
     { page: 'email-ecrire',name: 'Écrire un e-mail',          icon: '✉️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
+    { page: 'mise-en-forme', name: 'Mise en forme',            icon: '🧾', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'français'] },
     { page: 'email-pro',   name: 'E-mails professionnels',    icon: '📧', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'orp'] },
     { page: 'retaper',     name: 'Retaper',                   icon: '✍️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
@@ -63,6 +64,7 @@
     'trier':           '+2 XP par élément correct (reduit par les erreurs).',
     'formulaire':      '+6-9 XP par formulaire réussi (bonus si sans indice).',
     'email-ecrire':    '+3 XP par bonne réponse.',
+    'mise-en-forme':   '+3 XP par e-mail bien mis en forme.',
     'email-pro':       '+3 XP par bonne réponse.',
     'retaper':         '+7 XP parfait, +5 XP (>=90%), +3 XP (>=70%), +1 XP sinon. -1 XP si indice.',
     'simulations-dialogues': '+3 XP (bonne réponse), +1 XP (réponse moyenne).',
@@ -85,6 +87,12 @@
       objective: 'Reconnaître une reponse claire, polie et utile.',
       practice: 'Objet, formule de politesse, message court, demande précise.',
       useWhen: 'Pour préparer les premiers e-mails de candidature.'
+    },
+    'mise-en-forme': {
+      summary: 'Transformer un e-mail brut en message clair avec objet, lignes et ponctuation.',
+      objective: 'Apprendre à rendre un message professionnel plus lisible.',
+      practice: 'Objet, salutation, paragraphes, ponctuation, formule finale.',
+      useWhen: 'Avant d’écrire ou relire un e-mail important.'
     },
     'email-pro': {
       summary: 'Lire un e-mail professionnel et choisir une reponse correcte.',

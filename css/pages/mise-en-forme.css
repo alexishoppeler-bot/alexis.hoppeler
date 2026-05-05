@@ -1,0 +1,151 @@
+/* ===== MISE EN FORME EMAIL ===== */
+
+.format-zone {
+  display: grid;
+  gap: 18px;
+}
+
+.format-controls,
+.format-board,
+.format-results {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.format-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  padding: 18px;
+}
+
+.format-field {
+  display: grid;
+  gap: 8px;
+}
+
+.format-field label,
+.format-label {
+  color: var(--text3);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.format-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px;
+}
+
+.format-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.raw-box,
+.model-box,
+.work-box {
+  min-height: 260px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  line-height: 1.75;
+}
+
+.raw-box {
+  white-space: pre-wrap;
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+
+.model-box {
+  white-space: pre-wrap;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+.work-box {
+  width: 100%;
+  resize: vertical;
+  font-size: 16px;
+}
+
+.model-note {
+  color: var(--text3);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.format-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 18px 18px;
+}
+
+.format-results {
+  display: none;
+  padding: 18px;
+}
+
+.format-results.show {
+  display: grid;
+  gap: 14px;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.check-item {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.check-item.ok {
+  border-color: rgba(47,125,50,0.35);
+  background: rgba(131,189,69,0.1);
+  color: #2f6d16;
+}
+
+.check-item.missing {
+  border-color: rgba(192,57,43,0.25);
+  background: rgba(192,57,43,0.06);
+  color: var(--danger);
+}
+
+@media (max-width: 960px) {
+  .format-controls,
+  .format-board {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .format-controls,
+  .format-board,
+  .format-results {
+    padding: 14px;
+  }
+
+  .format-actions {
+    padding: 0 14px 14px;
+  }
+}
