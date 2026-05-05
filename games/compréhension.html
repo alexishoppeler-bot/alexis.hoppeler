@@ -140,36 +140,6 @@
       border-radius: var(--r-lg);
     }
 
-    .score-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-    }
-
-    .score-tile {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      padding: 16px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .score-value {
-      color: var(--accent);
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .score-label {
-      color: var(--text2);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      margin-top: 6px;
-      text-transform: uppercase;
-    }
-
     .reading-card {
       display: none;
       animation: fadeIn 0.45s ease both;
@@ -370,21 +340,6 @@
       transition: border-color 0.2s, background 0.2s;
     }
 
-    .question.correct {
-      background: color-mix(in srgb, var(--success) 10%, var(--surface));
-      border-color: color-mix(in srgb, var(--success) 55%, var(--border));
-    }
-
-    .question.partial {
-      background: color-mix(in srgb, var(--warning) 14%, var(--surface));
-      border-color: color-mix(in srgb, var(--warning) 60%, var(--border));
-    }
-
-    .question.wrong {
-      background: color-mix(in srgb, var(--danger) 8%, var(--surface));
-      border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
-    }
-
     .question strong {
       color: var(--accent);
     }
@@ -430,18 +385,6 @@
       margin: 10px 0;
     }
 
-    .feedback {
-      min-height: 22px;
-      margin-top: 8px;
-      color: var(--text2);
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .feedback.correct { color: var(--success); }
-    .feedback.partial { color: #8a6200; }
-    .feedback.wrong { color: var(--danger); }
-
     .card-actions {
       display: flex;
       flex-wrap: wrap;
@@ -480,37 +423,6 @@
       flex-wrap: wrap;
       gap: 10px;
       padding: 0 16px 16px;
-    }
-
-    .result-message {
-      display: none;
-      margin-top: 18px;
-      border-radius: var(--r-lg);
-      padding: 16px 18px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .result-message.show {
-      display: block;
-      animation: fadeIn 0.25s ease both;
-    }
-
-    .result-message.good {
-      background: color-mix(in srgb, var(--success) 12%, var(--surface));
-      border-color: color-mix(in srgb, var(--success) 45%, var(--border));
-    }
-
-    .result-message.mid {
-      background: color-mix(in srgb, var(--warning) 14%, var(--surface));
-      border-color: color-mix(in srgb, var(--warning) 55%, var(--border));
-    }
-
-    .result-message.bad {
-      background: color-mix(in srgb, var(--danger) 8%, var(--surface));
-      border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
     }
 
     .footer-note {
@@ -560,7 +472,7 @@
         <div class="page-header fade-up">
           <div class="page-icon">📖</div>
           <h1>Écouter 2</h1>
-          <p>Écoutez, répondez, puis corrigez. Le texte et les réponses restent avec le formateur.</p>
+          <p>Écoutez, répondez, puis comparez avec les réponses possibles.</p>
         </div>
 
         <section class="comprehension-shell fade-up delay-2" aria-label="Compréhension orale A2">
@@ -568,27 +480,12 @@
             <div class="lesson-steps" aria-label="Étapes de l’activité">
               <div class="lesson-step"><span class="step-number">1</span><span>Écouter</span></div>
               <div class="lesson-step"><span class="step-number">2</span><span>Répondre</span></div>
-              <div class="lesson-step"><span class="step-number">3</span><span>Corriger</span></div>
+              <div class="lesson-step"><span class="step-number">3</span><span>Voir les réponses</span></div>
             </div>
             <div class="status-panel">
               <div class="counter" id="counter">Texte 1 / 10</div>
               <div class="voice-status" id="voiceStatus" hidden>Voix : chargement...</div>
               <div class="audio-status" id="audioStatus">Audio : prêt</div>
-            </div>
-          </section>
-
-          <section class="score-strip" aria-label="Progression du jeu">
-            <div class="score-tile">
-              <div class="score-value" id="scoreValue">0%</div>
-              <div class="score-label">Score du texte</div>
-            </div>
-            <div class="score-tile">
-              <div class="score-value" id="completedValue">0 / 10</div>
-              <div class="score-label">Textes terminés</div>
-            </div>
-            <div class="score-tile">
-              <div class="score-value" id="globalValue">0%</div>
-              <div class="score-label">Progression</div>
             </div>
           </section>
 
@@ -623,7 +520,6 @@
             <summary>Formateur</summary>
             <div class="trainer-actions">
               <button class="good" onclick="askCodeAndToggleText()">Afficher / cacher texte</button>
-              <button class="good" onclick="askCodeAndToggleAnswers()">Afficher / cacher réponses</button>
               <button class="sound audio-button" onclick="speakCurrentTextAndQuestions()">Texte + questions</button>
             </div>
           </details>
@@ -635,10 +531,6 @@
     <div id="footer-slot"></div>
   </div>
 
-  <script src="../js/score.js"></script>
-  <script src="../js/exercises-config.js"></script>
-  <script src="../js/stages.js"></script>
-  <script src="../js/exercise-utils.js"></script>
   <script src="../js/shared.js"></script>
   <script src="../js/ui.js"></script>
   <script>
@@ -808,38 +700,17 @@
     const pauseButton = document.getElementById("pauseButton");
     const progressBar = document.getElementById("progressBar");
     const progressText = document.getElementById("progressText");
-    const scoreValue = document.getElementById("scoreValue");
-    const completedValue = document.getElementById("completedValue");
-    const globalValue = document.getElementById("globalValue");
     const canSpeak = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
-    const PAGE_ID = "compréhension";
-    const SCORE_KEY = "ecouter_2_scores_v1";
     let voices = [];
     let preferredVoice = null;
     let currentUtterance = null;
     let speechRunId = 0;
-    let scoresByText = loadScores();
     const player = {
       title: "Lecteur audio",
       chunks: [],
       index: 0,
       state: "idle"
     };
-
-    function loadScores() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(SCORE_KEY) || "{}");
-        return parsed && typeof parsed === "object" ? parsed : {};
-      } catch (error) {
-        return {};
-      }
-    }
-
-    function saveScores() {
-      try {
-        localStorage.setItem(SCORE_KEY, JSON.stringify(scoresByText));
-      } catch (error) {}
-    }
 
     function buildCards() {
       cardsContainer.innerHTML = activities.map((item, index) => `
@@ -865,16 +736,14 @@
               <div class="question" data-question="${qIndex}">
                 <strong>Question ${qIndex + 1} :</strong> ${q}
                 <textarea data-question="${qIndex}" placeholder="Écrire la réponse ici..."></textarea>
-                <div class="feedback" data-feedback="${qIndex}"></div>
               </div>
             `).join("")}
           </div>
           <div class="card-actions">
-            <button class="good main-action" onclick="checkCurrentAnswers(false)">Corriger</button>
+            <button class="good main-action" onclick="toggleAnswers()">Voir les réponses</button>
             <button class="primary main-action" onclick="nextCard()">Texte suivant</button>
             <button class="quiet-action" onclick="resetInputs()">Effacer</button>
           </div>
-          <div class="result-message" aria-live="polite"></div>
           <div class="answers">
             <h3>Réponses possibles</h3>
             <ol>
@@ -925,17 +794,8 @@
     }
 
     function updateDashboard() {
-      const currentScore = scoresByText[current]?.percent || 0;
-      const completedCount = Object.values(scoresByText).filter(result => result.completed).length;
-      const globalPercent = Math.round((completedCount / activities.length) * 100);
-
-      scoreValue.textContent = `${currentScore}%`;
-      completedValue.textContent = `${completedCount} / ${activities.length}`;
-      globalValue.textContent = `${globalPercent}%`;
-
       Array.from(overviewSelect.options).forEach((option, index) => {
-        const completedMark = scoresByText[index]?.completed ? " ✓" : "";
-        option.textContent = `${index + 1}. ${activities[index].title}${completedMark}`;
+        option.textContent = `${index + 1}. ${activities[index].title}`;
       });
     }
 
@@ -957,10 +817,6 @@
       activeTextPanel.classList.toggle("show");
     }
 
-    function askCodeAndToggleAnswers() {
-      askTrainerCode(toggleAnswers, "Code incorrect. Les réponses restent cachées.");
-    }
-
     function toggleAnswers() {
       const activeCard = document.querySelector(".reading-card.active .answers");
       activeCard.classList.toggle("show");
@@ -970,117 +826,7 @@
       const activeCard = document.querySelector(".reading-card.active");
       const activeTextareas = document.querySelectorAll(".reading-card.active textarea");
       activeTextareas.forEach(area => area.value = "");
-      activeCard?.querySelectorAll(".question").forEach(question => {
-        question.classList.remove("correct", "partial", "wrong");
-      });
-      activeCard?.querySelectorAll(".feedback").forEach(feedback => {
-        feedback.className = "feedback";
-        feedback.textContent = "";
-      });
-      const resultBox = activeCard?.querySelector(".result-message");
-      if (resultBox) {
-        resultBox.className = "result-message";
-        resultBox.textContent = "";
-      }
-    }
-
-    function normalizeAnswer(value) {
-      return String(value || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[’']/g, " ")
-        .replace(/[^a-z0-9\s]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function answerTokens(value) {
-      const stopWords = new Set([
-        "le", "la", "les", "un", "une", "des", "du", "de", "d", "a", "au", "aux",
-        "il", "elle", "ils", "elles", "est", "sont", "et", "ou", "pour", "parce",
-        "que", "qu", "qui", "dans", "avec", "son", "sa", "ses", "leur", "leurs",
-        "ce", "c", "cela", "se", "s", "en", "y", "plus", "moins", "apres", "avant"
-      ]);
-      return normalizeAnswer(value)
-        .split(" ")
-        .filter(token => token.length > 2 && !stopWords.has(token));
-    }
-
-    function gradeAnswer(userAnswer, expectedAnswer) {
-      const user = normalizeAnswer(userAnswer);
-      if (!user) return { score: 0, state: "wrong", label: "Réponse vide." };
-
-      const expected = normalizeAnswer(expectedAnswer);
-      const expectedTokens = answerTokens(expectedAnswer);
-      const userTokens = new Set(answerTokens(userAnswer));
-      const matched = expectedTokens.filter(token => userTokens.has(token));
-      const ratio = expectedTokens.length ? matched.length / expectedTokens.length : 0;
-
-      if (user.includes(expected) || ratio >= 0.55) {
-        return { score: 1, state: "correct", label: "Correct." };
-      }
-      if (ratio >= 0.28) {
-        return { score: 0.5, state: "partial", label: "Partiel : il manque une information importante." };
-      }
-      return { score: 0, state: "wrong", label: "À reprendre : écoute encore le texte." };
-    }
-
-    function checkCurrentAnswers(autoContinue) {
-      const item = activities[current];
-      const activeCard = document.querySelector(".reading-card.active");
-      if (!item || !activeCard) return { completed: false, percent: 0 };
-
-      let score = 0;
-      activeCard.querySelectorAll(".question").forEach((question, index) => {
-        const textarea = question.querySelector("textarea");
-        const feedback = question.querySelector(".feedback");
-        const grade = gradeAnswer(textarea.value, item.answers[index]);
-        score += grade.score;
-
-        question.classList.remove("correct", "partial", "wrong");
-        question.classList.add(grade.state);
-        feedback.className = `feedback ${grade.state}`;
-        feedback.textContent = grade.label;
-      });
-
-      const percent = Math.round((score / item.questions.length) * 100);
-      const completed = percent >= 60;
-      const wasCompleted = Boolean(scoresByText[current]?.completed);
-      scoresByText[current] = { percent, completed };
-      saveScores();
-      updateDashboard();
-
-      const resultBox = activeCard.querySelector(".result-message");
-      const resultClass = percent >= 80 ? "good" : percent >= 60 ? "mid" : "bad";
-      resultBox.className = `result-message show ${resultClass}`;
-      resultBox.textContent = completed
-        ? `Résultat : ${percent}%. Texte validé.`
-        : `Résultat : ${percent}%. Réécoute le texte puis améliore tes réponses.`;
-
-      if (completed && !wasCompleted && typeof recordExerciseProgress === "function") {
-        recordExerciseProgress(PAGE_ID, {
-          correct: Math.round(score),
-          typed: item.questions.length,
-          errors: item.questions.length - Math.round(score),
-          xp: 3
-        });
-      }
-
-      if (completed && typeof promoteExerciseStatus === "function") {
-        const completedCount = Object.values(scoresByText).filter(result => result.completed).length;
-        if (completedCount >= activities.length) promoteExerciseStatus(PAGE_ID, "completed");
-      }
-
-      if (autoContinue && completed) {
-        setTimeout(nextCard, 1200);
-      }
-
-      return { completed, percent };
-    }
-
-    function checkAndContinue() {
-      checkCurrentAnswers(true);
+      activeCard?.querySelector(".answers")?.classList.remove("show");
     }
 
     function loadVoices() {
