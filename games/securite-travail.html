@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sécurité au travail - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/securite-travail.css">
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">🦺</div>
+          <h1>Sécurité au travail</h1>
+          <p>Remets les mots dans le bon ordre pour former une règle de sécurité.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid fade-up delay-1">
+          <div class="kpi-card">
+            <div class="kpi-value" id="score">0</div>
+            <div class="kpi-label">Score</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value"><span id="questionNumber">1</span>/<span id="totalNumber">100</span></div>
+            <div class="kpi-label">Phrase</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" style="color:var(--danger)" id="errors">0</div>
+            <div class="kpi-label">Erreurs</div>
+          </div>
+        </div>
+
+        <!-- Barre niveau + progression -->
+        <div class="st-level-bar fade-up delay-1">
+          <label for="levelSelect">Difficulté :</label>
+          <select id="levelSelect" onchange="changeLevel()">
+            <option value="all">Tous les niveaux</option>
+            <option value="debutant">Facile</option>
+            <option value="intermediaire">Moyen</option>
+            <option value="avance">Difficile</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" onclick="toggleTeacher()" type="button">👁️ Corrigé</button>
+        </div>
+
+        <div class="series-progress fade-up delay-1">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Zone de jeu -->
+        <div class="game-zone fade-up delay-2" id="gameZone">
+          <div class="card">
+
+            <p style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:14px;text-align:center;">
+              Clique les mots dans le bon ordre ↓
+            </p>
+
+            <!-- Zone réponse -->
+            <div id="answerZone" class="st-answer-zone empty"></div>
+
+            <!-- Banque de mots -->
+            <div id="wordBank" class="st-word-bank"></div>
+
+            <!-- Boutons -->
+            <div class="st-controls">
+              <button class="btn btn-success" onclick="checkAnswer()" type="button">✅ Valider</button>
+              <button class="btn btn-secondary" onclick="undoWord()" type="button">↩️ Retour</button>
+              <button class="btn btn-secondary" onclick="showHint()" type="button">💡 Aide</button>
+              <button class="btn btn-ghost" onclick="nextQuestion()" type="button">➡️ Suivant</button>
+            </div>
+
+            <!-- Feedback -->
+            <div id="feedback" class="feedback-text">Choisis les mots dans le bon ordre.</div>
+
+            <!-- Barre corrigé (formateur) -->
+            <div id="teacherBar" class="st-teacher">
+              <div id="teacherAnswer" class="st-teacher-text"></div>
+              <button class="btn btn-danger btn-sm" onclick="restartGame()" type="button">🔄 Recommencer</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Résultats finaux -->
+        <div class="result-zone fade-up" id="resultZone">
+          <div class="card card-accent card-lg" style="text-align:center;">
+            <div style="font-size:56px;margin-bottom:12px;">🏆</div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;">Terminé !</h2>
+            <p style="color:var(--text2);margin-bottom:28px;" id="resSubtitle"></p>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-lg" onclick="restartGame()" type="button">🔄 Recommencer</button>
+              <a href="accueil.html" class="btn btn-secondary btn-lg">← Accueil</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'securite-travail';
+
+  const ALL_PHRASES = [
+    {level:"debutant", text:"Je porte un casque au travail."},
+    {level:"debutant", text:"Je mets des gants de protection."},
+    {level:"debutant", text:"Je marche dans les couloirs."},
+    {level:"debutant", text:"Je ne cours pas dans l'atelier."},
+    {level:"debutant", text:"Je garde le sol propre."},
+    {level:"debutant", text:"Je range les outils après usage."},
+    {level:"debutant", text:"Je signale un danger au responsable."},
+    {level:"debutant", text:"Je lis les consignes de sécurité."},
+    {level:"debutant", text:"Je porte des chaussures de sécurité."},
+    {level:"debutant", text:"Je ferme les tiroirs après usage."},
+    {level:"debutant", text:"Je lave mes mains régulièrement."},
+    {level:"debutant", text:"Je respecte les panneaux de danger."},
+    {level:"debutant", text:"Je garde les sorties libres."},
+    {level:"debutant", text:"Je ne bloque pas les passages."},
+    {level:"debutant", text:"Je fais attention aux câbles."},
+    {level:"debutant", text:"Je demande de l'aide si besoin."},
+    {level:"debutant", text:"Je porte un gilet visible."},
+    {level:"debutant", text:"Je reste concentré au travail."},
+    {level:"debutant", text:"Je respecte les règles de l'entreprise."},
+    {level:"debutant", text:"Je protège mes yeux avec des lunettes."},
+    {level:"debutant", text:"Je ne touche pas une machine dangereuse."},
+    {level:"debutant", text:"Je garde mon espace bien rangé."},
+    {level:"debutant", text:"Je fais attention aux objets coupants."},
+    {level:"debutant", text:"Je préviens quand je suis blessé."},
+    {level:"debutant", text:"Je connais le numéro d'urgence."},
+    {level:"debutant", text:"Je porte un masque si nécessaire."},
+    {level:"debutant", text:"Je ne mange pas dans l'atelier."},
+    {level:"debutant", text:"Je bois de l'eau pendant la pause."},
+    {level:"debutant", text:"Je garde mon téléphone dans la poche."},
+    {level:"debutant", text:"Je travaille avec calme."},
+    {level:"intermediaire", text:"Le sol mouillé peut provoquer une chute."},
+    {level:"intermediaire", text:"Les produits dangereux doivent être étiquetés."},
+    {level:"intermediaire", text:"Les machines doivent être vérifiées avant utilisation."},
+    {level:"intermediaire", text:"Les extincteurs doivent rester accessibles."},
+    {level:"intermediaire", text:"Les escaliers doivent rester dégagés."},
+    {level:"intermediaire", text:"Les lunettes protègent les yeux de la poussière."},
+    {level:"intermediaire", text:"Les gants protègent les mains contre les coupures."},
+    {level:"intermediaire", text:"Le casque protège la tête contre les chocs."},
+    {level:"intermediaire", text:"Le bruit peut abîmer l'audition."},
+    {level:"intermediaire", text:"Les protections auditives réduisent le risque."},
+    {level:"intermediaire", text:"Une échelle doit être stable avant de monter."},
+    {level:"intermediaire", text:"Les charges lourdes doivent être portées correctement."},
+    {level:"intermediaire", text:"Il faut plier les genoux pour soulever une charge."},
+    {level:"intermediaire", text:"Il faut éviter les gestes brusques."},
+    {level:"intermediaire", text:"Le matériel défectueux doit être remplacé rapidement."},
+    {level:"intermediaire", text:"Un câble au sol peut faire tomber une personne."},
+    {level:"intermediaire", text:"Il faut couper la machine avant le nettoyage."},
+    {level:"intermediaire", text:"Il faut arrêter la machine avant une réparation."},
+    {level:"intermediaire", text:"Les zones de sécurité doivent être respectées."},
+    {level:"intermediaire", text:"Le rangement réduit les risques d'accident."},
+    {level:"intermediaire", text:"Une pause aide à éviter la fatigue."},
+    {level:"intermediaire", text:"La fatigue augmente le risque d'erreur."},
+    {level:"intermediaire", text:"La concentration est importante pour travailler en sécurité."},
+    {level:"intermediaire", text:"Il faut signaler les situations dangereuses."},
+    {level:"intermediaire", text:"Un accident doit être annoncé immédiatement."},
+    {level:"intermediaire", text:"Les consignes protègent toutes les personnes."},
+    {level:"intermediaire", text:"Les déchets doivent être jetés au bon endroit."},
+    {level:"intermediaire", text:"Les produits chimiques doivent être rangés correctement."},
+    {level:"intermediaire", text:"Il faut lire l'étiquette avant d'utiliser un produit."},
+    {level:"intermediaire", text:"Le masque protège contre certaines poussières."},
+    {level:"intermediaire", text:"Un bon éclairage évite les accidents."},
+    {level:"intermediaire", text:"Les outils électriques doivent être contrôlés."},
+    {level:"intermediaire", text:"Il faut tenir les deux mains loin de la lame."},
+    {level:"intermediaire", text:"La sécurité commence avant le début du travail."},
+    {level:"intermediaire", text:"Chaque personne doit respecter les règles communes."},
+    {level:"avance", text:"Avant d'utiliser une machine, je vérifie que les protections sont bien en place."},
+    {level:"avance", text:"Quand je vois une situation dangereuse, je préviens immédiatement mon responsable."},
+    {level:"avance", text:"Les équipements de protection individuelle doivent être adaptés à la tâche."},
+    {level:"avance", text:"Un poste de travail bien organisé diminue fortement les risques d'accident."},
+    {level:"avance", text:"Il ne faut jamais retirer une sécurité installée sur une machine."},
+    {level:"avance", text:"Une mauvaise posture peut provoquer des douleurs au dos et aux épaules."},
+    {level:"avance", text:"Pour porter une charge lourde, je garde le dos droit et je plie les genoux."},
+    {level:"avance", text:"Les produits inflammables doivent être éloignés des sources de chaleur."},
+    {level:"avance", text:"En cas d'incendie, je reste calme et je suis le plan d'évacuation."},
+    {level:"avance", text:"Les issues de secours doivent toujours être visibles et accessibles."},
+    {level:"avance", text:"Je ne mélange jamais deux produits chimiques sans autorisation."},
+    {level:"avance", text:"Après un accident, il faut sécuriser la zone pour éviter un autre danger."},
+    {level:"avance", text:"Les nouveaux collaborateurs doivent recevoir des explications claires sur la sécurité."},
+    {level:"avance", text:"Une formation régulière aide à garder les bons réflexes au travail."},
+    {level:"avance", text:"Il faut adapter son rythme quand la fatigue devient trop importante."},
+    {level:"avance", text:"Les protections auditives sont nécessaires dans les zones très bruyantes."},
+    {level:"avance", text:"Une coupure électrique doit être signalée avant toute intervention sur une machine."},
+    {level:"avance", text:"Je ne travaille pas sous une charge suspendue ou mal fixée."},
+    {level:"avance", text:"Les palettes doivent être empilées de manière stable et sécurisée."},
+    {level:"avance", text:"Un comportement responsable protège les collègues et l'ensemble de l'équipe."},
+    {level:"avance", text:"Les consignes affichées doivent être connues et appliquées par tout le personnel."},
+    {level:"avance", text:"Quand un outil est cassé, je ne l'utilise pas et je le signale."},
+    {level:"avance", text:"Il est dangereux de contourner une procédure pour gagner quelques minutes."},
+    {level:"avance", text:"La prévention coûte toujours moins cher qu'un accident grave."},
+    {level:"avance", text:"Un environnement propre permet de travailler plus vite et plus sûrement."},
+    {level:"avance", text:"Les câbles électriques abîmés ne doivent jamais être utilisés."},
+    {level:"avance", text:"Avant de commencer une tâche, je prépare le matériel nécessaire."},
+    {level:"avance", text:"Je garde une distance de sécurité avec les véhicules en mouvement."},
+    {level:"avance", text:"Le port des EPI est obligatoire dans les zones indiquées."},
+    {level:"avance", text:"Un risque ignoré aujourd'hui peut devenir un accident demain."},
+    {level:"avance", text:"La sécurité au travail dépend de l'attention de chacun."},
+    {level:"avance", text:"Il faut demander une explication quand une consigne n'est pas claire."},
+    {level:"avance", text:"Les visiteurs doivent aussi respecter les règles de sécurité du site."},
+    {level:"avance", text:"Les mains doivent rester éloignées des parties mobiles d'une machine."},
+    {level:"avance", text:"Un sol encombré augmente le risque de chute et de blessure."}
+  ];
+
+  let phrases = [...ALL_PHRASES];
+  let currentIndex = 0;
+  let score = 0;
+  let errors = 0;
+  let selectedWords = [];
+  let availableWords = [];
+
+  const wordBankEl  = document.getElementById('wordBank');
+  const answerZoneEl = document.getElementById('answerZone');
+  const feedbackEl  = document.getElementById('feedback');
+  const scoreEl     = document.getElementById('score');
+  const errorsEl    = document.getElementById('errors');
+  const qNumEl      = document.getElementById('questionNumber');
+  const totalNumEl  = document.getElementById('totalNumber');
+  const progressEl  = document.getElementById('progressFill');
+
+  function shuffle(array) {
+    const a = [...array];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function normalize(text) {
+    return text.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[''`´']/g, "'")
+      .replace(/[–—]/g, '-')
+      .replace(/[.,!?;:]/g, '')
+      .replace(/\s+/g, ' ').trim();
+  }
+
+  function saveGame() {
+    const data = { currentIndex, score, errors, level: document.getElementById('levelSelect').value };
+    localStorage.setItem('st_securite_travail', JSON.stringify(data));
+  }
+
+  function loadSave() {
+    const raw = localStorage.getItem('st_securite_travail');
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      document.getElementById('levelSelect').value = data.level || 'all';
+      applyLevel(false);
+      currentIndex = Math.min(data.currentIndex || 0, phrases.length - 1);
+      score  = data.score  || 0;
+      errors = data.errors || 0;
+    } catch (e) { /* ignore */ }
+  }
+
+  function applyLevel(reset) {
+    const level = document.getElementById('levelSelect').value;
+    phrases = level === 'all' ? [...ALL_PHRASES] : ALL_PHRASES.filter(p => p.level === level);
+    totalNumEl.textContent = phrases.length;
+    if (reset) { currentIndex = 0; score = 0; errors = 0; }
+  }
+
+  function changeLevel() {
+    applyLevel(true);
+    loadQuestion();
+    saveGame();
+  }
+
+  function loadQuestion() {
+    if (currentIndex >= phrases.length) currentIndex = 0;
+    selectedWords  = [];
+    availableWords = shuffle(
+      phrases[currentIndex].text.split(' ').map((word, i) => ({ word, id: i + '_' + Math.random() }))
+    );
+    document.getElementById('teacherAnswer').innerHTML =
+      '<b>Réponse :</b> ' + phrases[currentIndex].text;
+    setFeedback('Choisis les mots dans le bon ordre.', '');
+    renderWords();
+    updateStats();
+    saveGame();
+  }
+
+  function renderWords() {
+    wordBankEl.innerHTML  = '';
+    answerZoneEl.innerHTML = '';
+    answerZoneEl.classList.toggle('empty', selectedWords.length === 0);
+
+    selectedWords.forEach((item, i) => {
+      const el = makeChip(item.word, 'in-answer', (i * 20) + 'ms');
+      el.onclick = () => removeSelected(i);
+      answerZoneEl.appendChild(el);
+    });
+
+    availableWords.forEach((item, i) => {
+      const el = makeChip(item.word, '', (i * 28) + 'ms');
+      el.onclick = () => selectWord(item.id);
+      wordBankEl.appendChild(el);
+    });
+  }
+
+  function makeChip(text, extraClass, delay) {
+    const el = document.createElement('div');
+    el.className = 'st-word-chip' + (extraClass ? ' ' + extraClass : '');
+    el.textContent = text;
+    el.style.animationDelay = delay;
+    return el;
+  }
+
+  function selectWord(id) {
+    const idx = availableWords.findIndex(w => w.id === id);
+    if (idx === -1) return;
+    selectedWords.push(availableWords[idx]);
+    availableWords.splice(idx, 1);
+    renderWords();
+  }
+
+  function removeSelected(index) {
+    const item = selectedWords.splice(index, 1)[0];
+    availableWords.push(item);
+    renderWords();
+  }
+
+  function undoWord() {
+    if (selectedWords.length === 0) return;
+    const item = selectedWords.pop();
+    availableWords.unshift(item);
+    renderWords();
+  }
+
+  function checkAnswer() {
+    const userAnswer = selectedWords.map(w => w.word).join(' ');
+    const correct    = phrases[currentIndex].text;
+
+    if (normalize(userAnswer) === normalize(correct)) {
+      score++;
+      setFeedback('✅ Correct !', 'ok');
+      spawnConfetti();
+      updateStats();
+      saveGame();
+      setTimeout(() => nextQuestion(), 850);
+    } else {
+      errors++;
+      setFeedback('❌ Pas encore. Vérifie l\'ordre des mots.', 'err');
+      feedbackEl.style.animation = '';
+      requestAnimationFrame(() => {
+        feedbackEl.style.animation = 'st-shake 0.35s ease';
+      });
+      updateStats();
+      saveGame();
+    }
+  }
+
+  function nextQuestion() {
+    if (currentIndex < phrases.length - 1) {
+      currentIndex++;
+      loadQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    document.getElementById('gameZone').classList.add('hidden');
+    const resultZone = document.getElementById('resultZone');
+    resultZone.classList.add('show');
+    document.getElementById('resSubtitle').textContent =
+      'Score final : ' + score + ' / ' + phrases.length + ' — Erreurs : ' + errors;
+    progressEl.style.width = '100%';
+    saveGame();
+  }
+
+  function showHint() {
+    const words = phrases[currentIndex].text.split(' ');
+    setFeedback('💡 Début : ' + words.slice(0, 2).join(' '), 'info');
+  }
+
+  function restartGame() {
+    localStorage.removeItem('st_securite_travail');
+    currentIndex = 0; score = 0; errors = 0;
+    applyLevel(false);
+    document.getElementById('gameZone').classList.remove('hidden');
+    document.getElementById('resultZone').classList.remove('show');
+    loadQuestion();
+  }
+
+  function setFeedback(msg, cls) {
+    feedbackEl.className = 'feedback-text' + (cls ? ' ' + cls : '');
+    feedbackEl.textContent = msg;
+    feedbackEl.style.animation = '';
+  }
+
+  function updateStats() {
+    scoreEl.textContent  = score;
+    errorsEl.textContent = errors;
+    qNumEl.textContent   = currentIndex + 1;
+    totalNumEl.textContent = phrases.length;
+    const pct = phrases.length ? Math.round(currentIndex / phrases.length * 100) : 0;
+    progressEl.style.width = pct + '%';
+  }
+
+  function toggleTeacher() {
+    document.getElementById('teacherBar').classList.toggle('show');
+  }
+
+  function spawnConfetti() {
+    const colors = ['#325da9', '#83bd45', '#b4cc1d', '#fb923c', '#a78bfa', '#ef4444'];
+    for (let i = 0; i < 40; i++) {
+      const c = document.createElement('div');
+      c.className = 'st-confetti';
+      c.style.left       = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDelay = (Math.random() * 0.2) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2100);
+    }
+  }
+
+  /* Démarrage */
+  loadSave();
+  applyLevel(false);
+  loadQuestion();
+  </script>
+</body>
+</html>

@@ -35,7 +35,8 @@
     { page: 'mots-meles',  name: 'Mots mêlés',                icon: '🔠', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'demeler',     name: 'Démêler',                   icon: '🧶', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
     { page: 'quiz',        name: 'Quiz',                      icon: '❓', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'orp', 'numérique', 'transports'] },
-    { page: 'trier',       name: 'Trier',                     icon: '🗂️', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'numérique', 'transports'] },
+    { page: 'trier',           name: 'Trier',                icon: '🗂️', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'numérique', 'transports'] },
+    { page: 'securite-travail', name: 'Sécurité au travail', icon: '🦺', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'sécurité', 'orp'] },
     { page: 'simulations-dialogues', name: 'Simulation d’entretien', icon: '💬', cat: 'Communication', section: 'Emploi & ORP', themes: ['emploi', 'orp', 'communication'] },
     { page: 'paire',       name: 'Paires',                    icon: '🃏', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'evaluations', name: 'Évaluations',               icon: '📈', cat: 'Suivi',         section: null,                 themes: [] },
@@ -62,7 +63,8 @@
     'vrai-faux':       '+2 XP par bonne réponse + bonus de serie.',
     'mots-croises':    '+5 XP par mot trouvé.',
     'mots-meles':      '+3 XP par mot trouvé.',
-    'paire':           '+2 XP par paire mémorisée.',
+    'paire':              '+2 XP par paire mémorisée.',
+    'securite-travail':   '+3 XP par phrase correcte.',
     'trier':           '+2 XP par élément correct (reduit par les erreurs).',
     'formulaire':      '+6-9 XP par formulaire réussi (bonus si sans indice).',
     'email-ecrire':    '+3 XP par bonne réponse.',
@@ -246,11 +248,17 @@
       practice: 'Posture, formulation, ecoute, priorités, entretien.',
       useWhen: 'Avant un entretien, un rendez-vous ORP ou une simulation en groupe.'
     },
-    'paire': {
-      summary: 'Retourner des cartes et retrouver les paires correspondantes.',
-      objective: 'Mémoriser du vocabulaire en mobilisant l’attention visuelle.',
-      practice: 'Memoire, association, concentration, vocabulaire.',
-      useWhen: 'Pour finir une séquence sur une note active.'
+    ‘paire’: {
+      summary: ‘Retourner des cartes et retrouver les paires correspondantes.’,
+      objective: ‘Mémoriser du vocabulaire en mobilisant l’attention visuelle.’,
+      practice: ‘Memoire, association, concentration, vocabulaire.’,
+      useWhen: ‘Pour finir une séquence sur une note active.’
+    },
+    ‘securite-travail’: {
+      summary: ‘Remettre les mots dans le bon ordre pour former une règle de sécurité au travail.’,
+      objective: ‘Mémoriser les consignes essentielles en milieu professionnel.’,
+      practice: ‘Ordre des mots, vocabulaire sécurité, consignes, EPI, gestes corrects.’,
+      useWhen: ‘En préparation d’un stage, d’un job ou d’une formation pratique.’
     }
   };
 
