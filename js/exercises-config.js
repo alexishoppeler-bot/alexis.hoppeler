@@ -248,17 +248,17 @@
       practice: 'Posture, formulation, ecoute, priorités, entretien.',
       useWhen: 'Avant un entretien, un rendez-vous ORP ou une simulation en groupe.'
     },
-    ‘paire’: {
-      summary: ‘Retourner des cartes et retrouver les paires correspondantes.’,
-      objective: ‘Mémoriser du vocabulaire en mobilisant l’attention visuelle.’,
-      practice: ‘Memoire, association, concentration, vocabulaire.’,
-      useWhen: ‘Pour finir une séquence sur une note active.’
+    'paire': {
+      summary: 'Retourner des cartes et retrouver les paires correspondantes.',
+      objective: 'Mémoriser du vocabulaire en mobilisant l’attention visuelle.',
+      practice: 'Memoire, association, concentration, vocabulaire.',
+      useWhen: 'Pour finir une séquence sur une note active.'
     },
-    ‘securite-travail’: {
-      summary: ‘Remettre les mots dans le bon ordre pour former une règle de sécurité au travail.’,
-      objective: ‘Mémoriser les consignes essentielles en milieu professionnel.’,
-      practice: ‘Ordre des mots, vocabulaire sécurité, consignes, EPI, gestes corrects.’,
-      useWhen: ‘En préparation d’un stage, d’un job ou d’une formation pratique.’
+    'securite-travail': {
+      summary: 'Remettre les mots dans le bon ordre pour former une règle de sécurité au travail.',
+      objective: 'Mémoriser les consignes essentielles en milieu professionnel.',
+      practice: 'Ordre des mots, vocabulaire sécurité, consignes, EPI, gestes corrects.',
+      useWhen: 'En préparation d’un stage, d’un job ou d’une formation pratique.'
     }
   };
 
