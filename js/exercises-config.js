@@ -28,6 +28,7 @@
     { page: 'mini-word-trainer', name: 'Mini Word Trainer',   icon: '📄', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi'] },
     { page: 'mini-excel-trainer', name: 'Mini Excel Trainer', icon: '📊', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi'] },
     { page: 'excel-progressif', name: 'Excel progressif',     icon: '📈', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'budget', 'tableur'] },
+    { page: 'scenarios-word-excel', name: 'Scénarios Word & Excel', icon: '🗃️', cat: 'Compétences', section: 'Numérique',       themes: ['numérique', 'emploi', 'budget', 'bureautique'] },
     { page: 'anagramme',   name: 'Anagramme',                 icon: '🔀', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
     { page: 'apparier',    name: 'Apparier',                  icon: '🔗', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
     { page: 'pendu',       name: 'Pendu',                     icon: '🪢', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports', 'santé'] },
@@ -82,7 +83,8 @@
     'maths-pratiques': '+3 XP par bonne réponse, +1 XP par exercice tenté.',
     'mini-word-trainer': '+5 XP par mission réussie.',
     'mini-excel-trainer': '+5 XP par mission réussie.',
-    'excel-progressif': '+2 XP par consigne cochée.'
+    'excel-progressif': '+2 XP par consigne cochée.',
+    'scenarios-word-excel': '+4 XP par scénario terminé.'
   };
 
   const EXERCISE_DETAILS_BY_PAGE = {
@@ -199,6 +201,12 @@
       objective: 'Construire les automatismes du tableur une compétence à la fois.',
       practice: 'Saisie, sélection, mise en forme, bordures, tri, filtre, SOMME, SI, NB.SI et graphique.',
       useWhen: 'Pour préparer un atelier bureautique, un emploi administratif ou un suivi de candidatures.'
+    },
+    'scenarios-word-excel': {
+      summary: 'Réaliser 15 scénarios Word et Excel liés à la vie quotidienne, au travail et à la recherche d’emploi.',
+      objective: 'Produire des documents utiles à partir de situations réalistes.',
+      practice: 'Lettre, affiche, CV, compte rendu, budget, planning, suivi, graphique et fichiers mixtes.',
+      useWhen: 'Pour un atelier bureautique contextualisé ou une séquence de documents professionnels.'
     },
     'anagramme': {
       summary: 'Remettre les lettres dans le bon ordre pour retrouver un mot.',

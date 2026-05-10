@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scénarios Word & Excel - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root {
+      --swe-card: #ffffff;
+      --swe-blue: #2563eb;
+      --swe-green: #16a34a;
+      --swe-violet: #7c3aed;
+      --swe-shadow: 0 12px 35px rgba(15,23,42,.12);
+    }
+
+    body.scenarios-word-excel-page {
+      background: linear-gradient(135deg, #eef4ff, #f8fafc 45%, #fff7ed);
+    }
+
+    .swe-main {
+      max-width: 1500px;
+    }
+
+    .swe-hero {
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+    }
+
+    .swe-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .swe-icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      color: #3730a3;
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .swe-hero h1 {
+      margin: 0;
+      color: var(--text);
+      font-family: var(--font-head);
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.05;
+    }
+
+    .swe-hero p {
+      margin: 7px 0 0;
+      color: var(--text2);
+      font-size: 18px;
+    }
+
+    .swe-toolbar {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .swe-button {
+      border: 0;
+      padding: 11px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 800;
+      background: white;
+      color: #0f172a;
+      box-shadow: 0 4px 10px rgba(0,0,0,.12);
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .swe-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .swe-button.active {
+      background: #facc15;
+      color: #111827;
+    }
+
+    .swe-intro {
+      background: rgba(255,255,255,.88);
+      border: 1px solid #e2e8f0;
+      padding: 22px;
+      border-radius: 18px;
+      box-shadow: var(--swe-shadow);
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1.35fr .9fr;
+      gap: 20px;
+    }
+
+    .swe-intro h2 {
+      margin: 0 0 10px;
+      font-family: var(--font-head);
+      font-size: 26px;
+    }
+
+    .swe-intro p {
+      font-size: 17px;
+      line-height: 1.5;
+      margin: 0;
+      color: #334155;
+    }
+
+    .swe-legend {
+      display: grid;
+      gap: 10px;
+      align-content: center;
+    }
+
+    .swe-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #eef2ff;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .swe-status {
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: #fefce8;
+      border: 1px solid #fde68a;
+      border-radius: 14px;
+      color: #854d0e;
+      font-weight: 800;
+      display: none;
+    }
+
+    .swe-progress-wrap {
+      margin: 20px 0 10px;
+      background: white;
+      border-radius: 999px;
+      height: 18px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(15,23,42,.08);
+    }
+
+    .swe-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #2563eb);
+      transition: width .3s;
+    }
+
+    .swe-progress-text {
+      font-weight: 800;
+      color: #334155;
+      margin: 0 0 22px 4px;
+    }
+
+    .swe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 22px;
+    }
+
+    .swe-card {
+      background: var(--swe-card);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--swe-shadow);
+      border: 1px solid #e5e7eb;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .swe-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 7px;
+      background: var(--swe-blue);
+    }
+
+    .swe-card.word::before { background: var(--swe-blue); }
+    .swe-card.excel::before { background: var(--swe-green); }
+    .swe-card.mixte::before { background: var(--swe-violet); }
+
+    .swe-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .swe-tag {
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: white;
+      font-weight: 900;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .word .swe-tag { background: var(--swe-blue); }
+    .excel .swe-tag { background: var(--swe-green); }
+    .mixte .swe-tag { background: var(--swe-violet); }
+
+    .swe-level {
+      color: #475569;
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .swe-card h3 {
+      font-family: var(--font-head);
+      font-size: 23px;
+      margin: 8px 0 10px;
+      color: var(--text);
+    }
+
+    .swe-card h4 {
+      margin: 18px 0 8px;
+      font-size: 17px;
+      color: #0f172a;
+    }
+
+    .swe-card ul,
+    .swe-card ol {
+      margin-top: 8px;
+      padding-left: 22px;
+      line-height: 1.5;
+    }
+
+    .swe-card li {
+      margin-bottom: 5px;
+    }
+
+    .swe-scenario {
+      background: #f8fafc;
+      padding: 15px;
+      border-left: 5px solid #cbd5e1;
+      border-radius: 14px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+
+    .swe-docbox {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      padding: 14px;
+      border-radius: 14px;
+      line-height: 1.55;
+      white-space: pre-line;
+      font-size: 15px;
+    }
+
+    .swe-savebox {
+      background: #ecfdf5;
+      border-color: #86efac;
+    }
+
+    .swe-table-wrap {
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+
+    .swe-table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+      font-size: 15px;
+      background: white;
+    }
+
+    .swe-table th,
+    .swe-table td {
+      border: 1px solid #e2e8f0;
+      padding: 9px;
+      text-align: left;
+    }
+
+    .swe-table th {
+      background: #f1f5f9;
+    }
+
+    .swe-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .swe-smallbtn {
+      background: #e2e8f0;
+      box-shadow: none;
+      padding: 10px 13px;
+      font-size: 14px;
+    }
+
+    .swe-done {
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+      padding: 10px 12px;
+      border-radius: 14px;
+      display: none;
+      margin-top: 12px;
+      font-weight: 800;
+    }
+
+    .swe-card.completed {
+      outline: 3px solid #86efac;
+    }
+
+    .swe-test-panel {
+      display: none;
+      margin-top: 28px;
+      background: #111827;
+      color: #e5e7eb;
+      border-radius: 18px;
+      padding: 16px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 900px) {
+      .swe-hero,
+      .swe-intro {
+        grid-template-columns: 1fr;
+      }
+
+      .swe-toolbar {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .swe-main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .swe-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      #header-slot, #sidebar-slot, .swe-hero, .swe-toolbar, .swe-actions, .swe-progress-wrap, .swe-progress-text, .swe-intro, .swe-test-panel, .swe-status, #footer-slot {
+        display: none !important;
+      }
+
+      .layout {
+        padding: 0;
+      }
+
+      .main {
+        padding: 0;
+        max-width: none;
+      }
+
+      .swe-grid {
+        display: block;
+      }
+
+      .swe-card {
+        box-shadow: none;
+        border: 1px solid #999;
+        margin-bottom: 18px;
+        page-break-inside: avoid;
+      }
+
+      .swe-done {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="scenarios-word-excel-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main swe-main">
+      <section class="swe-hero">
+        <div class="swe-title">
+          <div class="swe-icon">W+X</div>
+          <div>
+            <h1>Scénarios Word & Excel</h1>
+            <p>Vie quotidienne, travail, maison et recherche d’emploi.</p>
+          </div>
+        </div>
+        <div class="swe-toolbar">
+          <button class="swe-button active" data-filter="all" type="button" onclick="filtrer('all', this)">Tout</button>
+          <button class="swe-button" data-filter="word" type="button" onclick="filtrer('word', this)">Word</button>
+          <button class="swe-button" data-filter="excel" type="button" onclick="filtrer('excel', this)">Excel</button>
+          <button class="swe-button" data-filter="mixte" type="button" onclick="filtrer('mixte', this)">Word + Excel</button>
+          <button class="swe-button" type="button" onclick="window.print()">Imprimer</button>
+          <button class="swe-button" type="button" onclick="resetProgression()">Réinitialiser</button>
+        </div>
+      </section>
+
+      <section class="swe-intro">
+        <div>
+          <h2>Objectif de l’activité</h2>
+          <p>Les participants lisent une situation réaliste, puis utilisent Word ou Excel pour produire un document simple. Chaque scénario donne les informations nécessaires, un problème à résoudre et un nom de fichier précis.</p>
+        </div>
+        <div class="swe-legend">
+          <span class="swe-pill">Word : écrire et mettre en page</span>
+          <span class="swe-pill">Excel : organiser et calculer</span>
+          <span class="swe-pill">Mixte : document + tableau</span>
+        </div>
+      </section>
+
+      <div id="statusBox" class="swe-status"></div>
+      <div class="swe-progress-wrap"><div class="swe-progress-bar" id="progressBar"></div></div>
+      <div class="swe-progress-text" id="progressText">Progression : 0 / 15</div>
+
+      <section class="swe-grid" id="grid"></section>
+      <pre id="testPanel" class="swe-test-panel"></pre>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'scenarios-word-excel';
+  const STORAGE_KEY = 'scenarios_word_excel_progression_v4';
+  const memoryStorage = {};
+
+  const scenarios = [
+    { type:'word', id:'lettre_chauffage', level:'Débutant', title:'1. Lettre au propriétaire', scenario:'Maria habite à Lausanne. Depuis trois jours, le chauffage ne fonctionne plus. Elle doit écrire une lettre simple à son agence pour demander une réparation rapide.', info:['Nom : Maria Fernandes','Adresse : Rue du Simplon 14, 1006 Lausanne','Téléphone : 079 458 22 14','E-mail : maria.fernandes@email.ch','Destinataire : Agence ImmoPlus, Avenue de la Gare 22, 1003 Lausanne','Objet : Problème de chauffage'], notes:'• chauffage en panne depuis 3 jours\n• appartement très froid le matin et le soir\n• demande une réparation rapide\n• remercie l’agence\n• signe avec son nom', mission:'L’agence doit comprendre le problème rapidement. La lettre doit être claire, polie et complète.', skills:['Lettre simple','Adresse','Objet','Paragraphes','Formule de politesse'], files:'Nom du fichier : lettre_chauffage_maria.docx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'excel', id:'budget_karim', level:'Débutant', title:'2. Budget du mois', scenario:'Karim veut comprendre ses dépenses du mois d’avril. Il doit créer un tableau pour voir le total et la dépense la plus importante.', table:[['Catégorie','Prix CHF'],['Loyer','950'],['Nourriture','320'],['Téléphone','49'],['Internet','39'],['Transport','70'],['Assurance','280'],['Loisirs','120']], mission:'Le tableau doit aider Karim à savoir combien il dépense au total. La dépense la plus élevée doit être visible.', skills:['Tableau simple','Somme automatique','Format CHF','Bordures','Couleur'], files:'Nom du fichier : budget_karim_avril.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'word', id:'menu_paulo', level:'Débutant', title:'3. Affiche menu du jour', scenario:'Tu travailles dans un petit restaurant à Genève. Le chef veut une affiche simple pour présenter le menu du jour à l’entrée.', notes:'Nom du restaurant : Restaurant Chez Paulo\nMenu du jour : salade verte, poulet rôti avec pommes de terre, tarte aux pommes\nPrix : 19 CHF\nAdresse : Rue de Carouge 45, Genève', mission:'Les clients doivent lire le menu rapidement. L’affiche doit être agréable, claire et assez grande pour être visible à l’entrée du restaurant.', skills:['Titre','Centrage','Taille de police','Gras','Image'], files:'Nom du fichier : menu_restaurant_paulo.docx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'excel', id:'planning_nettoyage', level:'Intermédiaire', title:'4. Planning de nettoyage', scenario:'Une entreprise de nettoyage doit organiser les horaires de cinq employés. Le responsable veut éviter les erreurs de planning.', table:[['Nom','Lieu','Début','Fin'],['Sofia','Lausanne','08:00','12:00'],['Ahmed','Vevey','09:00','17:00'],['Laura','Nyon','07:30','11:30'],['Pedro','Morges','13:00','18:00'],['Samira','Genève','08:15','16:15']], mission:'Le tableau doit montrer les horaires et calculer la durée de travail. Les journées longues doivent ressortir visuellement.', skills:['Format heure','Calcul de durée','Planning','Mise en forme conditionnelle'], files:'Nom du fichier : planning_nettoyage_semaine.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'word', id:'cv_antonio', level:'Intermédiaire', title:'5. CV logistique', scenario:'Antonio cherche un emploi dans la logistique. Il doit créer un CV propre, simple et lisible pour envoyer à plusieurs entreprises.', notes:'Antonio Silva\nRoute de Meyrin 88, Genève\n078 558 44 22\nantonio.s@email.ch\n\nProfil : personne sérieuse, motivée, habituée au travail physique.\nExpériences : 2022-2025 Préparateur de commandes, Migros Genève. 2020-2022 Manutentionnaire, DHL Lausanne.\nFormation : 2020 CFC Logisticien, Lausanne.\nCompétences : préparation de commandes, transpalette, travail en équipe, sécurité.\nLangues : français B1, portugais langue maternelle, anglais A2.', mission:'Le recruteur doit comprendre rapidement l’expérience d’Antonio. Le CV doit être professionnel, sans décoration inutile, et facile à parcourir.', skills:['Structurer un CV','Titres','Listes','Alignement','Lisibilité'], files:'Nom du fichier : cv_antonio_silva.docx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'excel', id:'comparaison_prix', level:'Intermédiaire', title:'6. Comparer les prix', scenario:'Nadia organise un anniversaire pour 20 personnes. Elle compare les prix dans trois magasins avant d’acheter.', table:[['Produit','Migros','Coop','Aldi'],['Gâteau','28','31','24'],['Boissons','42','45','39'],['Chips','12','14','10'],['Décoration','25','29','19'],['Bonbons','16','18','13']], mission:'Le tableau doit montrer clairement le magasin le moins cher. Un graphique doit aider à comparer les totaux.', skills:['Tableau comparatif','Sommes','Graphique','Analyse'], files:'Nom du fichier : comparaison_prix_anniversaire.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'word', id:'convocation_parents', level:'Avancé', title:'7. Convocation officielle', scenario:'Une école organise une réunion avec les parents. Il faut créer une convocation claire et professionnelle.', info:['École : Centre de Formation Horizon','Adresse : Rue du Lac 18, Lausanne','Date : 15 juin 2026','Heure : 18h30','Salle : B12','Sujet : Suivi des résultats des étudiants'], mission:'Le document doit ressembler à une vraie lettre administrative. Les parents doivent trouver rapidement la date, l’heure, la salle et le sujet.', skills:['En-tête','Pied de page','Tableau Word','Logo ou image','Document officiel'], files:'Nom du fichier : convocation_reunion_parents.docx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'excel', id:'ventes_magasin', level:'Avancé', title:'8. Ventes d’un magasin', scenario:'Tu travailles dans un magasin de sport. Le responsable veut connaître les ventes de la semaine et le chiffre d’affaires total.', table:[['Produit','Quantité','Prix unitaire CHF'],['Ballon','15','25'],['Chaussures','8','89'],['T-shirt','20','19'],['Sac de sport','12','45'],['Gourde','30','12']], mission:'Le tableau doit calculer le total par produit et le chiffre d’affaires global. Le responsable doit voir quels produits rapportent le plus.', skills:['Multiplication','Chiffre d’affaires','Tri','Graphique','Analyse des ventes'], files:'Nom du fichier : ventes_magasin_sport.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'mixte', id:'recherche_emploi', level:'Intermédiaire', title:'9. Recherche d’emploi', scenario:'Fatima cherche un emploi administratif. Elle doit préparer une lettre de motivation et suivre ses candidatures.', info:['Nom : Fatima Benali','Poste : Employée administrative','Entreprise : BureauTech SA, Lausanne','Qualités : organisée, ponctuelle, motivée','Compétences : Word, Excel, accueil clients, classement'], table:[['Entreprise','Date','Réponse','Entretien','Statut'],['BureauTech SA','04.05.2026','En attente','Non','Envoyée'],['PharmaPlus','06.05.2026','Positive','Oui','Entretien prévu'],['LogisticPro','08.05.2026','Négative','Non','Terminée']], mission:'La lettre doit donner une bonne image professionnelle. Le tableau Excel doit permettre de suivre les réponses des entreprises.', skills:['Lettre de motivation','Suivi de candidatures','Filtres','Couleurs selon statut'], files:'Noms des fichiers : lettre_fatima_bureautech.docx et suivi_candidatures_fatima.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'excel', id:'budget_voyage', level:'Intermédiaire', title:'10. Budget voyage', scenario:'Lucas prépare un voyage de cinq jours en Suisse. Il veut savoir si son budget maximum de 1200 CHF est respecté.', table:[['Dépense','Prix CHF'],['Hôtel','650'],['Train','240'],['Nourriture','180'],['Activités','210'],['Souvenirs','90']], mission:'Le tableau doit montrer le total, la différence avec le budget maximum et les dépenses les plus importantes.', skills:['Budget','Soustraction','Graphique','Condition'], files:'Nom du fichier : budget_voyage_lucas.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'word', id:'demande_conge', level:'Débutant', title:'11. Demande de congé', scenario:'Sonia travaille dans un magasin. Elle veut demander trois jours de congé pour voir sa famille.', info:['Nom : Sonia Pereira','Entreprise : MarketPlus Genève','Dates : du 12 au 14 juillet 2026','Motif : visite familiale','Destinataire : Responsable du magasin'], mission:'La responsable doit comprendre rapidement la demande. La lettre doit être polie, courte et complète.', skills:['Lettre courte','Demande professionnelle','Dates','Formule de politesse'], files:'Nom du fichier : demande_conge_sonia.docx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'excel', id:'liste_courses', level:'Débutant', title:'12. Liste des courses', scenario:'Une famille prépare les courses de la semaine et veut connaître le total à payer.', table:[['Produit','Quantité','Prix CHF'],['Lait','3','1.80'],['Pain','2','2.50'],['Pommes','8','4.20'],['Pâtes','4','6.40']], mission:'Le tableau doit permettre de voir les produits, les quantités et le prix total. La famille doit pouvoir ajouter d’autres produits facilement.', skills:['Tableau simple','Somme','Format CHF','Organisation'], files:'Nom du fichier : liste_courses_semaine.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'mixte', id:'demenagement', level:'Intermédiaire', title:'13. Organisation d’un déménagement', scenario:'Karima change d’appartement. Elle doit écrire une annonce pour demander de l’aide et préparer un budget.', notes:'Word : Karima cherche deux personnes disponibles le samedi 8 août pour aider à transporter des meubles entre Lausanne et Renens. Petit repas offert après le déménagement.', table:[['Dépense','Prix CHF'],['Location camion','120'],['Essence','45'],['Cartons','35'],['Nourriture','60']], mission:'L’annonce doit être claire et sympathique. Le budget doit montrer le total du déménagement et rester facile à modifier.', skills:['Annonce','Budget','Total automatique','Organisation'], files:'Noms des fichiers : annonce_demenagement_karima.docx et budget_demenagement_karima.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'excel', id:'suivi_absences', level:'Intermédiaire', title:'14. Suivi des absences', scenario:'Un formateur doit suivre les absences de son groupe pendant la semaine.', table:[['Nom','Lundi','Mardi','Mercredi','Jeudi','Vendredi'],['Ali','Présent','Absent','Présent','Présent','Présent'],['Sara','Présent','Présent','Présent','Absent','Présent'],['Pedro','Absent','Présent','Présent','Présent','Absent']], mission:'Le tableau doit permettre de voir rapidement qui est absent. Les absences doivent ressortir avec une couleur.', skills:['Tableau','Couleurs','Lecture rapide','Suivi de groupe'], files:'Nom du fichier : suivi_absences_groupe.xlsx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' },
+    { type:'word', id:'compte_rendu', level:'Intermédiaire', title:'15. Compte rendu de réunion', scenario:'Une équipe a organisé une réunion pour préparer un événement sportif. Il faut garder une trace claire des décisions.', notes:'Date : 4 mai 2026\nParticipants : Laura, Karim, Sonia, Pedro\nDécisions : réserver une salle, contacter les participants, préparer des boissons, organiser les équipes\nProchaine réunion : 12 mai 2026', mission:'Le compte rendu doit être clair et facile à relire. Les décisions importantes doivent être visibles rapidement.', skills:['Compte rendu','Titres','Listes','Organisation des informations'], files:'Nom du fichier : compte_rendu_reunion_sport.docx\nDossier : Documents\nMéthode : Fichier → Enregistrer sous, puis CTRL + S pendant le travail.' }
+  ];
+
+  function createSafeStorage() {
+    let localStorageWorks = false;
+    try {
+      const testKey = '__storage_test__';
+      window.localStorage.setItem(testKey, '1');
+      window.localStorage.removeItem(testKey);
+      localStorageWorks = true;
+    } catch (error) {
+      localStorageWorks = false;
+    }
+    return {
+      isPersistent: localStorageWorks,
+      getItem(key) {
+        if (localStorageWorks) {
+          try { return window.localStorage.getItem(key); } catch (error) { return memoryStorage[key] || null; }
+        }
+        return Object.prototype.hasOwnProperty.call(memoryStorage, key) ? memoryStorage[key] : null;
+      },
+      setItem(key, value) {
+        if (localStorageWorks) {
+          try { window.localStorage.setItem(key, value); return true; } catch (error) { memoryStorage[key] = value; return false; }
+        }
+        memoryStorage[key] = value;
+        return false;
+      },
+      removeItem(key) {
+        if (localStorageWorks) {
+          try { window.localStorage.removeItem(key); } catch (error) { delete memoryStorage[key]; }
+        }
+        delete memoryStorage[key];
+      }
+    };
+  }
+
+  const safeStorage = createSafeStorage();
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, (char) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[char]));
+  }
+
+  function renderList(items) {
+    if (!items || !items.length) return '';
+    return '<ul>' + items.map((item) => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>';
+  }
+
+  function renderTable(rows) {
+    if (!rows || !rows.length) return '';
+    const head = rows[0].map((cell) => '<th>' + escapeHtml(cell) + '</th>').join('');
+    const body = rows.slice(1).map((row) => '<tr>' + row.map((cell) => '<td>' + escapeHtml(cell) + '</td>').join('') + '</tr>').join('');
+    return '<div class="swe-table-wrap"><table class="swe-table"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>';
+  }
+
+  function renderCards() {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = scenarios.map((item) => {
+      const tag = item.type === 'mixte' ? 'Word + Excel' : item.type === 'word' ? 'Word' : 'Excel';
+      return [
+        '<article class="swe-card ' + item.type + '" data-type="' + item.type + '" data-id="' + escapeHtml(item.id) + '">',
+        '<div class="swe-topline"><span class="swe-tag">' + tag + '</span><span class="swe-level">' + escapeHtml(item.level) + '</span></div>',
+        '<h3>' + escapeHtml(item.title) + '</h3>',
+        '<div class="swe-scenario">' + escapeHtml(item.scenario) + '</div>',
+        item.info ? '<h4>Informations à utiliser</h4>' + renderList(item.info) : '',
+        item.notes ? '<h4>Notes</h4><div class="swe-docbox">' + escapeHtml(item.notes) + '</div>' : '',
+        item.table ? '<h4>Données</h4>' + renderTable(item.table) : '',
+        '<h4>Mission</h4><div class="swe-docbox">' + escapeHtml(item.mission) + '</div>',
+        '<h4>Compétences travaillées</h4>' + renderList(item.skills),
+        '<h4>Enregistrer le fichier</h4><div class="swe-docbox swe-savebox">' + escapeHtml(item.files) + '</div>',
+        '<div class="swe-actions"><button class="swe-button swe-smallbtn" type="button" onclick="marquer(this)">Marquer comme fait</button></div>',
+        '<div class="swe-done">Activité terminée</div>',
+        '</article>'
+      ].join('');
+    }).join('');
+  }
+
+  function showStatus(message) {
+    const box = document.getElementById('statusBox');
+    if (!box || !message) return;
+    box.textContent = message;
+    box.style.display = 'block';
+  }
+
+  function getCards() {
+    return Array.from(document.querySelectorAll('.swe-card'));
+  }
+
+  function getDoneElement(card) {
+    return card ? card.querySelector('.swe-done') : null;
+  }
+
+  function isCompleted(card) {
+    const done = getDoneElement(card);
+    return Boolean(done && done.style.display === 'block');
+  }
+
+  function setCompleted(card, completed) {
+    const done = getDoneElement(card);
+    if (!card || !done) return false;
+    done.style.display = completed ? 'block' : 'none';
+    card.classList.toggle('completed', completed);
+    return true;
+  }
+
+  function filtrer(type, btn) {
+    document.querySelectorAll('.swe-toolbar button[data-filter]').forEach((button) => button.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    getCards().forEach((card) => {
+      const cardType = card.dataset.type;
+      card.style.display = type === 'all' || cardType === type ? 'block' : 'none';
+    });
+  }
+  window.filtrer = filtrer;
+
+  function marquer(btn) {
+    const card = btn ? btn.closest('.swe-card') : null;
+    if (!card) return;
+    const wasCompleted = isCompleted(card);
+    setCompleted(card, !wasCompleted);
+    if (!wasCompleted && window.ScoreManager) {
+      window.ScoreManager.updateMetrics(PAGE_ID, { correct: 1, typed: 1, xp: 4 });
+      window.ScoreManager.promoteStatus(PAGE_ID, getCards().every(isCompleted) ? 'completed' : 'in_progress');
+    }
+    sauvegarder();
+    majProgression();
+  }
+  window.marquer = marquer;
+
+  function sauvegarder() {
+    const etat = getCards().map((card) => ({ id: card.dataset.id || '', done: isCompleted(card) }));
+    const savedPersistently = safeStorage.setItem(STORAGE_KEY, JSON.stringify(etat));
+    if (!savedPersistently) showStatus('Sauvegarde temporaire : localStorage est bloqué, la progression peut disparaître après fermeture.');
+  }
+
+  function charger() {
+    const data = safeStorage.getItem(STORAGE_KEY);
+    if (!data) return;
+    try {
+      const etat = JSON.parse(data);
+      if (!Array.isArray(etat)) return;
+      const savedById = new Map(etat.map((item) => [item.id, Boolean(item.done)]));
+      getCards().forEach((card, index) => {
+        const id = card.dataset.id || '';
+        const savedItem = etat[index];
+        const completed = savedById.has(id) ? savedById.get(id) : Boolean(savedItem && savedItem.done);
+        setCompleted(card, completed);
+      });
+    } catch (error) {
+      console.warn('Progression illisible, ignorée.', error);
+    }
+  }
+
+  function majProgression() {
+    const cards = getCards();
+    const total = cards.length;
+    const doneCount = cards.filter(isCompleted).length;
+    const pct = total ? Math.round(doneCount / total * 100) : 0;
+    const bar = document.getElementById('progressBar');
+    const text = document.getElementById('progressText');
+    if (bar) bar.style.width = pct + '%';
+    if (text) text.textContent = `Progression : ${doneCount} / ${total}`;
+  }
+
+  function resetProgression() {
+    getCards().forEach((card) => setCompleted(card, false));
+    safeStorage.removeItem(STORAGE_KEY);
+    if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+    majProgression();
+  }
+  window.resetProgression = resetProgression;
+
+  function runSelfTests() {
+    const cards = getCards();
+    console.assert(cards.length === 15, '15 scénarios sont présents');
+    console.assert(cards.every((card) => Boolean(getDoneElement(card))), 'Chaque scénario a un élément .done');
+    console.assert(cards.every((card) => Boolean(card.querySelector('.swe-actions button'))), 'Chaque scénario a un bouton de validation');
+    console.assert(cards.every((card) => /Nom[s]? du fichier/.test(card.textContent)), 'Chaque scénario a un nom de fichier');
+    console.assert(new Set(cards.map((card) => card.dataset.id)).size === cards.length, 'Chaque scénario a un data-id unique');
+    console.log('Tests scénarios Word Excel OK');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderCards();
+    if (!safeStorage.isPersistent) showStatus('Mode sandbox détecté : progression temporaire dans la session.');
+    charger();
+    majProgression();
+    if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+    runSelfTests();
+  });
+  </script>
+</body>
+</html>
