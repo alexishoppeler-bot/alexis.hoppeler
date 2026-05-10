@@ -23,6 +23,7 @@ const PC=['#e05a5a','#5b9cf5','#f5a623','#a05ae0','#3fc87a','#e05ab0','#3ae0d0',
 const BC=['#1e2128','#1c2026','#1a1e24','#1e1c28','#1a1f1c'];
 const CT={forward:'aller tout droit',back:'reculer',left:'tourner à gauche',right:'tourner à droite',uturn:'faire demi-tour'};
 const CT_ICON={forward:'⬆️',back:'⬇️',left:'⬅️',right:'➡️',uturn:'🔄'};
+const ACTION_HINT='Les actions s’ajoutent dans la phrase. Quand elle semble correcte, clique sur “Lancer le trajet”.';
 
 // STATE
 let startPos={r:3,c:0,d:1};
@@ -140,7 +141,7 @@ function updateRouteSummary(){
       const p=pts[aDest];
       dest.textContent=coordLabel(p.r,p.c)+' '+getNear(p.r,p.c).n;
     }else{
-      dest.textContent='A choisir';
+      dest.textContent='Automatique';
     }
   }
   if(actions)actions.textContent=queue.length;
@@ -172,9 +173,10 @@ function gen(){
   // Auto-activate and reveal the first point
   if(pts.length){
     actPt(0);
-    setGuide(2,'Destination prête. Avec les boutons du plan, ajoute les actions pour aller jusqu au badge Destination.');
+    setGuide(2,'Nouvelle mission prête. Repère le point orange, puis ajoute les actions pour atteindre le cercle coloré.');
+    st('🎯 Nouvelle destination : compose la consigne avec les boutons.','ok');
   }else{
-    aDest=null;updDest();setGuide(1,'Choisis une destination dans la liste de gauche.');
+    aDest=null;updDest();setGuide(1,'Crée un nouveau parcours pour afficher une destination.');
   }
 }
 function clearAll(){
@@ -206,7 +208,7 @@ function actPt(i){
   renderPts();updDest();
   const p=pts[i];const binfo=getNear(p.r,p.c);
   updateRouteSummary();
-  setGuide(2,'Destination choisie. Clique sur les grands boutons du plan pour AJOUTER des actions, puis lance le trajet.');
+  setGuide(2,'Destination choisie. Clique sur les grands boutons du plan pour ajouter des actions, puis lance le trajet.');
   st('🎯 Destination : '+COLS[p.c]+ROWS[p.r]+' — '+binfo.i+' '+binfo.n,'ok');
 }
 function togRev(i){actPt(i);}
@@ -285,24 +287,29 @@ function updStartMarker(){}
 function aC(t){
   if(IS_PLAN){try{window.opener.aC(t);}catch(e){}return;}
   if(running)return;queue.push({t,tx:CT[t],ic:CT_ICON[t]});renderC();updExecBtn();
-  setGuide(2,'Action ajoutée dans la consigne. Ajoute la suite ou clique sur "Lancer le trajet".');
+  setGuide(2,ACTION_HINT);
+  st('➕ Action ajoutée : '+CT[t]+'.','ok');
 }
 function aSteps(){
   if(IS_PLAN){try{window.opener.aSteps();}catch(e){}return;}
   if(running)return;const n=parseInt(document.getElementById('sn').value);
   queue.push({t:'steps',n,tx:'avancer de '+n+' rue'+(n>1?'s':''),ic:'⬆️',icn:n});renderC();updExecBtn();
-  setGuide(2,'Action ajoutée dans la consigne. Vérifie la phrase, puis lance le trajet.');
+  setGuide(2,ACTION_HINT);
+  st('➕ Action ajoutée : avancer de '+n+' rue'+(n>1?'s':'')+'.','ok');
 }
 function aNth(){
   if(IS_PLAN){try{window.opener.aNth();}catch(e){}return;}
   if(running)return;const n=parseInt(document.getElementById('nn').value);
   const d=document.getElementById('nd').value;
   queue.push({t:'nth',n,d,tx:'a la '+ord(n)+' rue, tourner à '+(d==='left'?'gauche':'droite'),ic:d==='left'?'⬅️':'➡️',icn:n});renderC();updExecBtn();
-  setGuide(2,'Action ajoutée dans la consigne. Termine la consigne puis lance le trajet.');
+  setGuide(2,ACTION_HINT);
+  st('➕ Action ajoutée : tourner à la '+ord(n)+' rue.','ok');
 }
 function delLast(){
   if(IS_PLAN){try{window.opener.delLast();}catch(e){}return;}
   if(running||!queue.length)return;queue.pop();renderC();updExecBtn();
+  setGuide(queue.length?2:1,queue.length?ACTION_HINT:'Ajoute une première action avec les boutons autour du plan.');
+  st('⌫ Dernière action effacée.','');
 }
 
 function renderC(){
@@ -315,7 +322,7 @@ function renderC(){
   iconsBox.innerHTML='';
   if(!queue.length){
     if(ph)ph.style.display='';cur.style.display='none';
-    iconsBox.innerHTML='<span style="font-size:10px;color:var(--text3);font-style:italic">Appuie sur les flèches…</span>';
+    iconsBox.innerHTML='<span style="font-size:10px;color:var(--text3);font-style:italic">Les actions apparaissent ici.</span>';
     updateRouteSummary();
     return;
   }
@@ -416,7 +423,7 @@ async function execPlayer(){
   trail=[{r:player.r,c:player.c}];optimalPath=[];
   document.getElementById('exec-who').textContent='VOUS';
   document.getElementById('exec-overlay').classList.add('show');
-  setGuide(3,'Observe le trajet. A la fin, valide les XP puis recommence.');
+  setGuide(3,'Observe le trajet sur la carte. Les mots de la consigne se surlignent au fur et à mesure.');
   st('▶ Exécution en cours…','');
   const stats=await runQueue();
   running=false;
@@ -457,7 +464,7 @@ function showResult(stats){
   }
   document.getElementById('pts-detail').textContent=detail.trim();
   document.getElementById('rs').textContent=reached?'Session en cours — continuez !':'Réessayez un autre itinéraire.';
-  setGuide(1,reached?'Bien joue. Choisis une nouvelle destination pour continuer.':'Essaie une nouvelle consigne plus simple.');
+  setGuide(reached?1:2,reached?'Bien joué. Clique sur “Nouveau” pour une autre mission, ou choisis une autre destination.':'Pas encore. Efface ou recommence la consigne, puis teste un trajet plus court.');
 
   const btn=document.getElementById('rcl');
   if(pts_>0){
@@ -570,9 +577,9 @@ function resetAll(){
   if(running)return;
   player.r=startPos.r;player.c=startPos.c;player.d=startPos.d||1;player.steps=0;
   trail=[];optimalPath=[];
-  queue=[];updPl(false);renderC();updExecBtn();st('↺ Recommencé.','');
+  queue=[];updPl(false);renderC();updExecBtn();st('↺ Consigne effacée. Le point orange revient au départ.','');
   updateRouteSummary();
-  setGuide(1,'Choisis une destination puis ajoute les actions.');
+  setGuide(2,'Le départ est réinitialisé. Ajoute une nouvelle suite d’actions pour atteindre la destination.');
 }
 
 function st(m,type){

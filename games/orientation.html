@@ -22,7 +22,7 @@
     <div class="top-sep"></div>
     <div class="logo">
       <div class="logo-icon">🗺</div>
-      <div><div class="logo-text">Nowhereland</div><div class="logo-sub">Se déplacer dans la ville</div></div>
+      <div><div class="logo-text">Nowhereland</div><div class="logo-sub">Préparer un itinéraire</div></div>
     </div>
     <div class="top-sep"></div>
     <div id="active-hud">
@@ -38,7 +38,7 @@
       <button class="tbtn" id="tbtn-start" onclick="timerToggle()">▶</button>
       <button class="tbtn" onclick="timerReset()">↺</button>
     </div>
-    <div id="top-status">🗺 Navigue jusqu'à la destination !</div>
+    <div id="top-status">🗺 Prépare la consigne, puis lance le trajet.</div>
     <span id="pos-pill" style="display:none"><span id="pos-dir">▶</span><span id="pos-coord">A4</span></span>
     <div class="top-sep"></div>
     <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
@@ -125,13 +125,13 @@
 
   <!-- MAP + DIRECTION BUTTONS AROUND IT -->
   <div id="map-area">
-    <button id="nav-fwd" class="dnav" onclick="aC('forward')">
+    <button id="nav-fwd" class="dnav" onclick="aC('forward')" title="Ajoute : avancer jusqu'au prochain obstacle ou bord de carte">
       <span class="dnav-icon">⬆️</span>
-      <div><div class="dnav-label">Ajouter<br>tout droit</div></div>
+      <div><div class="dnav-label">Tout droit</div><div class="dnav-sub">ajouter</div></div>
     </button>
-    <button id="nav-left" class="dnav" onclick="aC('left')">
+    <button id="nav-left" class="dnav" onclick="aC('left')" title="Ajoute : tourner à gauche">
       <span class="dnav-icon">⬅️</span>
-      <div class="dnav-label">Ajouter<br>gauche</div>
+      <div><div class="dnav-label">Gauche</div><div class="dnav-sub">ajouter</div></div>
     </button>
     <div id="map-center">
       <span class="plan-banner">📺 VUE PROJECTEUR</span>
@@ -145,22 +145,25 @@
         <span id="dest-ico">🏥</span>
         <div><div id="dest-label-sm">Destination</div><div id="dest-name">—</div></div>
       </div>
-      <div id="map-help">Le point orange, c'est vous. Les boutons autour du plan ajoutent des actions; le trajet démarre avec "Lancer".</div>
+      <div id="map-help">
+        <strong>Point orange = vous.</strong>
+        <span>Les boutons ajoutent une consigne. Le déplacement commence seulement avec “Lancer”.</span>
+      </div>
       <button id="legend-btn" onclick="toggleLegend()">🏛 Légende</button>
       <div id="legend-panel" onclick="event.stopPropagation()"></div>
       <div id="exec-overlay"><div id="exec-who"></div><div id="exec-cmd"></div></div>
     </div>
-    <button id="nav-right" class="dnav" onclick="aC('right')">
+    <button id="nav-right" class="dnav" onclick="aC('right')" title="Ajoute : tourner à droite">
       <span class="dnav-icon">➡️</span>
-      <div class="dnav-label">Ajouter<br>droite</div>
+      <div><div class="dnav-label">Droite</div><div class="dnav-sub">ajouter</div></div>
     </button>
-    <button id="nav-back" class="dnav" onclick="aC('back')">
+    <button id="nav-back" class="dnav" onclick="aC('back')" title="Ajoute : reculer d'une rue">
       <span class="dnav-icon">⬇️</span>
-      <div class="dnav-label">Ajouter<br>reculer</div>
+      <div><div class="dnav-label">Reculer</div><div class="dnav-sub">1 rue</div></div>
     </button>
-    <button id="nav-uturn" class="dnav" onclick="aC('uturn')">
+    <button id="nav-uturn" class="dnav" onclick="aC('uturn')" title="Ajoute : faire demi-tour">
       <span class="dnav-icon">🔄</span>
-      <div class="dnav-label">Ajouter<br>demi-tour</div>
+      <div><div class="dnav-label">Demi-tour</div><div class="dnav-sub">ajouter</div></div>
     </button>
     <div id="nav-prec">
       <div class="prec-row">
@@ -168,7 +171,7 @@
         <label>Avancer de</label>
         <select id="sn" class="csel"></select>
         <label>rue(s)</label>
-        <button class="abtn" onclick="aSteps()">+ Ajouter</button>
+        <button class="abtn" onclick="aSteps()">Ajouter</button>
       </div>
       <div class="prec-row">
         <span class="prec-ico">↩️</span>
@@ -176,7 +179,7 @@
         <select id="nn" class="csel"></select>
         <label>rue, tourner</label>
         <select id="nd" class="csel"><option value="left">⬅ à gauche</option><option value="right">➡ à droite</option></select>
-        <button class="abtn" onclick="aNth()">+ Ajouter</button>
+        <button class="abtn" onclick="aNth()">Ajouter</button>
       </div>
     </div>
   </div>
@@ -187,18 +190,23 @@
 
       <div class="sec-label">📋 La consigne</div>
       <div class="guide-box" id="guide-box" aria-live="polite">
-        <div class="guide-title">Votre mission</div>
+        <div class="guide-title">Mode d'emploi</div>
         <div class="mission-card">
-          <div class="mission-line"><span>1</span><strong>Regardez le point orange : c'est vous.</strong></div>
-          <div class="mission-line"><span>2</span><strong>Repérez la destination affichée sur le plan.</strong></div>
-          <div class="mission-line"><span>3</span><strong>Ajoutez des actions, puis lancez le trajet.</strong></div>
+          <div class="mission-line"><span>1</span><strong>Le point orange, c'est vous. La flèche indique votre direction.</strong></div>
+          <div class="mission-line"><span>2</span><strong>Le cercle coloré est la destination à atteindre.</strong></div>
+          <div class="mission-line"><span>3</span><strong>Composez la consigne avec les boutons, puis testez-la.</strong></div>
         </div>
         <div class="guide-steps">
-          <span class="guide-step active" id="guide-step-1">1. Regarde la destination</span>
-          <span class="guide-step" id="guide-step-2">2. Ajoute les actions</span>
-          <span class="guide-step" id="guide-step-3">3. Lance et observe</span>
+          <span class="guide-step active" id="guide-step-1">1. Observer le départ</span>
+          <span class="guide-step" id="guide-step-2">2. Écrire l'itinéraire</span>
+          <span class="guide-step" id="guide-step-3">3. Tester le trajet</span>
         </div>
-        <div class="guide-text" id="guide-text">Choisis une destination pour commencer.</div>
+        <div class="guide-text" id="guide-text">Regardez où vous êtes, puis suivez la destination affichée sur la carte.</div>
+      </div>
+      <div class="quick-help">
+        <div><span>⬆️</span><strong>Tout droit</strong><small>avance tant que la route est libre</small></div>
+        <div><span>⬅️ ➡️</span><strong>Tourner</strong><small>change seulement la direction</small></div>
+        <div><span>▶</span><strong>Lancer</strong><small>teste la consigne complète</small></div>
       </div>
       <div class="ibox-wrap">
         <div class="route-summary" aria-live="polite">

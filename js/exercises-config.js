@@ -18,6 +18,7 @@
     { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
     { page: 'vocabulaire-metier', name: 'Vocabulaire métier',  icon: '💬', cat: 'Langue',        section: 'Français',           themes: ['emploi', 'français', 'métiers'] },
     { page: 'compréhension', name: 'Écouter 2',                icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['français', 'emploi', 'orp', 'écoute'] },
+    { page: 'histoires-vaud', name: 'Histoires Vaud',           icon: '📖', cat: 'Langue',        section: 'Français',           themes: ['français', 'écoute', 'lecture', 'vaud'] },
     { page: 'clavier',     name: 'Clavier',                   icon: '⌨️', cat: 'Langue',        section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'ecouter',     name: 'Écouter',                   icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'orp', 'transports'] },
     { page: 'cliquer',     name: 'Cliquer',                   icon: '🖱️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports'] },
@@ -55,6 +56,7 @@
     'alphabet':        '+5 XP par bonne réponse.',
     'vocabulaire-metier': '+3 XP par bon verbe choisi.',
     'compréhension':   '+3 XP par texte travaillé.',
+    'histoires-vaud':   '+3 XP par bonne réponse de compréhension.',
     'clavier':         '+1 XP par bonne touche.',
     'cherche-clique':  '+3 XP par clic correct.',
     'apparier':        '+2 XP par paire trouvée.',
@@ -145,6 +147,12 @@
       objective: 'Développer la compréhension écrite et orale à partir de situations simples du quotidien.',
       practice: 'Écoute, lecture, repérage d’informations, réponses courtes, correction guidée.',
       useWhen: 'Pour travailler le français en groupe, avec lecture cachée puis vérification.'
+    },
+    'histoires-vaud': {
+      summary: 'Lire et écouter 10 histoires situées dans le canton de Vaud, puis répondre à un quiz.',
+      objective: 'Renforcer la compréhension écrite et orale avec des situations réalistes.',
+      practice: 'Lecture longue, écoute guidée, vocabulaire du quotidien, emploi, transports et quiz.',
+      useWhen: 'Pour travailler l’écoute et la lecture en groupe ou en autonomie.'
     },
     'clavier': {
       summary: 'S’entraîner a trouver les touches et a taper plus régulièrement.',

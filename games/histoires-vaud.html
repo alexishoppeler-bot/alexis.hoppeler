@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histoires Vaud - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root{--hv-blue:#163b65;--hv-card:#fff;--hv-border:#dbe3ef;--hv-green:#1f8a5b;--hv-orange:#c77900;--hv-red:#b93535;--hv-shadow:0 12px 35px rgba(15,23,42,.12)}
+    body.hv-page{background:linear-gradient(135deg,#eaf1f8,#f7f9fc);color:#1f2937}
+    .hv-main{max-width:1280px}
+    .hv-hero{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin-bottom:22px}
+    .hv-hero h1{margin:0;font-family:var(--font-head);font-size:clamp(30px,4vw,46px);color:var(--text)}
+    .hv-hero p{margin:8px 0 0;color:var(--text2);font-size:18px;line-height:1.45}
+    .hv-toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .hv-btn,.hv-select{border:0;border-radius:14px;padding:12px 16px;font-size:16px;font-weight:800}
+    .hv-btn{background:var(--hv-blue);color:white;cursor:pointer}.hv-btn.secondary{background:#374151}.hv-select{background:white;color:#111827;border:1px solid var(--hv-border)}
+    .hv-intro,.hv-story{background:var(--hv-card);border:1px solid var(--hv-border);border-radius:20px;box-shadow:var(--hv-shadow)}
+    .hv-intro{padding:20px;margin-bottom:22px;font-size:18px;line-height:1.6}
+    .hv-grid{display:grid;gap:22px}.hv-story{padding:24px;border-left:8px solid var(--hv-blue)}
+    .hv-story.active{border-left-color:var(--hv-green);box-shadow:0 14px 34px rgba(31,138,91,.18)}
+    .hv-story h2{margin:0 0 8px;font-family:var(--font-head);font-size:28px;color:var(--hv-blue)}
+    .hv-meta{color:#64748b;margin-bottom:16px;font-size:15px}
+    .hv-controls,.hv-quiz-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0;align-items:center}
+    .hv-controls button,.hv-quiz-actions button{border:0;border-radius:13px;padding:12px 16px;color:white;cursor:pointer;font-size:15px;font-weight:800}
+    .hv-play{background:var(--hv-green)}.hv-pause{background:var(--hv-orange)}.hv-resume{background:var(--hv-blue)}.hv-restart{background:var(--hv-red)}.hv-stop{background:#555}.hv-quiz-actions button{background:var(--hv-blue)}
+    .hv-status{padding:10px 13px;border-radius:12px;background:#f0f4f7;color:#3c4650;font-weight:800}
+    .hv-text{font-size:19px;line-height:1.8;white-space:pre-line;margin-top:16px}
+    .hv-questions{margin-top:20px;background:#f5f8fb;padding:18px;border-radius:18px}.hv-questions h3{margin:0 0 14px;color:var(--hv-blue)}
+    .hv-question{background:white;border-radius:15px;padding:15px;margin-bottom:14px;border:2px solid #dde6ef}
+    .hv-question h4{margin:0;color:var(--hv-blue);font-size:18px}.hv-options{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+    .hv-options button{border:0;border-radius:12px;padding:13px;cursor:pointer;background:#edf3f9;font-size:16px;text-align:left;transition:.15s}
+    .hv-options button:hover{background:#dbe9f7}.hv-options button.correct{background:#c8f0d7;color:#135531;font-weight:900}.hv-options button.wrong{background:#ffd8d8;color:#7b1f1f;font-weight:900}.hv-options button:disabled{cursor:not-allowed;opacity:.96}
+    .hv-result{margin-top:10px;font-weight:900;font-size:16px}.hv-score{margin-top:12px;font-weight:900;color:var(--hv-blue)}
+    @media(max-width:900px){.hv-hero{grid-template-columns:1fr}.hv-toolbar{justify-content:flex-start}.hv-btn,.hv-select{width:100%}.hv-story{padding:20px}.hv-text{font-size:18px}}
+    @media print{#header-slot,#sidebar-slot,#footer-slot,.hv-hero,.hv-controls,.hv-quiz-actions{display:none!important}.layout{padding:0}.main{padding:0;max-width:none}.hv-story{box-shadow:none;border:1px solid #999;page-break-inside:avoid}body{background:white}}
+  </style>
+</head>
+<body class="hv-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+  <div class="layout">
+    <main class="main hv-main">
+      <section class="hv-hero">
+        <div>
+          <h1>Histoires à lire et écouter</h1>
+          <p>Français A1-B1, situations réalistes dans le canton de Vaud, écoute guidée et quiz de compréhension.</p>
+        </div>
+        <div class="hv-toolbar">
+          <button class="hv-btn secondary" type="button" onclick="stopLecture()">Stop général</button>
+          <button class="hv-btn secondary" type="button" onclick="toggleFullscreen()">Plein écran</button>
+          <select class="hv-select" id="voiceSelect" aria-label="Choisir une voix française"><option value="">Chargement des voix...</option></select>
+          <select class="hv-select" id="rateSelect" onchange="changerVitesse()" aria-label="Choisir la vitesse de lecture">
+            <option value="0.65">Très lente</option>
+            <option value="0.8">Lente naturelle</option>
+            <option value="0.9" selected>Normale douce</option>
+            <option value="1">Normale</option>
+            <option value="1.1">Rapide</option>
+          </select>
+        </div>
+      </section>
+      <section class="hv-intro">
+        Choisissez une histoire, lancez la lecture audio, puis répondez au quiz. Les bonnes réponses sont sauvegardées sur cet ordinateur et donnent des points une seule fois.
+      </section>
+      <div id="container" class="hv-grid"></div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+  const PAGE_ID='histoires-vaud';
+  const DONE_KEY='histoiresVaudCorrectAnswers';
+  const histoires=[
+    {
+      titre:'1. Une nouvelle vie à Lausanne',
+      niveau:'A2-B1',
+      texte:'Maria arrive en Suisse un lundi matin de novembre. Le train entre dans la gare de Lausanne et elle tient fortement sa valise noire. Elle comprend quelques mots en français, mais les annonces vont vite. Une dame l’aide à acheter un billet pour le métro M2. Maria trouve ensuite son appartement près de Riponne, commence des cours de français et rencontre des personnes venues de plusieurs pays. Quelques semaines plus tard, elle fait un stage dans une boulangerie. Au début, elle a peur de parler avec les clients. Petit à petit, elle prend confiance. Un jour, une cliente lui dit qu’elle parle bien français. Le soir, Maria regarde les lumières de Lausanne depuis le train et sent qu’elle construit doucement sa nouvelle vie.',
+      questions:[['Pourquoi Maria vient-elle en Suisse ?',['Pour construire une vie plus stable','Pour faire du tourisme','Pour visiter un musée'],0],['Qui l’aide à acheter son billet ?',['Une dame âgée','Un policier','Un conducteur'],0],['Où commence-t-elle un stage ?',['Dans une boulangerie','Dans une école','Dans un hôpital'],0]]
+    },
+    {
+      titre:'2. Karim et l’entretien à Vevey',
+      niveau:'A2-B1',
+      texte:'Karim habite à Renens avec sa femme et ses deux enfants. Depuis plusieurs mois, il cherche un emploi stable. Une entreprise de nettoyage à Vevey l’appelle pour un entretien. Karim prépare son CV, sa lettre de motivation, son permis et ses certificats. Dans le train, il répète des phrases simples : je suis motivé, je suis ponctuel, je peux travailler tôt le matin ou le soir. Il arrive en avance et attend dans une salle avec des affiches de sécurité. Pendant l’entretien, il explique son expérience dans une usine alimentaire et parle des règles d’hygiène. En sortant, il ne sait pas encore s’il aura le poste, mais il est fier d’avoir réussi l’entretien en français.',
+      questions:[['Où Karim va-t-il pour son entretien ?',['À Vevey','À Genève','À Fribourg'],0],['Quels documents prépare-t-il ?',['CV, lettre, permis et certificats','Seulement son téléphone','Des photos'],0],['Pourquoi est-il fier ?',['Il a réussi son entretien en français','Il a acheté une voiture','Il a gagné un prix'],0]]
+    },
+    {
+      titre:'3. Sofia travaille à Yverdon-les-Bains',
+      niveau:'A2',
+      texte:'Sofia travaille dans une cuisine à Yverdon-les-Bains et habite à Chavornay avec sa fille. Chaque matin, elle se lève très tôt, prépare un café et prend le bus. Dans la cuisine, elle porte une blouse blanche, des chaussures fermées et une charlotte. Un mercredi, un grand groupe arrive pour le repas de midi. Sofia coupe des légumes, prépare des salades et vérifie les dates dans le frigo. Après le service, elle trouve un portefeuille oublié sur une chaise et court pour retrouver le client. Le chef remercie toute l’équipe. Dans le train du retour, Sofia pense à ses progrès : maintenant, elle ose demander de répéter quand elle ne comprend pas.',
+      questions:[['Où travaille Sofia ?',['Dans une cuisine','Dans une banque','Dans une gare'],0],['Que trouve-t-elle sur une chaise ?',['Un portefeuille','Un téléphone','Une lettre'],0],['Quel progrès fait-elle ?',['Elle ose demander de répéter','Elle ne travaille plus','Elle parle seulement espagnol'],0]]
+    },
+    {
+      titre:'4. Mamadou et le rendez-vous ORP à Morges',
+      niveau:'A2-B1',
+      texte:'Mamadou a rendez-vous à l’ORP de Morges à neuf heures. Il cherche un travail dans la logistique et apporte son dossier de candidatures, son CV, une liste d’entreprises et un carnet de questions. Sa conseillère regarde ses documents. Elle trouve son CV clair, mais lui conseille de mettre les expériences récentes en premier et d’adapter la lettre selon l’entreprise. Après le rendez-vous, Mamadou va dans un café près de la gare et corrige son CV sur son ordinateur. Un homme assis à côté travaille dans le transport. Il lui donne quelques conseils et sa carte de visite. Mamadou rentre à Prilly avec un peu plus de méthode et d’espoir.',
+      questions:[['Pourquoi Mamadou va-t-il à l’ORP ?',['Pour parler de sa recherche d’emploi','Pour acheter un billet','Pour inscrire sa fille'],0],['Quel conseil reçoit-il ?',['Mettre les expériences récentes en premier','Ajouter beaucoup de couleurs','Supprimer son téléphone'],0],['Qui lui donne une carte de visite ?',['Un homme du transport','La réceptionniste','Un conducteur'],0]]
+    },
+    {
+      titre:'5. Nadia perd son abonnement dans le train',
+      niveau:'A2',
+      texte:'Nadia rentre du travail à Lausanne après une longue journée dans un magasin de vêtements. Elle prend le train direction Aigle. Quand le contrôleur arrive, elle cherche son abonnement dans son sac, mais ne le trouve pas. Elle regarde dans toutes les poches et commence à stresser. Le contrôleur reste calme et lui demande sa carte d’identité. Une jeune femme assise en face observe la scène et montre quelque chose du doigt : l’abonnement est tombé sous le siège. Nadia le récupère et remercie la passagère plusieurs fois. Quand elle descend à Aigle, elle se sent plus légère et raconte l’histoire à sa sœur.',
+      questions:[['Où Nadia rentre-t-elle ?',['À Aigle','À Berne','À Zurich'],0],['Que cherche-t-elle ?',['Son abonnement','Son sandwich','Son ordinateur'],0],['Qui l’aide ?',['Une jeune femme','Sa sœur','Le conducteur'],0]]
+    },
+    {
+      titre:'6. Pedro cherche une adresse à Nyon',
+      niveau:'A2-B1',
+      texte:'Pedro habite à Lausanne depuis six mois. Son formateur lui donne une mission : trouver l’adresse e-mail d’une entreprise à Nyon et envoyer une candidature spontanée. Pedro ouvre d’abord le site de l’entreprise, mais il y a beaucoup de pages et de boutons. Il essaie ensuite local.ch, note le numéro de téléphone, l’adresse postale et le site officiel. En bas du site, il trouve une adresse générale, puis une page appelée emplois. Là, une phrase explique où envoyer les candidatures spontanées. Pedro prépare un message simple, ajoute son CV en pièce jointe, relit son texte avec le formateur et envoie l’e-mail.',
+      questions:[['Quelle mission reçoit Pedro ?',['Trouver une adresse e-mail et envoyer une candidature','Acheter un ordinateur','Créer une affiche'],0],['Pourquoi cherche-t-il une page emplois ?',['Pour trouver une adresse plus précise','Pour regarder des photos','Pour fermer le site'],0],['Que fait-il à la fin ?',['Il envoie l’e-mail','Il imprime une photo','Il quitte le cours'],0]]
+    },
+    {
+      titre:'7. Amina apprend à envoyer un e-mail professionnel',
+      niveau:'A1-A2',
+      texte:'Amina habite à Payerne. Elle parle déjà un peu français, mais elle a peur d’écrire des e-mails professionnels. Au cours de bureautique, la formatrice explique qu’un e-mail professionnel ressemble à une petite lettre : on dit bonjour, on explique la situation, on demande quelque chose et on termine poliment. Amina écrit à une entreprise pour demander des informations sur un poste. Elle choisit l’objet Candidature spontanée, écrit un message court et ajoute : vous trouverez mon CV en pièce jointe. Elle clique sur le trombone, choisit son CV, vérifie le nom du fichier et envoie. Pour elle, c’est une grande étape vers l’autonomie.',
+      questions:[['Pourquoi Amina a-t-elle peur ?',['Elle a peur d’écrire un e-mail professionnel','Elle a peur du train','Elle a peur du marché'],0],['Quelle phrase parle du CV ?',['Vous trouverez mon CV en pièce jointe.','Je vais au marché.','Le train est en retard.'],0],['Pourquoi est-elle fière ?',['Elle a envoyé son e-mail seule','Elle a gagné un concours','Elle a acheté un téléphone'],0]]
+    },
+    {
+      titre:'8. Luis découvre le marché de Morges',
+      niveau:'A1-A2',
+      texte:'Luis habite à Morges depuis peu. Le samedi matin, son voisin lui propose d’aller au marché. Luis accepte parce qu’il veut découvrir la ville et pratiquer le français. Il voit des stands de fruits, de légumes, de fromage, de pain et de fleurs. Au stand de légumes, il demande des tomates. À la boulangerie, il montre un pain et apprend un nouveau mot : une tresse. Au stand de fromage, il comprend seulement une partie. Il sourit et demande : vous pouvez répéter plus lentement, s’il vous plaît ? De retour à la maison, il écrit les nouveaux mots dans son cahier.',
+      questions:[['Où va Luis ?',['Au marché de Morges','À l’aéroport','À l’hôpital'],0],['Quel mot apprend-il ?',['Une tresse','Un billet','Un abonnement'],0],['Quelle phrase utile utilise-t-il ?',['Vous pouvez répéter plus lentement, s’il vous plaît ?','Je veux dormir.','Le train est complet.'],0]]
+    },
+    {
+      titre:'9. Elena prépare son premier CV à Lausanne',
+      niveau:'A2-B1',
+      texte:'Elena a travaillé pendant dix ans dans la vente en Italie. À Lausanne, elle participe à un atelier de recherche d’emploi. Le formateur explique qu’un CV doit être clair, court et organisé. Elena écrit d’abord son nom, son adresse, son téléphone et son e-mail. Elle ajoute le titre Vendeuse polyvalente. Pour ses expériences, elle transforme de longues phrases en mots-clés : accueil des clients, gestion de la caisse, mise en rayon, conseil personnalisé et inventaire. Elle ajoute aussi ses langues et exporte le CV en PDF. Elle nomme le fichier CV_Elena_Rossi_Vente.pdf et l’enregistre dans un dossier Recherche_emploi.',
+      questions:[['Quel métier cherche Elena ?',['Un poste dans la vente','Un poste de pilote','Un poste de médecin'],0],['Pourquoi le CV doit-il être clair ?',['Le recruteur cherche vite les informations importantes','Pour être plus long','Pour cacher les expériences'],0],['Comment nomme-t-elle son fichier ?',['CV_Elena_Rossi_Vente.pdf','Document1.pdf','Photo.pdf'],0]]
+    },
+    {
+      titre:'10. Le trajet de Julie jusqu’à Montreux',
+      niveau:'A2',
+      texte:'Julie habite à Lausanne et doit se rendre à Montreux pour une journée de formation. La veille, elle vérifie l’horaire du train sur son téléphone : Lausanne, Vevey, Montreux. Elle note l’heure de départ, le quai et l’arrivée dans son agenda. Le matin, elle prépare son sac avec un cahier, un stylo, une bouteille d’eau, un chargeur et un sandwich. Dans le train, elle regarde le lac Léman, les vignes et les montagnes. À Montreux, elle suit les panneaux, puis utilise l’application de cartes. Elle arrive dix minutes en avance. Elle est fière d’avoir organisé son trajet seule.',
+      questions:[['Où Julie va-t-elle ?',['À Montreux','À Zurich','À Paris'],0],['Que prépare-t-elle ?',['Son sac et son trajet','Une valise de vacances','Un gâteau'],0],['Pourquoi est-elle fière ?',['Elle a organisé son trajet seule','Elle a raté son train','Elle a oublié son sac'],0]]
+    }
+  ].map(story=>({...story,questions:story.questions.map(q=>({q:q[0],options:q[1],correct:q[2]}))}));
+  let utterance=null;
+  let currentIndex=null;
+  let currentRate=0.9;
+  let availableVoices=[];
+  const container=document.getElementById('container');
+  function escapeHTML(value){return String(value??'').replace(/[&<>"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char]));}
+  function readDone(){try{return JSON.parse(localStorage.getItem(DONE_KEY)||'[]')}catch(e){return[]}}
+  function saveDone(done){localStorage.setItem(DONE_KEY,JSON.stringify(done));}
+  function renderHistoires(){
+    container.innerHTML='';
+    histoires.forEach((story,index)=>{
+      const section=document.createElement('section');
+      section.className='hv-story';
+      section.id='story-'+index;
+      const quiz=story.questions.map((question,qIndex)=>`
+        <div class="hv-question" data-story="${index}" data-question="${qIndex}" data-correct="${question.correct}">
+          <h4>${qIndex+1}. ${escapeHTML(question.q)}</h4>
+          <div class="hv-options">${question.options.map((opt,optIndex)=>`<button type="button" onclick="verifierReponse(this,${optIndex},${question.correct})">${escapeHTML(opt)}</button>`).join('')}</div>
+          <div class="hv-result"></div>
+        </div>
+      `).join('');
+      section.innerHTML=`
+        <h2>${escapeHTML(story.titre)}</h2>
+        <div class="hv-meta">Niveau conseillé : ${escapeHTML(story.niveau)} · Lecture + écoute + quiz</div>
+        <div class="hv-controls">
+          <button class="hv-play" type="button" onclick="playLecture(${index})">Play</button>
+          <button class="hv-pause" type="button" onclick="pauseLecture()">Pause</button>
+          <button class="hv-resume" type="button" onclick="reprendreLecture()">Reprendre</button>
+          <button class="hv-restart" type="button" onclick="recommencerLecture(${index})">Recommencer</button>
+          <button class="hv-stop" type="button" onclick="stopLecture()">Stop</button>
+          <span class="hv-status" id="status-${index}">Prêt</span>
+        </div>
+        <div class="hv-text">${escapeHTML(story.texte)}</div>
+        <div class="hv-questions">
+          <h3>Quiz de compréhension</h3>
+          <div class="hv-quiz" id="quiz-${index}">${quiz}</div>
+          <div class="hv-quiz-actions">
+            <button type="button" onclick="resetQuiz(${index})">Refaire le quiz</button>
+            <button type="button" onclick="afficherScore(${index})">Afficher le score</button>
+          </div>
+          <div class="hv-score" id="score-${index}"></div>
+        </div>`;
+      container.appendChild(section);
+    });
+    restoreAnswered();
+  }
+  function getBestVoice(){
+    const selected=document.getElementById('voiceSelect');
+    if(selected&&selected.value){
+      const chosen=availableVoices.find(v=>v.name===selected.value);
+      if(chosen)return chosen;
+    }
+    return availableVoices.find(v=>v.lang==='fr-CH')||availableVoices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('fr'))||null;
+  }
+  function resetStatus(){
+    histoires.forEach((_,i)=>{
+      document.getElementById('status-'+i).textContent='Prêt';
+      document.getElementById('story-'+i).classList.remove('active');
+    });
+  }
+  function playLecture(index){
+    const story=histoires[index];
+    speechSynthesis.cancel();
+    resetStatus();
+    currentIndex=index;
+    utterance=new SpeechSynthesisUtterance(story.texte);
+    utterance.lang='fr-CH';
+    utterance.rate=currentRate;
+    utterance.pitch=1;
+    const bestVoice=getBestVoice();
+    if(bestVoice)utterance.voice=bestVoice;
+    const status=document.getElementById('status-'+index);
+    const card=document.getElementById('story-'+index);
+    status.textContent='Lecture en cours...';
+    card.classList.add('active');
+    utterance.onend=()=>{status.textContent='Terminé';card.classList.remove('active');};
+    utterance.onerror=()=>{status.textContent='Erreur de lecture';card.classList.remove('active');};
+    speechSynthesis.speak(utterance);
+  }
+  function pauseLecture(){
+    if(speechSynthesis.speaking&&!speechSynthesis.paused){
+      speechSynthesis.pause();
+      const status=document.getElementById('status-'+currentIndex);
+      if(status)status.textContent='Pause';
+    }
+  }
+  function reprendreLecture(){
+    if(speechSynthesis.paused){
+      speechSynthesis.resume();
+      const status=document.getElementById('status-'+currentIndex);
+      if(status)status.textContent='Lecture reprise...';
+    }
+  }
+  function recommencerLecture(index){playLecture(index);}
+  function stopLecture(){speechSynthesis.cancel();resetStatus();currentIndex=null;}
+  function changerVitesse(){
+    currentRate=parseFloat(document.getElementById('rateSelect').value||'0.9');
+    if(currentIndex!==null&&speechSynthesis.speaking)playLecture(currentIndex);
+  }
+  function toggleFullscreen(){
+    if(!document.fullscreenElement)document.documentElement.requestFullscreen?.().catch(()=>{});
+    else document.exitFullscreen?.().catch(()=>{});
+  }
+  function chargerVoix(){
+    availableVoices=speechSynthesis.getVoices?speechSynthesis.getVoices():[];
+    const select=document.getElementById('voiceSelect');
+    const currentChoice=select.value;
+    select.innerHTML='';
+    const frenchVoices=availableVoices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith('fr'));
+    if(!frenchVoices.length){
+      const option=document.createElement('option');
+      option.value='';
+      option.textContent='Voix française non trouvée';
+      select.appendChild(option);
+      return;
+    }
+    frenchVoices.forEach(v=>{
+      const option=document.createElement('option');
+      option.value=v.name;
+      option.textContent=`${v.name} (${v.lang})`;
+      select.appendChild(option);
+    });
+    const best=frenchVoices.find(v=>v.lang==='fr-CH')||frenchVoices[0];
+    select.value=currentChoice&&frenchVoices.some(v=>v.name===currentChoice)?currentChoice:best.name;
+  }
+  function verifierReponse(btn,selected,correct){
+    const parent=btn.closest('.hv-question');
+    const storyIndex=parent.dataset.story;
+    const questionIndex=parent.dataset.question;
+    const buttons=parent.querySelectorAll('button');
+    const result=parent.querySelector('.hv-result');
+    parent.dataset.answered='true';
+    parent.dataset.selected=String(selected);
+    buttons.forEach((b,i)=>{
+      b.disabled=true;
+      b.classList.remove('correct','wrong');
+      if(i===correct)b.classList.add('correct');
+      if(i===selected&&i!==correct)b.classList.add('wrong');
+    });
+    result.textContent=selected===correct?'Bonne réponse':'Mauvaise réponse';
+    result.style.color=selected===correct?'#1f8a5b':'#b93535';
+    if(selected===correct)markCorrect(storyIndex,questionIndex);
+  }
+  function markCorrect(storyIndex,questionIndex){
+    const key=`${storyIndex}-${questionIndex}`;
+    const done=readDone();
+    if(done.includes(key))return;
+    done.push(key);
+    saveDone(done);
+    if(window.ScoreManager){
+      ScoreManager.updateMetrics(PAGE_ID,{correct:1,typed:0,errors:0,xp:3});
+      ScoreManager.promoteStatus(PAGE_ID,done.length>=histoires.length*3?'completed':'in_progress');
+      ScoreManager.pushSessionHistory({page:PAGE_ID,label:'Histoire Vaud',score:done.length,total:histoires.length*3,xp:3});
+    }
+  }
+  function restoreAnswered(){
+    const done=readDone();
+    done.forEach(key=>{
+      const parts=key.split('-');
+      const question=document.querySelector(`.hv-question[data-story="${parts[0]}"][data-question="${parts[1]}"]`);
+      if(!question)return;
+      const correct=Number(question.dataset.correct);
+      const button=question.querySelectorAll('button')[correct];
+      if(button)verifierReponse(button,correct,correct);
+    });
+  }
+  function resetQuiz(storyIndex){
+    const quiz=document.getElementById('quiz-'+storyIndex);
+    const score=document.getElementById('score-'+storyIndex);
+    quiz.querySelectorAll('.hv-question').forEach(question=>{
+      delete question.dataset.answered;
+      delete question.dataset.selected;
+      const result=question.querySelector('.hv-result');
+      result.textContent='';
+      result.removeAttribute('style');
+      question.querySelectorAll('button').forEach(btn=>{
+        btn.disabled=false;
+        btn.classList.remove('correct','wrong');
+      });
+    });
+    score.textContent='';
+  }
+  function afficherScore(storyIndex){
+    const quiz=document.getElementById('quiz-'+storyIndex);
+    const score=document.getElementById('score-'+storyIndex);
+    const questions=Array.from(quiz.querySelectorAll('.hv-question'));
+    const answered=questions.filter(q=>q.dataset.answered==='true');
+    const correct=answered.filter(q=>q.dataset.selected===q.dataset.correct).length;
+    score.textContent=`Score : ${correct} / ${questions.length} bonnes réponses`;
+  }
+  function runTests(){
+    console.assert(histoires.length===10,'Il doit y avoir 10 histoires.');
+    console.assert(histoires.every(h=>h.questions.length===3),'Chaque histoire doit avoir 3 questions.');
+    console.assert(typeof playLecture==='function','playLecture doit exister.');
+    console.assert(document.querySelectorAll('.hv-story').length===10,'Les histoires doivent être affichées.');
+  }
+  renderHistoires();
+  runTests();
+  chargerVoix();
+  speechSynthesis.onvoiceschanged=chargerVoix;
+  setTimeout(chargerVoix,500);
+  window.addEventListener('beforeunload',()=>speechSynthesis.cancel());
+  </script>
+</body>
+</html>
