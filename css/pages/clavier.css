@@ -2,21 +2,48 @@
 /* ── KPI ── */
     .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
     @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-    .kpi-card { background: var(--surface); border-radius: var(--r-lg); padding: 16px;
+    .kpi-card { background: var(--surface); border-radius: 10px; padding: 16px;
                 text-align: center; border: 1px solid var(--border); }
+    .kpi-card.is-hidden { display: none; }
     .kpi-val  { font-size: 22px; font-weight: 700; color: var(--accent); }
+    .kpi-val-success { color: var(--success); }
+    .kpi-val-danger { color: var(--danger); }
     .kpi-lbl  { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
+
+    .keyboard-hero {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      text-align: left;
+    }
+    .keyboard-hero .page-icon {
+      margin: 0;
+    }
+    .keyboard-hero-copy h1 {
+      margin-bottom: 4px;
+    }
+    .keyboard-hero-copy p {
+      margin: 0;
+    }
 
     .keyboard-options {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--r-lg);
+      border-radius: 10px;
       display: flex;
-      align-items: center;
+      align-items: stretch;
+      justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
       margin-bottom: 20px;
       padding: 16px;
+    }
+    .keyboard-options-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
     .keyboard-option {
       display: flex;
@@ -42,25 +69,88 @@
     }
     .keyboard-option-note {
       color: var(--text2);
-      flex-basis: 100%;
+      flex: 1 1 280px;
       font-size: 13px;
       line-height: 1.45;
+      padding: 9px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .keyboard-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex-basis: 100%;
+    }
+    .keyboard-flow span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .keyboard-flow strong {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
     }
 
     /* ── Phrase display ── */
     .exercise-zone {
       background: var(--surface);
-      border-radius: var(--r-lg);
+      border-radius: 10px;
       border: 1px solid var(--border);
       padding: 24px;
       margin-bottom: 16px;
     }
+    .keyboard-practice {
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    }
+    .practice-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .practice-kicker {
+      color: var(--text3);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .practice-title {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+      margin-top: 3px;
+    }
     .exercise-phrase {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
       font-size: 22px;
       font-family: 'Courier New', monospace;
       letter-spacing: 2px;
       line-height: 1.8;
       margin-bottom: 16px;
+      min-height: 92px;
+      padding: 18px;
       word-break: break-all;
     }
     .char { display: inline; transition: color 0.08s; }
@@ -71,10 +161,10 @@
 
     /* ── Input ── */
     #typing-input {
-      width: 100%; max-width: 500px; display: block; margin: 0 auto;
+      width: 100%; max-width: 680px; display: block; margin: 0 auto;
       font-family: 'Courier New', monospace;
       font-size: 18px; text-align: left; letter-spacing: 0.5px;
-      padding: 10px 16px; border-radius: var(--r-lg);
+      padding: 14px 16px; border-radius: 10px;
       border: 2px solid var(--border); background: var(--bg2); color: var(--text1);
       outline: none; transition: border-color 0.2s;
     }
@@ -93,19 +183,41 @@
     }
 
     .typing-target-row {
-      display: flex;
-      gap: 10px 18px;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
       color: var(--text2);
       font-size: 13px;
-      margin: -6px 0 14px;
-      text-align: center;
+      margin: 0 0 14px;
+    }
+    .typing-target-row span {
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+    }
+    .typing-target-row small {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text3);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
     .typing-target-row strong {
       color: var(--accent);
       font-family: 'Courier New', monospace;
       font-size: 16px;
+      overflow-wrap: anywhere;
+    }
+    .practice-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
     }
 
     .keyboard-result-details {
@@ -127,10 +239,25 @@
     .keyboard-result-details strong {
       color: var(--text);
     }
+    .keyboard-result-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
 
     /* ── Virtual keyboard ── */
-    .keyboard { margin-top: 20px; display: flex; flex-direction: column; gap: 4px; align-items: center; }
-    .keyboard-row { display: flex; gap: 4px; }
+    .keyboard {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      overflow-x: auto;
+      padding: 4px 0 10px;
+    }
+    .keyboard-row { display: flex; gap: 4px; min-width: max-content; }
     .key {
       min-width: 36px; height: 36px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -170,12 +297,95 @@
       color: var(--text2);
     }
     .quiz-progress-label strong { color: var(--text); }
+    .keyboard-progress-card {
+      padding: 14px 20px;
+    }
+    .progress-percent-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #prog-pct {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    #progressFill {
+      width: 0%;
+    }
 
     /* ── WPM live ── */
     #wpm-live { font-size: 12px; color: var(--text3); margin-top: 6px; text-align: center; min-height: 18px; }
 
     /* ── Shift hint ── */
     #shift-hint { font-size: 12px; color: var(--text3); text-align: center; margin-top: 6px; min-height: 16px; }
+
+    .train-zone {
+      display: none;
+      margin-bottom: 16px;
+    }
+    .train-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .train-head span {
+      color: var(--text3);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .train-card {
+      position: relative;
+      text-align: center;
+      padding: 32px 24px;
+    }
+    .train-char {
+      min-height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-family: 'Courier New', monospace;
+      font-size: 96px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .train-desc {
+      min-height: 20px;
+      margin-top: 8px;
+      color: var(--text2);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .train-step {
+      display: none;
+      margin-top: 10px;
+      padding: 3px 12px;
+      border-radius: 999px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text3);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .train-feedback {
+      min-height: 28px;
+      margin-top: 12px;
+      font-size: 18px;
+    }
+    .train-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
 
     /* ── Result ring ── */
     .result-ring-wrap { display: flex; justify-content: center; margin: 8px 0 16px; }
@@ -230,7 +440,7 @@
     @media (min-width: 1000px) {
       .container {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) minmax(420px, auto);
         grid-template-areas:
           "header   header"
           "options  keyboard"
@@ -252,14 +462,6 @@
       #virtual-keyboard            { grid-area: keyboard; position: sticky; top: calc(var(--header-h) + 16px); margin-top: 0; }
       .container > .alert          { grid-area: alert; }
 
-      /* Compact page header in two-column mode */
-      .container .page-header {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 14px 20px;
-        margin-bottom: 4px;
-      }
       .container .page-header .page-icon { font-size: 26px; }
       .container .page-header h1         { font-size: 20px; margin: 0; }
       .container .page-header p          { font-size: 13px; margin: 0; flex: 1; }
@@ -311,6 +513,13 @@
     }
 
     @media (max-width: 700px) {
+      .keyboard-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .keyboard-hero .btn {
+        width: 100%;
+      }
       .keyboard-options,
       .keyboard-option {
         align-items: stretch;
@@ -320,14 +529,39 @@
       .keyboard-option select {
         width: 100%;
       }
+      .keyboard-options-main {
+        align-items: stretch;
+        flex-direction: column;
+        width: 100%;
+      }
+      .keyboard-flow {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .keyboard-flow span {
+        justify-content: center;
+        padding-inline: 6px;
+      }
+      .practice-head {
+        align-items: stretch;
+        flex-direction: column;
+        text-align: center;
+      }
+      .typing-target-row {
+        grid-template-columns: 1fr;
+      }
       .exercise-phrase {
         font-size: 18px;
         letter-spacing: 1px;
         word-break: break-word;
+        min-height: 76px;
+        padding: 14px;
       }
       #typing-input {
         font-size: 16px;
         max-width: none;
       }
+      .train-kpi-grid {
+        grid-template-columns: 1fr;
+      }
     }
-

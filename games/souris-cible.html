@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercice souris - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root {
+      --sc-blue: #1565c0;
+      --sc-blue-dark: #0d47a1;
+      --sc-green: #16a34a;
+      --sc-border: #93c5fd;
+    }
+
+    body.souris-cible-page {
+      background: linear-gradient(135deg, #eef6ff, #ffffff);
+    }
+
+    .sc-main {
+      max-width: 1100px;
+    }
+
+    .sc-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sc-header h1 {
+      margin: 0 0 6px;
+      font-family: var(--font-head);
+      font-size: clamp(32px, 4vw, 46px);
+      color: var(--text);
+    }
+
+    .sc-header p {
+      margin: 0;
+      font-size: 20px;
+      color: var(--text2);
+    }
+
+    .sc-tableau {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .sc-carte {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 24px;
+      min-width: 140px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,.08);
+      color: var(--text2);
+      font-weight: 800;
+    }
+
+    .sc-carte span {
+      display: block;
+      font-family: var(--font-head);
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--sc-blue);
+    }
+
+    .sc-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .sc-button,
+    .sc-select {
+      font-family: inherit;
+      font-size: 18px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 0;
+    }
+
+    .sc-button {
+      cursor: pointer;
+      background: var(--sc-blue);
+      color: white;
+      font-weight: 900;
+      transition: background .18s ease, transform .18s ease;
+    }
+
+    .sc-button:hover {
+      background: var(--sc-blue-dark);
+      transform: translateY(-1px);
+    }
+
+    .sc-select {
+      background: white;
+      border: 2px solid #cbd5e1;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .sc-zone {
+      position: relative;
+      height: 430px;
+      border: 4px dashed var(--sc-border);
+      border-radius: 24px;
+      background: white;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,.05), 0 10px 24px rgba(15,23,42,.08);
+    }
+
+    .sc-message {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #eff6ff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 20px;
+      font-weight: 900;
+      color: #1d4ed8;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .sc-cible {
+      width: 95px;
+      height: 95px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffffff, #60a5fa 45%, #1d4ed8 100%);
+      position: absolute;
+      left: 40px;
+      top: 120px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(29,78,216,.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 34px;
+      font-weight: 900;
+      user-select: none;
+      transition: left 1.2s ease-in-out, top 1.2s ease-in-out, transform .15s ease, box-shadow .15s ease;
+      animation: scPulse 1.4s infinite;
+    }
+
+    .sc-cible:hover { transform: scale(1.08); }
+    .sc-cible:active { transform: scale(.92); }
+
+    .sc-plus {
+      position: absolute;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--sc-green);
+      pointer-events: none;
+      animation: scMonte .8s ease-out forwards;
+    }
+
+    .sc-fin {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,.92);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 5;
+      padding: 20px;
+    }
+
+    .sc-fin.active { display: flex; }
+
+    .sc-fin-box {
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    }
+
+    .sc-fin-box h2 {
+      font-family: var(--font-head);
+      font-size: 36px;
+      margin: 0 0 10px;
+    }
+
+    .sc-fin-box p {
+      font-size: 24px;
+      color: var(--text);
+    }
+
+    .sc-consignes {
+      margin-top: 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      font-size: 18px;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+
+    .sc-consignes strong { color: var(--sc-blue); }
+
+    @keyframes scPulse {
+      0% { box-shadow: 0 0 0 0 rgba(37,99,235,.45); }
+      70% { box-shadow: 0 0 0 20px rgba(37,99,235,0); }
+      100% { box-shadow: 0 0 0 0 rgba(37,99,235,0); }
+    }
+
+    @keyframes scMonte {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-45px) scale(1.4); }
+    }
+
+    @media (max-width: 640px) {
+      .sc-main { padding-left: 14px; padding-right: 14px; }
+      .sc-zone { height: 390px; }
+      .sc-message { font-size: 16px; max-width: calc(100% - 24px); white-space: normal; text-align: center; }
+    }
+  </style>
+</head>
+<body class="souris-cible-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main sc-main">
+      <section class="sc-header">
+        <h1>Exercice souris</h1>
+        <p>Clique sur la cible qui bouge doucement.</p>
+      </section>
+
+      <div class="sc-tableau">
+        <div class="sc-carte">Score<span id="score">0</span></div>
+        <div class="sc-carte">Temps<span id="temps">30</span></div>
+        <div class="sc-carte">Niveau<span id="niveauTexte">Facile</span></div>
+      </div>
+
+      <div class="sc-controls">
+        <button class="sc-button" type="button" onclick="demarrer()">Démarrer</button>
+        <button class="sc-button" type="button" onclick="recommencer()">Recommencer</button>
+        <select class="sc-select" id="niveau" onchange="changerNiveau()">
+          <option value="facile">Facile</option>
+          <option value="moyen">Moyen</option>
+          <option value="rapide">Rapide</option>
+        </select>
+      </div>
+
+      <section class="sc-zone" id="zone">
+        <div class="sc-message" id="message">Clique sur Démarrer</div>
+        <div class="sc-cible" id="cible">🎯</div>
+        <div class="sc-fin" id="fin">
+          <div class="sc-fin-box">
+            <h2>Terminé !</h2>
+            <p>Score : <strong id="scoreFinal">0</strong></p>
+            <button class="sc-button" type="button" onclick="recommencer()">Recommencer</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="sc-consignes">
+        <strong>Consigne :</strong> regarde la cible, déplace la souris, clique une fois, puis recommence.
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'souris-cible';
+  const cible = document.getElementById('cible');
+  const zone = document.getElementById('zone');
+  const scoreEl = document.getElementById('score');
+  const tempsEl = document.getElementById('temps');
+  const messageEl = document.getElementById('message');
+  const finEl = document.getElementById('fin');
+  const scoreFinalEl = document.getElementById('scoreFinal');
+  const niveauSelect = document.getElementById('niveau');
+  const niveauTexte = document.getElementById('niveauTexte');
+
+  let score = 0;
+  let temps = 30;
+  let jeuActif = false;
+  let timer = null;
+  let mouvement = null;
+  let taille = 95;
+  let vitesse = 1700;
+  let transition = 1200;
+
+  function changerNiveau() {
+    const niveau = niveauSelect.value;
+    if (niveau === 'facile') {
+      taille = 110;
+      vitesse = 1900;
+      transition = 1400;
+      niveauTexte.textContent = 'Facile';
+    }
+    if (niveau === 'moyen') {
+      taille = 90;
+      vitesse = 1400;
+      transition = 950;
+      niveauTexte.textContent = 'Moyen';
+    }
+    if (niveau === 'rapide') {
+      taille = 70;
+      vitesse = 950;
+      transition = 650;
+      niveauTexte.textContent = 'Rapide';
+    }
+    cible.style.width = taille + 'px';
+    cible.style.height = taille + 'px';
+    cible.style.transition = `left ${transition}ms ease-in-out, top ${transition}ms ease-in-out, transform .15s ease, box-shadow .15s ease`;
+    bougerCible();
+  }
+  window.changerNiveau = changerNiveau;
+
+  function bougerCible() {
+    const margeHaut = 70;
+    const maxX = zone.clientWidth - taille - 10;
+    const maxY = zone.clientHeight - taille - 10;
+    const x = Math.random() * Math.max(maxX, 1);
+    const y = margeHaut + Math.random() * Math.max(maxY - margeHaut, 1);
+    cible.style.left = x + 'px';
+    cible.style.top = y + 'px';
+  }
+
+  function demarrer() {
+    if (jeuActif) return;
+    score = 0;
+    temps = 30;
+    scoreEl.textContent = score;
+    tempsEl.textContent = temps;
+    finEl.classList.remove('active');
+    jeuActif = true;
+    messageEl.textContent = 'Clique la cible !';
+    changerNiveau();
+    if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+    mouvement = setInterval(bougerCible, vitesse);
+    timer = setInterval(function () {
+      temps -= 1;
+      tempsEl.textContent = temps;
+      if (temps <= 0) terminer();
+    }, 1000);
+  }
+  window.demarrer = demarrer;
+
+  function terminer() {
+    jeuActif = false;
+    clearInterval(timer);
+    clearInterval(mouvement);
+    scoreFinalEl.textContent = score;
+    messageEl.textContent = "Fin de l'exercice";
+    finEl.classList.add('active');
+    if (window.ScoreManager) {
+      const xp = Math.max(1, Math.min(20, score));
+      window.ScoreManager.updateMetrics(PAGE_ID, { correct: score, typed: score, xp });
+      if (score >= 10) window.ScoreManager.promoteStatus(PAGE_ID, 'completed');
+      else window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+      window.ScoreManager.pushSessionHistory({ page: PAGE_ID, name: 'Exercice souris', xp, correct: score, typed: score, errors: 0 });
+    }
+  }
+
+  function recommencer() {
+    clearInterval(timer);
+    clearInterval(mouvement);
+    score = 0;
+    temps = 30;
+    jeuActif = false;
+    scoreEl.textContent = score;
+    tempsEl.textContent = temps;
+    finEl.classList.remove('active');
+    messageEl.textContent = 'Clique sur Démarrer';
+    changerNiveau();
+  }
+  window.recommencer = recommencer;
+
+  function afficherPlus() {
+    const plus = document.createElement('div');
+    plus.className = 'sc-plus';
+    plus.textContent = '+1';
+    plus.style.left = cible.offsetLeft + taille / 2 + 'px';
+    plus.style.top = cible.offsetTop + 'px';
+    zone.appendChild(plus);
+    setTimeout(() => plus.remove(), 800);
+  }
+
+  cible.addEventListener('click', function () {
+    if (!jeuActif) return;
+    score += 1;
+    scoreEl.textContent = score;
+    messageEl.textContent = 'Bien ! Continue';
+    afficherPlus();
+    bougerCible();
+  });
+
+  function runTests() {
+    console.assert(typeof changerNiveau === 'function', 'changerNiveau doit exister');
+    console.assert(typeof demarrer === 'function', 'demarrer doit exister');
+    console.assert(typeof recommencer === 'function', 'recommencer doit exister');
+    console.assert(Boolean(cible), 'La cible existe');
+    console.assert(Boolean(zone), 'La zone existe');
+    console.log('Tests souris cible OK');
+  }
+
+  changerNiveau();
+  runTests();
+  </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copier-coller - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    body.copy-page{background:#f3f4f6;color:#111827}
+    .copy-main{max-width:1120px}
+    .copy-hero{background:#1f2937;color:white;border-radius:18px;padding:24px;text-align:center;margin-bottom:20px;box-shadow:0 10px 26px rgba(15,23,42,.16)}
+    .copy-hero h1{margin:0 0 8px;font-family:var(--font-head);font-size:clamp(30px,4vw,42px)}
+    .copy-hero p{margin:0;color:#cbd5e1;font-size:18px}
+    .copy-intro,.copy-exercise{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+    .copy-intro{font-size:18px;line-height:1.5}
+    .copy-toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .copy-button{border:0;border-radius:12px;padding:12px 16px;font-size:16px;cursor:pointer;background:#2563eb;color:white;font-weight:800}
+    .copy-button:hover{background:#1d4ed8}
+    .copy-button.secondary{background:#4b5563}.copy-button.secondary:hover{background:#374151}
+    .copy-exercise h2{margin-top:0;color:#1f2937;font-family:var(--font-head);font-size:22px}
+    .copy-instruction{font-size:17px;margin-bottom:12px;color:#374151}
+    .copy-source{background:#eef2ff;border:2px dashed #6366f1;border-radius:12px;padding:14px;font-size:20px;margin-bottom:12px;user-select:text;line-height:1.45}
+    .copy-source::selection{background:#facc15;color:#111827}
+    .copy-answer{width:100%;min-height:70px;border:2px solid #d1d5db;border-radius:12px;padding:12px;font-size:18px;resize:vertical}
+    .copy-answer:focus{outline:none;border-color:#2563eb;background:#f9fafb}
+    .copy-answer.correct{border-color:#15803d;background:#f0fdf4}.copy-answer.wrong{border-color:#b91c1c;background:#fef2f2}
+    .copy-result{margin-top:10px;font-weight:800;font-size:16px}.copy-result.ok{color:#15803d}.copy-result.no{color:#b91c1c}
+    .copy-small{font-size:14px;color:#6b7280;margin-top:8px}
+  </style>
+</head>
+<body class="copy-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+  <div class="layout">
+    <main class="main copy-main">
+      <section class="copy-hero">
+        <h1>20 exercices : copier-coller</h1>
+        <p>Lire, sélectionner, copier, coller.</p>
+      </section>
+      <section class="copy-intro">
+        <strong>Consigne générale :</strong><br>
+        1. Sélectionnez le texte dans le cadre bleu.<br>
+        2. Copiez avec <strong>Ctrl + C</strong>.<br>
+        3. Collez dans la zone blanche avec <strong>Ctrl + V</strong>.<br>
+        4. Cliquez sur <strong>Vérifier</strong>.
+      </section>
+      <div class="copy-toolbar">
+        <button class="copy-button" type="button" onclick="checkAll()">Vérifier tout</button>
+        <button class="copy-button secondary" type="button" onclick="resetAll()">Recommencer</button>
+      </div>
+      <div id="exercises"></div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+  const PAGE_ID='copier-coller';
+  const STORAGE_KEY='copierCollerAnswers20';
+  const DONE_KEY='copierCollerDone20';
+  const exercises=[
+    "Bonjour, je m'appelle Maria.","Je cherche un emploi à Lausanne.","Mon numéro de téléphone est 076 123 45 67.","J'habite à Vevey.","Je suis disponible le lundi matin.","Madame, Monsieur,","Je vous remercie pour votre réponse.","Mes salutations distinguées.","Je souhaite postuler pour ce poste.","Je suis motivé et sérieux.","Je parle français niveau A1.","J'ai de l'expérience dans le nettoyage.","Je peux commencer rapidement.","Pouvez-vous me donner un rendez-vous ?","Voici mon curriculum vitae.","Je reste à votre disposition.","Objet : Candidature spontanée","Je cherche un stage dans la vente.","Merci pour votre compréhension.","Avec mes meilleures salutations."
+  ];
+  const container=document.getElementById('exercises');
+  function escapeHtml(value){return String(value).replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+  function normalize(text){return text.trim().replace(/\s+/g,' ');}
+  function readDone(){try{return JSON.parse(localStorage.getItem(DONE_KEY)||'[]')}catch(e){return[]}}
+  function saveDone(done){localStorage.setItem(DONE_KEY,JSON.stringify(done));}
+  exercises.forEach((text,index)=>{
+    const div=document.createElement('section');
+    div.className='copy-exercise';
+    div.innerHTML=`<h2>Exercice ${index+1}</h2><p class="copy-instruction">Copiez exactement le texte ci-dessous et collez-le dans la zone de réponse.</p><div class="copy-source" id="source-${index}">${escapeHtml(text)}</div><textarea class="copy-answer" id="answer-${index}" placeholder="Collez le texte ici..."></textarea><div class="copy-toolbar" style="margin-top:10px;margin-bottom:0"><button class="copy-button" type="button" onclick="checkOne(${index})">Vérifier</button><button class="copy-button secondary" type="button" onclick="copyText(${index})">Copier le texte</button></div><div class="copy-result" id="result-${index}"></div><div class="copy-small">Astuce : Ctrl + C pour copier, Ctrl + V pour coller.</div>`;
+    container.appendChild(div);
+  });
+  function checkOne(index){
+    const expected=normalize(exercises[index]);
+    const textarea=document.getElementById(`answer-${index}`);
+    const answer=normalize(textarea.value);
+    const result=document.getElementById(`result-${index}`);
+    textarea.classList.remove('correct','wrong');
+    if(answer===expected){
+      result.textContent='Correct';
+      result.className='copy-result ok';
+      textarea.classList.add('correct');
+      const done=readDone();
+      if(!done[index]&&window.ScoreManager){
+        window.ScoreManager.updateMetrics(PAGE_ID,{correct:1,typed:1,xp:2});
+        window.ScoreManager.promoteStatus(PAGE_ID,done.filter(Boolean).length+1>=exercises.length?'completed':'in_progress');
+      }
+      done[index]=true;saveDone(done);
+    }else{
+      result.textContent='À corriger : vérifiez les mots, les accents, la ponctuation et les espaces.';
+      result.className='copy-result no';
+      textarea.classList.add('wrong');
+      if(window.ScoreManager)window.ScoreManager.updateMetrics(PAGE_ID,{errors:1,typed:1});
+    }
+    saveAnswers();
+  }
+  function checkAll(){exercises.forEach((_,index)=>checkOne(index));}
+  function resetAll(){
+    if(!confirm('Effacer toutes les réponses ?'))return;
+    exercises.forEach((_,index)=>{const a=document.getElementById(`answer-${index}`);a.value='';a.classList.remove('correct','wrong');document.getElementById(`result-${index}`).textContent='';});
+    localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(DONE_KEY);
+    if(window.ScoreManager)window.ScoreManager.promoteStatus(PAGE_ID,'in_progress');
+  }
+  function copyText(index){
+    navigator.clipboard.writeText(exercises[index]).then(()=>{
+      const result=document.getElementById(`result-${index}`);
+      result.textContent='Texte copié. Maintenant, collez-le dans la zone blanche.';
+      result.className='copy-result ok';
+    }).catch(()=>alert('Copie automatique impossible. Sélectionnez le texte puis faites Ctrl + C.'));
+  }
+  function saveAnswers(){localStorage.setItem(STORAGE_KEY,JSON.stringify(exercises.map((_,index)=>document.getElementById(`answer-${index}`).value)));}
+  function loadAnswers(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');data.forEach((value,index)=>{const el=document.getElementById(`answer-${index}`);if(el)el.value=value;});}catch(e){}}
+  document.addEventListener('input',saveAnswers);
+  loadAnswers();
+  if(window.ScoreManager)window.ScoreManager.promoteStatus(PAGE_ID,'in_progress');
+  console.assert(exercises.length===20,'20 exercices copier-coller');
+  </script>
+</body>
+</html>

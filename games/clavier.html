@@ -22,40 +22,48 @@
         
 
 
-        <div class="page-header fade-up">
+        <div class="page-header keyboard-hero fade-up">
           <div class="page-icon">⌨️</div>
-          <h1>Dactylographie</h1>
-          <p>Tapez la phrase comme elle apparaît. La précision compte d’abord.</p>
-          <button class="btn btn-secondary btn-sm" id="btn-train-start" type="button"
-                  style="margin-top:12px;">⌨️ Mode Entraînement</button>
+          <div class="keyboard-hero-copy">
+            <h1>Dactylographie</h1>
+            <p>Tape la phrase, suis la touche bleue, avance à ton rythme.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-train-start" type="button">Mode entraînement</button>
         </div>
 
         <div class="keyboard-options fade-up delay-1" aria-label="Options de l'exercice clavier">
-          <label class="keyboard-option">
-            <span>Niveau</span>
-            <select id="level-select">
-              <option value="debutant">Débutant</option>
-              <option value="intermediaire">Intermédiaire</option>
-              <option value="avance">Avancé</option>
-              <option value="tous">Tous les niveaux</option>
-            </select>
-          </label>
-          <button class="btn btn-ghost btn-sm" id="btn-session-size" type="button">Session courte : oui</button>
+          <div class="keyboard-options-main">
+            <label class="keyboard-option">
+              <span>Niveau</span>
+              <select id="level-select">
+                <option value="debutant">Débutant</option>
+                <option value="intermediaire">Intermédiaire</option>
+                <option value="avance">Avancé</option>
+                <option value="tous">Tous les niveaux</option>
+              </select>
+            </label>
+            <button class="btn btn-ghost btn-sm" id="btn-session-size" type="button">Session courte : oui</button>
+          </div>
           <div class="keyboard-option-note" id="level-note">Phrases courtes pour commencer. Change de niveau quand tu veux.</div>
+          <div class="keyboard-flow" aria-label="Déroulement">
+            <span><strong>1</strong> Lis</span>
+            <span><strong>2</strong> Tape</span>
+            <span><strong>3</strong> Corrige</span>
+          </div>
         </div>
 
         <!-- KPI -->
         <div class="kpi-grid fade-up delay-1">
-          <div class="kpi-card" style="display:none;">
+          <div class="kpi-card is-hidden">
             <div class="kpi-val" id="sc-phrase">0/0</div>
             <div class="kpi-lbl">Phrase</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-val" style="color:var(--success)" id="sc-correct">0</div>
+            <div class="kpi-val kpi-val-success" id="sc-correct">0</div>
             <div class="kpi-lbl">Correctes</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-val" style="color:var(--danger)" id="sc-errors">0</div>
+            <div class="kpi-val kpi-val-danger" id="sc-errors">0</div>
             <div class="kpi-lbl">Erreurs</div>
           </div>
           <div class="kpi-card">
@@ -73,52 +81,56 @@
         </div>
 
         <!-- Progression -->
-        <div class="card mb-16 fade-up delay-1" id="progress-card" style="padding:14px 20px;">
+        <div class="card mb-16 keyboard-progress-card fade-up delay-1" id="progress-card">
           <div class="quiz-top">
             <div class="quiz-progress-label">
               Progression <strong id="qNum">0</strong> / <strong id="qTotal">0</strong>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <span id="prog-pct" style="font-size:13px;font-weight:700;color:var(--accent);">0%</span>
+            <div class="progress-percent-wrap">
+              <span id="prog-pct">0%</span>
             </div>
           </div>
           <div class="series-progress">
-            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
           </div>
         </div>
 
         <!-- Zone d'exercice -->
-        <div class="exercise-zone fade-up delay-2">
+        <div class="exercise-zone keyboard-practice fade-up delay-2">
+          <div class="practice-head">
+            <div>
+              <div class="practice-kicker">Phrase à taper</div>
+              <div class="practice-title">Copie exactement le texte affiché</div>
+            </div>
+            <div id="wpm-live"></div>
+          </div>
           <div class="feedback-text" id="feedback-text">&nbsp;</div>
           <div class="exercise-phrase" id="phrase-display"></div>
           <div class="typing-target-row" aria-live="polite">
-            <span>Prochain : <strong id="next-char-display">—</strong></span>
-            <span>Doigt : <strong id="finger-guide-display">—</strong></span>
-            <span>Reste dans la phrase : <strong id="remaining-char-display">0</strong></span>
+            <span><small>Prochaine touche</small><strong id="next-char-display">—</strong></span>
+            <span><small>Doigt conseillé</small><strong id="finger-guide-display">—</strong></span>
+            <span><small>Caractères restants</small><strong id="remaining-char-display">0</strong></span>
           </div>
           <input type="text" id="typing-input" placeholder="Votre texte apparaît ici…"
             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-          <div class="input-helper">Le texte correct reste dans cette case. En cas d'erreur, regarde le caractère bleu et recommence cette touche.</div>
-          <div id="wpm-live"></div>
+          <div class="input-helper">En cas d'erreur, la saisie revient au dernier caractère juste.</div>
           <div id="shift-hint"></div>
-          <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <div class="practice-actions">
             <button class="btn btn-secondary btn-sm" id="btn-skip" type="button">Passer</button>
             <button class="btn btn-secondary btn-sm" id="btn-restart" type="button">Rejouer</button>
           </div>
         </div>
 
         <!-- ══ Zone Entraînement ══ -->
-        <div id="train-zone" style="display:none;margin-bottom:16px;">
+        <div id="train-zone" class="train-zone">
           <!-- Header -->
-          <div style="display:flex;align-items:center;justify-content:space-between;
-                      margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-            <span style="font-size:13px;font-weight:700;text-transform:uppercase;
-                         letter-spacing:0.8px;color:var(--text3);">Mode Entraînement</span>
+          <div class="train-head">
+            <span>Mode entraînement</span>
             <button class="btn btn-secondary btn-sm" id="btn-train-stop" type="button">&#9632; ARRÊTER</button>
           </div>
 
           <!-- Carte principale -->
-          <div class="exercise-zone" style="text-align:center;padding:32px 24px;position:relative;">
+          <div class="exercise-zone train-card">
             <!-- Overlay pause cognitive (s'affiche par-dessus la carte) -->
             <div id="train-pause-overlay">
               <div class="train-breath-ring"></div>
@@ -127,27 +139,21 @@
               </div>
             </div>
             <div id="train-char"
-                 style="font-size:96px;line-height:1;font-family:'Courier New',monospace;
-                        font-weight:700;color:var(--accent);min-height:110px;
-                        display:flex;align-items:center;justify-content:center;">?</div>
-            <div id="train-desc"
-                 style="font-size:14px;color:var(--text2);margin-top:8px;min-height:20px;font-weight:500;"></div>
+                 class="train-char">?</div>
+            <div id="train-desc" class="train-desc"></div>
             <div id="train-step"
-                 style="display:none;margin-top:10px;padding:3px 12px;border-radius:999px;
-                        background:var(--bg3);border:1px solid var(--border);
-                        font-size:11px;font-weight:700;color:var(--text3);
-                        text-transform:uppercase;letter-spacing:0.5px;"></div>
-            <div id="train-feedback" style="font-size:18px;min-height:28px;margin-top:12px;">&nbsp;</div>
+                 class="train-step"></div>
+            <div id="train-feedback" class="train-feedback">&nbsp;</div>
           </div>
 
           <!-- KPI entraînement -->
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;">
+          <div class="train-kpi-grid">
             <div class="kpi-card">
-              <div class="kpi-val" style="color:var(--success)" id="train-correct">0</div>
+              <div class="kpi-val kpi-val-success" id="train-correct">0</div>
               <div class="kpi-lbl">Correct</div>
             </div>
             <div class="kpi-card">
-              <div class="kpi-val" style="color:var(--danger)" id="train-errors">0</div>
+              <div class="kpi-val kpi-val-danger" id="train-errors">0</div>
               <div class="kpi-lbl">Erreurs</div>
             </div>
             <div class="kpi-card">
@@ -253,7 +259,7 @@
       </div>
       <div class="modal-text" id="resSubtitle"></div>
       <div class="keyboard-result-details" id="keyboard-result-details"></div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+      <div class="keyboard-result-actions">
         <a href="cliquer.html" class="btn btn-primary" id="btnNextExercise">Exercice suivant</a>
         <button class="btn btn-secondary" id="modal-restart" type="button">Rejouer</button>
         <a href="accueil.html" class="btn btn-secondary">&larr; Accueil</a>

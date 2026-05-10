@@ -12,6 +12,7 @@
     { page: 'formulaire',  name: 'Formulaire',                icon: '📝', cat: 'Candidature',  section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'orp'] },
     { page: 'email-ecrire',name: 'Écrire un e-mail',          icon: '✉️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'mise-en-forme', name: 'Mise en forme',            icon: '🧾', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'français'] },
+    { page: 'lettres-google-docs', name: 'Lettres Google Docs', icon: '📨', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'administration', 'logement'] },
     { page: 'email-pro',   name: 'E-mails professionnels',    icon: '📧', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'orp'] },
     { page: 'retaper',     name: 'Retaper',                   icon: '✍️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
@@ -20,6 +21,9 @@
     { page: 'clavier',     name: 'Clavier',                   icon: '⌨️', cat: 'Langue',        section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'ecouter',     name: 'Écouter',                   icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'orp', 'transports'] },
     { page: 'cliquer',     name: 'Cliquer',                   icon: '🖱️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports'] },
+    { page: 'souris-cible', name: 'Souris cible',              icon: '🎯', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'souris', 'précision'] },
+    { page: 'copier-coller', name: 'Copier-coller',            icon: '📋', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'clavier'] },
+    { page: 'copier-mots', name: 'Copier plusieurs mots',      icon: '✂️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'lecture'] },
     { page: 'cherche-clique',name:'Cherche & clique',          icon: '🔎', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'completer',   name: 'Compléter',                 icon: '🧩', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'orp', 'transports', 'santé', 'logement'] },
     { page: 'orientation', name: 'Orientation',               icon: '🗺️', cat: 'Jeu',           section: 'Numérique',          themes: ['numérique', 'transports'] },
@@ -60,6 +64,9 @@
     'ecouter':         '+4 XP (1re écoute), +3 XP (2e écoute+).',
     'pendu':           '+5 XP sans indice, +3 XP avec indice.',
     'cliquer':         '+2-3 XP par action correcte.',
+    'souris-cible':    '+1 XP par cible cliquée, jusqu’à 20 XP par partie.',
+    'copier-coller':   '+2 XP par texte copié correctement.',
+    'copier-mots':     '+3 XP par sélection de mots correcte.',
     'classement':      '+5 XP par classement parfait.',
     'quiz':            '+3 XP par bonne réponse + bonus de serie.',
     'vrai-faux':       '+2 XP par bonne réponse + bonus de serie.',
@@ -72,6 +79,7 @@
     'formulaire':      '+6-9 XP par formulaire réussi (bonus si sans indice).',
     'email-ecrire':    '+3 XP par bonne réponse.',
     'mise-en-forme':   '+3 XP par e-mail bien mis en forme.',
+    'lettres-google-docs': '+4 XP par lettre marquée comme faite.',
     'email-pro':       '+3 XP par bonne réponse.',
     'retaper':         '+7 XP parfait, +5 XP (>=90%), +3 XP (>=70%), +1 XP sinon. -1 XP si indice.',
     'simulations-dialogues': '+3 XP (bonne réponse), +1 XP (réponse moyenne).',
@@ -101,6 +109,12 @@
       objective: 'Apprendre à rendre un message professionnel plus lisible.',
       practice: 'Objet, salutation, paragraphes, ponctuation, formule finale.',
       useWhen: 'Avant d’écrire ou relire un e-mail important.'
+    },
+    'lettres-google-docs': {
+      summary: 'Choisir parmi 50 situations réalistes et rédiger une lettre complète dans Google Docs.',
+      objective: 'S’entraîner à structurer une lettre administrative, professionnelle ou personnelle.',
+      practice: 'Expéditeur, destinataire, date, objet, paragraphes, ton adapté, signature et nommage du fichier.',
+      useWhen: 'Pour préparer des démarches d’emploi, logement, administration, assurance, formation ou consommation.'
     },
     'email-pro': {
       summary: 'Lire un e-mail professionnel et choisir une reponse correcte.',
@@ -149,6 +163,24 @@
       objective: 'Rendre le geste de la souris plus fluide et plus sûr.',
       practice: 'Clic simple, observation, précision, sélection.',
       useWhen: 'Comme échauffement numérique ou avec les débutants.'
+    },
+    'souris-cible': {
+      summary: 'Cliquer sur une cible animée pendant un temps limité.',
+      objective: 'Améliorer la précision, la coordination main-souris et la confiance avec le clic.',
+      practice: 'Déplacement de la souris, clic simple, suivi visuel, rythme et précision.',
+      useWhen: 'Comme échauffement avant les exercices de navigation, formulaires ou recherche visuelle.'
+    },
+    'copier-coller': {
+      summary: 'Copier des phrases complètes et les coller exactement dans une zone de réponse.',
+      objective: 'Installer le geste de sélection, copie et collage avec contrôle du résultat.',
+      practice: 'Sélection de texte, Ctrl+C, Ctrl+V, accents, ponctuation et espaces.',
+      useWhen: 'Avant les e-mails, formulaires, CV ou exercices de saisie professionnelle.'
+    },
+    'copier-mots': {
+      summary: 'Sélectionner seulement les mots demandés dans une phrase puis les coller.',
+      objective: 'Affiner la précision de sélection et la lecture des consignes.',
+      practice: 'Sélection partielle, mots non contigus, copie, collage, vérification.',
+      useWhen: 'Après le copier-coller simple, pour travailler la sélection fine à la souris.'
     },
     'cherche-clique': {
       summary: 'Trouver une information demandée puis cliquer au bon endroit.',

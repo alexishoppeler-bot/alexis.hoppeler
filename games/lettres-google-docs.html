@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lettres Google Docs - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root{--lgd-card:#fff;--lgd-blue:#2563eb;--lgd-border:#dbe3ef;--lgd-shadow:0 12px 35px rgba(15,23,42,.12)}
+    body.lgd-page{background:linear-gradient(135deg,#eef5ff,#f9fafb);color:#1f2937}
+    .lgd-main{max-width:1420px}
+    .lgd-hero{margin-bottom:22px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end}
+    .lgd-hero h1{margin:0;font-family:var(--font-head);font-size:clamp(30px,4vw,46px);color:var(--text)}
+    .lgd-hero p{margin:8px 0 0;color:var(--text2);font-size:18px}
+    .lgd-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .lgd-button,.lgd-select{border:0;border-radius:14px;padding:12px 16px;font-size:16px;cursor:pointer;font-weight:800}
+    .lgd-button{background:var(--lgd-blue);color:white;box-shadow:0 6px 15px rgba(37,99,235,.25)}
+    .lgd-button.secondary{background:#374151}.lgd-select{background:white;color:#111827;border:1px solid var(--lgd-border)}
+    .lgd-layout{display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start}
+    .lgd-panel,.lgd-exercise{background:var(--lgd-card);border:1px solid var(--lgd-border);border-radius:20px;box-shadow:var(--lgd-shadow)}
+    .lgd-panel{padding:20px;position:sticky;top:calc(var(--header-h) + 16px);max-height:calc(100vh - var(--header-h) - 40px);overflow:auto}
+    .lgd-panel h2{margin:0 0 12px;font-family:var(--font-head);font-size:22px}
+    .lgd-filters{display:grid;gap:12px;margin-bottom:18px}.lgd-list{display:grid;gap:10px}
+    .lgd-item{border:1px solid var(--lgd-border);border-radius:14px;padding:12px;background:#f8fafc;cursor:pointer;transition:.18s}
+    .lgd-item:hover{transform:translateY(-1px);background:#eff6ff}.lgd-item.active{border-color:var(--lgd-blue);background:#dbeafe}
+    .lgd-item small{display:block;color:#6b7280;margin-top:4px}
+    .lgd-content{display:grid;gap:22px}.lgd-exercise{padding:28px;min-height:420px}
+    .lgd-badge{display:inline-block;padding:8px 12px;border-radius:999px;background:#e0ecff;color:#1d4ed8;font-weight:900;margin-bottom:12px}
+    .lgd-exercise h2{margin:0 0 12px;font-family:var(--font-head);font-size:32px}
+    .lgd-scenario{font-size:20px;line-height:1.55;background:#f8fafc;border-left:6px solid var(--lgd-blue);padding:18px;border-radius:16px;margin:18px 0}
+    .lgd-info-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:14px;margin-top:18px}
+    .lgd-info{padding:14px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;font-size:16px;line-height:1.45}
+    .lgd-info b{display:block;margin-bottom:5px;color:#9a3412}
+    .lgd-consigne{margin-top:20px;padding:18px;border-radius:16px;background:#ecfdf5;border:1px solid #bbf7d0;font-size:19px;line-height:1.5}
+    .lgd-model{margin-top:18px;background:#fff;border:1px solid var(--lgd-border);border-radius:18px;padding:18px}
+    .lgd-model h3{font-size:18px;margin:0 0 10px;color:#111827}
+    .lgd-model-frame{background:#f8fafc;border:1px solid #e5e7eb;border-radius:14px;padding:12px;display:flex;justify-content:center;overflow:auto}
+    .lgd-model img{display:block;width:min(100%,760px);height:auto;border-radius:10px;box-shadow:0 8px 22px rgba(15,23,42,.12)}
+    .lgd-workbox{margin-top:18px;background:#f8fafc;border:1px solid var(--lgd-border);border-radius:18px;padding:18px}
+    .lgd-workbox h3{font-size:18px;margin:0 0 8px;color:#111827}.lgd-workbox li{margin-bottom:5px;line-height:1.45}
+    .lgd-hint{color:#6b7280;font-size:15px;margin-top:10px}.lgd-done{margin-top:16px;background:#dcfce7;color:#166534;border:1px solid #86efac;display:none;padding:12px;border-radius:14px;font-weight:900}
+    .lgd-exercise.completed{outline:3px solid #86efac}
+    @media(max-width:950px){.lgd-hero,.lgd-layout{grid-template-columns:1fr}.lgd-panel{position:static;max-height:none}.lgd-info-grid{grid-template-columns:1fr}.lgd-actions{justify-content:flex-start}}
+    @media print{#header-slot,#sidebar-slot,.lgd-hero,.lgd-panel,#footer-slot,.lgd-done{display:none!important}.layout{padding:0}.main{padding:0;max-width:none}.lgd-layout{display:block}.lgd-exercise{box-shadow:none;border:none;border-radius:0}body{background:white}}
+  </style>
+</head>
+<body class="lgd-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+  <div class="layout">
+    <main class="main lgd-main">
+      <section class="lgd-hero">
+        <div>
+          <h1>50 lettres à rédiger dans Google Docs</h1>
+          <p>Choisir une mission, créer un document et rédiger une lettre complète.</p>
+        </div>
+        <div class="lgd-actions">
+          <button class="lgd-button" type="button" onclick="randomExercise()">Mission au hasard</button>
+          <button class="lgd-button secondary" type="button" onclick="markDone()">Marquer comme fait</button>
+          <button class="lgd-button secondary" type="button" onclick="window.print()">Imprimer</button>
+        </div>
+      </section>
+      <div class="lgd-layout">
+        <aside class="lgd-panel">
+          <h2>Choisir un exercice</h2>
+          <div class="lgd-filters"><select class="lgd-select" id="domainFilter" onchange="renderList()"><option value="Tous">Tous les domaines</option></select></div>
+          <div id="exerciseList" class="lgd-list"></div>
+        </aside>
+        <section class="lgd-content">
+          <article class="lgd-exercise" id="exerciseCard">
+            <span id="domainBadge" class="lgd-badge"></span>
+            <h2 id="title"></h2>
+            <div id="scenario" class="lgd-scenario"></div>
+            <div class="lgd-info-grid">
+              <div class="lgd-info"><b>Expéditeur</b><span id="sender"></span></div>
+              <div class="lgd-info"><b>Destinataire</b><span id="recipient"></span></div>
+              <div class="lgd-info"><b>Lieu et date</b><span id="datePlace"></span></div>
+              <div class="lgd-info"><b>Objet conseillé</b><span id="object"></span></div>
+            </div>
+            <div id="instruction" class="lgd-consigne"></div>
+            <div class="lgd-model">
+              <h3>Modèle de lettre</h3>
+              <div class="lgd-model-frame">
+                <img src="../assets/lettre.png" alt="Modèle de présentation d’une lettre avec expéditeur, destinataire, date, objet, texte et signature">
+              </div>
+            </div>
+            <div class="lgd-workbox">
+              <h3>Travail à faire dans Google Docs</h3>
+              <ol>
+                <li>Ouvrir <strong>Google Docs</strong>.</li>
+                <li>Créer un <strong>nouveau document vierge</strong>.</li>
+                <li>Nommer le fichier avec le nom indiqué ci-dessous.</li>
+                <li>Rédiger la lettre complète en respectant les informations données.</li>
+                <li>Présenter correctement la lettre : expéditeur, destinataire, lieu et date, objet, texte, signature.</li>
+              </ol>
+              <p class="lgd-hint"><strong>Nom du fichier :</strong> <span id="fileName"></span></p>
+            </div>
+            <div class="lgd-done" id="doneBox">Lettre marquée comme faite.</div>
+          </article>
+        </section>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+  const PAGE_ID='lettres-google-docs';
+  const DONE_KEY='lettresGoogleDocsDone50';
+  const exercises=[
+    ['Emploi','Candidature pour un poste de vendeuse','Sara Mendes, Rue de la Gare 14, 1003 Lausanne, 079 234 56 78, sara.mendes@mail.ch','Migros Vaud, Avenue de Provence 22, 1007 Lausanne','Lausanne, le 12 mai 2026','Candidature pour un poste de vendeuse','Sara a vu une annonce pour un poste de vendeuse dans un magasin Migros. Elle a déjà travaillé dans la vente pendant deux ans. Elle aime le contact avec les clients et elle est disponible rapidement.','Rédigez une lettre de motivation simple et professionnelle. La lettre doit expliquer pourquoi Sara postule, présenter son expérience et demander un entretien.'],
+    ['Emploi','Candidature spontanée en nettoyage','Mamadou Diallo, Chemin du Levant 8, 1020 Renens, 076 111 22 33, mamadou.diallo@mail.ch','Clean Service SA, Route de Genève 45, 1028 Préverenges','Renens, le 13 mai 2026','Candidature spontanée pour un poste d’agent de nettoyage','Mamadou cherche un emploi dans le nettoyage. Il a travaillé dans des bureaux, des écoles et des immeubles. Il souhaite envoyer une candidature spontanée à une entreprise de nettoyage.','Rédigez une lettre claire. Il faut présenter l’expérience de Mamadou, ses qualités et sa disponibilité.'],
+    ['Emploi','Demande de stage en cuisine','Elena Rossi, Rue Centrale 9, 1110 Morges, 078 555 66 77, elena.rossi@mail.ch','Restaurant Le Léman, Grand-Rue 18, 1110 Morges','Morges, le 14 mai 2026','Demande de stage en cuisine','Elena suit une formation d’insertion professionnelle. Elle souhaite faire un stage de deux semaines dans une cuisine pour découvrir le métier.','Rédigez une lettre pour demander un stage. La lettre doit être polie, motivée et préciser les dates souhaitées.'],
+    ['Emploi','Réponse positive après un entretien','Karim Benali, Avenue d’Echallens 31, 1004 Lausanne, 077 222 44 55, karim.benali@mail.ch','Logistique Plus SA, Route Industrielle 5, 1163 Etoy','Lausanne, le 15 mai 2026','Remerciements après notre entretien','Karim a passé un entretien pour un poste d’aide-logisticien. Il veut remercier l’entreprise et confirmer sa motivation.','Rédigez une lettre courte de remerciement après entretien. Il faut rester professionnel et montrer l’intérêt pour le poste.'],
+    ['Emploi','Demande de certificat de travail','Nadia Ferreira, Rue du Lac 6, 1800 Vevey, 079 888 12 12, nadia.ferreira@mail.ch','Hôtel Riviera, Quai Perdonnet 12, 1800 Vevey','Vevey, le 16 mai 2026','Demande de certificat de travail','Nadia a travaillé six mois dans un hôtel. Son contrat est terminé. Elle a besoin d’un certificat de travail pour ses prochaines candidatures.','Rédigez une lettre pour demander un certificat de travail. Le ton doit être correct et respectueux.'],
+    ['Emploi','Demande de réduction du taux de travail','Luis Garcia, Rue du Midi 3, 1400 Yverdon-les-Bains, 076 303 40 50, luis.garcia@mail.ch','Atelier Bois Nord, Rue des Artisans 10, 1400 Yverdon-les-Bains','Yverdon-les-Bains, le 18 mai 2026','Demande de réduction de mon taux de travail','Luis travaille à 100 %. Pour des raisons familiales, il souhaite passer à 80 % dès le mois de juillet.','Rédigez une lettre à l’employeur. Il faut expliquer la demande, proposer une date et rester professionnel.'],
+    ['Emploi','Lettre de démission simple','Amina Hassan, Avenue de la Gare 21, 1260 Nyon, 078 121 45 45, amina.hassan@mail.ch','Boutique Mode Nyon, Rue de Rive 4, 1260 Nyon','Nyon, le 19 mai 2026','Démission','Amina a trouvé un nouvel emploi. Elle doit envoyer une lettre de démission à son employeur actuel.','Rédigez une lettre de démission simple. Il faut annoncer la démission, respecter le délai de congé et remercier l’employeur.'],
+    ['Emploi','Demande de rendez-vous avec l’ORP','Victor Popescu, Chemin des Fleurs 2, 1023 Crissier, 077 777 88 99, victor.popescu@mail.ch','Office régional de placement, Rue Caroline 9, 1014 Lausanne','Crissier, le 20 mai 2026','Demande de rendez-vous','Victor cherche un emploi. Il a besoin d’un rendez-vous avec son conseiller ORP pour parler de ses recherches et de ses documents.','Rédigez une lettre administrative pour demander un rendez-vous. Le message doit être clair et poli.'],
+    ['Emploi','Demande d’attestation d’emploi','Julia Keller, Rue du Marché 8, 1820 Montreux, 079 441 22 30, julia.keller@mail.ch','EMS Les Jardins, Avenue Nestlé 15, 1820 Montreux','Montreux, le 21 mai 2026','Demande d’attestation d’emploi','Julia travaille dans un EMS. Elle doit fournir une attestation d’emploi à son bailleur pour un dossier de logement.','Rédigez une lettre pour demander une attestation d’emploi. Il faut préciser pourquoi elle en a besoin.'],
+    ['Emploi','Demande de changement d’horaire','Pedro Silva, Rue de Lausanne 55, 1020 Renens, 076 919 10 10, pedro.silva@mail.ch','Transport Express SA, Route de Bussigny 7, 1030 Bussigny','Renens, le 22 mai 2026','Demande de changement d’horaire','Pedro travaille tôt le matin. Il suit aussi un cours de français deux soirs par semaine. Il souhaite adapter ses horaires.','Rédigez une lettre à l’employeur. Il faut expliquer la situation et proposer une solution réaliste.'],
+    ['Logement','Demande de réparation dans un appartement','Fatima Ali, Rue des Alpes 11, 1006 Lausanne, 078 600 70 80, fatima.ali@mail.ch','Régie Habitat SA, Avenue de Beaulieu 3, 1004 Lausanne','Lausanne, le 23 mai 2026','Demande de réparation','Dans l’appartement de Fatima, le chauffage de la chambre ne fonctionne plus depuis une semaine. Elle a déjà téléphoné à la régie, mais rien n’a été réparé.','Rédigez une lettre à la régie. Il faut expliquer le problème, rappeler l’appel téléphonique et demander une intervention rapide.'],
+    ['Logement','Demande de baisse de loyer pendant des travaux','Romain Martin, Chemin du Parc 4, 1007 Lausanne, 079 333 44 22, romain.martin@mail.ch','Immo Léman SA, Rue du Simplon 25, 1006 Lausanne','Lausanne, le 25 mai 2026','Demande de réduction de loyer pendant les travaux','Des travaux très bruyants ont lieu dans l’immeuble de Romain depuis trois semaines. Il ne peut pas bien dormir ni travailler à la maison.','Rédigez une lettre à la régie pour demander une réduction de loyer temporaire. Le ton doit rester correct.'],
+    ['Logement','Résiliation d’un bail à loyer','Mariana Costa, Avenue du Temple 6, 1110 Morges, 078 232 12 12, mariana.costa@mail.ch','Régie du Centre, Rue Centrale 10, 1110 Morges','Morges, le 26 mai 2026','Résiliation de mon bail à loyer','Mariana a trouvé un nouvel appartement. Elle souhaite résilier son bail en respectant le délai prévu dans son contrat.','Rédigez une lettre de résiliation de bail. Il faut indiquer l’adresse du logement et la date de départ souhaitée.'],
+    ['Logement','Demande d’autorisation pour avoir un chien','Sofia Petrova, Rue du Collège 12, 1260 Nyon, 077 818 19 20, sofia.petrova@mail.ch','Régie Nyonnaise, Place du Château 2, 1260 Nyon','Nyon, le 27 mai 2026','Demande d’autorisation pour avoir un chien','Sofia souhaite adopter un petit chien. Son contrat de bail demande une autorisation écrite de la régie.','Rédigez une lettre polie pour demander l’autorisation. Il faut préciser que le chien sera petit et que Sofia respectera les règles.'],
+    ['Logement','Annonce d’un dégât d’eau','Omar Said, Rue de la Plaine 17, 1400 Yverdon-les-Bains, 079 900 11 22, omar.said@mail.ch','Régie Nord Vaudois, Rue du Casino 5, 1400 Yverdon-les-Bains','Yverdon-les-Bains, le 28 mai 2026','Annonce d’un dégât d’eau','Omar a découvert une fuite sous l’évier de la cuisine. Le meuble est humide et le sol est mouillé.','Rédigez une lettre urgente à la régie. Il faut décrire le problème et demander une intervention.'],
+    ['Logement','Demande de copie du contrat de bail','Lina Morel, Rue de l’Union 19, 1800 Vevey, 078 765 43 21, lina.morel@mail.ch','Immo Riviera, Avenue Paul-Cérésole 8, 1800 Vevey','Vevey, le 29 mai 2026','Demande de copie de mon contrat de bail','Lina a perdu son contrat de bail. Elle en a besoin pour une démarche administrative.','Rédigez une lettre pour demander une copie du contrat de bail. La demande doit être simple et précise.'],
+    ['Logement','Réclamation pour bruit répété','David Nguyen, Chemin de la Forêt 5, 1024 Ecublens, 076 444 55 66, david.nguyen@mail.ch','Régie Logis Plus, Route du Pont-Bleu 9, 1023 Crissier','Ecublens, le 30 mai 2026','Réclamation pour nuisances sonores','Depuis plusieurs semaines, David entend beaucoup de bruit tard le soir dans l’appartement au-dessus. Il a déjà parlé avec le voisin, mais la situation continue.','Rédigez une lettre de réclamation à la régie. Il faut rester poli, expliquer les faits et demander une solution.'],
+    ['Logement','Demande de remplacement d’une clé','Céline Aubert, Avenue de France 40, 1004 Lausanne, 079 101 20 30, celine.aubert@mail.ch','Régie Lausanne Ouest, Rue des Terreaux 6, 1003 Lausanne','Lausanne, le 2 juin 2026','Demande de remplacement d’une clé','Céline a cassé une clé de la porte d’entrée de l’immeuble. Elle souhaite demander une nouvelle clé à la régie.','Rédigez une lettre simple pour demander une nouvelle clé. Il faut expliquer ce qui s’est passé.'],
+    ['Logement','Demande de rendez-vous pour état des lieux','Hugo Fernandes, Rue du Jura 7, 1020 Renens, 078 414 14 14, hugo.fernandes@mail.ch','Régie Habitat SA, Avenue de Beaulieu 3, 1004 Lausanne','Renens, le 3 juin 2026','Demande de rendez-vous pour l’état des lieux','Hugo quitte son appartement à la fin du mois. Il doit organiser l’état des lieux de sortie avec la régie.','Rédigez une lettre pour demander un rendez-vous. Il faut proposer deux disponibilités.'],
+    ['Logement','Demande d’amélioration de la sécurité','Mila Durand, Rue du Simplon 13, 1006 Lausanne, 076 500 40 30, mila.durand@mail.ch','Régie du Lac, Avenue d’Ouchy 22, 1006 Lausanne','Lausanne, le 4 juin 2026','Demande d’amélioration de la sécurité de l’immeuble','La porte d’entrée de l’immeuble ferme mal. Plusieurs habitants sont inquiets car des inconnus peuvent entrer facilement.','Rédigez une lettre à la régie pour demander une réparation ou une amélioration de la sécurité.'],
+    ['Administration','Demande d’attestation de domicile','Ana Martins, Rue du Nord 15, 1005 Lausanne, 079 321 45 67, ana.martins@mail.ch','Contrôle des habitants, Place de la Palud 2, 1003 Lausanne','Lausanne, le 5 juin 2026','Demande d’attestation de domicile','Ana doit fournir une attestation de domicile pour un dossier de formation.','Rédigez une lettre administrative simple pour demander l’attestation. Il faut indiquer pourquoi elle en a besoin.'],
+    ['Administration','Changement d’adresse','Youssef Amrani, ancienne adresse : Rue du Stand 4, 1004 Lausanne, nouvelle adresse : Rue de Genève 18, 1003 Lausanne, 078 700 80 90, youssef.amrani@mail.ch','Service de la population, Avenue de Beaulieu 19, 1014 Lausanne','Lausanne, le 6 juin 2026','Annonce de changement d’adresse','Youssef a déménagé. Il doit annoncer sa nouvelle adresse au service concerné.','Rédigez une lettre pour annoncer le changement d’adresse. Il faut écrire l’ancienne et la nouvelle adresse.'],
+    ['Administration','Demande de duplicata d’un document','Isabelle Laurent, Rue du Pré 10, 1110 Morges, 079 555 00 11, isabelle.laurent@mail.ch','Commune de Morges, Place de l’Hôtel-de-Ville 1, 1110 Morges','Morges, le 8 juin 2026','Demande de duplicata','Isabelle a perdu un document communal important. Elle souhaite recevoir un duplicata.','Rédigez une lettre claire. Il faut expliquer la perte du document et demander une nouvelle copie.'],
+    ['Administration','Demande d’échelonnement de paiement','Rachid El Fassi, Avenue des Alpes 20, 1820 Montreux, 076 909 08 07, rachid.elfassi@mail.ch','Office des poursuites, Rue de la Paix 9, 1820 Montreux','Montreux, le 9 juin 2026','Demande d’échelonnement de paiement','Rachid a reçu une facture qu’il ne peut pas payer en une seule fois. Il souhaite proposer un paiement en plusieurs fois.','Rédigez une lettre administrative. Il faut expliquer la situation et proposer un montant mensuel.'],
+    ['Administration','Demande de rendez-vous à la commune','Leila Haddad, Route de Prilly 22, 1023 Crissier, 078 313 13 13, leila.haddad@mail.ch','Administration communale, Chemin de Chisaz 1, 1023 Crissier','Crissier, le 10 juin 2026','Demande de rendez-vous','Leila a besoin d’aide pour comprendre une démarche administrative. Elle souhaite prendre rendez-vous à la commune.','Rédigez une lettre de demande de rendez-vous. Il faut expliquer brièvement le motif.'],
+    ['Administration','Réclamation pour une erreur de nom','Daniela Santos, Rue de la Gare 2, 1260 Nyon, 079 212 34 56, daniela.santos@mail.ch','Service de la population, Rue Saint-Jean 6, 1260 Nyon','Nyon, le 11 juin 2026','Correction d’une erreur dans mon nom','Daniela a reçu un document officiel avec une faute dans son nom de famille. Elle veut demander une correction.','Rédigez une lettre de réclamation simple et polie. Il faut préciser l’erreur et demander la correction.'],
+    ['Administration','Demande d’aide pour remplir un formulaire','Thierry Mbala, Rue de l’Industrie 6, 1400 Yverdon-les-Bains, 077 636 63 63, thierry.mbala@mail.ch','Centre social régional, Rue des Pêcheurs 8, 1400 Yverdon-les-Bains','Yverdon-les-Bains, le 12 juin 2026','Demande d’aide pour remplir un formulaire','Thierry a reçu un formulaire difficile à comprendre. Il souhaite demander un rendez-vous pour recevoir de l’aide.','Rédigez une lettre claire. Il faut expliquer la difficulté et demander un rendez-vous.'],
+    ['Administration','Demande de prolongation de délai','Marta Ruiz, Rue des Moulins 11, 1800 Vevey, 076 222 11 00, marta.ruiz@mail.ch','Service administratif cantonal, Avenue de Longemalle 1, 1020 Renens','Vevey, le 15 juin 2026','Demande de prolongation de délai','Marta doit envoyer un document avant une date limite. Elle attend encore une pièce importante et demande quelques jours de plus.','Rédigez une lettre pour demander une prolongation de délai. Il faut expliquer pourquoi et proposer une nouvelle date.'],
+    ['Administration','Demande d’information sur une facture','Philippe N’Guessan, Route du Lac 14, 1095 Lutry, 079 888 77 66, philippe.nguessan@mail.ch','Service de facturation, Commune de Lutry, 1095 Lutry','Lutry, le 16 juin 2026','Demande d’information concernant une facture','Philippe a reçu une facture communale, mais il ne comprend pas le montant demandé.','Rédigez une lettre pour demander des explications. Le ton doit être calme et respectueux.'],
+    ['Administration','Demande de confirmation écrite','Nora Weber, Chemin des Vignes 3, 1180 Rolle, 078 909 22 11, nora.weber@mail.ch','Administration communale de Rolle, Grand-Rue 44, 1180 Rolle','Rolle, le 17 juin 2026','Demande de confirmation écrite','Nora a reçu une information importante par téléphone. Elle souhaite avoir une confirmation écrite pour garder une preuve.','Rédigez une lettre courte pour demander une confirmation écrite de l’information reçue.'],
+    ['Santé / Assurance','Demande de remboursement à l’assurance maladie','Alina Novak, Rue Centrale 3, 1003 Lausanne, 079 404 50 60, alina.novak@mail.ch','Assura, Case postale 7, 1009 Pully','Lausanne, le 18 juin 2026','Demande de remboursement','Alina a payé une facture médicale. Elle veut demander le remboursement à son assurance maladie.','Rédigez une lettre à l’assurance. Il faut mentionner la facture jointe et demander le remboursement.'],
+    ['Santé / Assurance','Changement de médecin traitant','Marco Bianchi, Avenue de Cour 12, 1007 Lausanne, 076 505 60 70, marco.bianchi@mail.ch','Cabinet médical du Centre, Rue Centrale 19, 1003 Lausanne','Lausanne, le 19 juin 2026','Annonce de changement de médecin traitant','Marco souhaite changer de médecin traitant. Il veut demander le transfert de son dossier médical.','Rédigez une lettre polie pour demander le transfert du dossier médical au nouveau médecin.'],
+    ['Santé / Assurance','Demande de rendez-vous médical','Hana Kim, Chemin du Verger 8, 1020 Renens, 077 555 88 99, hana.kim@mail.ch','Cabinet médical Renens Gare, Rue de Lausanne 33, 1020 Renens','Renens, le 22 juin 2026','Demande de rendez-vous médical','Hana a des douleurs au dos depuis plusieurs jours. Elle souhaite obtenir un rendez-vous médical.','Rédigez une lettre courte pour demander un rendez-vous. Il faut indiquer le problème et les disponibilités.'],
+    ['Santé / Assurance','Réclamation pour facture d’assurance','Nicolas Perrin, Rue des Prés 9, 1110 Morges, 079 771 22 33, nicolas.perrin@mail.ch','CSS Assurance, Avenue de Rumine 13, 1005 Lausanne','Morges, le 23 juin 2026','Réclamation concernant une facture','Nicolas a reçu une facture d’assurance qu’il pense déjà avoir payée. Il veut demander une vérification.','Rédigez une lettre de réclamation. Il faut demander une vérification et proposer d’envoyer une preuve de paiement.'],
+    ['Santé / Assurance','Demande d’attestation d’assurance','Camila Torres, Rue de la Poste 4, 1260 Nyon, 078 515 15 15, camila.torres@mail.ch','Groupe Mutuel, Rue des Cèdres 5, 1920 Martigny','Nyon, le 24 juin 2026','Demande d’attestation d’assurance maladie','Camila doit fournir une attestation d’assurance maladie à une école pour son inscription.','Rédigez une lettre simple pour demander l’attestation. Il faut préciser le motif de la demande.'],
+    ['Santé / Assurance','Annonce d’un accident','Samir Khan, Avenue du Chablais 30, 1400 Yverdon-les-Bains, 076 400 12 34, samir.khan@mail.ch','SUVA, Fluhmattstrasse 1, 6002 Lucerne','Yverdon-les-Bains, le 25 juin 2026','Annonce d’un accident','Samir s’est blessé au travail en portant une caisse. Il doit annoncer l’accident à l’assurance.','Rédigez une lettre pour annoncer l’accident. Il faut expliquer quand, où et comment cela s’est passé.'],
+    ['Santé / Assurance','Demande de copie d’un certificat médical','Eva Müller, Rue du Théâtre 5, 1800 Vevey, 079 777 66 55, eva.mueller@mail.ch','Cabinet médical Riviera, Rue du Simplon 18, 1800 Vevey','Vevey, le 26 juin 2026','Demande de copie de certificat médical','Eva a perdu son certificat médical. Elle en a besoin pour son employeur.','Rédigez une lettre pour demander une copie du certificat médical.'],
+    ['Santé / Assurance','Résiliation d’une assurance complémentaire','Malik Diop, Route de Lausanne 42, 1028 Préverenges, 077 909 33 44, malik.diop@mail.ch','Helsana Assurances SA, Case postale, 8081 Zurich','Préverenges, le 29 juin 2026','Résiliation de mon assurance complémentaire','Malik souhaite résilier son assurance complémentaire pour la fin de l’année.','Rédigez une lettre de résiliation. Il faut préciser le contrat concerné et demander une confirmation écrite.'],
+    ['Santé / Assurance','Demande d’explication après refus de remboursement','Claire Favre, Rue du Port 8, 1095 Lutry, 079 111 44 88, claire.favre@mail.ch','Sanitas Assurance, Jägergasse 3, 8021 Zurich','Lutry, le 30 juin 2026','Demande d’explication concernant un refus de remboursement','Claire a reçu un refus de remboursement pour un traitement. Elle ne comprend pas la raison.','Rédigez une lettre pour demander une explication claire et une copie de la décision.'],
+    ['Santé / Assurance','Demande de report d’un rendez-vous médical','Jorge Lima, Avenue des Sports 6, 1020 Renens, 078 333 22 11, jorge.lima@mail.ch','Centre médical de Renens, Rue du Midi 10, 1020 Renens','Renens, le 1er juillet 2026','Demande de report de rendez-vous','Jorge a un rendez-vous médical, mais il travaille ce jour-là. Il souhaite reporter le rendez-vous.','Rédigez une lettre courte pour demander un nouveau rendez-vous avec deux propositions de dates.'],
+    ['École / Formation','Absence à un cours','Laura Jiménez, Rue des Ecoles 8, 1004 Lausanne, 079 500 90 10, laura.jimenez@mail.ch','Centre de formation Horizon, Avenue de Sévelin 15, 1004 Lausanne','Lausanne, le 2 juillet 2026','Annonce d’absence au cours','Laura ne peut pas venir au cours de français car elle a un rendez-vous médical important.','Rédigez une lettre pour annoncer l’absence. Il faut préciser la date et s’excuser.'],
+    ['École / Formation','Demande d’inscription à une formation','Ahmed Saleh, Chemin de Malley 12, 1007 Lausanne, 076 600 55 44, ahmed.saleh@mail.ch','Ecole Professionnelle Léman, Rue de Genève 40, 1004 Lausanne','Lausanne, le 3 juillet 2026','Demande d’inscription à une formation','Ahmed souhaite suivre une formation de base en informatique. Il veut demander les informations et l’inscription.','Rédigez une lettre de demande d’inscription. Il faut expliquer la motivation et demander les prochaines étapes.'],
+    ['École / Formation','Demande d’attestation de participation','Irina Sokolova, Rue du Collège 2, 1110 Morges, 078 808 44 33, irina.sokolova@mail.ch','Association Formation Plus, Rue de Lausanne 21, 1110 Morges','Morges, le 6 juillet 2026','Demande d’attestation de participation','Irina a terminé un cours de français. Elle a besoin d’une attestation pour son dossier ORP.','Rédigez une lettre pour demander une attestation de participation.'],
+    ['École / Formation','Excuse pour retard répété','Jonas Meier, Rue du Jura 18, 1260 Nyon, 077 555 22 44, jonas.meier@mail.ch','Centre de formation Nyon, Route de Saint-Cergue 7, 1260 Nyon','Nyon, le 7 juillet 2026','Excuse pour mes retards','Jonas est arrivé en retard plusieurs fois à cause de problèmes de transport. Il veut écrire à son formateur pour s’excuser.','Rédigez une lettre d’excuse. Il faut reconnaître le problème et proposer une solution.'],
+    ['École / Formation','Demande de changement de groupe','Bianca Romano, Avenue de la Gare 3, 1800 Vevey, 079 232 32 32, bianca.romano@mail.ch','Centre Langues Riviera, Rue du Simplon 20, 1800 Vevey','Vevey, le 8 juillet 2026','Demande de changement de groupe','Bianca trouve que le niveau du cours est trop facile. Elle souhaite passer dans un groupe plus avancé.','Rédigez une lettre pour demander un changement de groupe. Il faut expliquer la raison avec respect.'],
+    ['Client / Consommation','Réclamation pour produit défectueux','Kevin Blanc, Rue Centrale 15, 1003 Lausanne, 078 100 20 30, kevin.blanc@mail.ch','ElectroShop Lausanne, Rue Saint-Laurent 9, 1003 Lausanne','Lausanne, le 9 juillet 2026','Réclamation pour produit défectueux','Kevin a acheté une bouilloire électrique il y a deux semaines. Elle ne fonctionne déjà plus.','Rédigez une lettre de réclamation. Il faut demander une réparation, un échange ou un remboursement.'],
+    ['Client / Consommation','Annulation d’une commande','Zara Ahmed, Chemin de la Poste 2, 1020 Renens, 079 404 44 44, zara.ahmed@mail.ch','Meubles Confort SA, Route de Crissier 4, 1023 Crissier','Renens, le 10 juillet 2026','Annulation de ma commande','Zara a commandé une table. La livraison a trois semaines de retard. Elle souhaite annuler la commande.','Rédigez une lettre pour annuler la commande. Il faut mentionner le retard et demander le remboursement.'],
+    ['Client / Consommation','Réclamation pour mauvais service','Simon Rochat, Rue du Lac 9, 1110 Morges, 076 333 55 77, simon.rochat@mail.ch','Garage Auto Léman, Avenue de Riond-Bosson 12, 1110 Morges','Morges, le 13 juillet 2026','Réclamation concernant une réparation','Simon a fait réparer sa voiture. Le problème est revenu deux jours après. Il veut écrire au garage.','Rédigez une lettre de réclamation. Il faut expliquer le problème et demander une nouvelle intervention sans frais.'],
+    ['Client / Consommation','Demande de remboursement pour train annulé','Mélanie Robert, Rue de la Paix 6, 1260 Nyon, 079 818 18 18, melanie.robert@mail.ch','Service clientèle CFF, Wylerstrasse 123, 3000 Berne 65','Nyon, le 14 juillet 2026','Demande de remboursement pour train annulé','Mélanie avait acheté un billet de train. Le train a été annulé et elle n’a pas pu voyager.','Rédigez une lettre pour demander un remboursement. Il faut indiquer le trajet, la date et le problème.'],
+    ['Client / Consommation','Plainte pour colis non reçu','Elias Haddad, Rue du Temple 4, 1400 Yverdon-les-Bains, 078 121 55 77, elias.haddad@mail.ch','Poste CH SA, Service clientèle, Wankdorfallee 4, 3030 Berne','Yverdon-les-Bains, le 15 juillet 2026','Réclamation pour colis non reçu','Elias devait recevoir un colis important. Le suivi indique livré, mais il n’a rien reçu.','Rédigez une lettre de réclamation. Il faut demander une recherche du colis.'],
+    ['Client / Consommation','Demande de facture détaillée','Grace Johnson, Avenue de Lavaux 16, 1009 Pully, 077 222 33 99, grace.johnson@mail.ch','Swisscom SA, Alte Tiefenaustrasse 6, 3050 Berne','Pully, le 16 juillet 2026','Demande de facture détaillée','Grace a reçu une facture de téléphone très élevée. Elle souhaite comprendre les frais.','Rédigez une lettre pour demander une facture détaillée et des explications.'],
+    ['Client / Consommation','Résiliation d’un abonnement fitness','Thomas Meyer, Rue des Vergers 3, 1800 Vevey, 079 888 90 91, thomas.meyer@mail.ch','FitClub Riviera, Avenue Nestlé 6, 1800 Vevey','Vevey, le 17 juillet 2026','Résiliation de mon abonnement','Thomas souhaite arrêter son abonnement de fitness à la fin du mois d’août.','Rédigez une lettre de résiliation. Il faut demander une confirmation écrite.'],
+    ['Client / Consommation','Réclamation pour erreur de livraison','Nina Alves, Route de Genève 22, 1028 Préverenges, 078 222 10 40, nina.alves@mail.ch','Cuisine Maison SA, Rue Industrielle 14, 1020 Renens','Préverenges, le 20 juillet 2026','Réclamation pour erreur de livraison','Nina a commandé quatre chaises grises. Elle a reçu quatre chaises noires.','Rédigez une lettre pour demander l’échange des articles livrés par erreur.'],
+    ['Client / Consommation','Demande de geste commercial','Patrick Girard, Rue de la Tour 7, 1180 Rolle, 079 777 11 33, patrick.girard@mail.ch','Hôtel du Lac, Quai du Mont-Blanc 5, 1201 Genève','Rolle, le 21 juillet 2026','Demande de geste commercial','Patrick a réservé une chambre d’hôtel. La chambre était bruyante et la climatisation ne fonctionnait pas.','Rédigez une lettre pour demander un geste commercial. Il faut expliquer la situation sans être agressif.'],
+    ['Client / Consommation','Demande d’information avant achat','Rita Gomes, Avenue du Marché 12, 1095 Lutry, 078 100 30 40, rita.gomes@mail.ch','Vélo Léman SA, Route de Lavaux 33, 1095 Lutry','Lutry, le 22 juillet 2026','Demande d’information concernant un vélo électrique','Rita souhaite acheter un vélo électrique. Elle veut connaître le prix, la garantie et les possibilités de paiement.','Rédigez une lettre de demande d’information. Il faut poser des questions claires.']
+  ].map(item=>({domain:item[0],title:item[1],sender:item[2],recipient:item[3],datePlace:item[4],object:item[5],scenario:item[6],instruction:item[7]}));
+  let currentIndex=0;
+  const domainFilter=document.getElementById('domainFilter');
+  const exerciseList=document.getElementById('exerciseList');
+  function readDone(){try{return JSON.parse(localStorage.getItem(DONE_KEY)||'[]')}catch(e){return[]}}
+  function saveDone(done){localStorage.setItem(DONE_KEY,JSON.stringify(done));}
+  function init(){[...new Set(exercises.map(e=>e.domain))].forEach(domain=>{const option=document.createElement('option');option.value=domain;option.textContent=domain;domainFilter.appendChild(option);});renderList();showExercise(0);runTests();if(window.ScoreManager)window.ScoreManager.promoteStatus(PAGE_ID,'in_progress');}
+  function renderList(){const selected=domainFilter.value;exerciseList.innerHTML='';const done=readDone();exercises.forEach((exercise,index)=>{if(selected!=='Tous'&&exercise.domain!==selected)return;const item=document.createElement('div');item.className='lgd-item'+(index===currentIndex?' active':'');item.innerHTML=`<strong>${index+1}. ${escapeHtml(exercise.title)}</strong><small>${escapeHtml(exercise.domain)}${done[index]?' · fait':''}</small>`;item.addEventListener('click',()=>showExercise(index));exerciseList.appendChild(item);});}
+  function showExercise(index){if(index<0||index>=exercises.length)return;currentIndex=index;const exercise=exercises[index];document.getElementById('domainBadge').textContent=exercise.domain;document.getElementById('title').textContent=`${index+1}. ${exercise.title}`;document.getElementById('scenario').textContent=exercise.scenario;document.getElementById('sender').textContent=exercise.sender;document.getElementById('recipient').textContent=exercise.recipient;document.getElementById('datePlace').textContent=exercise.datePlace;document.getElementById('object').textContent=exercise.object;document.getElementById('instruction').textContent=exercise.instruction;document.getElementById('fileName').textContent=makeFileName(exercise,index);const done=readDone();document.getElementById('doneBox').style.display=done[index]?'block':'none';document.getElementById('exerciseCard').classList.toggle('completed',Boolean(done[index]));renderList();}
+  function markDone(){const done=readDone();if(!done[currentIndex]&&window.ScoreManager){window.ScoreManager.updateMetrics(PAGE_ID,{correct:1,typed:1,xp:4});window.ScoreManager.promoteStatus(PAGE_ID,done.filter(Boolean).length+1>=exercises.length?'completed':'in_progress');}done[currentIndex]=true;saveDone(done);showExercise(currentIndex);}
+  function makeFileName(exercise,index){return `${String(index+1).padStart(2,'0')}_Lettre_${cleanForFileName(exercise.domain)}_${cleanForFileName(exercise.title)}.docx`;}
+  function cleanForFileName(text){return text.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_+|_+$/g,'');}
+  function randomExercise(){showExercise(Math.floor(Math.random()*exercises.length));}
+  function escapeHtml(value){return String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');}
+  function runTests(){console.assert(exercises.length===50,`${exercises.length} exercices trouvés au lieu de 50`);console.assert(typeof randomExercise==='function','randomExercise doit être une fonction');console.assert(makeFileName(exercises[0],0).startsWith('01_Lettre_'),'nom de fichier 01_Lettre');console.log('Tests lettres Google Docs OK');}
+  window.randomExercise=randomExercise;window.renderList=renderList;window.markDone=markDone;
+  init();
+  </script>
+</body>
+</html>
