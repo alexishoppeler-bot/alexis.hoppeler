@@ -676,7 +676,6 @@
     foundThisStep = false;
     byId('transition-modal').style.display = 'none';
     updateUI();
-    focusCurrentCity();
     setTimeout(() => map.invalidateSize(), 80);
   }
   window.startMission = startMission;
@@ -694,11 +693,6 @@
       `<span class="ve-step-line ve-current">${step.t}</span>`;
     byId('feedback').style.display = 'none';
     foundThisStep = false;
-  }
-
-  function focusCurrentCity() {
-    const step = currentStep();
-    if (step) map.panTo(step.p, { animate: true, duration: .8 });
   }
 
   function showScoreEffect(text, isPositive) {
@@ -758,7 +752,6 @@
     sIdx += 1;
     if (sIdx < mission.etapes.length) {
       updateUI();
-      focusCurrentCity();
     } else {
       lancerAnimationTrain();
     }
@@ -877,7 +870,6 @@
       fb.style.background = '#d4edda';
       fb.style.color = '#155724';
       fb.textContent = 'Réalisation automatique de l’étape...';
-      map.panTo(step.p, { animate: true, duration: .8 });
       cleanTimers.push(setTimeout(() => {
         if (token !== autoPlayToken || missionEnded) return;
         handleNext();
@@ -1110,7 +1102,6 @@
     console.assert(totalSteps === 100, 'Il doit y avoir 100 étapes');
     console.assert(aventures.every((m) => m.etapes.length === 10), 'Chaque mission doit avoir 10 étapes');
     console.assert(typeof startMission === 'function', 'startMission doit exister');
-    console.assert(typeof focusCurrentCity === 'function', 'focusCurrentCity doit exister');
     console.assert(map.getMaxZoom() >= 17, 'Le zoom doit permettre de voir les noms des villes');
     console.log('Tests Vaud Express OK');
   }
