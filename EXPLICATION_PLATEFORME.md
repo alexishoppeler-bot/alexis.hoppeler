@@ -105,8 +105,6 @@ Ce bloc regroupe des activites liees a l'usage de l'ordinateur et a la navigatio
 - `completer`
 - `orientation`
 - `maths-pratiques`
-- `mini-word-trainer`
-- `mini-excel-trainer`
 
 L'objectif est de travailler les gestes de base et la comprehension d'actions simples a realiser sur ecran.
 
@@ -158,8 +156,6 @@ L'objectif est de renforcer la lecture, l'ecoute, l'ecriture et la memorisation.
 | `completer` | Relier le sens d'une phrase a l'information manquante. | Lecture fonctionnelle, consignes, vocabulaire. |
 | `orientation` | Suivre des directions et anticiper un trajet. | Plan, interface, deplacement dans un espace. |
 | `maths-pratiques` | Resoudre des calculs simples du quotidien et du travail. | Horaires, quantites, prix, budget, stock. |
-| `mini-word-trainer` | Realiser de petites actions de mise en forme. | CV, lettre, document administratif. |
-| `mini-excel-trainer` | Comprendre les bases d'un tableau. | Listes, horaires, stocks, donnees simples. |
 | `anagramme` | Recomposer un mot a partir de lettres. | Revision active de vocabulaire. |
 | `apparier` | Associer deux elements qui vont ensemble. | Mot-definition, situation-reponse, image-mot. |
 | `pendu` | Deviner un mot en mobilisant orthographe et hypotheses. | Consolidation de vocabulaire deja rencontre. |

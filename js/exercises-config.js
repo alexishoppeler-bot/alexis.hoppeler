@@ -25,8 +25,6 @@
     { page: 'orientation', name: 'Orientation',               icon: '🗺️', cat: 'Jeu',           section: 'Numérique',          themes: ['numérique', 'transports'] },
     { page: 'vaud-express', name: 'Vaud Express',              icon: '🚆', cat: 'Jeu',           section: 'Numérique',          themes: ['numérique', 'transports', 'géographie'] },
     { page: 'maths-pratiques', name: 'Maths pratiques',       icon: '🧮', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
-    { page: 'mini-word-trainer', name: 'Mini Word Trainer',   icon: '📄', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi'] },
-    { page: 'mini-excel-trainer', name: 'Mini Excel Trainer', icon: '📊', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi'] },
     { page: 'excel-progressif', name: 'Excel progressif',     icon: '📈', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'budget', 'tableur'] },
     { page: 'scenarios-word-excel', name: 'Scénarios Word & Excel', icon: '🗃️', cat: 'Compétences', section: 'Numérique',       themes: ['numérique', 'emploi', 'budget', 'bureautique'] },
     { page: 'anagramme',   name: 'Anagramme',                 icon: '🔀', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
@@ -81,8 +79,6 @@
     ,
     'vaud-express':    '+3 XP par ville trouvée, +5 XP par défi mémoire réussi.',
     'maths-pratiques': '+3 XP par bonne réponse, +1 XP par exercice tenté.',
-    'mini-word-trainer': '+5 XP par mission réussie.',
-    'mini-excel-trainer': '+5 XP par mission réussie.',
     'excel-progressif': '+2 XP par consigne cochée.',
     'scenarios-word-excel': '+4 XP par scénario terminé.'
   };
@@ -183,18 +179,6 @@
       objective: 'Rendre les nombres utiles et moins intimidants.',
       practice: 'Quantités, prix, horaires, comparaisons, calcul mental simple.',
       useWhen: 'Pour vente, logistique, horaires ou budget.'
-    },
-    'mini-word-trainer': {
-      summary: 'Réaliser de petites missions dans un environnement type traitement de texte.',
-      objective: 'Découvrir les gestes de base pour mettre un document en forme.',
-      practice: 'Saisie, sélection, gras, titres, alignement, étapes.',
-      useWhen: 'Avant un CV, une lettre ou un document administratif.'
-    },
-    'mini-excel-trainer': {
-      summary: 'Manipuler des données simples dans une feuille de calcul.',
-      objective: 'Comprendre les bases d un tableau sans surcharge technique.',
-      practice: 'Cellules, lignes, colonnes, calculs simples, lecture de tableau.',
-      useWhen: 'Pour un emploi avec listes, stocks ou horaires.'
     },
     'excel-progressif': {
       summary: 'Suivre 24 fiches Excel graduées, du clic dans une cellule aux formules et graphiques simples.',
