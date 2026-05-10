@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel progressif - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    :root {
+      --ep-blue: #2563eb;
+      --ep-green: #16a34a;
+      --ep-red: #dc2626;
+      --ep-border: #cbd5e1;
+      --ep-muted: #64748b;
+      --ep-shadow: 0 18px 42px rgba(15,23,42,.10);
+    }
+
+    body.excel-progressif-page {
+      background:
+        radial-gradient(circle at 15% 0%, rgba(224,242,254,.9), transparent 26%),
+        radial-gradient(circle at 85% 10%, rgba(220,252,231,.7), transparent 24%),
+        linear-gradient(180deg, #f8fafc, #eef2ff);
+    }
+
+    .ep-main { max-width: 1500px; }
+
+    .ep-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .ep-title {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .ep-icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: #dcfce7;
+      color: #166534;
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 24px;
+      border: 1px solid #86efac;
+      flex-shrink: 0;
+    }
+
+    .ep-header h1 {
+      margin: 0;
+      font-family: var(--font-head);
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.05;
+      color: var(--text);
+    }
+
+    .ep-header p {
+      margin: 7px 0 0;
+      color: var(--text2);
+      font-size: 18px;
+    }
+
+    .ep-top-actions,
+    .ep-nav,
+    .ep-level-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ep-button,
+    .ep-select {
+      font-family: inherit;
+      border-radius: 12px;
+      border: 1px solid var(--ep-border);
+      padding: 12px 15px;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .ep-button {
+      border: 0;
+      color: #fff;
+      background: var(--ep-blue);
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(37,99,235,.18);
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .ep-button:hover { transform: translateY(-1px); opacity: .95; }
+    .ep-button.secondary { background: #475569; }
+    .ep-button.danger { background: var(--ep-red); }
+    .ep-button.green { background: var(--ep-green); }
+    .ep-button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .ep-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .ep-panel,
+    .ep-card,
+    .ep-sheet {
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(148,163,184,.35);
+      border-radius: 18px;
+      box-shadow: var(--ep-shadow);
+    }
+
+    .ep-panel {
+      padding: 18px;
+      position: sticky;
+      top: calc(var(--header-h) + 16px);
+    }
+
+    .ep-level-btn {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: #f8fafc;
+      color: #0f172a;
+      box-shadow: none;
+      text-align: left;
+    }
+
+    .ep-level-btn.active {
+      background: var(--ep-blue);
+      color: #fff;
+      border-color: var(--ep-blue);
+      box-shadow: 0 10px 20px rgba(37,99,235,.22);
+    }
+
+    .ep-progress-wrap {
+      margin-top: 18px;
+      background: #e2e8f0;
+      height: 14px;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .ep-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--ep-green), #22c55e);
+      transition: width .3s ease;
+    }
+
+    .ep-progress-text {
+      margin-top: 10px;
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .ep-note {
+      margin-top: 18px;
+      color: var(--text2);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .ep-side-card {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: var(--text2);
+      line-height: 1.4;
+    }
+
+    .ep-side-card strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text);
+    }
+
+    .ep-card { padding: 22px; }
+
+    .ep-toolbar {
+      display: grid;
+      grid-template-columns: auto minmax(260px, 1fr);
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .ep-badge {
+      display: inline-flex;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .ep-select {
+      width: 100%;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .ep-objective {
+      background: #ecfdf5;
+      border: 1px solid #86efac;
+      color: #166534;
+      padding: 15px 17px;
+      border-radius: 14px;
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .ep-sheet {
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.05);
+    }
+
+    .ep-sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .ep-sheet-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--ep-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .ep-sheet-title {
+      font-family: var(--font-head);
+      font-size: clamp(25px, 3vw, 34px);
+      font-weight: 900;
+      margin-top: 5px;
+      color: var(--text);
+    }
+
+    .ep-logic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .ep-logic-box {
+      border-radius: 14px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .ep-logic-box strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #0f172a;
+      font-size: 15px;
+    }
+
+    .ep-sheet h2 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      margin: 24px 0 10px;
+    }
+
+    .ep-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--ep-border);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .ep-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+    }
+
+    .ep-table th,
+    .ep-table td {
+      border: 1px solid var(--ep-border);
+      padding: 12px;
+      font-size: 16px;
+      text-align: left;
+    }
+
+    .ep-table th {
+      background: #e0f2fe;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .ep-task-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .ep-task {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      align-items: start;
+      gap: 11px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px;
+      font-size: 17px;
+      line-height: 1.35;
+      transition: .2s ease;
+    }
+
+    .ep-task.done {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+
+    .ep-task input {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--ep-green);
+      margin-top: 1px;
+    }
+
+    .ep-help {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 18px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .ep-formula {
+      font-family: Consolas, monospace;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: inline-block;
+      margin: 8px 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    .ep-mini-list {
+      margin: 7px 0 0 20px;
+      padding: 0;
+    }
+
+    .ep-mini-list li + li { margin-top: 4px; }
+
+    @media (max-width: 1050px) {
+      .ep-header,
+      .ep-layout,
+      .ep-toolbar,
+      .ep-logic-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ep-panel { position: static; }
+    }
+
+    @media (max-width: 620px) {
+      .ep-title { align-items: flex-start; }
+      .ep-icon { width: 48px; height: 48px; font-size: 20px; }
+      .ep-main { padding-left: 14px; padding-right: 14px; }
+      .ep-card, .ep-sheet, .ep-panel { padding: 15px; border-radius: 14px; }
+    }
+
+    @media print {
+      #header-slot, #sidebar-slot, .ep-header, .ep-panel, .ep-toolbar, .ep-nav, #footer-slot { display: none !important; }
+      .layout { padding: 0; }
+      .main { padding: 0; }
+      .ep-card, .ep-sheet { box-shadow: none; border: none; padding: 0; }
+    }
+  </style>
+</head>
+<body class="excel-progressif-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main ep-main">
+      <div class="ep-header">
+        <div class="ep-title">
+          <div class="ep-icon">XL</div>
+          <div>
+            <h1>Exercices Excel progressifs</h1>
+            <p>Une compétence à la fois. Un petit exercice. Une réussite visible.</p>
+          </div>
+        </div>
+        <div class="ep-top-actions">
+          <button type="button" class="ep-button secondary" id="fullscreenBtn">Plein écran</button>
+          <button type="button" class="ep-button secondary" id="printBtn">Imprimer</button>
+          <button type="button" class="ep-button danger" id="resetBtn">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="ep-layout">
+        <aside class="ep-panel">
+          <div class="ep-level-actions">
+            <button type="button" class="ep-button ep-level-btn active" data-level="debutant">Débutant <span>8 étapes</span></button>
+            <button type="button" class="ep-button ep-level-btn" data-level="intermediaire">Intermédiaire <span>8 étapes</span></button>
+            <button type="button" class="ep-button ep-level-btn" data-level="avance">Avancé <span>8 étapes</span></button>
+          </div>
+          <div class="ep-progress-wrap"><div class="ep-progress-bar" id="progressBar"></div></div>
+          <div class="ep-progress-text" id="progressText">0% terminé</div>
+          <div class="ep-side-card">
+            <strong>Logique du niveau</strong>
+            <span id="levelLogic">Une action visible = un exercice.</span>
+          </div>
+          <div class="ep-note">La progression est sauvegardée sur cet ordinateur et alimente l’XP de la plateforme.</div>
+        </aside>
+
+        <section class="ep-card" id="content" aria-live="polite"></section>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    var PAGE_ID = 'excel-progressif';
+
+    function ex(badge, title, skill, why, story, mission, columns, rows, tasks, formula, file, errors, cells, domain) {
+      return { badge: badge, title: title, skill: skill, why: why, story: story, mission: mission, columns: columns, rows: rows, tasks: tasks, formula: formula, file: file, errors: errors || [], cells: cells || [], domain: domain || 'Bureautique' };
+    }
+
+    var debutantExercises = [
+      ex('Débutant 1/8 - Saisir','Écrire dans une cellule','Cliquer dans une cellule et écrire du texte.','Pour remplir un tableau simple au travail ou à la maison.','Maria a commencé une liste de dépenses, mais elle a fait des erreurs de saisie.','Corriger un petit tableau de dépenses.',['Dépense','Montant'],[['Loyer','1200'],['Course','350'],['Telefone','59']],['Trouver les mots mal écrits.','Corriger Course en Courses.','Corriger Telefone en Téléphone.','Enregistrer le fichier.'],'Cliquer dans la cellule puis corriger le texte.','budget_maria_depenses_mensuelles.xlsx',['Course doit être Courses.','Telefone doit être Téléphone.'],['A1 : titre du document','A2:B2 : titres du tableau','A4 : Course à corriger','A5 : Telefone à corriger'],'Maison - Budget'),
+      ex('Débutant 2/8 - Sélectionner','Sélectionner les bonnes cellules','Sélectionner seulement les titres.','Pour éviter de modifier tout le tableau par accident.','Karim veut mettre les titres en forme, mais il sélectionne souvent trop de cellules.','Sélectionner uniquement la première ligne.',['Entreprise','Poste'],[['Coop','Production'],['Migros','Logistique'],['DHL','Dépôt']],['Recopier le tableau.','Sélectionner seulement Entreprise et Poste.','Ne pas sélectionner Coop, Migros ou DHL.','Enregistrer le fichier.'],'Cliquer-glisser seulement sur les titres.','suivi_candidatures_karim.xlsx',['Erreur fréquente : sélectionner tout le tableau au lieu des titres.'],['A1 : Entreprise','B1 : Poste','A1:B1 : zone à sélectionner','A2:B4 : zone à ne pas sélectionner'],'Recherche emploi'),
+      ex('Débutant 3/8 - Gras','Trouver le titre non mis en gras','Mettre les titres en gras.','Pour rendre les titres plus visibles.','Fatou a préparé un planning, mais les titres ne ressortent pas.','Mettre seulement les titres en gras.',['Nom','Jour'],[['Fatou','Lundi'],['Carlos','Mardi'],['Amina','Mercredi']],['Sélectionner Nom et Jour.','Cliquer sur Gras.','Vérifier que les prénoms ne sont pas en gras.','Enregistrer le fichier.'],'Accueil > Gras','planning_nettoyage_equipe.xlsx',['Erreur à éviter : mettre toutes les données en gras.'],['A1:B1 : titres à mettre en gras','A2:B4 : données à laisser normales'],'Travail - Nettoyage'),
+      ex('Débutant 4/8 - Centrer','Corriger un titre mal placé','Centrer un titre.','Pour rendre une fiche plus propre.','Pedro a écrit un titre, mais il est collé à gauche.','Centrer le titre du document.',['Produit','Prix'],[['Pain','2.50'],['Lait','1.70'],['Riz','3.90']],['Écrire le titre : Liste de courses.','Sélectionner le titre.','Cliquer sur Centrer.','Observer si le titre est mieux placé.'],'Accueil > Centrer','liste_courses_pedro.xlsx',['Erreur à trouver : le titre est aligné à gauche.'],['A1 : titre à centrer','A3:B6 : tableau de courses'],'Maison - Courses'),
+      ex('Débutant 5/8 - Largeur','Réparer une colonne trop petite','Agrandir une colonne.','Pour voir tout le texte.','Samira a écrit des e-mails, mais une partie du texte est cachée.','Agrandir la colonne E-mail.',['Service','E-mail'],[['ORP','orp.lausanne@exemple.ch'],['Médecin','cabinet.martin@exemple.ch'],['Assurance','contact.assurance@exemple.ch']],['Repérer la colonne trop petite.','Placer la souris entre les lettres des colonnes.','Agrandir la colonne.','Vérifier que les e-mails sont visibles.'],'Double-clic entre deux colonnes.','contacts_utiles_samira.xlsx',['Erreur à trouver : les e-mails ne sont pas entièrement visibles.'],['B1 : titre E-mail','B2:B4 : e-mails à rendre visibles','Entre B et C : endroit pour agrandir la colonne'],'Vie quotidienne - Contacts'),
+      ex('Débutant 6/8 - Bordures','Ajouter les lignes manquantes','Ajouter des bordures.','Pour lire facilement les lignes du tableau.','Luis a fait une feuille de présence, mais le tableau n’a pas de lignes.','Ajouter toutes les bordures.',['Prénom','Présent'],[['Ali','Oui'],['Rosa','Oui'],['Nadia','Non']],['Sélectionner tout le tableau.','Cliquer sur Bordures.','Choisir Toutes les bordures.','Vérifier que chaque cellule a une ligne.'],'Accueil > Bordures > Toutes les bordures','presence_atelier_luis.xlsx',['Erreur à trouver : le tableau n’a pas de bordures.'],['A1:B4 : tableau complet à sélectionner','A1:B4 : zone qui doit recevoir les bordures'],'Formation - Présences'),
+      ex('Débutant 7/8 - Couleur','Corriger les titres peu visibles','Colorer les titres.','Pour séparer les titres du contenu.','Lina a un tableau lisible, mais les titres ne se voient pas assez.','Colorer uniquement les titres.',['Date','Rendez-vous'],[['Lundi','ORP'],['Mardi','Médecin'],['Jeudi','Entretien']],['Sélectionner les titres.','Choisir une couleur claire.','Ne pas colorer tout le tableau.','Enregistrer le fichier.'],'Accueil > Couleur de remplissage','rendez_vous_lina.xlsx',['Erreur à éviter : colorer toutes les cellules.'],['A1:B1 : titres à colorer','A2:B4 : données à laisser sans couleur'],'Vie quotidienne - Rendez-vous'),
+      ex('Débutant 8/8 - Somme','Trouver une erreur de total','Additionner avec SOMME.','Pour calculer un total automatiquement.','Sofia a compté le matériel, mais le total est faux.','Corriger le total avec une formule.',['Matériel','Quantité'],[['Ordinateurs','12'],['Souris','10'],['Claviers','11'],['Total','30']],['Regarder les quantités.','Vérifier si le total est correct.','Remplacer 30 par la formule =SOMME(B2:B4).','Appuyer sur Entrée.'],'=SOMME(B2:B4)','inventaire_materiel_classe.xlsx',['Erreur à trouver : 12 + 10 + 11 = 33, pas 30.'],['B2:B4 : nombres à additionner','B5 : cellule du total à corriger','B5 : écrire =SOMME(B2:B4)'],'Formation - Matériel')
+    ];
+
+    var intermediaireExercises = [
+      ex('Intermédiaire 1/8 - Soustraction','Calculer une économie','Soustraire deux nombres.','Pour calculer ce qu’il reste après les dépenses.','Pedro veut savoir combien il économise chaque mois.','Calculer l’épargne.',['Mois','Revenus','Dépenses','Épargne'],[['Janvier','3400','3100',''],['Février','3400','3000',''],['Mars','3500','3200','']],['Recopier le tableau.','Cliquer en D2.','Écrire : =B2-C2','Copier la formule vers le bas.'],'=B2-C2','epargne_pedro.xlsx',[],['D2 : écrire la formule','D2:D4 : recopier la formule'],'Maison - Budget'),
+      ex('Intermédiaire 2/8 - Multiplication','Calculer un total','Multiplier deux cellules.','Pour calculer un prix total.','Sofia calcule des commandes de repas.','Calculer quantité x prix.',['Client','Quantité','Prix','Total'],[['École A','12','14',''],['École B','18','15',''],['EMS','20','14','']],['Recopier le tableau.','Cliquer en D2.','Écrire : =B2*C2','Copier vers le bas.'],'=B2*C2','commandes_repas.xlsx',[],['D2 : écrire la formule','D2:D4 : recopier la formule'],'Travail - Cuisine'),
+      ex('Intermédiaire 3/8 - Pourcentage','Calculer un taux','Diviser deux cellules.','Pour analyser des résultats.','Nadia contrôle des pièces en production.','Calculer le taux de défaut.',['Produit','Contrôlées','Défauts','Taux'],[['Boîte A','120','5',''],['Boîte B','150','8',''],['Boîte C','90','2','']],['Recopier le tableau.','Cliquer en D2.','Écrire : =C2/B2','Mettre en format Pourcentage.'],'=C2/B2','taux_defaut_production.xlsx',[],['D2 : écrire la formule','D2:D4 : format pourcentage'],'Travail - Production'),
+      ex('Intermédiaire 4/8 - SI','Afficher une décision','Utiliser SI.','Pour afficher automatiquement un texte.','Joao vérifie le stock du dépôt.','Afficher Commander ou Stock OK.',['Produit','Quantité','Minimum','État'],[['Gants','15','20',''],['Casques','8','10',''],['Balais','25','10','']],['Recopier le tableau.','Cliquer en D2.','Écrire la formule.','Copier vers le bas.'],'=SI(B2<C2;"Commander";"Stock OK")','stock_depot_joao.xlsx',[],['D2 : écrire la formule SI','D2:D4 : recopier la formule'],'Travail - Stock'),
+      ex('Intermédiaire 5/8 - ET','Vérifier deux conditions','Utiliser SI avec ET.','Pour prendre une décision avec deux informations.','Karim doit relancer certaines entreprises.','Afficher À relancer ou OK.',['Entreprise','Réponse','Jours','Action'],[['Coop','Non','8',''],['Migros','Oui','7',''],['DHL','Non','5','']],['Recopier le tableau.','Cliquer en D2.','Écrire la formule.','Colorer À relancer.'],'=SI(ET(B2="Non";C2>=7);"À relancer";"OK")','relances_candidatures_karim.xlsx',[],['D2 : écrire la formule','D2:D4 : recopier la formule'],'Recherche emploi'),
+      ex('Intermédiaire 6/8 - Filtre','Filtrer une liste','Afficher seulement certaines lignes.','Pour trouver rapidement une information.','Lina vérifie les dossiers incomplets.','Filtrer les dossiers manquants.',['Participant','CV','Permis','Statut'],[['Ali','Oui','Oui','Complet'],['Rosa','Oui','Non','Manquant'],['Moussa','Non','Oui','Manquant']],['Recopier le tableau.','Ajouter un filtre.','Filtrer la colonne Statut.','Afficher seulement Manquant.'],'Données > Filtrer','dossiers_participants.xlsx',[],['A1:D4 : sélectionner le tableau','D1 : filtrer Statut'],'Administration'),
+      ex('Intermédiaire 7/8 - Tri','Trier des nombres','Classer du plus petit au plus grand.','Pour repérer les priorités.','Amina veut voir qui a travaillé le plus d’heures.','Trier les heures.',['Nom','Heures'],[['Amina','18'],['Carlos','22'],['Rosa','15'],['Omar','25']],['Recopier le tableau.','Cliquer dans la colonne Heures.','Trier du plus grand au plus petit.','Observer le classement.'],'Trier du plus grand au plus petit','heures_equipe.xlsx',[],['B1:B5 : colonne à trier'],'Travail - Planning'),
+      ex('Intermédiaire 8/8 - Couleur automatique','Colorer automatiquement','Utiliser une règle de couleur.','Pour repérer rapidement les problèmes.','Luis veut voir les factures non payées.','Colorer les statuts Non payé.',['Facture','Montant','Statut'],[['Loyer','1250','Payé'],['Assurance','310','Non payé'],['Internet','59','Non payé']],['Recopier le tableau.','Sélectionner la colonne Statut.','Créer une règle de couleur.','Colorer Non payé en rouge.'],'Accueil > Mise en forme conditionnelle','factures_famille_luis.xlsx',[],['C2:C4 : zone à colorer automatiquement'],'Maison - Factures')
+    ];
+
+    var avanceExercises = [
+      ex('Avancé 1/8 - Synthèse','Compter les réponses','Utiliser NB.SI.','Pour analyser une recherche d’emploi.','Nadia analyse ses candidatures.','Compter les réponses positives.',['Entreprise','Réponse'],[['Migros','Oui'],['Coop','Non'],['DHL','Oui'],['Manor','Non']],['Recopier le tableau.','Créer une zone Statistiques.','Écrire NB.SI.','Afficher le nombre de Oui.'],'=NB.SI(B2:B5;"Oui")','stats_reponses_nadia.xlsx',[],['B2:B5 : réponses à compter'],'Recherche emploi'),
+      ex('Avancé 2/8 - Taux','Calculer un taux de réponse','Combiner NB.SI et NBVAL.','Pour voir un pourcentage de réussite.','Nadia veut connaître son taux de réponses.','Calculer le pourcentage de réponses Oui.',['Entreprise','Réponse'],[['Migros','Oui'],['Coop','Non'],['DHL','Oui'],['Manor','Non']],['Recopier le tableau.','Compter les Oui.','Compter toutes les réponses.','Calculer le taux.'],'=NB.SI(B2:B5;"Oui")/NBVAL(B2:B5)','taux_reponse_nadia.xlsx',[],['B2:B5 : zone du calcul'],'Recherche emploi'),
+      ex('Avancé 3/8 - Graphique','Créer un graphique simple','Transformer des chiffres en graphique.','Pour présenter les résultats clairement.','Le formateur montre les résultats d’un atelier.','Créer un graphique des scores.',['Participant','Score'],[['Ali','68'],['Rosa','82'],['Moussa','45'],['Nadia','91']],['Recopier le tableau.','Sélectionner les données.','Cliquer sur Insertion.','Choisir un graphique en colonnes.'],'Insertion > Graphique','graphique_scores_atelier.xlsx',[],['A1:B5 : données du graphique'],'Formation'),
+      ex('Avancé 4/8 - Tableau de bord','Créer une feuille Statistiques','Séparer données et résultats.','Pour avoir un fichier plus professionnel.','Joao suit les coûts d’un chantier.','Créer une feuille Statistiques.',['Ouvrier','Heures','Prix','Total'],[['Marco','42','32',''],['Luis','38','27',''],['Omar','35','30','']],['Recopier le tableau.','Calculer le Total.','Ajouter une feuille Statistiques.','Y afficher le total général.'],'=SOMME(D2:D4)','stats_chantier_joao.xlsx',[],['D2:D4 : totaux','Feuille Statistiques : total général'],'Travail - Chantier'),
+      ex('Avancé 5/8 - Priorité','Créer une priorité automatique','Utiliser SI pour classer.','Pour décider quoi traiter en premier.','Karim compare des offres d’emploi.','Afficher Forte ou Moyenne.',['Offre','Compétences OK','Priorité'],[['Logistique','4',''],['Production','3',''],['Nettoyage','5','']],['Recopier le tableau.','Cliquer en C2.','Écrire la formule.','Copier vers le bas.'],'=SI(B2>=4;"Forte";"Moyenne")','priorite_offres_karim.xlsx',[],['C2:C4 : priorité automatique'],'Recherche emploi'),
+      ex('Avancé 6/8 - Protection logique','Repérer les cellules à ne pas modifier','Comprendre les cellules de saisie et les cellules de calcul.','Pour éviter de casser les formules.','Une feuille contient des calculs importants.','Identifier les cellules à protéger.',['Cellule','Type','Modifier ?'],[['A2','Saisie','Oui'],['B2','Saisie','Oui'],['C2','Formule','Non']],['Recopier le tableau.','Colorer les cellules de saisie en vert.','Colorer les formules en orange.','Ne pas modifier les formules.'],'Formules = à protéger','protection_logique.xlsx',[],['C2:C4 : indique si on peut modifier'],'Bureautique'),
+      ex('Avancé 7/8 - Plusieurs feuilles','Utiliser deux feuilles','Organiser un fichier.','Pour ne pas tout mélanger dans la même feuille.','Mélanie suit ses commandes et ses résultats.','Créer une feuille Données et une feuille Résultats.',['Commande','Revenu','Dépense','Bénéfice'],[['Gâteau','80','32',''],['Tarte','45','18',''],['Cupcakes','120','55','']],['Renommer la feuille 1 : Données.','Ajouter une feuille : Résultats.','Calculer les bénéfices.','Afficher le total dans Résultats.'],'=SOMME(D2:D4)','deux_feuilles_patisserie.xlsx',[],['D2:D4 : bénéfices','Feuille Résultats : total'],'Petite entreprise'),
+      ex('Avancé 8/8 - Mini outil','Créer un suivi complet','Assembler plusieurs compétences.','Pour créer un fichier réellement utile.','Nadia veut suivre ses candidatures de manière professionnelle.','Créer un mini suivi avec calcul et graphique.',['Entreprise','Réponse','Entretien'],[['Migros','Oui','Oui'],['Coop','Non','Non'],['DHL','Oui','Oui'],['Manor','Non','Non']],['Recopier le tableau.','Compter les réponses Oui.','Compter les entretiens Oui.','Créer un graphique simple.'],'=NB.SI(B2:B5;"Oui")','mini_suivi_candidatures_nadia.xlsx',[],['B2:B5 : réponses','C2:C5 : entretiens'],'Recherche emploi')
+    ];
+
+    var levels = {
+      debutant: { label: 'Débutant', logic: '1 action visible = 1 exercice. On apprend d’abord à écrire, sélectionner, modifier, puis calculer un total simple.', exercises: debutantExercises },
+      intermediaire: { label: 'Intermédiaire', logic: 'On part d’un tableau déjà compris. Une seule nouvelle formule ou un seul nouvel outil par exercice.', exercises: intermediaireExercises },
+      avance: { label: 'Avancé', logic: 'On assemble plusieurs compétences déjà vues pour créer un mini outil réaliste et professionnel.', exercises: avanceExercises }
+    };
+
+    var currentLevel = getStoredLevel();
+    var currentExercise = getStoredExercise(currentLevel);
+
+    function getStoredLevel() {
+      var saved = localStorage.getItem('excel_progressif_current_level');
+      return levels[saved] ? saved : 'debutant';
+    }
+
+    function getStoredExercise(levelKey) {
+      var raw = Number(localStorage.getItem('excel_progressif_current_exercise_' + levelKey));
+      var max = levels[levelKey].exercises.length - 1;
+      if (!Number.isInteger(raw) || raw < 0 || raw > max) return 0;
+      return raw;
+    }
+
+    function getScenario() {
+      return levels[currentLevel].exercises[currentExercise] || levels.debutant.exercises[0];
+    }
+
+    function storageKey(levelKey, exerciseIndex) {
+      return 'excel_progressif_tasks_' + (levelKey || currentLevel) + '_' + (Number.isInteger(exerciseIndex) ? exerciseIndex : currentExercise);
+    }
+
+    function safeParseArray(value) {
+      try {
+        var parsed = JSON.parse(value || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function setText(parent, text) {
+      parent.textContent = text == null ? '' : String(text);
+    }
+
+    function makeList(items) {
+      var list = document.createElement('ul');
+      list.className = 'ep-mini-list';
+      if (!Array.isArray(items) || items.length === 0) {
+        var empty = document.createElement('li');
+        setText(empty, 'Aucun élément spécial.');
+        list.appendChild(empty);
+        return list;
+      }
+      items.forEach(function (item) {
+        var li = document.createElement('li');
+        setText(li, item);
+        list.appendChild(li);
+      });
+      return list;
+    }
+
+    function addBox(grid, title, content, isList) {
+      var box = document.createElement('div');
+      box.className = 'ep-logic-box';
+      var strong = document.createElement('strong');
+      setText(strong, title);
+      box.appendChild(strong);
+      if (isList) {
+        box.appendChild(makeList(content));
+      } else {
+        var span = document.createElement('span');
+        setText(span, content);
+        box.appendChild(span);
+      }
+      grid.appendChild(box);
+    }
+
+    function render() {
+      var content = document.getElementById('content');
+      var level = levels[currentLevel];
+      var scenario = getScenario();
+      var saved = safeParseArray(localStorage.getItem(storageKey()));
+      content.textContent = '';
+      document.getElementById('levelLogic').textContent = level.logic;
+
+      var toolbar = document.createElement('div');
+      toolbar.className = 'ep-toolbar';
+      var badge = document.createElement('div');
+      badge.className = 'ep-badge';
+      setText(badge, scenario.badge);
+      toolbar.appendChild(badge);
+
+      var select = document.createElement('select');
+      select.className = 'ep-select';
+      level.exercises.forEach(function (exercise, index) {
+        var option = document.createElement('option');
+        option.value = String(index);
+        option.selected = index === currentExercise;
+        setText(option, 'Exercice ' + (index + 1) + ' - ' + exercise.title);
+        select.appendChild(option);
+      });
+      select.addEventListener('change', function () { selectExercise(select.value); });
+      toolbar.appendChild(select);
+      content.appendChild(toolbar);
+
+      var objective = document.createElement('div');
+      objective.className = 'ep-objective';
+      setText(objective, 'Objectif : ' + scenario.skill);
+      content.appendChild(objective);
+
+      var sheet = document.createElement('div');
+      sheet.className = 'ep-sheet';
+      var sheetHead = document.createElement('div');
+      sheetHead.className = 'ep-sheet-head';
+      var titleWrap = document.createElement('div');
+      var label = document.createElement('div');
+      label.className = 'ep-sheet-label';
+      setText(label, 'Fiche exercice Excel');
+      var title = document.createElement('div');
+      title.className = 'ep-sheet-title';
+      setText(title, scenario.title);
+      titleWrap.appendChild(label);
+      titleWrap.appendChild(title);
+      sheetHead.appendChild(titleWrap);
+      var badge2 = document.createElement('div');
+      badge2.className = 'ep-badge';
+      setText(badge2, scenario.badge);
+      sheetHead.appendChild(badge2);
+      sheet.appendChild(sheetHead);
+
+      var grid = document.createElement('div');
+      grid.className = 'ep-logic-grid';
+      addBox(grid, 'Progression métier', scenario.domain, false);
+      addBox(grid, 'Compétence travaillée', scenario.skill, false);
+      addBox(grid, 'Coordonnées utiles', scenario.cells, true);
+      addBox(grid, 'Utilité réelle', scenario.why, false);
+      addBox(grid, 'Contexte', scenario.story, false);
+      addBox(grid, 'Tâche à réussir', scenario.mission, false);
+      sheet.appendChild(grid);
+
+      var nav = document.createElement('div');
+      nav.className = 'ep-nav';
+      var prev = document.createElement('button');
+      prev.type = 'button';
+      prev.className = 'ep-button secondary';
+      setText(prev, 'Avant');
+      prev.addEventListener('click', previousExercise);
+      var next = document.createElement('button');
+      next.type = 'button';
+      next.className = 'ep-button';
+      setText(next, 'Après');
+      next.addEventListener('click', nextExercise);
+      nav.appendChild(prev);
+      nav.appendChild(next);
+      sheet.appendChild(nav);
+
+      var dataTitle = document.createElement('h2');
+      setText(dataTitle, 'Données à recopier');
+      sheet.appendChild(dataTitle);
+      sheet.appendChild(makeTable(scenario.columns, scenario.rows));
+
+      var taskTitle = document.createElement('h2');
+      setText(taskTitle, 'Consignes');
+      sheet.appendChild(taskTitle);
+      var taskList = document.createElement('div');
+      taskList.className = 'ep-task-list';
+      scenario.tasks.forEach(function (task, index) {
+        var taskLabel = document.createElement('label');
+        taskLabel.className = saved[index] ? 'ep-task done' : 'ep-task';
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = Boolean(saved[index]);
+        checkbox.addEventListener('change', function () { toggleTask(index, checkbox, taskLabel); });
+        var span = document.createElement('span');
+        setText(span, task);
+        taskLabel.appendChild(checkbox);
+        taskLabel.appendChild(span);
+        taskList.appendChild(taskLabel);
+      });
+      sheet.appendChild(taskList);
+
+      var help = document.createElement('div');
+      help.className = 'ep-help';
+      var helpTitle = document.createElement('strong');
+      setText(helpTitle, 'Aide');
+      help.appendChild(helpTitle);
+      help.appendChild(document.createElement('br'));
+      help.appendChild(document.createTextNode('Réalise seulement cet objectif. Une compétence à la fois.'));
+      help.appendChild(document.createElement('br'));
+      var formula = document.createElement('span');
+      formula.className = 'ep-formula';
+      setText(formula, scenario.formula);
+      help.appendChild(formula);
+      help.appendChild(document.createElement('br'));
+      help.appendChild(document.createElement('br'));
+      var errTitle = document.createElement('strong');
+      setText(errTitle, 'Erreurs à trouver');
+      help.appendChild(errTitle);
+      help.appendChild(makeList(scenario.errors));
+      help.appendChild(document.createElement('br'));
+      var fileTitle = document.createElement('strong');
+      setText(fileTitle, 'Nom du fichier : ');
+      help.appendChild(fileTitle);
+      help.appendChild(document.createTextNode(scenario.file));
+      sheet.appendChild(help);
+
+      content.appendChild(sheet);
+      updateActiveButton();
+      updateProgress();
+      promoteInProgress();
+    }
+
+    function makeTable(columns, rows) {
+      var wrap = document.createElement('div');
+      wrap.className = 'ep-table-wrap';
+      var table = document.createElement('table');
+      table.className = 'ep-table';
+      var thead = document.createElement('thead');
+      var headRow = document.createElement('tr');
+      columns.forEach(function (col) {
+        var th = document.createElement('th');
+        setText(th, col);
+        headRow.appendChild(th);
+      });
+      thead.appendChild(headRow);
+      table.appendChild(thead);
+      var tbody = document.createElement('tbody');
+      rows.forEach(function (row) {
+        var tr = document.createElement('tr');
+        row.forEach(function (cell) {
+          var td = document.createElement('td');
+          setText(td, cell);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+      return wrap;
+    }
+
+    function taskWasAlreadyDone(index) {
+      return Boolean(safeParseArray(localStorage.getItem(storageKey()))[index]);
+    }
+
+    function toggleTask(index, checkbox, taskLabel) {
+      var wasDone = taskWasAlreadyDone(index);
+      var saved = safeParseArray(localStorage.getItem(storageKey()));
+      saved[index] = checkbox.checked;
+      localStorage.setItem(storageKey(), JSON.stringify(saved));
+      taskLabel.classList.toggle('done', checkbox.checked);
+      if (checkbox.checked && !wasDone && window.ScoreManager) {
+        window.ScoreManager.updateMetrics(PAGE_ID, { correct: 1, typed: 1, xp: 2 });
+        if (isAllCompleted()) window.ScoreManager.promoteStatus(PAGE_ID, 'completed');
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      var scenario = getScenario();
+      var saved = safeParseArray(localStorage.getItem(storageKey()));
+      var done = scenario.tasks.filter(function (_, index) { return saved[index]; }).length;
+      var percent = scenario.tasks.length ? Math.round(done / scenario.tasks.length * 100) : 0;
+      document.getElementById('progressBar').style.width = percent + '%';
+      document.getElementById('progressText').textContent = percent + '% terminé - ' + done + '/' + scenario.tasks.length;
+    }
+
+    function updateActiveButton() {
+      document.querySelectorAll('.ep-level-btn').forEach(function (button) {
+        button.classList.toggle('active', button.getAttribute('data-level') === currentLevel);
+      });
+    }
+
+    function selectLevel(levelKey) {
+      if (!levels[levelKey]) return;
+      currentLevel = levelKey;
+      currentExercise = getStoredExercise(levelKey);
+      localStorage.setItem('excel_progressif_current_level', currentLevel);
+      render();
+    }
+
+    function selectExercise(index) {
+      var parsedIndex = Number(index);
+      if (!Number.isInteger(parsedIndex)) return;
+      currentExercise = Math.max(0, Math.min(parsedIndex, levels[currentLevel].exercises.length - 1));
+      localStorage.setItem('excel_progressif_current_exercise_' + currentLevel, currentExercise);
+      render();
+    }
+
+    function nextExercise() {
+      currentExercise = (currentExercise + 1) % levels[currentLevel].exercises.length;
+      localStorage.setItem('excel_progressif_current_exercise_' + currentLevel, currentExercise);
+      render();
+    }
+
+    function previousExercise() {
+      currentExercise = (currentExercise - 1 + levels[currentLevel].exercises.length) % levels[currentLevel].exercises.length;
+      localStorage.setItem('excel_progressif_current_exercise_' + currentLevel, currentExercise);
+      render();
+    }
+
+    function resetProgress() {
+      if (!confirm('Réinitialiser la progression de cet exercice ?')) return;
+      localStorage.removeItem(storageKey());
+      render();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(function () {});
+      } else {
+        document.exitFullscreen().catch(function () {});
+      }
+    }
+
+    function promoteInProgress() {
+      if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+    }
+
+    function isAllCompleted() {
+      return Object.keys(levels).every(function (levelKey) {
+        return levels[levelKey].exercises.every(function (exercise, exerciseIndex) {
+          var saved = safeParseArray(localStorage.getItem(storageKey(levelKey, exerciseIndex)));
+          return exercise.tasks.every(function (_, taskIndex) { return saved[taskIndex]; });
+        });
+      });
+    }
+
+    function runTests() {
+      console.assert(Object.keys(levels).length === 3, 'Il y a 3 niveaux.');
+      console.assert(levels.debutant.exercises.length === 8, 'Débutant : 8 exercices.');
+      console.assert(levels.intermediaire.exercises.length === 8, 'Intermédiaire : 8 exercices.');
+      console.assert(levels.avance.exercises.length === 8, 'Avancé : 8 exercices.');
+      console.assert(getScenario().tasks.length <= 4, 'Chaque exercice reste court.');
+      console.assert(typeof getScenario().skill === 'string', 'Chaque exercice a une compétence ciblée.');
+      console.assert(Array.isArray(getScenario().rows), 'Chaque exercice a des données.');
+      console.assert(typeof levels.debutant.logic === 'string', 'Chaque niveau a une logique pédagogique.');
+      console.assert(levels.intermediaire.exercises[3].formula.indexOf('SI') !== -1, 'Le niveau intermédiaire contient une formule SI.');
+      console.assert(levels.avance.exercises.every(function (exercise) { return exercise.file.indexOf('.xlsx') !== -1; }), 'Tous les exercices avancés ont un nom de fichier Excel.');
+      console.log('Tests Excel progressif OK');
+    }
+
+    document.querySelectorAll('.ep-level-btn').forEach(function (button) {
+      button.addEventListener('click', function () { selectLevel(button.getAttribute('data-level')); });
+    });
+    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+    document.getElementById('printBtn').addEventListener('click', function () { window.print(); });
+    document.getElementById('resetBtn').addEventListener('click', resetProgress);
+    runTests();
+    render();
+  })();
+  </script>
+</body>
+</html>

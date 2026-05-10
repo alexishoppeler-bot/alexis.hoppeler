@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vaud Express - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root {
+      --ve-red: #e62117;
+      --ve-red-dark: #b80f0a;
+      --ve-rail: #243447;
+      --ve-blue-soft: #eef6ff;
+      --ve-warning: #fff3cd;
+    }
+
+    body { background: var(--bg); }
+
+    .ve-main {
+      width: min(100%, 1680px);
+      padding: 20px clamp(14px, 2vw, 28px) 28px;
+    }
+
+    .ve-shell {
+      height: calc(100vh - var(--header-h) - 56px);
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: minmax(460px, 1fr) 410px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .ve-map-wrap {
+      position: relative;
+      min-width: 0;
+      background: #dbeafe;
+    }
+
+    #ve-map {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      filter: contrast(1.03) brightness(1.04) saturate(.92);
+    }
+
+    .ve-map-toolbar {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 700;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .ve-help {
+      max-width: 330px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(230,33,23,.32);
+      border-left: 5px solid var(--ve-red);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--text);
+      box-shadow: 0 8px 24px rgba(0,0,0,.16);
+      pointer-events: none;
+    }
+
+    .ve-help strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ve-red);
+      font-family: var(--font-head);
+      font-size: 15px;
+    }
+
+    .ve-help span {
+      display: block;
+      color: var(--text2);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .ve-admin {
+      width: 238px;
+      pointer-events: auto;
+      text-align: right;
+    }
+
+    .ve-admin-toggle {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 999px;
+      background: rgba(36,52,71,.72);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,.22);
+    }
+
+    .ve-admin-panel {
+      display: none;
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(17,24,39,.96);
+      color: #fff;
+      text-align: left;
+      box-shadow: 0 12px 28px rgba(0,0,0,.32);
+    }
+
+    .ve-admin-panel input {
+      width: 100%;
+      margin: 9px 0;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+
+    .ve-mini-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin-top: 7px;
+      background: #374151;
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .ve-mini-btn:hover { background: #4b5563; }
+
+    .ve-panel {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .ve-panel-head {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #fff, #f8fafc);
+    }
+
+    .ve-eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 7px;
+    }
+
+    .ve-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .ve-title-row h1 {
+      margin: 0;
+      font-family: var(--font-head);
+      color: var(--ve-red);
+      font-size: 25px;
+      line-height: 1.1;
+    }
+
+    .ve-score {
+      min-width: 84px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #fff5f5;
+      border: 1px solid #fecaca;
+      text-align: center;
+      color: var(--ve-red-dark);
+      font-family: var(--font-head);
+      font-weight: 900;
+    }
+
+    .ve-score small {
+      display: block;
+      color: var(--text3);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .ve-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .ve-stat {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg2);
+      font-size: 12px;
+      color: var(--text3);
+    }
+
+    .ve-stat strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--text);
+      font-size: 16px;
+      font-family: var(--font-head);
+    }
+
+    .ve-progress {
+      height: 9px;
+      margin-top: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .ve-progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--ve-red), #ff7a59);
+      transition: width .35s ease;
+    }
+
+    .ve-panel-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 18px 20px;
+    }
+
+    .ve-instruction {
+      background: var(--ve-blue-soft);
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 12px 13px;
+      margin-bottom: 13px;
+      color: #1e3a8a;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .ve-story {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      min-height: 180px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,.05);
+      line-height: 1.65;
+    }
+
+    .ve-step-line {
+      display: block;
+      padding: 10px 11px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      animation: veFadeSlide .35s ease;
+    }
+
+    .ve-current {
+      background: var(--ve-warning);
+      border: 2px solid #f59e0b;
+      color: #78350f;
+      font-weight: 800;
+      box-shadow: 0 0 0 4px rgba(245,158,11,.13);
+    }
+
+    .ve-past {
+      color: #9ca3af;
+      background: #f3f4f6;
+      text-decoration: line-through;
+    }
+
+    .ve-feedback {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 11px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .ve-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 11px;
+      padding: 13px 15px;
+      margin-top: 12px;
+      background: var(--ve-rail);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .ve-btn:hover { transform: translateY(-1px); opacity: .94; }
+    .ve-btn-red { background: var(--ve-red); }
+
+    .ve-memory {
+      margin-top: 10px;
+      background: #fff8e7;
+      border: 2px solid #f59e0b;
+      border-radius: 14px;
+      padding: 15px;
+      animation: veFadeSlide .35s ease;
+    }
+
+    .ve-memory h2 {
+      margin: 0 0 8px;
+      color: #b45309;
+      font-size: 20px;
+    }
+
+    .ve-memory-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .ve-memory-city {
+      background: #fff;
+      border: 2px solid #fde68a;
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-weight: 800;
+      cursor: grab;
+      user-select: none;
+      transition: transform .15s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .ve-memory-city:hover { transform: translateX(4px); background: #fffbeb; }
+    .ve-memory-city.dragging { opacity: .45; transform: scale(.98); border-color: var(--ve-red); }
+    .ve-memory-city.good { background: #dcfce7; border-color: #22c55e; color: #166534; }
+    .ve-memory-city.bad { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+
+    .ve-memory-result {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 11px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .ve-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15,23,42,.78);
+      backdrop-filter: blur(3px);
+    }
+
+    .ve-modal-card {
+      width: min(100%, 620px);
+      padding: 34px;
+      border-radius: 18px;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 24px 70px rgba(0,0,0,.35);
+      animation: vePop .28s ease;
+    }
+
+    .ve-modal-card h2 {
+      margin: 0 0 12px;
+      color: var(--ve-red);
+      font-size: 36px;
+      font-family: var(--font-head);
+    }
+
+    .ve-modal-card p {
+      margin: 0 0 20px;
+      color: var(--text2);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .score-float {
+      position: fixed;
+      top: 102px;
+      right: 96px;
+      z-index: 3100;
+      font-size: 30px;
+      font-weight: 900;
+      pointer-events: none;
+      animation: veScorePop 1.2s ease forwards;
+      text-shadow: 0 2px 8px rgba(0,0,0,.22);
+    }
+
+    .pulse-marker {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(230,33,23,.35);
+      border: 3px solid var(--ve-red);
+      animation: veMarkerPulse 1.3s ease-out infinite;
+    }
+
+    .train-icon {
+      font-size: 28px;
+      text-align: center;
+      line-height: 1;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.4));
+    }
+
+    @keyframes vePop {
+      from { transform: scale(.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes veFadeSlide {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes veScorePop {
+      0% { transform: translateY(0) scale(.8); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-42px) scale(1.15); opacity: 0; }
+    }
+
+    @keyframes veMarkerPulse {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(2.1); opacity: 0; }
+    }
+
+    @media (max-width: 1100px) {
+      .ve-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(380px, 55vh) minmax(360px, 1fr);
+        height: auto;
+        min-height: 0;
+      }
+
+      .ve-map-wrap { min-height: 420px; }
+      .ve-panel { border-left: 0; border-top: 1px solid var(--border); }
+    }
+
+    @media (max-width: 680px) {
+      .ve-main { padding: 12px; }
+      .ve-shell { border-radius: 10px; }
+      .ve-map-wrap { min-height: 360px; }
+      .ve-map-toolbar { flex-direction: column; align-items: stretch; }
+      .ve-admin { width: auto; text-align: left; }
+      .ve-help { max-width: none; }
+      .ve-modal-card { padding: 24px; }
+      .ve-modal-card h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main ve-main">
+      <section class="ve-shell" aria-label="Vaud Express">
+        <div class="ve-map-wrap">
+          <div id="ve-map"></div>
+          <div class="ve-map-toolbar">
+            <div class="ve-help">
+              <strong>Utilise la souris sur le plan</strong>
+              <span>Molette : zoomer / dézoomer</span>
+              <span>Clic gauche maintenu : déplacer le plan</span>
+              <span>Clic simple : choisir la ville</span>
+            </div>
+            <div class="ve-admin">
+              <button id="admin-toggle" class="ve-admin-toggle" type="button" title="Mode admin">⚙</button>
+              <div id="admin-panel" class="ve-admin-panel">
+                <strong>Mode admin</strong>
+                <input id="admin-code" type="password" placeholder="Code admin">
+                <button id="admin-login" class="ve-mini-btn" type="button">Ouvrir</button>
+                <div id="admin-actions" style="display:none;margin-top:8px;">
+                  <button id="replay-step-btn" class="ve-mini-btn" type="button">Revoir une étape</button>
+                  <button id="replay-full-btn" class="ve-mini-btn" type="button">Revoir le parcours</button>
+                  <button id="auto-play-btn" class="ve-mini-btn" type="button">Réalisation automatique</button>
+                  <button id="auto-memory-btn" class="ve-mini-btn" type="button">Corriger mémoire</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="ve-panel">
+          <div class="ve-panel-head">
+            <div class="ve-eyebrow">Transports et repérage</div>
+            <div class="ve-title-row">
+              <h1 id="char-name">Vaud Express</h1>
+              <div class="ve-score"><small>Score</small><span id="score">0</span></div>
+            </div>
+            <div class="ve-stats">
+              <div class="ve-stat">Étape globale<strong><span id="global-step">1</span>/<span id="total-steps">0</span></strong></div>
+              <div class="ve-stat">Mission<strong><span id="m-count">1</span>/<span id="mission-total">0</span></strong></div>
+            </div>
+            <div class="ve-progress" aria-label="Progression">
+              <div id="progress-fill" class="ve-progress-fill"></div>
+            </div>
+          </div>
+
+          <div class="ve-panel-body">
+            <div class="ve-instruction">
+              <strong>Consigne :</strong><br>
+              1. Lis le texte.<br>
+              2. Trouve la ville.<br>
+              3. Clique près du nom de la ville sur le plan.
+            </div>
+            <div id="story-display" class="ve-story"></div>
+            <div id="feedback" class="ve-feedback"></div>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <div id="transition-modal" class="ve-modal">
+    <div class="ve-modal-card">
+      <h2 id="modal-title">Vaud Express</h2>
+      <p id="modal-desc">Lis le texte, trouve la ville, puis clique sur le plan.</p>
+      <button class="ve-btn ve-btn-red" type="button" onclick="startMission()">Commencer le voyage</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'vaud-express';
+  const parcoursData = [
+    ['Julie', ['Renens','Lausanne','Vevey','La Tour-de-Peilz','Montreux','Villeneuve','Aigle','Bex','Saint-Maurice','Martigny'], [[46.5390,6.5881],[46.5197,6.6323],[46.4629,6.8430],[46.4533,6.8588],[46.4312,6.9107],[46.3976,6.9267],[46.3170,6.9680],[46.2496,7.0098],[46.2180,7.0032],[46.1029,7.0750]]],
+    ['Lucas', ['Coppet','Nyon','Gland','Rolle','Allaman','Morges','Renens','Lausanne','Vevey','Montreux'], [[46.3162,6.1911],[46.3832,6.2396],[46.4208,6.2701],[46.4588,6.3340],[46.4707,6.3970],[46.5089,6.4983],[46.5390,6.5881],[46.5197,6.6323],[46.4629,6.8430],[46.4312,6.9107]]],
+    ['Mariam', ['Grandson','Yverdon-les-Bains','Chavornay','Éclépens','Cossonay-Penthalaz','Vufflens-la-Ville','Bussigny','Renens','Lausanne','Cully'], [[46.8090,6.6460],[46.7785,6.6412],[46.7020,6.5690],[46.6520,6.5260],[46.6130,6.5080],[46.5730,6.5350],[46.5519,6.5550],[46.5390,6.5881],[46.5197,6.6323],[46.4889,6.7308]]],
+    ['Rachid', ['Vallorbe','Le Day','La Sarraz','Cossonay-Penthalaz','Bussigny','Renens','Lausanne','Vevey','Aigle','Bex'], [[46.7120,6.3730],[46.7030,6.4170],[46.6580,6.5130],[46.6130,6.5080],[46.5519,6.5550],[46.5390,6.5881],[46.5197,6.6323],[46.4629,6.8430],[46.3170,6.9680],[46.2496,7.0098]]],
+    ['Sofia', ['Allaman','Etoy','St-Prex','Morges','Lonay-Préverenges','Denges-Echandens','Renens','Lausanne','Palézieux','Payerne'], [[46.4707,6.3970],[46.4850,6.4180],[46.4793,6.4595],[46.5089,6.4983],[46.5231,6.5195],[46.5291,6.5405],[46.5390,6.5881],[46.5197,6.6323],[46.5420,6.8400],[46.8210,6.9380]]],
+    ['Ali', ['Lausanne','Chauderon','Prilly-Chasseur','Romanel-sur-Lausanne','Cheseaux','Étagnières','Assens','Échallens','Fey','Bercher'], [[46.5197,6.6323],[46.5230,6.6260],[46.5360,6.6040],[46.5642,6.6030],[46.5866,6.6050],[46.6042,6.6073],[46.6150,6.6220],[46.6414,6.6335],[46.6760,6.6840],[46.6920,6.7080]]],
+    ['Nadia', ['Lausanne','Pully','Lutry','Cully','Puidoux','Vevey','La Tour-de-Peilz','Clarens','Montreux','Villeneuve'], [[46.5197,6.6323],[46.5103,6.6618],[46.5027,6.6867],[46.4889,6.7308],[46.4939,6.7656],[46.4629,6.8430],[46.4533,6.8588],[46.4418,6.8950],[46.4312,6.9107],[46.3976,6.9267]]],
+    ['Pedro', ['Lausanne','Palézieux','Moudon','Lucens','Granges-près-Marnand','Payerne','Corcelles-Nord','Avenches','Faoug','Murten'], [[46.5197,6.6323],[46.5420,6.8400],[46.6670,6.7950],[46.7080,6.8390],[46.7620,6.8880],[46.8210,6.9380],[46.8352,6.9603],[46.8810,7.0430],[46.9080,7.0780],[46.9280,7.1170]]],
+    ['Emma', ['Vallorbe','Le Day','Le Pont','Le Lieu','Le Sentier','Le Brassus','Le Pont','Le Day','La Sarraz','Cossonay-Penthalaz'], [[46.7120,6.3730],[46.7030,6.4170],[46.6670,6.3250],[46.6530,6.2820],[46.6115,6.2330],[46.5840,6.2120],[46.6670,6.3250],[46.7030,6.4170],[46.6580,6.5130],[46.6130,6.5080]]],
+    ['Samuel', ['Nyon','Gland','Morges','Renens','Lausanne','Yverdon-les-Bains','Payerne','Palézieux','Vevey','Aigle'], [[46.3832,6.2396],[46.4208,6.2701],[46.5089,6.4983],[46.5390,6.5881],[46.5197,6.6323],[46.7785,6.6412],[46.8210,6.9380],[46.5420,6.8400],[46.4629,6.8430],[46.3170,6.9680]]]
+  ];
+
+  function villeDansTexte(ville) {
+    if (['Le Pont', 'Le Lieu', 'Le Sentier', 'Le Day', 'Le Brassus'].includes(ville)) return 'Ville du ' + ville.replace('Le ', '');
+    if (/^[AEÉIOUY]/i.test(ville)) return "Ville d'" + ville;
+    return 'Ville de ' + ville;
+  }
+
+  function texteEtape(nom, ville, index) {
+    const lieu = villeDansTexte(ville);
+    const scenarios = [
+      `${nom} commence sa mission à la <b>${lieu}</b>. La personne observe les panneaux et note bien le nom de la ville.`,
+      `À la <b>${lieu}</b>, ${nom} descend quelques minutes. Une information importante doit être vérifiée avant de continuer.`,
+      `${nom} arrive ensuite à la <b>${lieu}</b>. Plusieurs voyageurs attendent devant la gare.`,
+      `Après un nouveau trajet, ${nom} passe par la <b>${lieu}</b>. La personne regarde le plan pour comprendre où elle se trouve.`,
+      `À la <b>${lieu}</b>, ${nom} reçoit une nouvelle indication. Il faut rester concentré et mémoriser les villes déjà traversées.`,
+      `${nom} s’arrête quelques minutes à la <b>${lieu}</b>. La personne regarde les alentours avant de repartir.`,
+      `Le parcours continue vers la <b>${lieu}</b>. ${nom} commence à reconnaître certaines villes vues plus tôt.`,
+      `À la <b>${lieu}</b>, ${nom} vérifie encore la direction du voyage. Chaque étape compte.`,
+      `${nom} arrive presque à la fin du parcours à la <b>${lieu}</b>. Il faut retenir l’ordre des villes visitées.`,
+      `La mission se termine à la <b>${lieu}</b>. ${nom} relit mentalement les étapes avant le défi mémoire.`
+    ];
+    return scenarios[index] || `${nom} arrive à la <b>${lieu}</b>.`;
+  }
+
+  const aventures = parcoursData.map(([nom, villes, coords]) => ({
+    nom,
+    etapes: villes.map((ville, index) => ({ t: texteEtape(nom, ville, index), p: coords[index], ville, ordre: index }))
+  }));
+
+  let map;
+  let mIdx = 0;
+  let sIdx = 0;
+  let score = 0;
+  let sessionXp = 0;
+  let correctClicks = 0;
+  let wrongClicks = 0;
+  let foundThisStep = false;
+  let missionEnded = false;
+  let trajetPoints = [];
+  let polyline = null;
+  let mapMarkers = [];
+  let smokeMarkers = [];
+  let cleanTimers = [];
+  let autoPlayToken = 0;
+  let activeAnimation = { token: 0, interval: null, marker: null };
+
+  const totalSteps = aventures.reduce((sum, mission) => sum + mission.etapes.length, 0);
+
+  function byId(id) { return document.getElementById(id); }
+  function currentMission() { return aventures[mIdx] || null; }
+  function currentStep() {
+    const mission = currentMission();
+    return mission && sIdx >= 0 && sIdx < mission.etapes.length ? mission.etapes[sIdx] : null;
+  }
+  function getGlobalStep() {
+    let count = 0;
+    for (let i = 0; i < mIdx; i += 1) count += aventures[i].etapes.length;
+    return Math.min(count + sIdx + 1, totalSteps);
+  }
+  function safeRemoveLayer(layer) { if (layer && map && map.hasLayer(layer)) map.removeLayer(layer); }
+  function clearCleanTimers() { cleanTimers.forEach((timer) => clearTimeout(timer)); cleanTimers = []; }
+  function removeSmokeMarkers() { smokeMarkers.forEach((marker) => safeRemoveLayer(marker)); smokeMarkers = []; }
+  function stopAnimation() {
+    if (activeAnimation.interval) clearInterval(activeAnimation.interval);
+    safeRemoveLayer(activeAnimation.marker);
+    activeAnimation = { token: activeAnimation.token + 1, interval: null, marker: null };
+  }
+  function resetAnimations() {
+    stopAnimation();
+    clearCleanTimers();
+    removeSmokeMarkers();
+    autoPlayToken += 1;
+  }
+  function addPlatformXp(amount, data) {
+    const xp = Math.max(0, Number(amount) || 0);
+    if (!xp || !window.ScoreManager) return;
+    sessionXp += xp;
+    window.ScoreManager.updateMetrics(PAGE_ID, Object.assign({ xp }, data || {}));
+    window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+  }
+
+  function initMap() {
+    map = L.map('ve-map', {
+      maxBounds: [[45.95,5.85],[47.10,7.45]],
+      maxBoundsViscosity: 1,
+      center: [46.57,6.68],
+      zoom: 9,
+      minZoom: 8,
+      maxZoom: 17,
+      zoomControl: true,
+      dragging: true,
+      scrollWheelZoom: true,
+      doubleClickZoom: false
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      minZoom: 8,
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    map.fitBounds([[46.18,5.95],[47.02,7.25]], { padding: [20, 20] });
+    map.on('click', handleMapClick);
+  }
+
+  function startMission() {
+    resetAnimations();
+    if (mIdx === 0 && sIdx === 0 && score === 0 && window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+    missionEnded = false;
+    foundThisStep = false;
+    byId('transition-modal').style.display = 'none';
+    updateUI();
+    focusCurrentCity();
+    setTimeout(() => map.invalidateSize(), 80);
+  }
+  window.startMission = startMission;
+
+  function updateUI() {
+    const mission = currentMission();
+    const step = currentStep();
+    if (!mission || !step) return;
+    const globalStep = getGlobalStep();
+    byId('char-name').textContent = mission.nom;
+    byId('m-count').textContent = mIdx + 1;
+    byId('global-step').textContent = globalStep;
+    byId('progress-fill').style.width = `${((globalStep - 1) / totalSteps) * 100}%`;
+    byId('story-display').innerHTML = (sIdx > 0 ? '<span class="ve-step-line ve-past">✓ Étape précédente terminée</span>' : '') +
+      `<span class="ve-step-line ve-current">${step.t}</span>`;
+    byId('feedback').style.display = 'none';
+    foundThisStep = false;
+  }
+
+  function focusCurrentCity() {
+    const step = currentStep();
+    if (step) map.panTo(step.p, { animate: true, duration: .8 });
+  }
+
+  function showScoreEffect(text, isPositive) {
+    const el = document.createElement('div');
+    el.className = 'score-float';
+    el.textContent = text;
+    el.style.color = isPositive ? '#16a34a' : '#dc2626';
+    document.body.appendChild(el);
+    cleanTimers.push(setTimeout(() => el.remove(), 1200));
+  }
+
+  function addSuccessMarker(target) {
+    const pulse = L.marker(target, { icon: L.divIcon({ className: '', html: '<div class="pulse-marker"></div>', iconSize: [22, 22] }) }).addTo(map);
+    cleanTimers.push(setTimeout(() => safeRemoveLayer(pulse), 1800));
+    const marker = L.circleMarker(target, { radius: 8, color: '#b80f0a', fillColor: '#e62117', fillOpacity: 1, weight: 3 }).addTo(map);
+    mapMarkers.push(marker);
+  }
+
+  function handleMapClick(e) {
+    const step = currentStep();
+    if (foundThisStep || missionEnded || !step) return;
+    const fb = byId('feedback');
+    const target = step.p;
+    const dist = e.latlng.distanceTo(L.latLng(target));
+    fb.style.display = 'block';
+    if (dist < 1800) {
+      foundThisStep = true;
+      correctClicks += 1;
+      score += 100;
+      byId('score').textContent = score;
+      addPlatformXp(3, { correct: 1, typed: 1 });
+      fb.style.background = '#d4edda';
+      fb.style.color = '#155724';
+      fb.textContent = 'Bonne ville ! +100 points. Le voyage continue...';
+      showScoreEffect('+100', true);
+      addSuccessMarker(target);
+      cleanTimers.push(setTimeout(handleNext, 850));
+    } else {
+      wrongClicks += 1;
+      score = Math.max(0, score - 20);
+      byId('score').textContent = score;
+      if (window.ScoreManager) window.ScoreManager.updateMetrics(PAGE_ID, { errors: 1, typed: 1 });
+      fb.style.background = '#f8d7da';
+      fb.style.color = '#721c24';
+      fb.textContent = 'Pas encore. -20 points. Cherche la ville du parcours sur la carte.';
+      showScoreEffect('-20', false);
+    }
+  }
+
+  function handleNext() {
+    const mission = currentMission();
+    const step = currentStep();
+    if (!mission || !step || missionEnded) return;
+    trajetPoints.push(step.p);
+    if (polyline) polyline.addLatLng(step.p);
+    else polyline = L.polyline([step.p], { color: '#e62117', weight: 5, opacity: .85, smoothFactor: 1.5 }).addTo(map);
+    sIdx += 1;
+    if (sIdx < mission.etapes.length) {
+      updateUI();
+      focusCurrentCity();
+    } else {
+      lancerAnimationTrain();
+    }
+  }
+
+  function animateTrainAlong(points, options = {}) {
+    stopAnimation();
+    if (!Array.isArray(points) || points.length < 2) {
+      if (options.onDone) options.onDone();
+      return;
+    }
+    const intervalMs = options.intervalMs || 32;
+    const framesPerSegment = options.framesPerSegment || 55;
+    const token = activeAnimation.token;
+    const trainIcon = L.divIcon({ html: '🚂', className: 'train-icon', iconAnchor: [14, 14] });
+    activeAnimation.marker = L.marker(points[0], { icon: trainIcon }).addTo(map);
+    if (options.fit !== false) map.fitBounds(L.latLngBounds(points), { padding: [50, 50], maxZoom: 10.5, animate: true, duration: 1 });
+    let segmentIndex = 0;
+    let progress = 0;
+    activeAnimation.interval = setInterval(() => {
+      if (token !== activeAnimation.token || !activeAnimation.marker || !map.hasLayer(activeAnimation.marker)) return;
+      if (segmentIndex >= points.length - 1) {
+        clearInterval(activeAnimation.interval);
+        activeAnimation.interval = null;
+        cleanTimers.push(setTimeout(() => {
+          if (token !== activeAnimation.token) return;
+          safeRemoveLayer(activeAnimation.marker);
+          activeAnimation.marker = null;
+          if (options.onDone) options.onDone();
+        }, 650));
+        return;
+      }
+      const start = L.latLng(points[segmentIndex]);
+      const end = L.latLng(points[segmentIndex + 1]);
+      const ratio = Math.min(progress / framesPerSegment, 1);
+      const eased = ratio < .5 ? 2 * ratio * ratio : 1 - Math.pow(-2 * ratio + 2, 2) / 2;
+      const lat = start.lat + (end.lat - start.lat) * eased;
+      const lng = start.lng + (end.lng - start.lng) * eased;
+      activeAnimation.marker.setLatLng([lat, lng]);
+      if (options.smoke && progress % 8 === 0) {
+        const puff = L.circleMarker([lat, lng], { radius: 4, color: '#999', fillColor: '#bbb', fillOpacity: .35, weight: 1 }).addTo(map);
+        smokeMarkers.push(puff);
+        cleanTimers.push(setTimeout(() => {
+          safeRemoveLayer(puff);
+          smokeMarkers = smokeMarkers.filter((item) => item !== puff);
+        }, 650));
+      }
+      progress += 1;
+      if (progress > framesPerSegment) {
+        progress = 0;
+        segmentIndex += 1;
+      }
+    }, intervalMs);
+  }
+
+  function lancerAnimationTrain() {
+    if (trajetPoints.length < 2) {
+      cleanTimers.push(setTimeout(finirAventure, 700));
+      return;
+    }
+    animateTrainAlong([...trajetPoints], {
+      intervalMs: 32,
+      framesPerSegment: 55,
+      smoke: true,
+      fit: true,
+      onDone: () => {
+        const fb = byId('feedback');
+        fb.style.display = 'block';
+        fb.style.background = '#d1ecf1';
+        fb.style.color = '#0c5460';
+        fb.textContent = 'Parcours terminé ! Regarde maintenant le trajet complet du train.';
+        cleanTimers.push(setTimeout(finirAventure, 1000));
+      }
+    });
+  }
+
+  function replayParcours(mode) {
+    const fb = byId('feedback');
+    let points = [];
+    const step = currentStep();
+    if (mode === 'step') {
+      if (trajetPoints.length >= 2) points = [trajetPoints[trajetPoints.length - 2], trajetPoints[trajetPoints.length - 1]];
+      else if (trajetPoints.length === 1 && step) points = [trajetPoints[0], step.p];
+    } else {
+      points = [...trajetPoints];
+    }
+    if (points.length < 2) {
+      fb.style.display = 'block';
+      fb.style.background = '#fff3cd';
+      fb.style.color = '#856404';
+      fb.textContent = 'Il faut au moins deux villes validées pour revoir le parcours.';
+      return;
+    }
+    animateTrainAlong(points, { intervalMs: 28, framesPerSegment: 45, fit: true });
+  }
+
+  function autoPlayMission() {
+    const mission = currentMission();
+    if (!mission || missionEnded) return;
+    const token = ++autoPlayToken;
+    function playStep() {
+      if (token !== autoPlayToken || missionEnded) return;
+      const step = currentStep();
+      if (!step) {
+        if (sIdx >= mission.etapes.length) lancerAnimationTrain();
+        return;
+      }
+      foundThisStep = true;
+      addSuccessMarker(step.p);
+      correctClicks += 1;
+      score += 100;
+      byId('score').textContent = score;
+      addPlatformXp(3, { correct: 1, typed: 1 });
+      const fb = byId('feedback');
+      fb.style.display = 'block';
+      fb.style.background = '#d4edda';
+      fb.style.color = '#155724';
+      fb.textContent = 'Réalisation automatique de l’étape...';
+      map.panTo(step.p, { animate: true, duration: .8 });
+      cleanTimers.push(setTimeout(() => {
+        if (token !== autoPlayToken || missionEnded) return;
+        handleNext();
+        cleanTimers.push(setTimeout(playStep, 900));
+      }, 700));
+    }
+    playStep();
+  }
+
+  function getVillesMission(mission) {
+    return mission.etapes.map((etape, index) => ({ ville: etape.ville, ordre: index }));
+  }
+
+  function afficherModeMemoire(mission) {
+    const villes = getVillesMission(mission);
+    const melange = [...villes].sort(() => Math.random() - .5);
+    let html = '<div class="ve-memory"><h2>Remets les villes dans l’ordre</h2><p>Glisse les villes pour retrouver l’ordre du parcours, puis valide.</p><div id="memory-list" class="ve-memory-list">';
+    melange.forEach((item) => {
+      html += `<div class="ve-memory-city" draggable="true" data-ordre="${item.ordre}">☰ ${item.ville}</div>`;
+    });
+    html += '</div><button id="check-memory-btn" class="ve-btn" type="button">Valider</button><div id="memory-result" class="ve-memory-result"></div></div>';
+    html += mIdx + 1 < aventures.length
+      ? '<button id="next-story-btn" class="ve-btn ve-btn-red" style="display:none;" type="button">Prochaine histoire</button>'
+      : '<button id="final-btn" class="ve-btn ve-btn-red" style="display:none;" type="button">Voir le résultat final</button>';
+    byId('story-display').innerHTML = html;
+    activerDragDropMemoire(villes);
+    byId('next-story-btn')?.addEventListener('click', passerHistoireSuivante);
+    byId('final-btn')?.addEventListener('click', afficherResultatFinal);
+  }
+
+  function activerDragDropMemoire(solution) {
+    const list = byId('memory-list');
+    const checkBtn = byId('check-memory-btn');
+    if (!list || !checkBtn) return;
+    let draggedItem = null;
+    list.querySelectorAll('.ve-memory-city').forEach((item) => {
+      item.addEventListener('dragstart', () => {
+        draggedItem = item;
+        item.classList.add('dragging');
+      });
+      item.addEventListener('dragend', () => {
+        item.classList.remove('dragging');
+        draggedItem = null;
+      });
+    });
+    list.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      const after = getDragAfterElement(list, event.clientY);
+      if (!draggedItem) return;
+      if (after == null) list.appendChild(draggedItem);
+      else list.insertBefore(draggedItem, after);
+    });
+    checkBtn.addEventListener('click', () => validerMemoire(solution));
+  }
+
+  function getDragAfterElement(container, y) {
+    return [...container.querySelectorAll('.ve-memory-city:not(.dragging)')].reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      return offset < 0 && offset > closest.offset ? { offset, element: child } : closest;
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+
+  function validerMemoire(solution) {
+    const list = byId('memory-list');
+    const checkBtn = byId('check-memory-btn');
+    const result = byId('memory-result');
+    if (!list || !checkBtn || !result) return;
+    const items = Array.from(list.querySelectorAll('.ve-memory-city'));
+    let correct = 0;
+    items.forEach((item, index) => {
+      item.classList.remove('good', 'bad');
+      if (Number(item.dataset.ordre) === solution[index].ordre) {
+        item.classList.add('good');
+        correct += 1;
+      } else {
+        item.classList.add('bad');
+      }
+    });
+    result.style.display = 'block';
+    if (correct === solution.length) {
+      score += 150;
+      byId('score').textContent = score;
+      addPlatformXp(5, { correct: 1, typed: 1 });
+      showScoreEffect('+150', true);
+      result.style.background = '#dcfce7';
+      result.style.color = '#166534';
+      result.textContent = 'Parfait ! Toutes les villes sont dans le bon ordre. +150 points.';
+      checkBtn.disabled = true;
+      checkBtn.textContent = 'Ordre validé';
+      checkBtn.style.opacity = '.7';
+      byId('next-story-btn')?.style.setProperty('display', 'block');
+      byId('final-btn')?.style.setProperty('display', 'block');
+    } else {
+      result.style.background = '#fee2e2';
+      result.style.color = '#991b1b';
+      result.textContent = `${correct}/${solution.length} villes sont bien placées. Corrige les rouges puis valide encore.`;
+    }
+  }
+
+  function autoCorrigerMemoire() {
+    const list = byId('memory-list');
+    const result = byId('memory-result');
+    const checkBtn = byId('check-memory-btn');
+    if (!list || !result || !checkBtn) {
+      const fb = byId('feedback');
+      fb.style.display = 'block';
+      fb.style.background = '#fff3cd';
+      fb.style.color = '#856404';
+      fb.textContent = 'Le mode mémoire n’est pas encore affiché.';
+      return;
+    }
+    Array.from(list.querySelectorAll('.ve-memory-city'))
+      .sort((a, b) => Number(a.dataset.ordre) - Number(b.dataset.ordre))
+      .forEach((item) => {
+        item.classList.remove('bad');
+        item.classList.add('good');
+        list.appendChild(item);
+      });
+    result.style.display = 'block';
+    result.style.background = '#dcfce7';
+    result.style.color = '#166534';
+    result.textContent = 'Correction automatique : les villes sont maintenant dans le bon ordre.';
+    checkBtn.disabled = true;
+    checkBtn.textContent = 'Ordre corrigé';
+    checkBtn.style.opacity = '.7';
+    byId('next-story-btn')?.style.setProperty('display', 'block');
+    byId('final-btn')?.style.setProperty('display', 'block');
+  }
+
+  function nettoyerCartePourSuite() {
+    resetAnimations();
+    mapMarkers.forEach((marker) => safeRemoveLayer(marker));
+    mapMarkers = [];
+    if (polyline) {
+      safeRemoveLayer(polyline);
+      polyline = null;
+    }
+    trajetPoints = [];
+  }
+
+  function finirAventure() {
+    if (missionEnded) return;
+    const missionFinie = currentMission();
+    if (!missionFinie) return;
+    missionEnded = true;
+    stopAnimation();
+    if (trajetPoints.length > 1) map.fitBounds(L.latLngBounds(trajetPoints), { padding: [60, 60], maxZoom: 9.8, animate: true, duration: 1.2 });
+    afficherModeMemoire(missionFinie);
+  }
+
+  function passerHistoireSuivante() {
+    nettoyerCartePourSuite();
+    mIdx += 1;
+    sIdx = 0;
+    foundThisStep = false;
+    missionEnded = false;
+    if (mIdx < aventures.length) {
+      byId('modal-title').textContent = 'Mission réussie !';
+      byId('modal-desc').textContent = 'Bravo. Prochain voyageur : ' + aventures[mIdx].nom + '. Continue le parcours dans le canton de Vaud.';
+      byId('transition-modal').style.display = 'flex';
+    } else {
+      afficherResultatFinal();
+    }
+  }
+
+  function afficherResultatFinal() {
+    nettoyerCartePourSuite();
+    byId('progress-fill').style.width = '100%';
+    byId('global-step').textContent = totalSteps;
+    if (window.ScoreManager) {
+      window.ScoreManager.promoteStatus(PAGE_ID, 'completed');
+      window.ScoreManager.pushSessionHistory({
+        page: PAGE_ID,
+        name: 'Vaud Express',
+        xp: sessionXp,
+        correct: correctClicks,
+        typed: correctClicks + wrongClicks,
+        errors: wrongClicks
+      });
+    }
+    byId('modal-title').textContent = 'Parcours terminé !';
+    byId('modal-desc').textContent = 'Tu as terminé toutes les étapes avec un score de ' + score + ' points.';
+    byId('transition-modal').style.display = 'flex';
+  }
+
+  function initAdminPanel() {
+    const adminToggle = byId('admin-toggle');
+    const adminPanel = byId('admin-panel');
+    const adminLogin = byId('admin-login');
+    const adminCode = byId('admin-code');
+    const adminActions = byId('admin-actions');
+    [adminToggle, adminPanel].forEach((el) => {
+      if (el && window.L && L.DomEvent) {
+        L.DomEvent.disableClickPropagation(el);
+        L.DomEvent.disableScrollPropagation(el);
+      }
+    });
+    adminToggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      adminPanel.style.display = adminPanel.style.display === 'block' ? 'none' : 'block';
+    });
+    adminLogin.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (adminCode.value.trim() === '1984') {
+        adminActions.style.display = 'block';
+        adminCode.style.display = 'none';
+        adminLogin.style.display = 'none';
+      } else {
+        adminCode.value = '';
+        adminCode.placeholder = 'Code incorrect';
+      }
+    });
+    adminCode.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        adminLogin.click();
+      }
+    });
+    byId('replay-step-btn').addEventListener('click', () => replayParcours('step'));
+    byId('replay-full-btn').addEventListener('click', () => replayParcours('full'));
+    byId('auto-play-btn').addEventListener('click', autoPlayMission);
+    byId('auto-memory-btn').addEventListener('click', autoCorrigerMemoire);
+  }
+
+  function runTests() {
+    console.assert(aventures.length === 10, 'Il doit y avoir 10 missions');
+    console.assert(totalSteps === 100, 'Il doit y avoir 100 étapes');
+    console.assert(aventures.every((m) => m.etapes.length === 10), 'Chaque mission doit avoir 10 étapes');
+    console.assert(typeof startMission === 'function', 'startMission doit exister');
+    console.assert(typeof focusCurrentCity === 'function', 'focusCurrentCity doit exister');
+    console.assert(map.getMaxZoom() >= 17, 'Le zoom doit permettre de voir les noms des villes');
+    console.log('Tests Vaud Express OK');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    byId('total-steps').textContent = totalSteps;
+    byId('mission-total').textContent = aventures.length;
+    initMap();
+    initAdminPanel();
+    updateUI();
+    runTests();
+    setTimeout(() => map.invalidateSize(), 250);
+  });
+  </script>
+</body>
+</html>

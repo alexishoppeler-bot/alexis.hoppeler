@@ -23,9 +23,11 @@
     { page: 'cherche-clique',name:'Cherche & clique',          icon: '🔎', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'completer',   name: 'Compléter',                 icon: '🧩', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'orp', 'transports', 'santé', 'logement'] },
     { page: 'orientation', name: 'Orientation',               icon: '🗺️', cat: 'Jeu',           section: 'Numérique',          themes: ['numérique', 'transports'] },
+    { page: 'vaud-express', name: 'Vaud Express',              icon: '🚆', cat: 'Jeu',           section: 'Numérique',          themes: ['numérique', 'transports', 'géographie'] },
     { page: 'maths-pratiques', name: 'Maths pratiques',       icon: '🧮', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'mini-word-trainer', name: 'Mini Word Trainer',   icon: '📄', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi'] },
     { page: 'mini-excel-trainer', name: 'Mini Excel Trainer', icon: '📊', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi'] },
+    { page: 'excel-progressif', name: 'Excel progressif',     icon: '📈', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'budget', 'tableur'] },
     { page: 'anagramme',   name: 'Anagramme',                 icon: '🔀', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
     { page: 'apparier',    name: 'Apparier',                  icon: '🔗', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
     { page: 'pendu',       name: 'Pendu',                     icon: '🪢', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports', 'santé'] },
@@ -34,6 +36,7 @@
     { page: 'mots-croises',name: 'Mots croisés',              icon: '🧱', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'mots-meles',  name: 'Mots mêlés',                icon: '🔠', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'demeler',     name: 'Démêler',                   icon: '🧶', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
+    { page: 'traces-voleur', name: 'Traces du voleur',         icon: '🕵️', cat: 'Jeu',           section: 'Français',           themes: ['français', 'géographie', 'compréhension', 'monde'] },
     { page: 'quiz',        name: 'Quiz',                      icon: '❓', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'orp', 'numérique', 'transports'] },
     { page: 'trier',           name: 'Trier',                icon: '🗂️', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'numérique', 'transports'] },
     { page: 'securite-travail', name: 'Sécurité au travail', icon: '🦺', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'sécurité', 'orp'] },
@@ -63,6 +66,7 @@
     'vrai-faux':       '+2 XP par bonne réponse + bonus de serie.',
     'mots-croises':    '+5 XP par mot trouvé.',
     'mots-meles':      '+3 XP par mot trouvé.',
+    'traces-voleur':   '+1 à +3 XP par ville trouvée selon la difficulté, +5 XP pour la mémoire finale.',
     'paire':              '+2 XP par paire mémorisée.',
     'securite-travail':   '+3 XP par phrase correcte.',
     'trier':           '+2 XP par élément correct (reduit par les erreurs).',
@@ -74,9 +78,11 @@
     'simulations-dialogues': '+3 XP (bonne réponse), +1 XP (réponse moyenne).',
     'orientation':     '+3 XP arrivée à destination, +2 XP chemin parfait.'
     ,
+    'vaud-express':    '+3 XP par ville trouvée, +5 XP par défi mémoire réussi.',
     'maths-pratiques': '+3 XP par bonne réponse, +1 XP par exercice tenté.',
     'mini-word-trainer': '+5 XP par mission réussie.',
-    'mini-excel-trainer': '+5 XP par mission réussie.'
+    'mini-excel-trainer': '+5 XP par mission réussie.',
+    'excel-progressif': '+2 XP par consigne cochée.'
   };
 
   const EXERCISE_DETAILS_BY_PAGE = {
@@ -164,6 +170,12 @@
       practice: 'Haut, bas, gauche, droite, anticipation, chemin court.',
       useWhen: 'Pour préparer l orientation sur plan ou dans une interface.'
     },
+    'vaud-express': {
+      summary: 'Lire une étape de voyage, retrouver une ville vaudoise sur une vraie carte, puis mémoriser le parcours.',
+      objective: 'Renforcer le repérage sur plan, la précision de la souris et la mémoire de séquence.',
+      practice: 'Zoom, déplacement de carte, clic précis, lecture de noms de villes, ordre d’un trajet.',
+      useWhen: 'Pour travailler les transports, les rendez-vous et l’orientation dans le canton de Vaud.'
+    },
     'maths-pratiques': {
       summary: 'Résoudre de petits calculs lies au travail et au quotidien.',
       objective: 'Rendre les nombres utiles et moins intimidants.',
@@ -181,6 +193,12 @@
       objective: 'Comprendre les bases d un tableau sans surcharge technique.',
       practice: 'Cellules, lignes, colonnes, calculs simples, lecture de tableau.',
       useWhen: 'Pour un emploi avec listes, stocks ou horaires.'
+    },
+    'excel-progressif': {
+      summary: 'Suivre 24 fiches Excel graduées, du clic dans une cellule aux formules et graphiques simples.',
+      objective: 'Construire les automatismes du tableur une compétence à la fois.',
+      practice: 'Saisie, sélection, mise en forme, bordures, tri, filtre, SOMME, SI, NB.SI et graphique.',
+      useWhen: 'Pour préparer un atelier bureautique, un emploi administratif ou un suivi de candidatures.'
     },
     'anagramme': {
       summary: 'Remettre les lettres dans le bon ordre pour retrouver un mot.',
@@ -229,6 +247,12 @@
       objective: 'Renforcer la construction des mots et l orthographe.',
       practice: 'Observation des lettres, syllabes, indices, correction.',
       useWhen: 'Entre lecture et écriture pour consolider un mot.'
+    },
+    'traces-voleur': {
+      summary: 'Lire des énigmes, retrouver des villes du monde sur une carte, puis reconstruire le trajet.',
+      objective: 'Travailler la compréhension écrite, les indices culturels et le repérage géographique.',
+      practice: 'Lecture d’indices, déduction, clic sur carte, continents, capitales et mémoire chronologique.',
+      useWhen: 'Pour une activité de français orientée monde, voyage, discussion et culture générale.'
     },
     'quiz': {
       summary: 'Répondre a des questions simples sur des situations concrètes.',

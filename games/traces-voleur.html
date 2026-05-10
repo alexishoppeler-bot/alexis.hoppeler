@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sur les traces du voleur - AH</title>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root {
+      --sv-ink: #f8fafc;
+      --sv-muted: #cbd5e1;
+      --sv-panel: #0f172a;
+      --sv-panel-deep: #020617;
+      --sv-blue: #2563eb;
+      --sv-gold: #fde68a;
+      --sv-red: #ef4444;
+      --sv-green: #16a34a;
+    }
+
+    body.traces-voleur-page {
+      background: #0f172a;
+    }
+
+    .sv-main {
+      width: min(100%, 1700px);
+      padding: 18px clamp(12px, 2vw, 26px) 28px;
+    }
+
+    .sv-app {
+      min-height: calc(100vh - var(--header-h) - 48px);
+      display: grid;
+      grid-template-columns: 430px minmax(460px, 1fr);
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: var(--sv-panel);
+      box-shadow: 0 18px 45px rgba(15,23,42,.28);
+    }
+
+    .sv-panel {
+      background: linear-gradient(180deg, #111827, #020617);
+      color: var(--sv-ink);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-right: 1px solid rgba(255,255,255,.12);
+      overflow-y: auto;
+      max-height: calc(100vh - var(--header-h) - 48px);
+    }
+
+    .sv-panel h1 {
+      margin: 0;
+      font-family: var(--font-head);
+      font-size: 27px;
+      line-height: 1.12;
+      color: #fff;
+    }
+
+    .sv-subtitle {
+      color: var(--sv-muted);
+      font-size: 15px;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    .sv-badge-row,
+    .sv-buttons,
+    .sv-difficulty-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sv-badge {
+      background: rgba(59,130,246,.18);
+      border: 1px solid rgba(96,165,250,.4);
+      color: #dbeafe;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .sv-card,
+    .sv-difficulty-box {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.25);
+    }
+
+    .sv-mission-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: var(--sv-gold);
+    }
+
+    .sv-story {
+      font-size: 16px;
+      line-height: 1.55;
+      color: #f1f5f9;
+      margin: 10px 0 0;
+    }
+
+    .sv-identity {
+      background: rgba(239,68,68,.12);
+      border: 1px solid rgba(248,113,113,.35);
+      color: #fee2e2;
+      padding: 12px;
+      border-radius: 14px;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .sv-button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      background: var(--sv-blue);
+      color: white;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    .sv-button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .sv-button.secondary { background: #334155; }
+    .sv-button.danger { background: #b91c1c; }
+    .sv-button.success { background: #15803d; }
+    .sv-button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+    .sv-difficulty-title {
+      font-size: 14px;
+      color: var(--sv-muted);
+      margin-bottom: 8px;
+      font-weight: 900;
+    }
+
+    .sv-difficulty-buttons .active {
+      outline: 3px solid rgba(250,204,21,.5);
+      transform: scale(1.03);
+    }
+
+    .sv-feedback {
+      min-height: 48px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.07);
+      line-height: 1.4;
+      font-size: 15px;
+      color: #fff;
+    }
+
+    .sv-feedback.ok {
+      background: rgba(22,163,74,.18);
+      border: 1px solid rgba(74,222,128,.4);
+    }
+
+    .sv-feedback.no {
+      background: rgba(220,38,38,.18);
+      border: 1px solid rgba(248,113,113,.4);
+    }
+
+    .sv-small {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    .sv-progress-wrap {
+      height: 12px;
+      background: rgba(255,255,255,.12);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .sv-progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #facc15, #ef4444);
+      transition: width .4s;
+    }
+
+    .sv-map-wrap {
+      position: relative;
+      min-height: 680px;
+      background: #111827;
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: #111827;
+    }
+
+    .sv-topbar {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 900;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sv-pill {
+      background: rgba(2,6,23,.86);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 12px 35px rgba(0,0,0,.25);
+    }
+
+    .city-marker {
+      width: 18px;
+      height: 18px;
+      background: #facc15;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 8px rgba(250,204,21,.2);
+    }
+
+    .thief-marker {
+      width: 24px;
+      height: 24px;
+      background: var(--sv-red);
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 10px rgba(239,68,68,.22);
+      animation: svPulse 1.4s infinite;
+    }
+
+    .travel-plane {
+      font-size: 34px;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,.6));
+      animation: svPlaneMove 1.2s ease-in-out infinite alternate;
+    }
+
+    .sv-travel-overlay,
+    .sv-memory-screen,
+    .sv-final-screen {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2500;
+      color: #fff;
+    }
+
+    .sv-travel-overlay {
+      flex-direction: column;
+      gap: 18px;
+      background: radial-gradient(circle, rgba(15,23,42,.2), rgba(2,6,23,.75));
+      backdrop-filter: blur(3px);
+    }
+
+    .sv-travel-city {
+      font-size: 42px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .sv-travel-text {
+      font-size: 20px;
+      color: var(--sv-muted);
+      text-align: center;
+      max-width: 700px;
+      line-height: 1.5;
+      padding: 0 20px;
+    }
+
+    .sv-memory-screen {
+      background: radial-gradient(circle at top, #0f172a, #020617 70%);
+      padding: 30px;
+      z-index: 2600;
+    }
+
+    .sv-memory-box {
+      width: min(1100px, 95vw);
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      padding: 30px;
+    }
+
+    .sv-memory-box h2 {
+      margin: 0 0 12px;
+      color: var(--sv-gold);
+      font-family: var(--font-head);
+      font-size: 34px;
+    }
+
+    .sv-memory-info {
+      line-height: 1.6;
+      color: var(--sv-muted);
+      font-size: 17px;
+    }
+
+    .sv-memory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .sv-memory-city {
+      background: rgba(255,255,255,.08);
+      border: 2px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      padding: 17px;
+      text-align: center;
+      font-weight: 900;
+      cursor: grab;
+      user-select: none;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .sv-memory-city:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.12);
+    }
+
+    .sv-memory-feedback {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.08);
+      min-height: 55px;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .sv-final-screen {
+      background: radial-gradient(circle at top, #1e3a8a, #020617 65%);
+      padding: 40px;
+      text-align: center;
+      z-index: 2700;
+    }
+
+    .sv-final-box {
+      max-width: 850px;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 24px;
+      padding: 34px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.45);
+    }
+
+    .sv-final-box h2 {
+      font-family: var(--font-head);
+      font-size: 42px;
+      margin: 0 0 15px;
+      color: var(--sv-gold);
+    }
+
+    .sv-final-box p {
+      font-size: 20px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .sv-admin {
+      position: fixed;
+      left: 10px;
+      bottom: 10px;
+      z-index: 2800;
+      opacity: .22;
+    }
+
+    .sv-admin:hover { opacity: 1; }
+
+    @keyframes svPlaneMove {
+      from { transform: translateX(-4px) translateY(0) rotate(-8deg); }
+      to { transform: translateX(4px) translateY(-6px) rotate(8deg); }
+    }
+
+    @keyframes svPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 1100px) {
+      .sv-app {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .sv-panel {
+        max-height: none;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,.12);
+      }
+
+      .sv-map-wrap {
+        min-height: 58vh;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .sv-main { padding: 12px; }
+      .sv-panel { padding: 16px; }
+      .sv-travel-city { font-size: 32px; }
+      .sv-final-box h2 { font-size: 30px; }
+      .sv-final-box p { font-size: 17px; }
+    }
+  </style>
+</head>
+<body class="traces-voleur-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main sv-main">
+      <div class="sv-app">
+        <aside class="sv-panel">
+          <div>
+            <h1>Sur les traces du voleur</h1>
+            <div class="sv-subtitle">Lis le texte, devine la ville, puis clique sur la carte. Le voleur change d’identité à chaque pays.</div>
+          </div>
+
+          <div class="sv-badge-row">
+            <div class="sv-badge" id="missionBadge">Mission 1</div>
+            <div class="sv-badge" id="scoreBadge">Score : 0</div>
+            <div class="sv-badge" id="tryBadge">Essais : 0</div>
+          </div>
+
+          <div class="sv-progress-wrap"><div class="sv-progress" id="progress"></div></div>
+
+          <div class="sv-difficulty-box">
+            <div class="sv-difficulty-title">Niveau de difficulté</div>
+            <div class="sv-difficulty-buttons">
+              <button class="sv-button" id="easyBtn" type="button" onclick="setDifficulty('easy')">Débutant</button>
+              <button class="sv-button secondary active" id="mediumBtn" type="button" onclick="setDifficulty('medium')">Moyen</button>
+              <button class="sv-button danger" id="hardBtn" type="button" onclick="setDifficulty('hard')">Difficile</button>
+            </div>
+          </div>
+
+          <div class="sv-card">
+            <div class="sv-mission-title" id="missionTitle">Mission</div>
+            <div class="sv-identity" id="identityBox"></div>
+            <p class="sv-story" id="storyBox"></p>
+          </div>
+
+          <div class="sv-buttons">
+            <button class="sv-button secondary" type="button" onclick="centerWorld()">Voir le monde</button>
+            <button class="sv-button secondary" type="button" onclick="repeatMission()">Relire</button>
+          </div>
+
+          <div class="sv-feedback" id="feedback">Clique sur la ville que tu penses correcte.</div>
+          <div class="sv-small">Objectif pédagogique : compréhension écrite, repérage géographique, indices culturels, logique, discussion orale en groupe.</div>
+        </aside>
+
+        <section class="sv-map-wrap">
+          <div id="map"></div>
+          <div class="sv-topbar">
+            <div class="sv-pill" id="targetInfo">Ville à trouver : ?</div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <div class="sv-travel-overlay" id="travelOverlay">
+    <div class="travel-plane">✈️</div>
+    <div class="sv-travel-city" id="travelCity">Destination</div>
+    <div class="sv-travel-text" id="travelText">Le voleur quitte le pays...</div>
+  </div>
+
+  <div class="sv-memory-screen" id="memoryScreen">
+    <div class="sv-memory-box">
+      <h2>Mission mémoire finale</h2>
+      <div class="sv-memory-info">
+        Le voleur a traversé plusieurs villes du monde.<br>
+        Remets maintenant les villes dans le bon ordre chronologique.
+      </div>
+      <div class="sv-memory-grid" id="memoryGrid"></div>
+      <div class="sv-buttons" style="margin-top:20px">
+        <button class="sv-button success" type="button" onclick="checkMemoryOrder()">Valider l’ordre</button>
+        <button class="sv-button secondary" type="button" onclick="shuffleMemoryCities()">Mélanger</button>
+      </div>
+      <div class="sv-memory-feedback" id="memoryFeedback"></div>
+    </div>
+  </div>
+
+  <div class="sv-final-screen" id="finalScreen">
+    <div class="sv-final-box">
+      <h2>Dernière mission réussie</h2>
+      <p id="finalText"></p>
+      <button class="sv-button success" type="button" onclick="restartGame()">Recommencer l’enquête</button>
+    </div>
+  </div>
+
+  <button class="sv-button sv-admin" type="button" onclick="adminOpen()">⚙</button>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'traces-voleur';
+  const missions = [
+    { ville:'Paris', pays:'France', coords:[48.8566,2.3522], identite:'Identité utilisée : Marcel Duroc, faux antiquaire français.', titre:'Le bijou du musée disparaît', histoire:'Le voleur commence dans une grande ville d’Europe. Il marche près d’un fleuve, traverse des ponts et passe devant des libraires en plein air. Des touristes regardent une grande tour en métal qui brille le soir. Plus loin, il entre dans un grand musée où l’on vient voir des tableaux très célèbres. Dans son carnet, il écrit : « Ici, on parle d’art, de mode, de cafés et de révolutions. » Pour trouver la ville, pense à une capitale romantique, très visitée, avec une tour connue dans le monde entier.' },
+    { ville:'Rome', pays:'Italie', coords:[41.9028,12.4964], identite:'Identité utilisée : Lorenzo Bianchi, guide touristique italien.', titre:'Un passeport dans les ruines', histoire:'Le voleur change de veste et se présente comme guide touristique. Une caméra le filme près d’un immense bâtiment rond en pierre, très ancien, où l’on imagine encore les gladiateurs. Il mange des pâtes dans une petite rue, puis laisse une serviette avec le dessin d’une louve et de deux enfants. Dans cette ville, les ruines antiques sont partout, les fontaines décorent les places et un tout petit État religieux se trouve à côté. Pour deviner, pense à l’Empire romain.' },
+    { ville:'Le Caire', pays:'Égypte', coords:[30.0444,31.2357], identite:'Identité utilisée : Karim El-Nour, vendeur de papyrus.', titre:'Le message du désert', histoire:'La piste continue vers une ville immense, chaude et bruyante. Le voleur prétend vendre de vieux papiers décorés. Un taxi le dépose près d’un très grand fleuve. Dans son sac, la police trouve du sable et une photo avec trois grandes formes triangulaires dans le désert. Il écrit : « Ici, les anciens rois dorment près du sable, et la ville ne s’arrête jamais. » Pour trouver, pense à une grande capitale africaine proche des pyramides.' },
+    { ville:'Istanbul', pays:'Turquie', coords:[41.0082,28.9784], identite:'Identité utilisée : Murat Kaya, vendeur de tapis.', titre:'Entre deux continents', histoire:'Cette fois, le voleur se cache dans une ville entre deux mondes. Le matin, il traverse l’eau en bateau ; le soir, il vend des tapis dans un grand marché couvert. Autour de lui, on voit des épices, des lampes colorées, des mosquées et des coupoles. Un ticket porte le mot « Bosphore ». Cette ville regarde l’Europe d’un côté et l’Asie de l’autre. Pour deviner, pense à une ville turque très historique, même si ce n’est pas la capitale du pays.' },
+    { ville:'Bombay', pays:'Inde', coords:[19.0760,72.8777], identite:'Identité utilisée : Arjun Mehta, assistant de cinéma.', titre:'Le voleur entre dans le cinéma', histoire:'Le voleur arrive dans une ville très grande, chaude et pleine de mouvement. Il dit travailler dans le cinéma. Une actrice affirme l’avoir vu près d’une grande arche au bord de la mer. Dans sa chambre, la police trouve un badge avec le mot « Bollywood ». Il prend ensuite un train dans une gare immense, toujours pleine de monde. Pour trouver, pense à une ville indienne célèbre pour le cinéma, appelée autrefois Bombay.' },
+    { ville:'Tokyo', pays:'Japon', coords:[35.6762,139.6503], identite:'Identité utilisée : Kenji Sato, technicien en robotique.', titre:'Le masque du technicien', histoire:'Dans ce pays, le voleur devient très discret. Il porte une veste noire et dit réparer des robots. Une caméra le montre dans un immense passage piéton, entouré d’écrans lumineux. Plus tard, il achète un repas dans une boîte, monte dans un train très ponctuel et laisse un origami rouge. Son message dit : « Ici, le futur et les traditions prennent le même métro. » Pour deviner, pense à la grande capitale du Japon.' },
+    { ville:'Sydney', pays:'Australie', coords:[-33.8688,151.2093], identite:'Identité utilisée : Jack Miller, professeur de surf.', titre:'La fuite vers l’océan', histoire:'Le voleur traverse l’océan et prend une identité de professeur de surf. Il porte des lunettes de soleil et parle de vagues. On le voit près d’un bâtiment blanc très célèbre, avec des formes comme des voiles. Ensuite, il prend un bus vers une plage connue. Dans son sac, il y a un autocollant de kangourou et le dessin d’un opéra. Pour deviner, pense à une grande ville australienne au bord de l’eau.' },
+    { ville:'Rio de Janeiro', pays:'Brésil', coords:[-22.9068,-43.1729], identite:'Identité utilisée : Rafael Costa, musicien de samba.', titre:'Le rythme de la fuite', histoire:'La piste devient musicale. Le voleur porte une chemise colorée et dit jouer de la percussion. Il danse dans la foule, puis disparaît près d’une grande plage. Au loin, on voit une montagne ronde. Plus tard, il monte vers une immense statue aux bras ouverts. Dans son carnet, il écrit trois mots : carnaval, samba, Corcovado. Pour deviner, pense à une ville brésilienne très festive.' },
+    { ville:'New York', pays:'États-Unis', coords:[40.7128,-74.0060], identite:'Identité utilisée : Michael Stone, courtier pressé.', titre:'Le costume de Wall Street', histoire:'Le voleur arrive dans une ville pleine de gratte-ciel. Il porte un costume et marche très vite avec un café à la main, parce que visiblement courir vers une réunion est devenu une culture. Il a été vu près d’une grande statue verte avec une torche, puis dans un quartier d’affaires très connu. Il laisse un ticket de taxi jaune et une carte de métro. Son message dit : « Ici, la ville ne dort jamais. » Pour deviner, pense à Manhattan.' },
+    { ville:'Mexico', pays:'Mexique', coords:[19.4326,-99.1332], identite:'Identité utilisée : Diego Lunares, vendeur de masques.', titre:'Les masques de la capitale', histoire:'Le voleur arrive dans une immense capitale située en altitude. Il vend des masques colorés dans un marché et parle d’anciennes civilisations. La police trouve une carte avec une très grande place centrale entourée de bâtiments historiques. Il mange des tacos, regarde des fresques et écrit : « Cette ville mélange un ancien monde indigène et une histoire coloniale. » Pour deviner, pense à la capitale du Mexique.' },
+    { ville:'Lima', pays:'Pérou', coords:[-12.0464,-77.0428], identite:'Identité utilisée : Mateo Quispe, photographe de voyage.', titre:'Le dernier indice avant la capture', histoire:'Le voleur croit avoir gagné. Il arrive sur la côte pacifique de l’Amérique du Sud. Il se présente comme photographe et montre des images de montagnes et de ruines incas. Mais il fait une erreur : il publie une photo depuis un quartier au bord de l’océan, avec une falaise et un ciel souvent gris. Il parle de ceviche et d’un prochain départ vers les Andes. Pour deviner, pense à la capitale du Pérou.' }
+  ];
+
+  let index = 0;
+  let score = 0;
+  let tries = 0;
+  let markers = [];
+  let line = null;
+  let clickedCorrectCities = [];
+  let difficulty = 'medium';
+  let draggedItem = null;
+  let completed = false;
+
+  const map = L.map('map', { worldCopyJump: true, minZoom: 2 }).setView([20,0], 2);
+  L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap France'
+  }).addTo(map);
+
+  const cityIcon = L.divIcon({ className: '', html: '<div class="city-marker"></div>', iconSize: [18,18], iconAnchor: [9,9] });
+  const thiefIcon = L.divIcon({ className: '', html: '<div class="thief-marker"></div>', iconSize: [24,24], iconAnchor: [12,12] });
+
+  function distanceKm(a, b) {
+    const R = 6371;
+    const dLat = (b[0] - a[0]) * Math.PI / 180;
+    const dLon = (b[1] - a[1]) * Math.PI / 180;
+    const lat1 = a[0] * Math.PI / 180;
+    const lat2 = b[0] * Math.PI / 180;
+    const x = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+  }
+
+  function currentMission() {
+    return missions[index];
+  }
+
+  function missionXp() {
+    return difficulty === 'hard' ? 3 : difficulty === 'easy' ? 1 : 2;
+  }
+
+  function updatePlatformScore(delta) {
+    if (!window.ScoreManager || completed) return;
+    window.ScoreManager.updateMetrics(PAGE_ID, delta);
+    window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+  }
+
+  function loadMission() {
+    const m = currentMission();
+    if (!m) return;
+    let displayedStory = m.histoire;
+    if (difficulty === 'hard') {
+      displayedStory = m.histoire.replace(/Paris|Rome|Le Caire|Istanbul|Bombay|Tokyo|Sydney|Rio de Janeiro|New York|Mexico|Lima|France|Italie|Égypte|Turquie|Inde|Japon|Australie|Brésil|États-Unis|Mexique|Pérou/gi, '???');
+    }
+    document.getElementById('missionBadge').textContent = `Mission ${index + 1} / ${missions.length}`;
+    document.getElementById('scoreBadge').textContent = `Score : ${score}`;
+    document.getElementById('tryBadge').textContent = `Essais : ${tries}`;
+    document.getElementById('missionTitle').textContent = m.titre;
+    document.getElementById('identityBox').textContent = m.identite;
+    document.getElementById('storyBox').textContent = displayedStory;
+    document.getElementById('targetInfo').textContent = 'Ville à trouver : ?';
+    document.getElementById('feedback').className = 'sv-feedback';
+    document.getElementById('feedback').textContent = 'Clique sur la ville que tu penses correcte.';
+    document.getElementById('progress').style.width = `${(index / missions.length) * 100}%`;
+    map.setView(m.coords, 4, { animate: true, duration: .8 });
+    drawRoute();
+    if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+  }
+
+  function drawRoute() {
+    markers.forEach((marker) => map.removeLayer(marker));
+    markers = [];
+    if (line) map.removeLayer(line);
+    const route = clickedCorrectCities.map((city) => city.coords);
+    if (route.length > 1) line = L.polyline(route, { weight: 4, opacity: .75, color: '#facc15' }).addTo(map);
+    clickedCorrectCities.forEach((city) => {
+      const marker = L.marker(city.coords, { icon: cityIcon }).addTo(map).bindTooltip(city.ville, { permanent: false });
+      markers.push(marker);
+    });
+    if (clickedCorrectCities.length) {
+      const last = clickedCorrectCities[clickedCorrectCities.length - 1];
+      const marker = L.marker(last.coords, { icon: thiefIcon }).addTo(map).bindTooltip('Dernière trace : ' + last.ville, { permanent: false });
+      markers.push(marker);
+    }
+  }
+
+  map.on('click', function (e) {
+    const m = currentMission();
+    if (!m || document.getElementById('memoryScreen').style.display === 'flex') return;
+    const clicked = [e.latlng.lat, e.latlng.lng];
+    const d = distanceKm(clicked, m.coords);
+    tries += 1;
+    document.getElementById('tryBadge').textContent = `Essais : ${tries}`;
+    if (d < 90) {
+      const xp = missionXp();
+      score += xp;
+      document.getElementById('scoreBadge').textContent = `Score : ${score}`;
+      document.getElementById('feedback').className = 'sv-feedback ok';
+      document.getElementById('feedback').innerHTML = `Correct : c’était <b>${m.ville}</b>, ${m.pays}. Le voleur a laissé une nouvelle trace.`;
+      document.getElementById('targetInfo').textContent = `Trouvé : ${m.ville}`;
+      clickedCorrectCities.push(m);
+      updatePlatformScore({ correct: 1, typed: 1, xp: xp });
+      drawRoute();
+      animateTravel(m);
+      setTimeout(function () {
+        index += 1;
+        if (index >= missions.length) launchMemoryMission();
+        else loadMission();
+      }, 1900);
+    } else {
+      updatePlatformScore({ errors: 1, typed: 1 });
+      const msg = d < 500 ? 'Tu es proche, mais ce n’est pas encore la bonne ville.' : 'Non. Le voleur n’est pas là.';
+      document.getElementById('feedback').className = 'sv-feedback no';
+      document.getElementById('feedback').textContent = msg;
+    }
+  });
+
+  function animateTravel(m) {
+    const overlay = document.getElementById('travelOverlay');
+    document.getElementById('travelCity').textContent = `${m.ville} • ${m.pays}`;
+    let text = 'Le voleur change encore d’identité et fuit vers une nouvelle destination.';
+    if (index < missions.length - 1) text += ` Dernière trace confirmée : ${m.ville}.`;
+    else text = 'Dernière destination identifiée. Les équipes internationales encerclent le suspect.';
+    document.getElementById('travelText').textContent = text;
+    overlay.style.display = 'flex';
+    map.flyTo(m.coords, 6, { animate: true, duration: 2.5 });
+    if (clickedCorrectCities.length > 1) {
+      const previous = clickedCorrectCities[clickedCorrectCities.length - 2];
+      const animatedLine = L.polyline([previous.coords, m.coords], { color: '#ef4444', weight: 7, opacity: .9, dashArray: '12 14' }).addTo(map);
+      setTimeout(function () {
+        map.removeLayer(animatedLine);
+        drawRoute();
+      }, 2200);
+    }
+    setTimeout(function () {
+      overlay.style.display = 'none';
+    }, 2200);
+  }
+
+  function centerWorld() {
+    map.setView([20,0], 2, { animate: true });
+  }
+  window.centerWorld = centerWorld;
+
+  function repeatMission() {
+    const m = currentMission();
+    if (!m) return;
+    document.getElementById('storyBox').textContent = m.histoire;
+    document.getElementById('feedback').className = 'sv-feedback';
+    document.getElementById('feedback').textContent = 'Relis les indices, puis clique sur la carte.';
+  }
+  window.repeatMission = repeatMission;
+
+  function setDifficulty(level) {
+    difficulty = level;
+    ['easyBtn', 'mediumBtn', 'hardBtn'].forEach((id) => document.getElementById(id).classList.remove('active'));
+    if (level === 'easy') document.getElementById('easyBtn').classList.add('active');
+    if (level === 'medium') document.getElementById('mediumBtn').classList.add('active');
+    if (level === 'hard') document.getElementById('hardBtn').classList.add('active');
+    loadMission();
+  }
+  window.setDifficulty = setDifficulty;
+
+  function launchMemoryMission() {
+    document.getElementById('progress').style.width = '100%';
+    document.getElementById('memoryScreen').style.display = 'flex';
+    shuffleMemoryCities();
+  }
+
+  function shuffleMemoryCities() {
+    const grid = document.getElementById('memoryGrid');
+    grid.innerHTML = '';
+    [...missions].sort(() => Math.random() - .5).forEach((m) => {
+      const div = document.createElement('div');
+      div.className = 'sv-memory-city';
+      div.textContent = m.ville;
+      div.draggable = true;
+      div.addEventListener('dragstart', function () { draggedItem = div; });
+      div.addEventListener('dragover', function (event) { event.preventDefault(); });
+      div.addEventListener('drop', function () {
+        if (draggedItem && draggedItem !== div) {
+          const all = [...grid.children];
+          const draggedIndex = all.indexOf(draggedItem);
+          const targetIndex = all.indexOf(div);
+          if (draggedIndex < targetIndex) grid.insertBefore(draggedItem, div.nextSibling);
+          else grid.insertBefore(draggedItem, div);
+        }
+      });
+      grid.appendChild(div);
+    });
+    document.getElementById('memoryFeedback').textContent = '';
+  }
+  window.shuffleMemoryCities = shuffleMemoryCities;
+
+  function checkMemoryOrder() {
+    const current = [...document.querySelectorAll('.sv-memory-city')].map((item) => item.textContent);
+    const correct = missions.map((m) => m.ville);
+    const ok = JSON.stringify(current) === JSON.stringify(correct);
+    if (ok) {
+      document.getElementById('memoryFeedback').textContent = 'Excellent. Tu as reconstruit tout le parcours du voleur.';
+      updatePlatformScore({ correct: 1, typed: 1, xp: 5 });
+      if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'completed');
+      completed = true;
+      setTimeout(function () {
+        document.getElementById('memoryScreen').style.display = 'none';
+        showFinal();
+      }, 1200);
+    } else {
+      let correctCount = 0;
+      current.forEach((city, i) => {
+        if (city === correct[i]) correctCount += 1;
+      });
+      document.getElementById('memoryFeedback').textContent = `${correctCount} villes bien placées sur ${missions.length}. Recommence.`;
+    }
+  }
+  window.checkMemoryOrder = checkMemoryOrder;
+
+  function showFinal() {
+    const routeNames = missions.map((m) => m.ville).join(' → ');
+    document.getElementById('finalText').innerHTML = `Le voleur a traversé <b>${missions.length} villes</b> et changé d’identité dans chaque pays.<br><br><b>Parcours :</b><br>${routeNames}<br><br><b>Score final :</b> ${score} points<br><b>Nombre d’essais :</b> ${tries}<br><br>Dernière mission : l’équipe retrouve le voleur à Lima avant son départ vers les Andes.`;
+    document.getElementById('finalScreen').style.display = 'flex';
+  }
+
+  function restartGame() {
+    index = 0;
+    score = 0;
+    tries = 0;
+    clickedCorrectCities = [];
+    difficulty = 'medium';
+    completed = false;
+    document.getElementById('finalScreen').style.display = 'none';
+    document.getElementById('memoryScreen').style.display = 'none';
+    setDifficulty('medium');
+  }
+  window.restartGame = restartGame;
+
+  function adminOpen() {
+    const code = prompt('Code admin');
+    if (code !== '1984') return;
+    const choix = prompt('Admin : tape 1 pour corriger la mission actuelle, 2 pour finir automatiquement');
+    if (choix === '1') {
+      const m = currentMission();
+      if (!m) return;
+      clickedCorrectCities.push(m);
+      score += 2;
+      index += 1;
+      if (index >= missions.length) launchMemoryMission();
+      else loadMission();
+    }
+    if (choix === '2') {
+      clickedCorrectCities = [...missions];
+      score = missions.length * 2;
+      tries = missions.length;
+      index = missions.length;
+      drawRoute();
+      launchMemoryMission();
+    }
+  }
+  window.adminOpen = adminOpen;
+
+  function runTests() {
+    console.assert(missions.length === 11, 'Il doit y avoir 11 missions.');
+    console.assert(missions.every((m) => m.ville && m.pays && Array.isArray(m.coords) && m.coords.length === 2), 'Chaque mission doit avoir une ville, un pays et des coordonnées.');
+    console.assert(typeof distanceKm([0,0], [0,1]) === 'number', 'distanceKm doit retourner un nombre.');
+    console.assert(typeof loadMission === 'function', 'loadMission doit exister.');
+    console.log('Tests traces du voleur OK');
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    loadMission();
+    runTests();
+    setTimeout(function () { map.invalidateSize(); }, 250);
+  });
+  </script>
+</body>
+</html>
