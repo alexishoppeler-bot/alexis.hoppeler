@@ -110,6 +110,42 @@
       margin: 10px 0 0;
     }
 
+    .sv-case-file {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .sv-case-row {
+      display: grid;
+      grid-template-columns: 98px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(15,23,42,.48);
+      border: 1px solid rgba(255,255,255,.08);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .sv-case-label {
+      color: #bfdbfe;
+      font-weight: 900;
+    }
+
+    .sv-hint {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(250,204,21,.12);
+      border: 1px solid rgba(250,204,21,.32);
+      color: #fef3c7;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
     .sv-identity {
       background: rgba(239,68,68,.12);
       border: 1px solid rgba(248,113,113,.35);
@@ -458,11 +494,18 @@
             <div class="sv-mission-title" id="missionTitle">Mission</div>
             <div class="sv-identity" id="identityBox"></div>
             <p class="sv-story" id="storyBox"></p>
+            <div class="sv-case-file" id="caseFile">
+              <div class="sv-case-row"><span class="sv-case-label">Indice oral</span><span id="oralClue"></span></div>
+              <div class="sv-case-row"><span class="sv-case-label">Mots utiles</span><span id="vocabClue"></span></div>
+              <div class="sv-case-row"><span class="sv-case-label">Question</span><span id="questionClue"></span></div>
+            </div>
+            <div class="sv-hint" id="hintBox"></div>
           </div>
 
           <div class="sv-buttons">
             <button class="sv-button secondary" type="button" onclick="centerWorld()">Voir le monde</button>
             <button class="sv-button secondary" type="button" onclick="repeatMission()">Relire</button>
+            <button class="sv-button secondary" type="button" onclick="showHint()">Indice</button>
           </div>
 
           <div class="sv-feedback" id="feedback">Clique sur la ville que tu penses correcte.</div>
@@ -524,17 +567,23 @@
 
   const PAGE_ID = 'traces-voleur';
   const missions = [
-    { ville:'Paris', pays:'France', coords:[48.8566,2.3522], identite:'Identité utilisée : Marcel Duroc, faux antiquaire français.', titre:'Le bijou du musée disparaît', histoire:'Le voleur commence dans une grande ville d’Europe. Il marche près d’un fleuve, traverse des ponts et passe devant des libraires en plein air. Des touristes regardent une grande tour en métal qui brille le soir. Plus loin, il entre dans un grand musée où l’on vient voir des tableaux très célèbres. Dans son carnet, il écrit : « Ici, on parle d’art, de mode, de cafés et de révolutions. » Pour trouver la ville, pense à une capitale romantique, très visitée, avec une tour connue dans le monde entier.' },
-    { ville:'Rome', pays:'Italie', coords:[41.9028,12.4964], identite:'Identité utilisée : Lorenzo Bianchi, guide touristique italien.', titre:'Un passeport dans les ruines', histoire:'Le voleur change de veste et se présente comme guide touristique. Une caméra le filme près d’un immense bâtiment rond en pierre, très ancien, où l’on imagine encore les gladiateurs. Il mange des pâtes dans une petite rue, puis laisse une serviette avec le dessin d’une louve et de deux enfants. Dans cette ville, les ruines antiques sont partout, les fontaines décorent les places et un tout petit État religieux se trouve à côté. Pour deviner, pense à l’Empire romain.' },
-    { ville:'Le Caire', pays:'Égypte', coords:[30.0444,31.2357], identite:'Identité utilisée : Karim El-Nour, vendeur de papyrus.', titre:'Le message du désert', histoire:'La piste continue vers une ville immense, chaude et bruyante. Le voleur prétend vendre de vieux papiers décorés. Un taxi le dépose près d’un très grand fleuve. Dans son sac, la police trouve du sable et une photo avec trois grandes formes triangulaires dans le désert. Il écrit : « Ici, les anciens rois dorment près du sable, et la ville ne s’arrête jamais. » Pour trouver, pense à une grande capitale africaine proche des pyramides.' },
-    { ville:'Istanbul', pays:'Turquie', coords:[41.0082,28.9784], identite:'Identité utilisée : Murat Kaya, vendeur de tapis.', titre:'Entre deux continents', histoire:'Cette fois, le voleur se cache dans une ville entre deux mondes. Le matin, il traverse l’eau en bateau ; le soir, il vend des tapis dans un grand marché couvert. Autour de lui, on voit des épices, des lampes colorées, des mosquées et des coupoles. Un ticket porte le mot « Bosphore ». Cette ville regarde l’Europe d’un côté et l’Asie de l’autre. Pour deviner, pense à une ville turque très historique, même si ce n’est pas la capitale du pays.' },
-    { ville:'Bombay', pays:'Inde', coords:[19.0760,72.8777], identite:'Identité utilisée : Arjun Mehta, assistant de cinéma.', titre:'Le voleur entre dans le cinéma', histoire:'Le voleur arrive dans une ville très grande, chaude et pleine de mouvement. Il dit travailler dans le cinéma. Une actrice affirme l’avoir vu près d’une grande arche au bord de la mer. Dans sa chambre, la police trouve un badge avec le mot « Bollywood ». Il prend ensuite un train dans une gare immense, toujours pleine de monde. Pour trouver, pense à une ville indienne célèbre pour le cinéma, appelée autrefois Bombay.' },
-    { ville:'Tokyo', pays:'Japon', coords:[35.6762,139.6503], identite:'Identité utilisée : Kenji Sato, technicien en robotique.', titre:'Le masque du technicien', histoire:'Dans ce pays, le voleur devient très discret. Il porte une veste noire et dit réparer des robots. Une caméra le montre dans un immense passage piéton, entouré d’écrans lumineux. Plus tard, il achète un repas dans une boîte, monte dans un train très ponctuel et laisse un origami rouge. Son message dit : « Ici, le futur et les traditions prennent le même métro. » Pour deviner, pense à la grande capitale du Japon.' },
-    { ville:'Sydney', pays:'Australie', coords:[-33.8688,151.2093], identite:'Identité utilisée : Jack Miller, professeur de surf.', titre:'La fuite vers l’océan', histoire:'Le voleur traverse l’océan et prend une identité de professeur de surf. Il porte des lunettes de soleil et parle de vagues. On le voit près d’un bâtiment blanc très célèbre, avec des formes comme des voiles. Ensuite, il prend un bus vers une plage connue. Dans son sac, il y a un autocollant de kangourou et le dessin d’un opéra. Pour deviner, pense à une grande ville australienne au bord de l’eau.' },
-    { ville:'Rio de Janeiro', pays:'Brésil', coords:[-22.9068,-43.1729], identite:'Identité utilisée : Rafael Costa, musicien de samba.', titre:'Le rythme de la fuite', histoire:'La piste devient musicale. Le voleur porte une chemise colorée et dit jouer de la percussion. Il danse dans la foule, puis disparaît près d’une grande plage. Au loin, on voit une montagne ronde. Plus tard, il monte vers une immense statue aux bras ouverts. Dans son carnet, il écrit trois mots : carnaval, samba, Corcovado. Pour deviner, pense à une ville brésilienne très festive.' },
-    { ville:'New York', pays:'États-Unis', coords:[40.7128,-74.0060], identite:'Identité utilisée : Michael Stone, courtier pressé.', titre:'Le costume de Wall Street', histoire:'Le voleur arrive dans une ville pleine de gratte-ciel. Il porte un costume et marche très vite avec un café à la main, parce que visiblement courir vers une réunion est devenu une culture. Il a été vu près d’une grande statue verte avec une torche, puis dans un quartier d’affaires très connu. Il laisse un ticket de taxi jaune et une carte de métro. Son message dit : « Ici, la ville ne dort jamais. » Pour deviner, pense à Manhattan.' },
-    { ville:'Mexico', pays:'Mexique', coords:[19.4326,-99.1332], identite:'Identité utilisée : Diego Lunares, vendeur de masques.', titre:'Les masques de la capitale', histoire:'Le voleur arrive dans une immense capitale située en altitude. Il vend des masques colorés dans un marché et parle d’anciennes civilisations. La police trouve une carte avec une très grande place centrale entourée de bâtiments historiques. Il mange des tacos, regarde des fresques et écrit : « Cette ville mélange un ancien monde indigène et une histoire coloniale. » Pour deviner, pense à la capitale du Mexique.' },
-    { ville:'Lima', pays:'Pérou', coords:[-12.0464,-77.0428], identite:'Identité utilisée : Mateo Quispe, photographe de voyage.', titre:'Le dernier indice avant la capture', histoire:'Le voleur croit avoir gagné. Il arrive sur la côte pacifique de l’Amérique du Sud. Il se présente comme photographe et montre des images de montagnes et de ruines incas. Mais il fait une erreur : il publie une photo depuis un quartier au bord de l’océan, avec une falaise et un ciel souvent gris. Il parle de ceviche et d’un prochain départ vers les Andes. Pour deviner, pense à la capitale du Pérou.' }
+    { ville:'Paris', pays:'France', coords:[48.8566,2.3522], identite:'Identité utilisée : Marcel Duroc, faux antiquaire français.', titre:'Le bijou du musée disparaît', histoire:'Le voleur commence dans une grande ville d’Europe. Il marche près d’un fleuve, traverse des ponts et passe devant des libraires en plein air. Des touristes regardent une grande tour en métal qui brille le soir. Plus loin, il entre dans un grand musée où l’on vient voir des tableaux très célèbres. Dans son carnet, il écrit : « Ici, on parle d’art, de mode, de cafés et de révolutions. » Pour trouver la ville, pense à une capitale romantique, très visitée, avec une tour connue dans le monde entier.', oral:'Quel monument en métal aide à reconnaître cette ville ?', vocab:'fleuve, pont, musée, tour, capitale', question:'Quels mots du texte montrent que la ville est très touristique ?', indice:'Cherche en France, dans la capitale traversée par la Seine.' },
+    { ville:'Rome', pays:'Italie', coords:[41.9028,12.4964], identite:'Identité utilisée : Lorenzo Bianchi, guide touristique italien.', titre:'Un passeport dans les ruines', histoire:'Le voleur change de veste et se présente comme guide touristique. Une caméra le filme près d’un immense bâtiment rond en pierre, très ancien, où l’on imagine encore les gladiateurs. Il mange des pâtes dans une petite rue, puis laisse une serviette avec le dessin d’une louve et de deux enfants. Dans cette ville, les ruines antiques sont partout, les fontaines décorent les places et un tout petit État religieux se trouve à côté. Pour deviner, pense à l’Empire romain.', oral:'Pourquoi le mot gladiateurs est-il un indice important ?', vocab:'ruines, gladiateurs, fontaines, empire, antique', question:'Quelle différence fais-tu entre un pays et une capitale ?', indice:'La ville est en Italie et son monument le plus connu est le Colisée.' },
+    { ville:'Le Caire', pays:'Égypte', coords:[30.0444,31.2357], identite:'Identité utilisée : Karim El-Nour, vendeur de papyrus.', titre:'Le message du désert', histoire:'La piste continue vers une ville immense, chaude et bruyante. Le voleur prétend vendre de vieux papiers décorés. Un taxi le dépose près d’un très grand fleuve. Dans son sac, la police trouve du sable et une photo avec trois grandes formes triangulaires dans le désert. Il écrit : « Ici, les anciens rois dorment près du sable, et la ville ne s’arrête jamais. » Pour trouver, pense à une grande capitale africaine proche des pyramides.', oral:'Quels indices font penser au désert et à l’Égypte ancienne ?', vocab:'désert, fleuve, pyramides, papyrus, capitale', question:'Comment sais-tu que la ville est en Afrique ?', indice:'Clique près du Nil, au nord-est de l’Afrique.' },
+    { ville:'Marrakech', pays:'Maroc', coords:[31.6295,-7.9811], identite:'Identité utilisée : Samir El-Fassi, marchand d’épices.', titre:'La place aux lanternes', histoire:'Le voleur remonte vers le Maghreb. Il se cache dans une ville rouge, entourée de remparts, où les ruelles sont étroites et très animées. Le soir, une grande place se remplit de musiciens, de stands de nourriture et de lumières. Dans sa poche, on trouve un sachet de cumin, une lanterne en métal et un reçu d’un jardin célèbre aux murs bleus. Pour deviner, pense à une ville marocaine connue pour sa médina et sa grande place.', oral:'Quels indices montrent que la scène se passe dans un marché ou une médina ?', vocab:'Maghreb, remparts, médina, épices, place', question:'Pourquoi la couleur rouge peut-elle aider à trouver cette ville ?', indice:'Cherche au Maroc, au pied de l’Atlas, dans une ville touristique très connue.' },
+    { ville:'Istanbul', pays:'Turquie', coords:[41.0082,28.9784], identite:'Identité utilisée : Murat Kaya, vendeur de tapis.', titre:'Entre deux continents', histoire:'Cette fois, le voleur se cache dans une ville entre deux mondes. Le matin, il traverse l’eau en bateau ; le soir, il vend des tapis dans un grand marché couvert. Autour de lui, on voit des épices, des lampes colorées, des mosquées et des coupoles. Un ticket porte le mot « Bosphore ». Cette ville regarde l’Europe d’un côté et l’Asie de l’autre. Pour deviner, pense à une ville turque très historique, même si ce n’est pas la capitale du pays.', oral:'Que veut dire entre deux continents dans cette mission ?', vocab:'Bosphore, marché couvert, mosquée, coupole, continent', question:'Pourquoi cette ville peut-elle être confondue avec une capitale ?', indice:'La ville est en Turquie, au bord du détroit du Bosphore.' },
+    { ville:'Nairobi', pays:'Kenya', coords:[-1.2921,36.8219], identite:'Identité utilisée : Peter Mwangi, chauffeur de safari.', titre:'Le carnet du parc national', histoire:'Le voleur descend vers l’Afrique de l’Est. Il prétend conduire des touristes pour observer les animaux. Une trace de boue rouge est retrouvée sur ses chaussures. Sur une photo, on voit des immeubles au loin et, devant eux, une grande plaine où passent des girafes. Son téléphone contient un message : « Rendez-vous près du parc national, pas loin du centre-ville. » Pour deviner, pense à la capitale du Kenya.', oral:'Quel contraste rend cette ville facile à reconnaître ?', vocab:'safari, girafe, plaine, capitale, Afrique de l’Est', question:'Quels indices indiquent que la nature est proche de la ville ?', indice:'Clique au Kenya, légèrement au sud de l’équateur.' },
+    { ville:'Bombay', pays:'Inde', coords:[19.0760,72.8777], identite:'Identité utilisée : Arjun Mehta, assistant de cinéma.', titre:'Le voleur entre dans le cinéma', histoire:'Le voleur arrive dans une ville très grande, chaude et pleine de mouvement. Il dit travailler dans le cinéma. Une actrice affirme l’avoir vu près d’une grande arche au bord de la mer. Dans sa chambre, la police trouve un badge avec le mot « Bollywood ». Il prend ensuite un train dans une gare immense, toujours pleine de monde. Pour trouver, pense à une ville indienne célèbre pour le cinéma, appelée autrefois Bombay.', oral:'Quel mot du texte donne presque directement la réponse ?', vocab:'cinéma, arche, mer, gare, Bollywood', question:'Pourquoi le train est-il un bon indice dans cette mission ?', indice:'Cherche sur la côte ouest de l’Inde.' },
+    { ville:'Bangkok', pays:'Thaïlande', coords:[13.7563,100.5018], identite:'Identité utilisée : Niran Chai, vendeur de street food.', titre:'Le ticket du bateau-taxi', histoire:'La piste continue dans une ville chaude et humide. Le voleur sert des nouilles dans une petite échoppe, puis disparaît près d’un fleuve où circulent des bateaux-taxis. Des témoins parlent de temples dorés, de tuk-tuks et d’un grand palais. Sur son ticket, on lit le nom d’un quartier traversé par des canaux. Pour deviner, pense à la capitale de la Thaïlande.', oral:'Quels moyens de transport sont cités dans le texte ?', vocab:'temple, tuk-tuk, palais, canal, bateau-taxi', question:'Quels indices montrent que la ville est en Asie du Sud-Est ?', indice:'Clique en Thaïlande, dans la grande ville traversée par le Chao Phraya.' },
+    { ville:'Séoul', pays:'Corée du Sud', coords:[37.5665,126.9780], identite:'Identité utilisée : Min-ho Park, technicien de scène.', titre:'Les écrans de la pop', histoire:'Le voleur se fait passer pour un technicien de concert. Il transporte des câbles, des micros et une veste noire avec le logo d’un groupe de pop. Les caméras le suivent dans une ville de collines, de palais anciens et d’écrans géants. Il mange un bol de nouilles épicées, puis prend un métro très propre. Dans son message, il écrit : « Ici, la technologie danse avec la tradition. » Pour deviner, pense à la capitale de la Corée du Sud.', oral:'Quels indices opposent modernité et tradition ?', vocab:'concert, métro, palais, technologie, tradition', question:'Pourquoi le mot pop peut-il aider à trouver le pays ?', indice:'Cherche au nord-ouest de la Corée du Sud.' },
+    { ville:'Tokyo', pays:'Japon', coords:[35.6762,139.6503], identite:'Identité utilisée : Kenji Sato, technicien en robotique.', titre:'Le masque du technicien', histoire:'Dans ce pays, le voleur devient très discret. Il porte une veste noire et dit réparer des robots. Une caméra le montre dans un immense passage piéton, entouré d’écrans lumineux. Plus tard, il achète un repas dans une boîte, monte dans un train très ponctuel et laisse un origami rouge. Son message dit : « Ici, le futur et les traditions prennent le même métro. » Pour deviner, pense à la grande capitale du Japon.', oral:'Quels objets font penser au Japon dans cette mission ?', vocab:'robot, passage piéton, train, origami, capitale', question:'Que signifie une ville très ponctuelle dans ce texte ?', indice:'Clique dans la capitale japonaise, sur l’île principale du pays.' },
+    { ville:'Sydney', pays:'Australie', coords:[-33.8688,151.2093], identite:'Identité utilisée : Jack Miller, professeur de surf.', titre:'La fuite vers l’océan', histoire:'Le voleur traverse l’océan et prend une identité de professeur de surf. Il porte des lunettes de soleil et parle de vagues. On le voit près d’un bâtiment blanc très célèbre, avec des formes comme des voiles. Ensuite, il prend un bus vers une plage connue. Dans son sac, il y a un autocollant de kangourou et le dessin d’un opéra. Pour deviner, pense à une grande ville australienne au bord de l’eau.', oral:'Pourquoi le bâtiment en forme de voiles est-il un indice fort ?', vocab:'surf, vagues, opéra, plage, kangourou', question:'Cette ville est-elle la capitale de l’Australie ?', indice:'Cherche sur la côte sud-est de l’Australie.' },
+    { ville:'Rio de Janeiro', pays:'Brésil', coords:[-22.9068,-43.1729], identite:'Identité utilisée : Rafael Costa, musicien de samba.', titre:'Le rythme de la fuite', histoire:'La piste devient musicale. Le voleur porte une chemise colorée et dit jouer de la percussion. Il danse dans la foule, puis disparaît près d’une grande plage. Au loin, on voit une montagne ronde. Plus tard, il monte vers une immense statue aux bras ouverts. Dans son carnet, il écrit trois mots : carnaval, samba, Corcovado. Pour deviner, pense à une ville brésilienne très festive.', oral:'Quels mots montrent que la ville est liée à la fête ?', vocab:'samba, carnaval, plage, statue, montagne', question:'Pourquoi la statue aux bras ouverts aide-t-elle à localiser la ville ?', indice:'Clique sur la côte sud-est du Brésil.' },
+    { ville:'Buenos Aires', pays:'Argentine', coords:[-34.6037,-58.3816], identite:'Identité utilisée : Tomás Vidal, danseur de tango.', titre:'Le tango du port', histoire:'Le voleur descend encore plus au sud. Il porte des chaussures vernies et prétend donner des cours de danse. Une affiche annonce une soirée de tango dans un vieux quartier coloré près du port. Au café, il commande une viande grillée et parle avec un accent chantant. Dans son carnet, un dessin montre un large fleuve brun et une avenue très longue. Pour deviner, pense à la capitale de l’Argentine.', oral:'Quels indices font penser à l’Argentine ?', vocab:'tango, port, quartier coloré, avenue, capitale', question:'Comment le texte montre-t-il que la ville est au bord de l’eau ?', indice:'Cherche près du Rio de la Plata, sur la côte est de l’Argentine.' },
+    { ville:'New York', pays:'États-Unis', coords:[40.7128,-74.0060], identite:'Identité utilisée : Michael Stone, courtier pressé.', titre:'Le costume de Wall Street', histoire:'Le voleur arrive dans une ville pleine de gratte-ciel. Il porte un costume et marche très vite avec un café à la main, parce que visiblement courir vers une réunion est devenu une culture. Il a été vu près d’une grande statue verte avec une torche, puis dans un quartier d’affaires très connu. Il laisse un ticket de taxi jaune et une carte de métro. Son message dit : « Ici, la ville ne dort jamais. » Pour deviner, pense à Manhattan.', oral:'Quels indices parlent de transport dans cette ville ?', vocab:'gratte-ciel, statue, taxi, métro, quartier d’affaires', question:'Pourquoi Manhattan est-il un indice très précis ?', indice:'Clique sur la côte est des États-Unis.' },
+    { ville:'Toronto', pays:'Canada', coords:[43.6532,-79.3832], identite:'Identité utilisée : Noah Tremblay, livreur à vélo.', titre:'La tour au bord du lac', histoire:'Le voleur franchit la frontière vers le nord. Il se déplace à vélo entre de grands immeubles et un immense lac. Une caméra le montre au pied d’une très haute tour avec une antenne. Dans sa sacoche, la police trouve un ticket de hockey, une feuille d’érable et un plan de métro. Il écrit : « Ici, beaucoup de langues se croisent au bord de l’eau. » Pour deviner, pense à une grande ville canadienne près du lac Ontario.', oral:'Quels indices montrent que la ville est au Canada ?', vocab:'frontière, lac, tour, hockey, feuille d’érable', question:'Pourquoi le lac est-il utile pour placer la ville sur la carte ?', indice:'Cherche au Canada, juste au nord du lac Ontario.' },
+    { ville:'Mexico', pays:'Mexique', coords:[19.4326,-99.1332], identite:'Identité utilisée : Diego Lunares, vendeur de masques.', titre:'Les masques de la capitale', histoire:'Le voleur arrive dans une immense capitale située en altitude. Il vend des masques colorés dans un marché et parle d’anciennes civilisations. La police trouve une carte avec une très grande place centrale entourée de bâtiments historiques. Il mange des tacos, regarde des fresques et écrit : « Cette ville mélange un ancien monde indigène et une histoire coloniale. » Pour deviner, pense à la capitale du Mexique.', oral:'Quels indices parlent d’histoire ancienne ?', vocab:'altitude, marché, fresque, tacos, capitale', question:'Pourquoi le mot capitale est-il important ici ?', indice:'Clique au centre du Mexique, dans une grande ville en altitude.' },
+    { ville:'Lima', pays:'Pérou', coords:[-12.0464,-77.0428], identite:'Identité utilisée : Mateo Quispe, photographe de voyage.', titre:'Le dernier indice avant la capture', histoire:'Le voleur croit avoir gagné. Il arrive sur la côte pacifique de l’Amérique du Sud. Il se présente comme photographe et montre des images de montagnes et de ruines incas. Mais il fait une erreur : il publie une photo depuis un quartier au bord de l’océan, avec une falaise et un ciel souvent gris. Il parle de ceviche et d’un prochain départ vers les Andes. Pour deviner, pense à la capitale du Pérou.', oral:'Quels indices indiquent la côte pacifique ?', vocab:'falaise, océan, ceviche, Andes, inca', question:'Pourquoi les Andes ne suffisent-elles pas à trouver la ville exacte ?', indice:'Cherche sur la côte du Pérou, au bord du Pacifique.' }
   ];
 
   let index = 0;
@@ -585,7 +634,9 @@
     if (!m) return;
     let displayedStory = m.histoire;
     if (difficulty === 'hard') {
-      displayedStory = m.histoire.replace(/Paris|Rome|Le Caire|Istanbul|Bombay|Tokyo|Sydney|Rio de Janeiro|New York|Mexico|Lima|France|Italie|Égypte|Turquie|Inde|Japon|Australie|Brésil|États-Unis|Mexique|Pérou/gi, '???');
+      const hiddenWords = missions.flatMap((mission) => [mission.ville, mission.pays]);
+      const redactionPattern = new RegExp(hiddenWords.map(escapeRegExp).join('|'), 'gi');
+      displayedStory = m.histoire.replace(redactionPattern, '???');
     }
     document.getElementById('missionBadge').textContent = `Mission ${index + 1} / ${missions.length}`;
     document.getElementById('scoreBadge').textContent = `Score : ${score}`;
@@ -593,6 +644,11 @@
     document.getElementById('missionTitle').textContent = m.titre;
     document.getElementById('identityBox').textContent = m.identite;
     document.getElementById('storyBox').textContent = displayedStory;
+    document.getElementById('oralClue').textContent = m.oral;
+    document.getElementById('vocabClue').textContent = m.vocab;
+    document.getElementById('questionClue').textContent = m.question;
+    document.getElementById('hintBox').style.display = 'none';
+    document.getElementById('hintBox').textContent = m.indice;
     document.getElementById('targetInfo').textContent = 'Ville à trouver : ?';
     document.getElementById('feedback').className = 'sv-feedback';
     document.getElementById('feedback').textContent = 'Clique sur la ville que tu penses correcte.';
@@ -600,6 +656,10 @@
     map.setView(m.coords, 4, { animate: true, duration: .8 });
     drawRoute();
     if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+  }
+
+  function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   function drawRoute() {
@@ -685,6 +745,17 @@
     document.getElementById('feedback').textContent = 'Relis les indices, puis clique sur la carte.';
   }
   window.repeatMission = repeatMission;
+
+  function showHint() {
+    const m = currentMission();
+    if (!m) return;
+    const hintBox = document.getElementById('hintBox');
+    hintBox.textContent = m.indice;
+    hintBox.style.display = 'block';
+    document.getElementById('feedback').className = 'sv-feedback';
+    document.getElementById('feedback').textContent = 'Indice affiché. Utilise-le pour mieux placer la ville sur la carte.';
+  }
+  window.showHint = showHint;
 
   function setDifficulty(level) {
     difficulty = level;
@@ -794,8 +865,9 @@
   window.adminOpen = adminOpen;
 
   function runTests() {
-    console.assert(missions.length === 11, 'Il doit y avoir 11 missions.');
+    console.assert(missions.length === 17, 'Il doit y avoir 17 missions.');
     console.assert(missions.every((m) => m.ville && m.pays && Array.isArray(m.coords) && m.coords.length === 2), 'Chaque mission doit avoir une ville, un pays et des coordonnées.');
+    console.assert(missions.every((m) => m.oral && m.vocab && m.question && m.indice), 'Chaque mission doit avoir un dossier pédagogique complet.');
     console.assert(typeof distanceKm([0,0], [0,1]) === 'number', 'distanceKm doit retourner un nombre.');
     console.assert(typeof loadMission === 'function', 'loadMission doit exister.');
     console.log('Tests traces du voleur OK');
