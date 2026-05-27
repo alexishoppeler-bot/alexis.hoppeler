@@ -13,6 +13,7 @@
     { page: 'email-ecrire',name: 'Écrire un e-mail',          icon: '✉️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'mise-en-forme', name: 'Mise en forme',            icon: '🧾', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'français'] },
     { page: 'lettres-google-docs', name: 'Lettres Google Docs', icon: '📨', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'administration', 'logement'] },
+    { page: 'missions-google-docs', name: 'Missions Google Docs', icon: '🪧', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'bureautique', 'google docs'] },
     { page: 'email-pro',   name: 'E-mails professionnels',    icon: '📧', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'orp'] },
     { page: 'retaper',     name: 'Retaper',                   icon: '✍️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
@@ -82,6 +83,7 @@
     'email-ecrire':    '+3 XP par bonne réponse.',
     'mise-en-forme':   '+3 XP par e-mail bien mis en forme.',
     'lettres-google-docs': '+4 XP par lettre marquée comme faite.',
+    'missions-google-docs': '+4 XP par mission réalisée dans Google Docs.',
     'email-pro':       '+3 XP par bonne réponse.',
     'retaper':         '+7 XP parfait, +5 XP (>=90%), +3 XP (>=70%), +1 XP sinon. -1 XP si indice.',
     'simulations-dialogues': '+3 XP (bonne réponse), +1 XP (réponse moyenne).',
@@ -117,6 +119,12 @@
       objective: 'S’entraîner à structurer une lettre administrative, professionnelle ou personnelle.',
       practice: 'Expéditeur, destinataire, date, objet, paragraphes, ton adapté, signature et nommage du fichier.',
       useWhen: 'Pour préparer des démarches d’emploi, logement, administration, assurance, formation ou consommation.'
+    },
+    'missions-google-docs': {
+      summary: 'Créer des affiches Google Docs liées à la recherche d’emploi à partir de consignes guidées.',
+      objective: 'S’entraîner à produire un document clair, lisible et utile pour présenter une demande, un profil ou une offre.',
+      practice: 'Titres, listes, tableaux, encadrés, colonnes, images, contact visible et mise en page propre.',
+      useWhen: 'Pour un atelier bureautique orienté emploi, CV, postulation ou préparation d’entretien.'
     },
     'email-pro': {
       summary: 'Lire un e-mail professionnel et choisir une reponse correcte.',

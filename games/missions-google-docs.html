@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Missions Google Docs</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:Arial, Helvetica, sans-serif;
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a,#0f766e);
+    color:white;
+    overflow:hidden;
+  }
+  .app{height:100vh;display:flex;flex-direction:column;padding:22px;gap:16px}
+  header{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+    padding:16px 20px;border-radius:24px;backdrop-filter:blur(10px);
+  }
+  h1{font-size:34px;letter-spacing:.5px}
+  .sub{font-size:17px;color:#dbeafe;margin-top:4px}
+  .badge{font-size:18px;background:#facc15;color:#111827;padding:10px 16px;border-radius:999px;font-weight:bold;white-space:nowrap}
+  main{flex:1;display:grid;grid-template-columns:320px 1fr;gap:16px;min-height:0}
+  .side,.card{
+    background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);
+    border-radius:28px;padding:18px;box-shadow:0 18px 50px rgba(0,0,0,.25);
+  }
+  .side{display:flex;flex-direction:column;gap:12px;overflow:auto}
+  button{
+    border:none;border-radius:18px;padding:14px 16px;font-size:17px;font-weight:bold;
+    cursor:pointer;background:#e0f2fe;color:#082f49;transition:.2s transform,.2s background;
+  }
+  button:hover{transform:translateY(-2px);background:#bae6fd}
+  button.active{background:#facc15;color:#111827}
+  .random{background:#34d399;color:#052e16;margin-top:8px}
+  .reset{background:#fecaca;color:#7f1d1d}
+  .card{display:flex;flex-direction:column;min-height:0;position:relative;overflow:hidden}
+  .missionTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:12px}
+  .type{font-size:18px;color:#bfdbfe;text-transform:uppercase;font-weight:bold;letter-spacing:1px}
+  .title{font-size:42px;line-height:1.05;margin:6px 0 8px}
+  .level{font-size:18px;background:rgba(255,255,255,.18);padding:10px 14px;border-radius:999px;white-space:nowrap}
+  .content{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;min-height:0;flex:1}
+  .box{background:rgba(15,23,42,.55);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:20px;overflow:auto}
+  h2{font-size:24px;margin-bottom:12px;color:#fde68a}
+  ul{padding-left:24px;font-size:22px;line-height:1.55}
+  li{margin-bottom:8px}
+  .info{font-size:23px;line-height:1.55;white-space:pre-line}
+  .keywords{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .kw{background:#fef3c7;color:#78350f;border-radius:999px;padding:8px 12px;font-weight:bold;font-size:17px}
+  .timer{font-size:56px;font-weight:bold;text-align:center;margin:12px 0;color:#fef9c3}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .small{font-size:15px;padding:10px 12px;border-radius:14px}
+  .solution{display:none;margin-top:12px;background:rgba(255,255,255,.12);padding:14px;border-radius:18px;font-size:19px;line-height:1.45}
+  .rawText{margin-top:16px;background:rgba(250,250,250,.08);border:1px dashed rgba(255,255,255,.25);padding:16px;border-radius:18px;white-space:pre-line;font-size:18px;line-height:1.5;color:#f8fafc}
+  .copyBtn{background:#fef3c7;color:#78350f;margin-top:10px;width:100%}
+  .show{display:block}
+  .fade{animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+  .footer{font-size:15px;color:#dbeafe;text-align:center;opacity:.9}
+  @media(max-width:900px){body{overflow:auto}.app{height:auto}.content,main{grid-template-columns:1fr}.title{font-size:32px}header{flex-direction:column;align-items:flex-start}.badge{white-space:normal}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Missions Google Docs</h1>
+      <div class="sub">Créer des affiches liées à la recherche d’emploi, avec une consigne différente à chaque mission.</div>
+    </div>
+    <div class="badge">Travail individuel ou en binôme</div>
+  </header>
+
+  <main>
+    <aside class="side" id="menu"></aside>
+
+    <section class="card fade" id="missionCard">
+      <div class="missionTop">
+        <div>
+          <div class="type" id="type"></div>
+          <h1 class="title" id="title"></h1>
+        </div>
+        <div class="level" id="level"></div>
+      </div>
+
+      <div class="content">
+        <div class="box">
+          <h2>Demande</h2>
+          <div class="info" id="request"></div>
+          <div class="keywords" id="keywords"></div>
+        </div>
+
+        <div class="box">
+          <h2>À faire dans Google Docs</h2>
+          <ul id="tasks"></ul>
+          <div class="timer" id="timer">20:00</div>
+          <div class="controls">
+            <button class="small" type="button" id="btn20">20 min</button>
+            <button class="small" type="button" id="btn30">30 min</button>
+            <button class="small" type="button" id="btnPause">Pause</button>
+            <button class="small" type="button" id="btnHelp">Voir aide</button>
+          </div>
+          <div class="solution" id="solution"></div>
+          <div class="rawText" id="rawText"></div>
+          <button class="copyBtn" type="button" id="copyBtn">Copier le texte brut</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="footer">Objectif : titre visible, texte lisible, informations importantes, mise en page propre.</div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const NL = String.fromCharCode(10);
+  const missions = [
+    {
+      type: 'Affiche emploi',
+      title: 'Je cherche un emploi',
+      level: 'A1-A2',
+      request: 'Créer une affiche simple pour une personne qui cherche un emploi rapidement. Le document doit être très lisible de loin.',
+      keywords: ['titre très grand', 'liste à puces', 'contact visible', 'disponible'],
+      tasks: ['Mettre le titre en très grand : JE CHERCHE UN EMPLOI.', 'Créer une liste à puces avec 5 domaines possibles.', 'Mettre le téléphone dans un encadré ou en couleur.', 'Ajouter 3 qualités personnelles.', 'Centrer les informations importantes.', 'Ne pas écrire trop de texte.'],
+      solution: 'Compétence travaillée : grand titre, liste à puces, texte centré, contact visible.',
+      rawLines: ['JE CHERCHE UN EMPLOI', '', 'Disponible rapidement pour :', 'nettoyage', 'livraison', 'aide de cuisine', 'manutention', 'jardinage', '', 'Personne sérieuse et motivée.', 'Disponible immédiatement.', '', '079 445 22 18', 'contact.travail@mail.ch']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Compétences nettoyage',
+      level: 'A1-A2',
+      request: 'Créer une affiche pour présenter les compétences d’une personne qui cherche un travail dans le nettoyage.',
+      keywords: ['nettoyage', 'compétences', 'icônes', 'propreté'],
+      tasks: ['Faire un titre propre et sérieux.', 'Créer 3 blocs séparés : Maisons, Bureaux, Fin de chantier.', 'Ajouter une petite icône ou image pour chaque bloc.', 'Mettre les mots importants en gras.', 'Ajouter une phrase : Disponible rapidement.', 'Ajouter le contact en bas à droite.'],
+      solution: 'Compétence travaillée : organisation en blocs, images/icônes, mots en gras.',
+      rawLines: ['SERVICES DE NETTOYAGE', '', 'Maisons', 'Bureaux', 'Fin de chantier', '', 'Travail sérieux et soigné.', 'Disponible rapidement.', '', '078 552 11 09']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Aide de cuisine',
+      level: 'A2',
+      request: 'Créer une affiche pour une personne qui cherche un emploi comme aide de cuisine. L’affiche doit ressembler à une petite annonce professionnelle.',
+      keywords: ['cuisine', 'expérience', 'horaires', 'restaurant'],
+      tasks: ['Créer deux colonnes dans Google Docs.', 'Colonne gauche : expériences et tâches.', 'Colonne droite : qualités et disponibilités.', 'Ajouter une image liée à la cuisine.', 'Mettre une bordure légère autour de l’affiche.', 'Ajouter téléphone et e-mail en bas.'],
+      solution: 'Compétence travaillée : colonnes, bordure, équilibre visuel.',
+      rawLines: ['RECHERCHE EMPLOI AIDE DE CUISINE', '', 'Expériences :', 'préparation des aliments', 'vaisselle', 'nettoyage cuisine', 'service simple', '', 'Qualités :', 'ponctuel', 'rapide', 'travail en équipe', '', 'Disponible soir et week-end.', '', '079 881 22 10']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Recherche apprentissage',
+      level: 'A2',
+      request: 'Créer une affiche pour un jeune qui cherche une place d’apprentissage. L’affiche doit être dynamique et claire.',
+      keywords: ['apprentissage', 'motivation', 'domaines', 'jeune'],
+      tasks: ['Mettre un titre positif : JE CHERCHE UN APPRENTISSAGE.', 'Créer un tableau avec 2 colonnes : Domaines / Pourquoi moi ?', 'Ajouter 4 domaines possibles.', 'Ajouter une phrase de motivation en grand.', 'Utiliser une couleur principale, pas dix couleurs façon carnaval administratif.', 'Ajouter contact.'],
+      solution: 'Compétence travaillée : tableau simple, phrase d’accroche, cohérence des couleurs.',
+      rawLines: ['JE CHERCHE UN APPRENTISSAGE', '', 'Domaines recherchés :', 'vente', 'cuisine', 'logistique', 'construction', '', 'Pourquoi moi ?', 'motivé', 'ponctuel', 'envie d’apprendre', '', '078 774 10 55']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Disponible cette semaine',
+      level: 'A1-A2',
+      request: 'Créer une affiche pour montrer les disponibilités d’une personne qui peut faire des missions courtes.',
+      keywords: ['disponibilités', 'semaine', 'horaires', 'mission'],
+      tasks: ['Créer un petit calendrier de la semaine avec un tableau.', 'Mettre les jours : lundi à samedi.', 'Indiquer matin, après-midi ou soir.', 'Colorer les cases disponibles.', 'Ajouter les types de missions acceptées.', 'Mettre un contact très visible.'],
+      solution: 'Compétence travaillée : tableau calendrier, couleurs utiles, horaires.',
+      rawLines: ['DISPONIBLE CETTE SEMAINE', '', 'Lundi : matin', 'Mardi : après-midi', 'Mercredi : matin et soir', 'Jeudi : disponible toute la journée', 'Vendredi : matin', 'Samedi : soir', '', 'Missions acceptées :', 'nettoyage', 'livraison', 'aide événementielle', '', '079 662 18 77']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Profil candidat',
+      level: 'A2-B1',
+      request: 'Créer une affiche qui présente un candidat comme une mini fiche professionnelle.',
+      keywords: ['profil', 'qualités', 'expérience', 'photo'],
+      tasks: ['Ajouter un espace photo en haut à gauche.', 'Écrire le nom et le métier recherché en haut.', 'Créer 4 rubriques : Profil, Expériences, Compétences, Contact.', 'Utiliser des titres de rubriques.', 'Aligner proprement les informations.', 'Ajouter une phrase courte de présentation.'],
+      solution: 'Compétence travaillée : fiche profil, rubriques, alignement.',
+      rawLines: ['MARIA LOPES', 'Recherche emploi administrative', '', 'Profil :', 'organisée et motivée', '', 'Expériences :', 'réception', 'classement', 'accueil clients', '', 'Compétences :', 'Google Docs', 'Word', 'emails', '', 'Contact :', 'maria.pro@mail.ch', '079 552 44 19']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Offre trouvée',
+      level: 'A2-B1',
+      request: 'Créer une affiche qui résume une offre d’emploi trouvée sur internet, pour l’expliquer au groupe.',
+      keywords: ['offre', 'poste', 'lieu', 'conditions', 'compétences'],
+      tasks: ['Créer un titre : OFFRE D’EMPLOI À ANALYSER.', 'Faire 5 encadrés : Poste, Lieu, Taux, Horaires, Compétences demandées.', 'Mettre les informations importantes en gras.', 'Ajouter une question en bas : Est-ce que cette offre me convient ?', 'Utiliser une présentation claire pour parler devant le groupe.'],
+      solution: 'Compétence travaillée : résumé d’offre, encadrés, lecture sélective.',
+      rawLines: ['OFFRE D’EMPLOI À ANALYSER', '', 'Poste : employé logistique', 'Lieu : Lausanne', 'Taux : 80%', 'Horaires : journée', 'Compétences demandées :', 'ponctualité', 'port de charges', 'travail en équipe', '', 'Est-ce que cette offre me convient ?']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Avant / Après CV',
+      level: 'A2-B1',
+      request: 'Créer une affiche qui montre les erreurs fréquentes dans un CV et les bonnes solutions.',
+      keywords: ['CV', 'erreurs', 'correction', 'avant après'],
+      tasks: ['Créer un titre : AMÉLIORER SON CV.', 'Faire un tableau avec 2 colonnes : À éviter / À faire.', 'Ajouter au moins 5 exemples.', 'Utiliser une croix et un signe validé.', 'Mettre une petite conclusion en bas.', 'Soigner l’espace entre les lignes.'],
+      solution: 'Compétence travaillée : comparaison, tableau, correction visuelle.',
+      rawLines: ['AMÉLIORER SON CV', '', 'À éviter :', 'photo floue', 'fautes d’orthographe', 'texte trop long', '', 'À faire :', 'mise en page claire', 'informations importantes visibles', 'CV adapté au poste', '', 'Un CV clair donne une meilleure première impression.']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Entretien d’embauche',
+      level: 'A2-B1',
+      request: 'Créer une affiche de conseils pour se préparer à un entretien d’embauche.',
+      keywords: ['entretien', 'préparation', 'questions', 'tenue', 'ponctualité'],
+      tasks: ['Créer un titre clair.', 'Faire 3 parties : Avant, Pendant, Après.', 'Ajouter 3 conseils dans chaque partie.', 'Utiliser des numéros ou des icônes.', 'Ajouter une phrase importante en grand : Arriver 10 minutes avant.', 'Ajouter une image sobre liée au travail.'],
+      solution: 'Compétence travaillée : structure en étapes, hiérarchie, conseils pratiques.',
+      rawLines: ['CONSEILS ENTRETIEN D’EMBAUCHE', '', 'Avant :', 'préparer les documents', 'choisir des vêtements propres', '', 'Pendant :', 'écouter les questions', 'parler clairement', '', 'Après :', 'remercier l’entreprise', '', 'Arriver 10 minutes avant.']
+    },
+    {
+      type: 'Affiche emploi',
+      title: 'Plan de recherche',
+      level: 'A2-B1',
+      request: 'Créer une affiche qui montre un plan de recherche d’emploi pour une semaine.',
+      keywords: ['organisation', 'ORP', 'postulations', 'suivi', 'semaine'],
+      tasks: ['Créer un tableau de suivi avec les jours de la semaine.', 'Ajouter 4 actions : chercher offres, adapter CV, envoyer candidature, relancer.', 'Prévoir une case fait ou pas encore.', 'Ajouter une zone Notes.', 'Mettre un titre motivant mais professionnel.', 'Utiliser une mise en page horizontale.'],
+      solution: 'Compétence travaillée : planning, suivi, tableau horizontal.',
+      rawLines: ['PLAN DE RECHERCHE D’EMPLOI', '', 'Lundi : chercher offres', 'Mardi : adapter CV', 'Mercredi : envoyer candidatures', 'Jeudi : relancer entreprises', 'Vendredi : rendez-vous ORP', '', 'Notes :', 'préparer documents', 'vérifier emails']
+    }
+  ];
+
+  let current = 0;
+  let seconds = 20 * 60;
+  let interval = null;
+
+  function rawText(mission){
+    return mission.rawLines.join(NL);
+  }
+
+  function byId(id){
+    return document.getElementById(id);
+  }
+
+  function clearElement(element){
+    while(element.firstChild){
+      element.removeChild(element.firstChild);
+    }
+  }
+
+  function addButton(parent, text, className, onClick){
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = text;
+    if(className){
+      button.className = className;
+    }
+    button.addEventListener('click', onClick);
+    parent.appendChild(button);
+    return button;
+  }
+
+  function renderMenu(){
+    const menu = byId('menu');
+    clearElement(menu);
+
+    addButton(menu, 'Mission au hasard', 'random', randomMission);
+
+    missions.forEach(function(mission, index){
+      const button = addButton(menu, (index + 1) + '. ' + mission.title, index === current ? 'active' : '', function(){
+        selectMission(index);
+      });
+      button.setAttribute('aria-current', index === current ? 'true' : 'false');
+    });
+
+    addButton(menu, 'Recommencer le chrono', 'reset', resetTimer);
+  }
+
+  function renderKeywords(keywords){
+    const container = byId('keywords');
+    clearElement(container);
+    keywords.forEach(function(keyword){
+      const span = document.createElement('span');
+      span.className = 'kw';
+      span.textContent = keyword;
+      container.appendChild(span);
+    });
+  }
+
+  function renderTasks(tasks){
+    const list = byId('tasks');
+    clearElement(list);
+    tasks.forEach(function(task){
+      const li = document.createElement('li');
+      li.textContent = task;
+      list.appendChild(li);
+    });
+  }
+
+  function selectMission(index){
+    if(index < 0 || index >= missions.length){
+      return;
+    }
+
+    current = index;
+    const mission = missions[index];
+    const card = byId('missionCard');
+
+    card.classList.remove('fade');
+    void card.offsetWidth;
+    card.classList.add('fade');
+
+    byId('type').textContent = mission.type;
+    byId('title').textContent = mission.title;
+    byId('level').textContent = 'Niveau ' + mission.level;
+    byId('request').textContent = mission.request;
+    byId('solution').textContent = mission.solution;
+    byId('rawText').textContent = 'Texte brut à copier dans Google Docs :' + NL + NL + rawText(mission);
+    byId('solution').classList.remove('show');
+
+    renderKeywords(mission.keywords);
+    renderTasks(mission.tasks);
+    renderMenu();
+  }
+
+  function randomMission(){
+    let index = Math.floor(Math.random() * missions.length);
+    if(index === current){
+      index = (index + 1) % missions.length;
+    }
+    selectMission(index);
+  }
+
+  function updateTimer(){
+    const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const secs = (seconds % 60).toString().padStart(2, '0');
+    byId('timer').textContent = minutes + ':' + secs;
+  }
+
+  function startTimer(minutes){
+    seconds = minutes * 60;
+    clearInterval(interval);
+    updateTimer();
+    interval = setInterval(function(){
+      if(seconds > 0){
+        seconds -= 1;
+        updateTimer();
+      }else{
+        clearInterval(interval);
+        byId('timer').textContent = 'Terminé';
+      }
+    }, 1000);
+  }
+
+  function pauseTimer(){
+    clearInterval(interval);
+  }
+
+  function resetTimer(){
+    seconds = 20 * 60;
+    clearInterval(interval);
+    updateTimer();
+  }
+
+  function toggleSolution(){
+    byId('solution').classList.toggle('show');
+  }
+
+  async function copyRawText(){
+    const text = rawText(missions[current]);
+    const button = byId('copyBtn');
+
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+      }else{
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      button.textContent = 'Texte copié';
+      setTimeout(function(){ button.textContent = 'Copier le texte brut'; }, 1400);
+    }catch(error){
+      button.textContent = 'Copie impossible : sélectionner le texte';
+      setTimeout(function(){ button.textContent = 'Copier le texte brut'; }, 1800);
+    }
+  }
+
+  function runTests(){
+    console.assert(Array.isArray(missions), 'Test : missions doit être un tableau.');
+    console.assert(missions.length === 10, 'Test : il doit y avoir 10 missions.');
+
+    missions.forEach(function(mission, index){
+      console.assert(typeof mission.title === 'string' && mission.title.length > 0, 'Test : titre manquant mission ' + index);
+      console.assert(typeof mission.request === 'string' && mission.request.length > 10, 'Test : demande trop courte mission ' + index);
+      console.assert(Array.isArray(mission.tasks) && mission.tasks.length >= 5, 'Test : au moins 5 tâches mission ' + index);
+      console.assert(Array.isArray(mission.keywords) && mission.keywords.length >= 4, 'Test : au moins 4 mots-clés mission ' + index);
+      console.assert(Array.isArray(mission.rawLines) && mission.rawLines.length >= 8, 'Test : texte brut incomplet mission ' + index);
+      console.assert(rawText(mission).indexOf('<') === -1, 'Test : le texte brut ne doit pas contenir de balise HTML mission ' + index);
+      console.assert(rawText(mission).indexOf('script') === -1, 'Test : texte brut dangereux mission ' + index);
+    });
+
+    console.assert(typeof selectMission === 'function', 'Test : selectMission existe.');
+    console.assert(typeof copyRawText === 'function', 'Test : copyRawText existe.');
+    console.assert(rawText(missions[0]).includes('JE CHERCHE UN EMPLOI'), 'Test : texte brut mission 1 correct.');
+  }
+
+  byId('btn20').addEventListener('click', function(){ startTimer(20); });
+  byId('btn30').addEventListener('click', function(){ startTimer(30); });
+  byId('btnPause').addEventListener('click', pauseTimer);
+  byId('btnHelp').addEventListener('click', toggleSolution);
+  byId('copyBtn').addEventListener('click', copyRawText);
+
+  runTests();
+  renderMenu();
+  selectMission(0);
+})();
+</script>
+</body>
+</html>

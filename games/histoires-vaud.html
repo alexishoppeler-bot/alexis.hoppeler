@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/utilities.css">
   <style>
-    :root{--hv-blue:#163b65;--hv-card:#fff;--hv-border:#dbe3ef;--hv-green:#1f8a5b;--hv-orange:#c77900;--hv-red:#b93535;--hv-shadow:0 12px 35px rgba(15,23,42,.12)}
+    :root{--hv-blue:#163b65;--hv-card:#fff;--hv-border:#dbe3ef;--hv-green:#1f8a5b;--hv-orange:#c77900;--hv-red:#b93535;--hv-ink:#172033;--hv-shadow:0 12px 35px rgba(15,23,42,.12)}
     body.hv-page{background:linear-gradient(135deg,#eaf1f8,#f7f9fc);color:#1f2937}
     .hv-main{max-width:1280px}
     .hv-hero{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin-bottom:22px}
@@ -20,23 +20,27 @@
     .hv-btn,.hv-select{border:0;border-radius:14px;padding:12px 16px;font-size:16px;font-weight:800}
     .hv-btn{background:var(--hv-blue);color:white;cursor:pointer}.hv-btn.secondary{background:#374151}.hv-select{background:white;color:#111827;border:1px solid var(--hv-border)}
     .hv-intro,.hv-story{background:var(--hv-card);border:1px solid var(--hv-border);border-radius:20px;box-shadow:var(--hv-shadow)}
-    .hv-intro{padding:20px;margin-bottom:22px;font-size:18px;line-height:1.6}
+    .hv-intro{padding:20px;margin-bottom:22px;font-size:18px;line-height:1.65}
     .hv-grid{display:grid;gap:22px}.hv-story{padding:24px;border-left:8px solid var(--hv-blue)}
     .hv-story.active{border-left-color:var(--hv-green);box-shadow:0 14px 34px rgba(31,138,91,.18)}
     .hv-story h2{margin:0 0 8px;font-family:var(--font-head);font-size:28px;color:var(--hv-blue)}
     .hv-meta{color:#64748b;margin-bottom:16px;font-size:15px}
+    .hv-reading{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
     .hv-controls,.hv-quiz-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0;align-items:center}
     .hv-controls button,.hv-quiz-actions button{border:0;border-radius:13px;padding:12px 16px;color:white;cursor:pointer;font-size:15px;font-weight:800}
     .hv-play{background:var(--hv-green)}.hv-pause{background:var(--hv-orange)}.hv-resume{background:var(--hv-blue)}.hv-restart{background:var(--hv-red)}.hv-stop{background:#555}.hv-quiz-actions button{background:var(--hv-blue)}
     .hv-status{padding:10px 13px;border-radius:12px;background:#f0f4f7;color:#3c4650;font-weight:800}
-    .hv-text{font-size:19px;line-height:1.8;white-space:pre-line;margin-top:16px}
-    .hv-questions{margin-top:20px;background:#f5f8fb;padding:18px;border-radius:18px}.hv-questions h3{margin:0 0 14px;color:var(--hv-blue)}
+    .hv-voice-status{width:100%;font-size:13px;font-weight:800;color:#526071}
+    .hv-text{font-size:20px;line-height:1.85;margin-top:16px;max-width:76ch;color:var(--hv-ink)}
+    .hv-text p{margin:0 0 16px}.hv-text p:last-child{margin-bottom:0}
+    .hv-questions{margin-top:16px;background:#f5f8fb;padding:18px;border-radius:18px}.hv-questions h3{margin:0 0 14px;color:var(--hv-blue)}
     .hv-question{background:white;border-radius:15px;padding:15px;margin-bottom:14px;border:2px solid #dde6ef}
     .hv-question h4{margin:0;color:var(--hv-blue);font-size:18px}.hv-options{display:flex;flex-direction:column;gap:9px;margin-top:12px}
     .hv-options button{border:0;border-radius:12px;padding:13px;cursor:pointer;background:#edf3f9;font-size:16px;text-align:left;transition:.15s}
     .hv-options button:hover{background:#dbe9f7}.hv-options button.correct{background:#c8f0d7;color:#135531;font-weight:900}.hv-options button.wrong{background:#ffd8d8;color:#7b1f1f;font-weight:900}.hv-options button:disabled{cursor:not-allowed;opacity:.96}
     .hv-result{margin-top:10px;font-weight:900;font-size:16px}.hv-score{margin-top:12px;font-weight:900;color:var(--hv-blue)}
-    @media(max-width:900px){.hv-hero{grid-template-columns:1fr}.hv-toolbar{justify-content:flex-start}.hv-btn,.hv-select{width:100%}.hv-story{padding:20px}.hv-text{font-size:18px}}
+    @media(max-width:1100px){.hv-reading{grid-template-columns:1fr}.hv-questions{margin-top:4px}}
+    @media(max-width:900px){.hv-hero{grid-template-columns:1fr}.hv-toolbar{justify-content:flex-start}.hv-btn,.hv-select{width:100%}.hv-story{padding:20px}.hv-text{font-size:18px;line-height:1.75}}
     @media print{#header-slot,#sidebar-slot,#footer-slot,.hv-hero,.hv-controls,.hv-quiz-actions{display:none!important}.layout{padding:0}.main{padding:0;max-width:none}.hv-story{box-shadow:none;border:1px solid #999;page-break-inside:avoid}body{background:white}}
   </style>
 </head>
