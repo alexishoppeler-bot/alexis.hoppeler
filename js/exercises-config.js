@@ -1,7 +1,9 @@
 'use strict';
 
 (function initExerciseConfig() {
-  const nonOrderedPages = ['accueil', 'évaluations', 'regles', 'données', 'autoévaluation'];
+  const nonOrderedPages = ['accueil', 'évaluations', 'regles', 'données', 'autoévaluation',
+    'cherche-clique', 'orientation', 'vaud-express', 'excel-progressif',
+    'missions-google-docs', 'simulations-dialogues', 'alphabet', 'traces-voleur'];
 
   /*
    * themes : thèmes de vie couverts par l'exercice
@@ -13,25 +15,23 @@
     { page: 'email-ecrire',name: 'Écrire un e-mail',          icon: '✉️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
     { page: 'mise-en-forme', name: 'Mise en forme',            icon: '🧾', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'français'] },
     { page: 'lettres-google-docs', name: 'Lettres Google Docs', icon: '📨', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'administration', 'logement'] },
-    { page: 'missions-google-docs', name: 'Missions Google Docs', icon: '🪧', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'bureautique', 'google docs'] },
     { page: 'email-pro',   name: 'E-mails professionnels',    icon: '📧', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi', 'orp'] },
     { page: 'retaper',     name: 'Retaper',                   icon: '✍️', cat: 'Communication',section: 'Emploi & ORP',       themes: ['numérique', 'emploi'] },
-    { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
+    { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: null,           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
     { page: 'vocabulaire-metier', name: 'Vocabulaire métier',  icon: '💬', cat: 'Langue',        section: 'Français',           themes: ['emploi', 'français', 'métiers'] },
     { page: 'compréhension', name: 'Écouter 2',                icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['français', 'emploi', 'orp', 'écoute'] },
-    { page: 'histoires-vaud', name: 'Histoires Vaud',           icon: '📖', cat: 'Langue',        section: 'Français',           themes: ['français', 'écoute', 'lecture', 'vaud'] },
     { page: 'clavier',     name: 'Clavier',                   icon: '⌨️', cat: 'Langue',        section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'ecouter',     name: 'Écouter',                   icon: '🎧', cat: 'Langue',        section: 'Français',           themes: ['numérique', 'orp', 'transports'] },
     { page: 'cliquer',     name: 'Cliquer',                   icon: '🖱️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports'] },
     { page: 'souris-cible', name: 'Souris cible',              icon: '🎯', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'souris', 'précision'] },
     { page: 'copier-coller', name: 'Copier-coller',            icon: '📋', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'clavier'] },
     { page: 'copier-mots', name: 'Copier plusieurs mots',      icon: '✂️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'lecture'] },
-    { page: 'cherche-clique',name:'Cherche & clique',          icon: '🔎', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
+    { page: 'cherche-clique',name:'Cherche & clique',          icon: '🔎', cat: 'Compétences',   section: null,          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'completer',   name: 'Compléter',                 icon: '🧩', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'orp', 'transports', 'santé', 'logement'] },
-    { page: 'orientation', name: 'Orientation',               icon: '🗺️', cat: 'Jeu',           section: 'Numérique',          themes: ['numérique', 'transports'] },
-    { page: 'vaud-express', name: 'Vaud Express',              icon: '🚆', cat: 'Jeu',           section: 'Numérique',          themes: ['numérique', 'transports', 'géographie'] },
+    { page: 'orientation', name: 'Orientation',               icon: '🗺️', cat: 'Jeu',           section: null,          themes: ['numérique', 'transports'] },
+    { page: 'vaud-express', name: 'Vaud Express',              icon: '🚆', cat: 'Jeu',           section: null,          themes: ['numérique', 'transports', 'géographie'] },
     { page: 'maths-pratiques', name: 'Maths pratiques',       icon: '🧮', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
-    { page: 'excel-progressif', name: 'Excel progressif',     icon: '📈', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'budget', 'tableur'] },
+    { page: 'excel-progressif', name: 'Excel progressif',     icon: '📈', cat: 'Compétences',   section: null,          themes: ['numérique', 'emploi', 'budget', 'tableur'] },
     { page: 'scenarios-word-excel', name: 'Scénarios Word & Excel', icon: '🗃️', cat: 'Compétences', section: 'Numérique',       themes: ['numérique', 'emploi', 'budget', 'bureautique'] },
     { page: 'anagramme',   name: 'Anagramme',                 icon: '🔀', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
     { page: 'apparier',    name: 'Apparier',                  icon: '🔗', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
@@ -41,12 +41,12 @@
     { page: 'mots-croises',name: 'Mots croisés',              icon: '🧱', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'mots-meles',  name: 'Mots mêlés',                icon: '🔠', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'demeler',     name: 'Démêler',                   icon: '🧶', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'orp', 'transports'] },
-    { page: 'traces-voleur', name: 'Traces du voleur',         icon: '🕵️', cat: 'Jeu',           section: 'Français',           themes: ['français', 'géographie', 'compréhension', 'monde'] },
+    { page: 'traces-voleur', name: 'Traces du voleur',         icon: '🕵️', cat: 'Jeu',           section: null,           themes: ['français', 'géographie', 'compréhension', 'monde'] },
     { page: 'quiz',        name: 'Quiz',                      icon: '❓', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'orp', 'numérique', 'transports'] },
     { page: 'trier',           name: 'Trier',                icon: '🗂️', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'numérique', 'transports'] },
     { page: 'securite-travail', name: 'Sécurité au travail', icon: '🦺', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'sécurité', 'orp'] },
-    { page: ‘simulations-dialogues’, name: ‘Simulation d’entretien’, icon: ‘💬’, cat: ‘Communication’, section: ‘Emploi & ORP’, themes: [‘emploi’, ‘orp’, ‘communication’] },
-    { page: ‘entretien-embauche-ia’, name: ‘Entretien IA’, icon: ‘🎯’, cat: ‘Communication’, section: ‘Emploi & ORP’, themes: [‘emploi’, ‘orp’, ‘communication’, ‘entretien’], href: ‘../entretien-embauche-ia/index.html’ },
+    { page: 'simulations-dialogues', name: 'Simulation d’entretien', icon: '💬', cat: 'Communication', section: null, themes: ['emploi', 'orp', 'communication'] },
+    { page: 'entretien-embauche-ia', name: 'Entretien IA', icon: '🎯', cat: 'Communication', section: 'Emploi & ORP', themes: ['emploi', 'orp', 'communication', 'entretien'], href: '../entretien-embauche-ia/index.html' },
     { page: 'paire',       name: 'Paires',                    icon: '🃏', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'evaluations', name: 'Évaluations',               icon: '📈', cat: 'Suivi',         section: null,                 themes: [] },
     { page: 'regles',      name: 'Règles XP',                 icon: '📏', cat: 'Suivi',         section: null,                 themes: [] },
@@ -58,7 +58,6 @@
     'alphabet':        '+5 XP par bonne réponse.',
     'vocabulaire-metier': '+3 XP par bon verbe choisi.',
     'compréhension':   '+3 XP par texte travaillé.',
-    'histoires-vaud':   '+3 XP par bonne réponse de compréhension.',
     'clavier':         '+1 XP par bonne touche.',
     'cherche-clique':  '+3 XP par clic correct.',
     'apparier':        '+2 XP par paire trouvée.',
@@ -84,10 +83,9 @@
     'email-ecrire':    '+3 XP par bonne réponse.',
     'mise-en-forme':   '+3 XP par e-mail bien mis en forme.',
     'lettres-google-docs': '+4 XP par lettre marquée comme faite.',
-    'missions-google-docs': '+4 XP par mission réalisée dans Google Docs.',
     'email-pro':       '+3 XP par bonne réponse.',
     'retaper':         '+7 XP parfait, +5 XP (>=90%), +3 XP (>=70%), +1 XP sinon. -1 XP si indice.',
-    'entretien-embauche-ia': '+5 XP par question soumise, +10 XP si score ≥ 80.',
+    'entretien-embauche-ia': '+5 XP par question soumise, +10 XP si score >= 80.',
     'simulations-dialogues': '+3 XP (bonne réponse), +1 XP (réponse moyenne).',
     'orientation':     '+3 XP arrivée à destination, +2 XP chemin parfait.'
     ,
@@ -122,12 +120,6 @@
       practice: 'Expéditeur, destinataire, date, objet, paragraphes, ton adapté, signature et nommage du fichier.',
       useWhen: 'Pour préparer des démarches d’emploi, logement, administration, assurance, formation ou consommation.'
     },
-    'missions-google-docs': {
-      summary: 'Créer des affiches Google Docs liées à la recherche d’emploi à partir de consignes guidées.',
-      objective: 'S’entraîner à produire un document clair, lisible et utile pour présenter une demande, un profil ou une offre.',
-      practice: 'Titres, listes, tableaux, encadrés, colonnes, images, contact visible et mise en page propre.',
-      useWhen: 'Pour un atelier bureautique orienté emploi, CV, postulation ou préparation d’entretien.'
-    },
     'email-pro': {
       summary: 'Lire un e-mail professionnel et choisir une reponse correcte.',
       objective: 'Répondre avec calme, précision et respect du contexte.',
@@ -157,12 +149,6 @@
       objective: 'Développer la compréhension écrite et orale à partir de situations simples du quotidien.',
       practice: 'Écoute, lecture, repérage d’informations, réponses courtes, correction guidée.',
       useWhen: 'Pour travailler le français en groupe, avec lecture cachée puis vérification.'
-    },
-    'histoires-vaud': {
-      summary: 'Lire et écouter 10 histoires situées dans le canton de Vaud, puis répondre à un quiz.',
-      objective: 'Renforcer la compréhension écrite et orale avec des situations réalistes.',
-      practice: 'Lecture longue, écoute guidée, vocabulaire du quotidien, emploi, transports et quiz.',
-      useWhen: 'Pour travailler l’écoute et la lecture en groupe ou en autonomie.'
     },
     'clavier': {
       summary: 'S’entraîner a trouver les touches et a taper plus régulièrement.',
@@ -308,14 +294,14 @@
       practice: 'Decision, catégories, rapidité calme, correction.',
       useWhen: 'Pour passer de la compréhension a l action.'
     },
-    ‘entretien-embauche-ia’: {
-      summary: ‘Répondre à des questions d’entretien par écrit, avec voix, score sur 100 et rapport imprimable.’,
-      objective: ‘S’entraîner à formuler des réponses complètes, polies et structurées face à un recruteur.’,
-      practice: ‘Exemples concrets, vocabulaire métier, longueur, structure, politesse et adaptation à l’offre.’,
-      useWhen: ‘Avant un entretien d’embauche, pour travailler l’expression orale ou préparer un entretien blanc.’
+    'entretien-embauche-ia': {
+      summary: 'Répondre à des questions d’entretien par écrit, avec voix, score sur 100 et rapport imprimable.',
+      objective: 'S’entraîner à formuler des réponses complètes, polies et structurées face à un recruteur.',
+      practice: 'Exemples concrets, vocabulaire métier, longueur, structure, politesse et adaptation à l’offre.',
+      useWhen: 'Avant un entretien d’embauche, pour travailler l’expression orale ou préparer un entretien blanc.'
     },
-    ‘simulations-dialogues’: {
-      summary: ‘S’entraîner a choisir une reponse dans un dialogue d entretien.’,
+    'simulations-dialogues': {
+      summary: 'S’entraîner a choisir une reponse dans un dialogue d entretien.',
       objective: 'Preparer les reactions professionnelles dans un echange oral.',
       practice: 'Posture, formulation, ecoute, priorités, entretien.',
       useWhen: 'Avant un entretien, un rendez-vous ORP ou une simulation en groupe.'
