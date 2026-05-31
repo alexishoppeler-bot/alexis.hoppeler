@@ -45,7 +45,8 @@
     { page: 'quiz',        name: 'Quiz',                      icon: '❓', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'orp', 'numérique', 'transports'] },
     { page: 'trier',           name: 'Trier',                icon: '🗂️', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'numérique', 'transports'] },
     { page: 'securite-travail', name: 'Sécurité au travail', icon: '🦺', cat: 'Jeu',           section: 'Emploi & ORP',       themes: ['emploi', 'sécurité', 'orp'] },
-    { page: 'simulations-dialogues', name: 'Simulation d’entretien', icon: '💬', cat: 'Communication', section: 'Emploi & ORP', themes: ['emploi', 'orp', 'communication'] },
+    { page: ‘simulations-dialogues’, name: ‘Simulation d’entretien’, icon: ‘💬’, cat: ‘Communication’, section: ‘Emploi & ORP’, themes: [‘emploi’, ‘orp’, ‘communication’] },
+    { page: ‘entretien-embauche-ia’, name: ‘Entretien IA’, icon: ‘🎯’, cat: ‘Communication’, section: ‘Emploi & ORP’, themes: [‘emploi’, ‘orp’, ‘communication’, ‘entretien’], href: ‘../entretien-embauche-ia/index.html’ },
     { page: 'paire',       name: 'Paires',                    icon: '🃏', cat: 'Jeu',           section: 'Français',           themes: ['numérique', 'emploi', 'transports'] },
     { page: 'evaluations', name: 'Évaluations',               icon: '📈', cat: 'Suivi',         section: null,                 themes: [] },
     { page: 'regles',      name: 'Règles XP',                 icon: '📏', cat: 'Suivi',         section: null,                 themes: [] },
@@ -86,6 +87,7 @@
     'missions-google-docs': '+4 XP par mission réalisée dans Google Docs.',
     'email-pro':       '+3 XP par bonne réponse.',
     'retaper':         '+7 XP parfait, +5 XP (>=90%), +3 XP (>=70%), +1 XP sinon. -1 XP si indice.',
+    'entretien-embauche-ia': '+5 XP par question soumise, +10 XP si score ≥ 80.',
     'simulations-dialogues': '+3 XP (bonne réponse), +1 XP (réponse moyenne).',
     'orientation':     '+3 XP arrivée à destination, +2 XP chemin parfait.'
     ,
@@ -306,8 +308,14 @@
       practice: 'Decision, catégories, rapidité calme, correction.',
       useWhen: 'Pour passer de la compréhension a l action.'
     },
-    'simulations-dialogues': {
-      summary: 'S’entraîner a choisir une reponse dans un dialogue d entretien.',
+    ‘entretien-embauche-ia’: {
+      summary: ‘Répondre à des questions d’entretien par écrit, avec voix, score sur 100 et rapport imprimable.’,
+      objective: ‘S’entraîner à formuler des réponses complètes, polies et structurées face à un recruteur.’,
+      practice: ‘Exemples concrets, vocabulaire métier, longueur, structure, politesse et adaptation à l’offre.’,
+      useWhen: ‘Avant un entretien d’embauche, pour travailler l’expression orale ou préparer un entretien blanc.’
+    },
+    ‘simulations-dialogues’: {
+      summary: ‘S’entraîner a choisir une reponse dans un dialogue d entretien.’,
       objective: 'Preparer les reactions professionnelles dans un echange oral.',
       practice: 'Posture, formulation, ecoute, priorités, entretien.',
       useWhen: 'Avant un entretien, un rendez-vous ORP ou une simulation en groupe.'
@@ -364,7 +372,7 @@
       section: e.section || null,
       themes: e.themes || [],
       details: EXERCISE_DETAILS_BY_PAGE[e.page] || null,
-      href: e.page + '.html'
+      href: e.href || (e.page + '.html')
     };
     if (!nonOrderedPages.includes(e.page)) {
       orderedPages.push(e.page);
