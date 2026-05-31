@@ -1,0 +1,274 @@
+{
+  "metiers": [
+    {
+      "id": "nettoyage",
+      "nom": "Employé de nettoyage",
+      "emoji": "🧹",
+      "mots_cles": ["propre", "nettoyer", "produits", "aspirateur", "sol", "surfaces", "hygiène", "désinfection", "balai", "chiffon", "ponctuel", "discret"],
+      "questions": [
+        "Pourquoi voulez-vous travailler comme employé de nettoyage ?",
+        "Avez-vous déjà utilisé des produits de nettoyage professionnels ?",
+        "Comment organisez-vous votre travail quand vous avez plusieurs pièces à nettoyer ?",
+        "Que faites-vous si vous trouvez un objet oublié par un client ?",
+        "Pouvez-vous travailler tôt le matin ou tard le soir ?",
+        "Comment gérez-vous les taches difficiles à enlever ?",
+        "Avez-vous déjà travaillé dans un hôtel ou une entreprise ?",
+        "Qu'est-ce qui est important pour vous dans ce travail ?",
+        "Comment vous assurez-vous que votre travail est bien fait ?",
+        "Avez-vous un permis de conduire ?",
+        "Pouvez-vous porter des charges lourdes comme des aspirateurs industriels ?",
+        "Comment réagissez-vous si votre responsable vous dit que votre travail n'est pas parfait ?"
+      ],
+      "relances": [
+        "Pouvez-vous me donner un exemple concret ?",
+        "Qu'avez-vous appris de cette expérience ?",
+        "Comment avez-vous géré cette situation difficile ?",
+        "Que feriez-vous différemment aujourd'hui ?",
+        "Pourquoi pensez-vous que c'est important ?"
+      ]
+    },
+    {
+      "id": "cuisine",
+      "nom": "Aide de cuisine",
+      "emoji": "🍳",
+      "mots_cles": ["cuisiner", "préparer", "recette", "ingrédients", "couteau", "feu", "hygiène", "HACCP", "allergènes", "équipe", "propre", "rapide"],
+      "questions": [
+        "Pourquoi voulez-vous travailler en cuisine ?",
+        "Avez-vous déjà travaillé dans un restaurant ou une cantine ?",
+        "Connaissez-vous les règles d'hygiène alimentaire ?",
+        "Comment travaillez-vous quand il y a beaucoup de commandes en même temps ?",
+        "Savez-vous utiliser un couteau professionnel ?",
+        "Pouvez-vous travailler le week-end et les jours fériés ?",
+        "Avez-vous déjà préparé des repas pour plus de 50 personnes ?",
+        "Comment gérez-vous le stress pendant le service ?",
+        "Qu'est-ce que vous aimez cuisiner ?",
+        "Comment évitez-vous les accidents en cuisine ?",
+        "Avez-vous une formation en restauration ou en cuisine ?",
+        "Que faites-vous si vous ne savez pas préparer un plat que le chef demande ?"
+      ],
+      "relances": [
+        "Pouvez-vous décrire votre technique ?",
+        "Qu'avez-vous fait exactement dans cette situation ?",
+        "Comment avez-vous appris cette compétence ?",
+        "Quel a été le résultat ?",
+        "Comment travaillez-vous avec l'équipe en cuisine ?"
+      ]
+    },
+    {
+      "id": "vente",
+      "nom": "Employé de vente",
+      "emoji": "🛍️",
+      "mots_cles": ["client", "accueil", "conseil", "caisse", "produit", "stock", "vendre", "sourire", "écoute", "service", "fidéliser", "réclamation"],
+      "questions": [
+        "Pourquoi voulez-vous travailler dans la vente ?",
+        "Comment accueillez-vous un client qui entre dans le magasin ?",
+        "Que faites-vous si un client est en colère ?",
+        "Avez-vous déjà utilisé une caisse enregistreuse ?",
+        "Comment conseillez-vous un client qui hésite entre deux produits ?",
+        "Que faites-vous si un produit est en rupture de stock ?",
+        "Pouvez-vous travailler les week-ends et les jours fériés ?",
+        "Comment gérez-vous plusieurs clients en même temps ?",
+        "Avez-vous déjà eu une expérience en vente ou en service client ?",
+        "Pourquoi est-il important de sourire avec les clients ?",
+        "Comment faites-vous pour atteindre vos objectifs de vente ?",
+        "Que faites-vous si vous ne connaissez pas la réponse à la question d'un client ?"
+      ],
+      "relances": [
+        "Comment avez-vous géré ce client difficile ?",
+        "Qu'est-ce que vous avez dit exactement ?",
+        "Quel a été le résultat de votre action ?",
+        "Que feriez-vous si cela recommençait ?",
+        "Comment avez-vous aidé ce client à trouver ce qu'il voulait ?"
+      ]
+    },
+    {
+      "id": "rayon",
+      "nom": "Employé de rayon",
+      "emoji": "🏪",
+      "mots_cles": ["rayon", "réapprovisionner", "étiquette", "prix", "stock", "facing", "date", "périmé", "palette", "transpalette", "inventaire", "rangement"],
+      "questions": [
+        "Pourquoi voulez-vous travailler comme employé de rayon ?",
+        "Avez-vous déjà travaillé dans un supermarché ou une grande surface ?",
+        "Comment organisez-vous le remplissage d'un rayon ?",
+        "Que faites-vous si vous trouvez un produit dont la date est dépassée ?",
+        "Savez-vous utiliser un transpalette ou un chariot élévateur ?",
+        "Comment gérez-vous votre travail quand il y a beaucoup de marchandises à ranger ?",
+        "Pouvez-vous travailler tôt le matin avant l'ouverture du magasin ?",
+        "Comment vérifiez-vous que les prix sur les étiquettes sont corrects ?",
+        "Avez-vous déjà participé à un inventaire ?",
+        "Que faites-vous si un client vous pose une question et que vous ne connaissez pas la réponse ?",
+        "Comment portez-vous des charges lourdes sans vous blesser ?",
+        "Qu'est-ce qui est important pour que le rayon soit beau et bien rangé ?"
+      ],
+      "relances": [
+        "Pouvez-vous me décrire comment vous organisez votre travail ?",
+        "Qu'avez-vous appris dans ce poste ?",
+        "Comment avez-vous résolu ce problème ?",
+        "Quelle méthode utilisez-vous ?",
+        "Pourquoi est-ce important pour les clients ?"
+      ]
+    },
+    {
+      "id": "livreur",
+      "nom": "Chauffeur-livreur",
+      "emoji": "🚚",
+      "mots_cles": ["livraison", "colis", "camion", "route", "GPS", "ponctuel", "permis", "client", "signature", "tournée", "chargement", "sécurité"],
+      "questions": [
+        "Avez-vous le permis de conduire et depuis combien de temps ?",
+        "Avez-vous déjà fait de la livraison ?",
+        "Comment organisez-vous votre tournée de livraison ?",
+        "Que faites-vous si vous ne trouvez pas l'adresse du client ?",
+        "Comment gérez-vous un colis abîmé pendant le transport ?",
+        "Pouvez-vous porter des colis lourds et les livrer au bon endroit ?",
+        "Que faites-vous si le client n'est pas chez lui au moment de la livraison ?",
+        "Avez-vous des points sur votre permis de conduire ?",
+        "Comment vous assurez-vous que votre camion est bien chargé et sécurisé ?",
+        "Pouvez-vous travailler tôt le matin ?",
+        "Que faites-vous en cas d'accident ou de panne ?",
+        "Comment vérifiez-vous que vous avez livré tous les colis correctement ?"
+      ],
+      "relances": [
+        "Racontez-moi une situation difficile en livraison.",
+        "Comment avez-vous géré cette situation ?",
+        "Qu'avez-vous appris de cela ?",
+        "Comment évitez-vous ce problème maintenant ?",
+        "Que dit votre responsable de votre travail ?"
+      ]
+    },
+    {
+      "id": "logistique",
+      "nom": "Employé en logistique",
+      "emoji": "📦",
+      "mots_cles": ["entrepôt", "stock", "palette", "scanner", "commande", "préparation", "expédition", "réception", "CACES", "transpalette", "inventaire", "rangement"],
+      "questions": [
+        "Avez-vous déjà travaillé dans un entrepôt ou un dépôt ?",
+        "Savez-vous utiliser un scanner de codes-barres ?",
+        "Comment préparez-vous une commande ?",
+        "Avez-vous le CACES ou un certificat pour conduire un chariot élévateur ?",
+        "Comment gérez-vous les erreurs dans une commande ?",
+        "Pouvez-vous travailler en horaires décalés ?",
+        "Comment vérifiez-vous qu'une livraison est correcte à la réception ?",
+        "Que faites-vous si vous trouvez un produit abîmé dans le stock ?",
+        "Comment travaillez-vous avec les autres membres de votre équipe ?",
+        "Pouvez-vous porter des charges de 15 à 25 kg ?",
+        "Avez-vous déjà utilisé un logiciel de gestion de stock ?",
+        "Que faites-vous pour éviter les accidents dans un entrepôt ?"
+      ],
+      "relances": [
+        "Pouvez-vous décrire votre expérience en entrepôt ?",
+        "Comment avez-vous géré cette erreur ?",
+        "Qu'avez-vous fait pour améliorer votre productivité ?",
+        "Comment travaillez-vous en équipe ?",
+        "Quelle est votre méthode pour ne pas faire d'erreurs ?"
+      ]
+    },
+    {
+      "id": "aide-domicile",
+      "nom": "Aide à domicile",
+      "emoji": "🏠",
+      "mots_cles": ["personne âgée", "aide", "ménage", "repas", "médicaments", "bienveillance", "patience", "discrétion", "autonomie", "soin", "écoute", "confiance"],
+      "questions": [
+        "Pourquoi voulez-vous travailler comme aide à domicile ?",
+        "Avez-vous déjà aidé des personnes âgées ou handicapées ?",
+        "Comment aidez-vous quelqu'un qui a du mal à se déplacer ?",
+        "Que faites-vous si la personne ne veut pas prendre ses médicaments ?",
+        "Comment respectez-vous la vie privée de la personne chez elle ?",
+        "Que faites-vous en cas d'urgence médicale ?",
+        "Pouvez-vous travailler le week-end ?",
+        "Comment gérez-vous une personne qui est triste ou qui pleure ?",
+        "Avez-vous une formation dans le secteur médico-social ?",
+        "Comment préparez-vous un repas adapté à une personne âgée ?",
+        "Que faites-vous si vous êtes témoin de maltraitance ?",
+        "Comment communiquez-vous avec la famille de la personne aidée ?"
+      ],
+      "relances": [
+        "Pouvez-vous me donner un exemple de situation difficile ?",
+        "Comment avez-vous réagi face à cette situation ?",
+        "Qu'est-ce qui est le plus important dans ce travail pour vous ?",
+        "Comment vous assurez-vous que la personne est bien ?",
+        "Qu'avez-vous appris de cette expérience ?"
+      ]
+    },
+    {
+      "id": "receptionniste",
+      "nom": "Réceptionniste",
+      "emoji": "🏨",
+      "mots_cles": ["accueil", "téléphone", "reservation", "check-in", "check-out", "client", "sourire", "organisé", "informatique", "langues", "disponible", "professionnel"],
+      "questions": [
+        "Pourquoi voulez-vous travailler comme réceptionniste ?",
+        "Avez-vous déjà travaillé à l'accueil d'un hôtel ou d'une entreprise ?",
+        "Comment accueillez-vous un client qui arrive à la réception ?",
+        "Que faites-vous si un client se plaint de sa chambre ?",
+        "Parlez-vous une autre langue que le français ?",
+        "Pouvez-vous travailler la nuit ou le week-end ?",
+        "Comment gérez-vous plusieurs clients en même temps ?",
+        "Avez-vous déjà utilisé un logiciel de réservation d'hôtel ?",
+        "Que faites-vous si un client arrive et qu'il n'y a plus de chambre disponible ?",
+        "Comment gérez-vous un appel téléphonique difficile ?",
+        "Qu'est-ce qui est le plus important dans l'accueil d'un client ?",
+        "Comment vous habillez-vous pour travailler à la réception ?"
+      ],
+      "relances": [
+        "Décrivez comment vous avez géré ce client difficile.",
+        "Qu'avez-vous dit exactement à ce client ?",
+        "Quel a été le résultat ?",
+        "Comment amélioreriez-vous l'accueil dans cet hôtel ?",
+        "Que faites-vous pour garder votre calme ?"
+      ]
+    },
+    {
+      "id": "securite",
+      "nom": "Agent de sécurité",
+      "emoji": "🔐",
+      "mots_cles": ["sécurité", "surveillance", "rondes", "incident", "rapport", "calme", "autorité", "CQP", "SSIAP", "badge", "contrôle", "intervention"],
+      "questions": [
+        "Avez-vous une carte professionnelle d'agent de sécurité ?",
+        "Avez-vous le CQP Agent de Prévention et de Sécurité ?",
+        "Comment réagissez-vous si vous voyez quelqu'un voler dans un magasin ?",
+        "Comment effectuez-vous une ronde de surveillance ?",
+        "Que faites-vous en cas de début d'incendie ?",
+        "Comment gérez-vous une personne qui refuse de partir ?",
+        "Avez-vous déjà écrit un rapport d'incident ?",
+        "Comment maintenez-vous votre calme dans une situation de conflit ?",
+        "Pouvez-vous travailler la nuit ?",
+        "Comment contrôlez-vous les entrées et sorties d'un bâtiment ?",
+        "Que faites-vous si vous trouvez un objet suspect ?",
+        "Comment communiquez-vous avec les forces de l'ordre si nécessaire ?"
+      ],
+      "relances": [
+        "Racontez-moi un incident que vous avez géré.",
+        "Comment avez-vous utilisé votre formation dans cette situation ?",
+        "Qu'avez-vous écrit dans votre rapport ?",
+        "Comment avez-vous gardé votre calme ?",
+        "Quel a été le résultat de votre intervention ?"
+      ]
+    },
+    {
+      "id": "batiment",
+      "nom": "Ouvrier du bâtiment",
+      "emoji": "🏗️",
+      "mots_cles": ["chantier", "outils", "maçonnerie", "sécurité", "casque", "équipe", "plan", "béton", "brique", "chef de chantier", "précision", "physique"],
+      "questions": [
+        "Avez-vous de l'expérience dans le bâtiment ?",
+        "Quels outils savez-vous utiliser ?",
+        "Avez-vous travaillé en maçonnerie, peinture ou plomberie ?",
+        "Comment respectez-vous les règles de sécurité sur un chantier ?",
+        "Pouvez-vous lire un plan ou des instructions techniques ?",
+        "Comment travaillez-vous avec le chef de chantier ?",
+        "Pouvez-vous travailler en extérieur par tous les temps ?",
+        "Avez-vous des habilitations électriques ou d'autres certifications ?",
+        "Comment gérez-vous les déchets et le rangement sur un chantier ?",
+        "Que faites-vous si vous avez un doute sur la façon de faire un travail ?",
+        "Avez-vous déjà eu un accident de travail ? Comment l'avez-vous géré ?",
+        "Pouvez-vous travailler en hauteur ?"
+      ],
+      "relances": [
+        "Décrivez un chantier difficile sur lequel vous avez travaillé.",
+        "Comment avez-vous résolu ce problème technique ?",
+        "Qu'avez-vous appris de ce chantier ?",
+        "Comment travaillez-vous en équipe sur un chantier ?",
+        "Quelle est votre plus grande compétence dans le bâtiment ?"
+      ]
+    }
+  ]
+}

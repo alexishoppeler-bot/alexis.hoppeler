@@ -1,0 +1,124 @@
+{
+  "questions_difficiles": [
+    {
+      "id": "diff1",
+      "question": "Donnez-moi un exemple d'une fois où vous avez fait une erreur au travail. Qu'avez-vous appris ?",
+      "type": "erreur",
+      "conseil": "Montrez que vous savez apprendre de vos erreurs."
+    },
+    {
+      "id": "diff2",
+      "question": "Comment réagissez-vous si votre responsable vous critique devant vos collègues ?",
+      "type": "critique",
+      "conseil": "Restez calme et professionnel dans votre réponse."
+    },
+    {
+      "id": "diff3",
+      "question": "Vous avez deux tâches urgentes en même temps. Que faites-vous ?",
+      "type": "priorites",
+      "conseil": "Expliquez comment vous priorisez votre travail."
+    },
+    {
+      "id": "diff4",
+      "question": "Pourquoi devrions-nous vous choisir plutôt qu'un autre candidat ?",
+      "type": "motivation",
+      "conseil": "Valorisez vos compétences sans critiquer les autres."
+    },
+    {
+      "id": "diff5",
+      "question": "Avez-vous déjà refusé de faire quelque chose que votre responsable vous demandait ? Pourquoi ?",
+      "type": "autorite",
+      "conseil": "Répondez honnêtement mais montrez votre respect de l'autorité."
+    },
+    {
+      "id": "diff6",
+      "question": "Comment vous comportez-vous avec un collègue que vous n'aimez pas ?",
+      "type": "relations",
+      "conseil": "Montrez votre professionnalisme."
+    },
+    {
+      "id": "diff7",
+      "question": "Que faites-vous si vous voyez un collègue voler dans l'entreprise ?",
+      "type": "ethique",
+      "conseil": "Montrez votre honnêteté et votre sens des responsabilités."
+    },
+    {
+      "id": "diff8",
+      "question": "Comment réagissez-vous quand un client est très agressif avec vous ?",
+      "type": "client",
+      "conseil": "Montrez votre calme et votre professionnalisme."
+    },
+    {
+      "id": "diff9",
+      "question": "Avez-vous des problèmes de santé qui peuvent affecter votre travail ?",
+      "type": "sante",
+      "conseil": "Vous n'êtes pas obligé de répondre. Dites ce qui est nécessaire."
+    },
+    {
+      "id": "diff10",
+      "question": "Pourquoi avez-vous eu un long trou dans votre CV ?",
+      "type": "cv",
+      "conseil": "Expliquez honnêtement ce que vous avez fait pendant cette période."
+    },
+    {
+      "id": "diff11",
+      "question": "Vous travaillez vite mais vous faites des erreurs. Ou vous travaillez lentement mais bien. Qu'est-ce qui est mieux ?",
+      "type": "methode",
+      "conseil": "Il n'y a pas de bonne ou mauvaise réponse. Expliquez votre point de vue."
+    },
+    {
+      "id": "diff12",
+      "question": "Que faites-vous si on vous demande de faire quelque chose qui n'est pas dans votre contrat ?",
+      "type": "contrat",
+      "conseil": "Montrez votre flexibilité tout en connaissant vos droits."
+    },
+    {
+      "id": "diff13",
+      "question": "Avez-vous déjà eu des problèmes avec la justice ?",
+      "type": "justice",
+      "conseil": "Répondez honnêtement. Un casier ne ferme pas toujours les portes."
+    },
+    {
+      "id": "diff14",
+      "question": "Vous n'avez pas d'expérience dans ce domaine. Pourquoi devrait-on vous faire confiance ?",
+      "type": "confiance",
+      "conseil": "Valorisez vos compétences transférables et votre motivation."
+    },
+    {
+      "id": "diff15",
+      "question": "Comment réagissez-vous si vous apprenez que votre collègue gagne plus que vous pour le même travail ?",
+      "type": "salaire",
+      "conseil": "Restez calme et montrez que vous savez dialoguer."
+    },
+    {
+      "id": "diff16",
+      "question": "Décrivez votre pire journée de travail.",
+      "type": "difficulte",
+      "conseil": "Transformez le négatif en apprentissage."
+    },
+    {
+      "id": "diff17",
+      "question": "Votre responsable vous donne une instruction que vous pensez incorrecte. Que faites-vous ?",
+      "type": "hierarchie",
+      "conseil": "Montrez que vous savez exprimer votre avis avec respect."
+    },
+    {
+      "id": "diff18",
+      "question": "Si vous pouviez changer une chose dans votre caractère, ce serait quoi ?",
+      "type": "caractere",
+      "conseil": "Choisissez quelque chose d'honnête mais pas trop négatif."
+    },
+    {
+      "id": "diff19",
+      "question": "Vous avez plusieurs offres d'emploi. Pourquoi choisissez-vous notre entreprise ?",
+      "type": "choix",
+      "conseil": "Montrez votre connaissance de l'entreprise et votre enthousiasme."
+    },
+    {
+      "id": "diff20",
+      "question": "Que pensez-vous de votre ancien responsable ?",
+      "type": "relations",
+      "conseil": "Ne critiquez jamais votre ancien employeur. Restez positif."
+    }
+  ]
+}

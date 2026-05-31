@@ -1,0 +1,639 @@
+/* style.css — Interface moderne, grande police, adaptée à la projection en classe */
+
+:root {
+  --bleu: #2563eb;
+  --bleu-fonce: #1d4ed8;
+  --vert: #16a34a;
+  --orange: #ea580c;
+  --rouge: #dc2626;
+  --gris-clair: #f1f5f9;
+  --gris: #64748b;
+  --blanc: #ffffff;
+  --texte: #1e293b;
+  --ombre: 0 4px 24px rgba(0,0,0,0.10);
+  --rayon: 16px;
+  --police: 'Segoe UI', Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--police);
+  background: var(--gris-clair);
+  color: var(--texte);
+  font-size: 18px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ===== ÉCRANS ===== */
+.ecran { display: none; min-height: 100vh; padding: 24px 16px 40px; }
+.ecran.actif { display: block; }
+
+/* ===== ACCUEIL ===== */
+#ecran-accueil {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  color: var(--blanc);
+  gap: 32px;
+}
+#ecran-accueil.actif { display: flex; }
+
+.accueil-logo { font-size: 80px; margin-bottom: 8px; }
+
+.accueil-titre {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.accueil-sous-titre {
+  font-size: 1.3rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.accueil-chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.chip {
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.35);
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ===== BANNIÈRE REPRISE ===== */
+#banner-reprise {
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+  border-radius: var(--rayon);
+  padding: 16px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+#banner-reprise.cache { display: none; }
+
+/* ===== CONFIG ===== */
+#ecran-config { max-width: 900px; margin: 0 auto; }
+
+.config-titre {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 32px;
+  color: var(--bleu-fonce);
+}
+
+.config-section {
+  background: var(--blanc);
+  border-radius: var(--rayon);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--ombre);
+}
+
+.config-section h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gris);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--gris-clair);
+  padding-bottom: 10px;
+}
+
+/* ===== LISTE MÉTIERS ===== */
+#liste-metiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.btn-metier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--rayon);
+  background: var(--blanc);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--texte);
+  transition: all 0.18s ease;
+  text-align: center;
+}
+.btn-metier:hover { border-color: var(--bleu); transform: translateY(-2px); box-shadow: var(--ombre); }
+.btn-metier.actif { border-color: var(--bleu); background: #eff6ff; color: var(--bleu-fonce); }
+.btn-metier .emoji { font-size: 2rem; }
+
+/* ===== PANNEAU VOIX (config) ===== */
+.voix-config-grille {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.voix-config-col { display: flex; flex-direction: column; gap: 10px; }
+
+.voix-config-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texte);
+}
+
+.select-voix {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: var(--police);
+  background: var(--blanc);
+  color: var(--texte);
+  cursor: pointer;
+  appearance: auto;
+}
+.select-voix:focus { outline: none; border-color: var(--bleu); }
+
+.voix-config-aide {
+  font-size: 0.88rem;
+  color: var(--gris);
+  line-height: 1.5;
+}
+
+.curseur-vitesse {
+  width: 100%;
+  accent-color: var(--bleu);
+  cursor: pointer;
+  height: 6px;
+}
+
+.vitesse-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--gris);
+}
+
+.btn-tester-voix {
+  background: #f0fdf4;
+  border: 2px solid var(--vert);
+  color: var(--vert);
+  border-radius: 50px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.15s;
+}
+.btn-tester-voix:hover { background: var(--vert); color: var(--blanc); }
+
+/* Sélecteur mini dans l'en-tête entretien */
+.voix-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.select-voix-mini {
+  padding: 6px 10px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-family: var(--police);
+  background: var(--blanc);
+  color: var(--texte);
+  cursor: pointer;
+  max-width: 200px;
+}
+.select-voix-mini:focus { outline: none; border-color: var(--bleu); }
+
+@media (max-width: 640px) {
+  .voix-config-grille { grid-template-columns: 1fr; }
+  .select-voix-mini { max-width: 140px; font-size: 0.78rem; }
+}
+
+/* ===== BOUTONS NIVEAU & RECRUTEUR ===== */
+.btn-groupe {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-niveau, .btn-recruteur {
+  flex: 1;
+  min-width: 120px;
+  padding: 16px 20px;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--rayon);
+  background: var(--blanc);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texte);
+  transition: all 0.18s ease;
+  text-align: center;
+}
+.btn-niveau:hover, .btn-recruteur:hover { border-color: var(--bleu); background: #eff6ff; }
+.btn-niveau.actif, .btn-recruteur.actif { border-color: var(--bleu); background: var(--bleu); color: var(--blanc); }
+
+/* ===== BOUTONS PRINCIPAUX ===== */
+.btn-principal {
+  display: block;
+  width: 100%;
+  padding: 20px 32px;
+  background: var(--bleu);
+  color: var(--blanc);
+  border: none;
+  border-radius: var(--rayon);
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: center;
+  margin-top: 8px;
+}
+.btn-principal:hover { background: var(--bleu-fonce); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
+.btn-principal:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-principal.pret { background: var(--vert); }
+.btn-principal.pret:hover { background: #15803d; }
+.btn-principal.danger { background: var(--rouge); }
+.btn-principal.secondaire { background: var(--gris); font-size: 1.1rem; padding: 14px 24px; }
+.btn-principal.secondaire:hover { background: #475569; }
+
+/* ===== ÉCRAN ENTRETIEN ===== */
+#ecran-entretien { max-width: 860px; margin: 0 auto; }
+
+.entretien-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--blanc);
+  border-radius: var(--rayon);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--ombre);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.entretien-metier {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--bleu-fonce);
+}
+
+.progression-cont {
+  flex: 1;
+  min-width: 160px;
+}
+
+#numero-question {
+  font-size: 0.95rem;
+  color: var(--gris);
+  margin-bottom: 4px;
+  text-align: right;
+}
+
+.barre-fond {
+  height: 10px;
+  background: var(--gris-clair);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#barre-progression {
+  height: 100%;
+  background: linear-gradient(to right, var(--bleu), #7c3aed);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+#btn-voix {
+  background: #f0fdf4;
+  border: 2px solid var(--vert);
+  color: var(--vert);
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+#btn-voix.voix-off { background: #fef2f2; border-color: var(--rouge); color: var(--rouge); }
+
+/* Message du recruteur */
+#message-recruteur {
+  background: #eff6ff;
+  border-left: 5px solid var(--bleu);
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--bleu-fonce);
+  margin-bottom: 20px;
+}
+#message-recruteur.cache { display: none; }
+
+/* Carte question */
+.carte-question {
+  background: var(--blanc);
+  border-radius: var(--rayon);
+  padding: 28px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--ombre);
+}
+
+#texte-question {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--texte);
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+#btn-relire {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: var(--gris);
+  font-weight: 600;
+}
+#btn-relire:hover { background: #e0f2fe; border-color: var(--bleu); color: var(--bleu); }
+
+/* Zone de réponse */
+.zone-reponse-cont {
+  background: var(--blanc);
+  border-radius: var(--rayon);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--ombre);
+}
+
+.reponse-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gris);
+  margin-bottom: 10px;
+  display: block;
+}
+
+#zone-reponse {
+  width: 100%;
+  min-height: 140px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 1.1rem;
+  font-family: var(--police);
+  color: var(--texte);
+  resize: vertical;
+  transition: border-color 0.18s;
+  background: #fafcff;
+}
+#zone-reponse:focus { outline: none; border-color: var(--bleu); background: var(--blanc); }
+#zone-reponse:disabled { background: #f1f5f9; color: #94a3b8; }
+
+.reponse-aide {
+  font-size: 0.88rem;
+  color: var(--gris);
+  margin-top: 6px;
+}
+
+/* ===== FEEDBACK ===== */
+#zone-feedback {
+  background: var(--blanc);
+  border-radius: var(--rayon);
+  padding: 28px 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--ombre);
+  border-top: 5px solid var(--bleu);
+}
+#zone-feedback.cache { display: none; }
+
+.feedback-score-bloc {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+#score-cercle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 6px solid var(--bleu);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--bleu);
+}
+
+#score-valeur { font-size: 2.2rem; font-weight: 900; line-height: 1; }
+.score-sur { font-size: 0.8rem; font-weight: 600; color: var(--gris); }
+
+.feedback-texte-bloc { flex: 1; min-width: 200px; }
+#score-label { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+#score-message { font-size: 1rem; color: var(--gris); }
+
+/* Critères */
+#details-criteres { margin: 16px 0; }
+.critere-ligne {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.critere-nom { font-size: 0.95rem; font-weight: 600; min-width: 140px; }
+.critere-barre-cont { flex: 1; height: 12px; background: #f1f5f9; border-radius: 6px; overflow: hidden; }
+.critere-barre { height: 100%; background: linear-gradient(to right, var(--bleu), #7c3aed); border-radius: 6px; transition: width 0.5s ease; }
+.critere-pts { font-size: 0.88rem; color: var(--gris); min-width: 50px; text-align: right; }
+.critere-feedback { font-size: 0.9rem; color: var(--gris); margin-left: 150px; margin-bottom: 10px; }
+
+/* Relance */
+.relance-titre {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--orange);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 16px 0 6px;
+}
+
+#question-relance {
+  background: #fff7ed;
+  border-left: 4px solid var(--orange);
+  padding: 14px 16px;
+  border-radius: 0 12px 12px 0;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #92400e;
+}
+
+/* ===== BOUTONS NAVIGATION ENTRETIEN ===== */
+.nav-entretien {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.nav-entretien .btn-principal { flex: 1; min-width: 160px; }
+.cache { display: none !important; }
+
+/* ===== RAPPORT ===== */
+#ecran-rapport { max-width: 900px; margin: 0 auto; }
+
+.rapport-titre {
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--bleu-fonce);
+  margin-bottom: 28px;
+}
+
+.rapport-entete {
+  background: var(--blanc);
+  border-radius: var(--rayon);
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--ombre);
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#rapport-score-cercle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 8px solid var(--bleu);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--bleu);
+}
+
+.score-grand { font-size: 2.8rem; font-weight: 900; line-height: 1; }
+.score-sur-label { font-size: 0.9rem; color: var(--gris); font-weight: 600; }
+
+.rapport-infos { flex: 1; min-width: 200px; }
+.rapport-info-ligne {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+}
+.rapport-info-ligne strong { color: var(--bleu-fonce); }
+
+.rapport-conclusion {
+  background: #eff6ff;
+  border-left: 5px solid var(--bleu);
+  padding: 14px 20px;
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+  font-style: italic;
+  color: var(--bleu-fonce);
+  margin-bottom: 24px;
+}
+
+.rapport-section-titre {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--texte);
+  margin-bottom: 16px;
+  border-bottom: 3px solid var(--gris-clair);
+  padding-bottom: 8px;
+}
+
+.rapport-reponse {
+  background: var(--blanc);
+  border-radius: var(--rayon);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--ombre);
+  border-left: 5px solid var(--bleu);
+}
+
+.rapport-q-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.rapport-q-num {
+  background: var(--bleu);
+  color: var(--blanc);
+  border-radius: 50px;
+  padding: 2px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.rapport-q-score { font-size: 1.3rem; font-weight: 800; }
+.rapport-q-texte { margin-bottom: 6px; color: var(--gris); font-size: 0.95rem; }
+.rapport-r-texte { margin-bottom: 8px; font-size: 1rem; }
+.rapport-fb { font-size: 0.95rem; color: var(--gris); font-style: italic; }
+
+.rapport-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.rapport-actions .btn-principal { flex: 1; min-width: 180px; }
+
+/* ===== IMPRESSION ===== */
+@media print {
+  body { background: white; font-size: 14px; }
+  .ecran { display: block !important; }
+  #ecran-accueil, #ecran-config, #ecran-entretien { display: none !important; }
+  #ecran-rapport { display: block !important; padding: 0; max-width: 100%; }
+  .rapport-actions, #btn-imprimer, #btn-recommencer { display: none !important; }
+  .box-shadow { box-shadow: none; }
+  .rapport-reponse { break-inside: avoid; border: 1px solid #ddd; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .accueil-titre { font-size: 2rem; }
+  #texte-question { font-size: 1.3rem; }
+  #liste-metiers { grid-template-columns: repeat(2, 1fr); }
+  .feedback-score-bloc { flex-direction: column; align-items: flex-start; }
+  .critere-feedback { margin-left: 0; }
+  .critere-ligne { flex-wrap: wrap; }
+  .critere-nom { min-width: 100%; }
+  .rapport-entete { flex-direction: column; }
+}

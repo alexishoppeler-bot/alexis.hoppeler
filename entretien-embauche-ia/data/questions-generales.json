@@ -1,0 +1,124 @@
+{
+  "questions_generales": [
+    {
+      "id": "gen1",
+      "question": "Parlez-moi de vous.",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "presentation"
+    },
+    {
+      "id": "gen2",
+      "question": "Pourquoi voulez-vous travailler dans notre entreprise ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "motivation"
+    },
+    {
+      "id": "gen3",
+      "question": "Quelles sont vos qualités principales ?",
+      "niveau": ["A2", "B1"],
+      "type": "qualites"
+    },
+    {
+      "id": "gen4",
+      "question": "Quels sont vos défauts ?",
+      "niveau": ["B1"],
+      "type": "defauts"
+    },
+    {
+      "id": "gen5",
+      "question": "Où vous voyez-vous dans 5 ans ?",
+      "niveau": ["B1"],
+      "type": "projet"
+    },
+    {
+      "id": "gen6",
+      "question": "Pourquoi avez-vous quitté votre dernier emploi ?",
+      "niveau": ["A2", "B1"],
+      "type": "parcours"
+    },
+    {
+      "id": "gen7",
+      "question": "Êtes-vous disponible immédiatement ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "disponibilite"
+    },
+    {
+      "id": "gen8",
+      "question": "Pouvez-vous travailler en équipe ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "equipe"
+    },
+    {
+      "id": "gen9",
+      "question": "Quelle est votre expérience professionnelle ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "experience"
+    },
+    {
+      "id": "gen10",
+      "question": "Avez-vous des questions sur le poste ?",
+      "niveau": ["A2", "B1"],
+      "type": "questions"
+    },
+    {
+      "id": "gen11",
+      "question": "Êtes-vous ponctuel ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "ponctualite"
+    },
+    {
+      "id": "gen12",
+      "question": "Comment gérez-vous le stress au travail ?",
+      "niveau": ["B1"],
+      "type": "stress"
+    },
+    {
+      "id": "gen13",
+      "question": "Avez-vous déjà eu un conflit avec un collègue ? Comment avez-vous réglé ce problème ?",
+      "niveau": ["B1"],
+      "type": "conflit"
+    },
+    {
+      "id": "gen14",
+      "question": "Quel est votre niveau de français ?",
+      "niveau": ["A1", "A2"],
+      "type": "langue"
+    },
+    {
+      "id": "gen15",
+      "question": "Avez-vous un moyen de transport pour venir travailler ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "transport"
+    },
+    {
+      "id": "gen16",
+      "question": "Pouvez-vous travailler le week-end ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "disponibilite"
+    },
+    {
+      "id": "gen17",
+      "question": "Quel salaire souhaitez-vous ?",
+      "niveau": ["B1"],
+      "type": "salaire"
+    },
+    {
+      "id": "gen18",
+      "question": "Qu'est-ce qui vous motive dans ce travail ?",
+      "niveau": ["A2", "B1"],
+      "type": "motivation"
+    },
+    {
+      "id": "gen19",
+      "question": "Avez-vous des formations ou des diplômes ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "formation"
+    },
+    {
+      "id": "gen20",
+      "question": "Que faites-vous quand vous ne comprenez pas une instruction ?",
+      "niveau": ["A1", "A2", "B1"],
+      "type": "communication"
+    }
+  ]
+}

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entretien d'Embauche IA — Entraînement</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- ===== ÉCRAN 1 : ACCUEIL ===== -->
+  <section id="ecran-accueil" class="ecran">
+    <div class="accueil-logo">🎯</div>
+    <h1 class="accueil-titre">Entretien d'Embauche</h1>
+    <p class="accueil-sous-titre">Entraînez-vous à répondre aux questions d'entretien.<br>Obtenez un score et des conseils pour vous améliorer.</p>
+    <div class="accueil-chips">
+      <span class="chip">🎙️ Voix</span>
+      <span class="chip">📊 Score /100</span>
+      <span class="chip">💬 Feedback</span>
+      <span class="chip">📄 Rapport</span>
+      <span class="chip">💾 Sauvegarde auto</span>
+    </div>
+
+    <!-- Bannière de reprise -->
+    <div id="banner-reprise" class="cache">
+      <p>Vous avez une session non terminée pour : <strong class="reprise-metier"></strong></p>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:10px;">
+        <button class="btn-ignorer" style="padding:8px 20px;border-radius:8px;border:2px solid #f59e0b;background:white;cursor:pointer;font-weight:600;">Nouvelle session</button>
+      </div>
+    </div>
+
+    <button id="btn-demarrer" class="btn-principal" style="max-width:400px;font-size:1.5rem;padding:24px 48px;">
+      ▶ Commencer l'entraînement
+    </button>
+  </section>
+
+  <!-- ===== ÉCRAN 2 : CONFIGURATION ===== -->
+  <section id="ecran-config" class="ecran">
+    <h1 class="config-titre">⚙️ Configuration de l'entretien</h1>
+
+    <!-- Choix du métier -->
+    <div class="config-section">
+      <h2>1. Choisissez votre métier</h2>
+      <div id="liste-metiers">
+        <!-- Rempli par app.js -->
+      </div>
+    </div>
+
+    <!-- Niveau de français -->
+    <div class="config-section">
+      <h2>2. Niveau de français</h2>
+      <div class="btn-groupe">
+        <button class="btn-niveau" data-niveau="A1">
+          <div style="font-size:1.6rem">🌱</div>
+          <div>A1 — Débutant</div>
+          <div style="font-size:0.85rem;opacity:0.7">Questions très simples</div>
+        </button>
+        <button class="btn-niveau actif" data-niveau="A2">
+          <div style="font-size:1.6rem">🌿</div>
+          <div>A2 — Élémentaire</div>
+          <div style="font-size:0.85rem;opacity:0.7">Questions simples</div>
+        </button>
+        <button class="btn-niveau" data-niveau="B1">
+          <div style="font-size:1.6rem">🌳</div>
+          <div>B1 — Intermédiaire</div>
+          <div style="font-size:0.85rem;opacity:0.7">Questions complètes</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Paramètres voix -->
+    <div class="config-section">
+      <h2>3. Paramètres de la voix 🎙️</h2>
+      <div class="voix-config-grille">
+
+        <!-- Sélecteur de voix -->
+        <div class="voix-config-col">
+          <label class="voix-config-label" for="select-voix">Voix :</label>
+          <select id="select-voix" class="select-voix">
+            <option>Chargement des voix...</option>
+          </select>
+          <p class="voix-config-aide">💡 Privilégiez les voix <strong>Google</strong> (Chrome) ou <strong>Microsoft</strong> (Edge) pour une meilleure qualité. La voix 🇨🇭 fr-CH parle le français de Suisse.</p>
+        </div>
+
+        <!-- Contrôle de vitesse -->
+        <div class="voix-config-col">
+          <label class="voix-config-label">
+            Vitesse de lecture :
+            <strong id="label-vitesse">82%</strong>
+          </label>
+          <input type="range" id="curseur-vitesse" min="0.5" max="1.3" step="0.05" value="0.82" class="curseur-vitesse">
+          <div class="vitesse-labels">
+            <span>🐢 Lent</span>
+            <span>Normal</span>
+            <span>🐇 Rapide</span>
+          </div>
+          <button id="btn-tester-voix" class="btn-tester-voix">
+            ▶ Tester la voix
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Type de recruteur -->
+    <div class="config-section">
+      <h2>4. Type de recruteur</h2>
+      <div class="btn-groupe">
+        <button class="btn-recruteur actif" data-recruteur="sympathique">
+          <div style="font-size:1.6rem">😊</div>
+          <div>Sympathique</div>
+          <div style="font-size:0.85rem;opacity:0.7">Accueillant et patient</div>
+        </button>
+        <button class="btn-recruteur" data-recruteur="presse">
+          <div style="font-size:1.6rem">⏱️</div>
+          <div>Pressé</div>
+          <div style="font-size:0.85rem;opacity:0.7">Direct, peu de temps</div>
+        </button>
+        <button class="btn-recruteur" data-recruteur="exigeant">
+          <div style="font-size:1.6rem">🎯</div>
+          <div>Exigeant</div>
+          <div style="font-size:0.85rem;opacity:0.7">Précis et rigoureux</div>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;">
+      <button id="btn-retour-accueil" class="btn-principal secondaire" style="flex:0 0 auto;width:auto;padding:18px 28px;">
+        ← Retour
+      </button>
+      <button id="btn-lancer" class="btn-principal" disabled>
+        🚀 Lancer l'entretien
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== ÉCRAN 3 : ENTRETIEN ===== -->
+  <section id="ecran-entretien" class="ecran">
+
+    <!-- En-tête avec progression -->
+    <div class="entretien-header">
+      <div class="entretien-metier" id="entretien-metier-nom">
+        <!-- Rempli par app.js -->
+      </div>
+      <div class="progression-cont">
+        <div id="numero-question">Question 1 / 10</div>
+        <div class="barre-fond">
+          <div id="barre-progression"></div>
+        </div>
+      </div>
+      <div class="voix-controls">
+        <button id="btn-voix">🔊 Voix</button>
+        <select id="select-voix-entretien" class="select-voix-mini" title="Changer de voix"></select>
+      </div>
+    </div>
+
+    <!-- Message du recruteur -->
+    <div id="message-recruteur" class="cache"></div>
+
+    <!-- Carte de la question -->
+    <div class="carte-question">
+      <p id="texte-question">Chargement...</p>
+      <button id="btn-relire">🔁 Relire la question</button>
+    </div>
+
+    <!-- Zone de réponse -->
+    <div class="zone-reponse-cont">
+      <label class="reponse-label" for="zone-reponse">✏️ Votre réponse :</label>
+      <textarea id="zone-reponse" placeholder="Écrivez votre réponse ici...
+Conseil : donnez des exemples de votre expérience.
+Exemple : &quot;J'ai déjà travaillé dans... et j'ai appris à...&quot;"></textarea>
+      <p class="reponse-aide">💡 Astuce : Ctrl + Entrée pour soumettre votre réponse</p>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="nav-entretien">
+      <button id="btn-soumettre" class="btn-principal">
+        ✅ Soumettre ma réponse
+      </button>
+      <button id="btn-suivant" class="btn-principal cache" style="background:#7c3aed;">
+        ➡️ Question suivante
+      </button>
+      <button id="btn-terminer" class="btn-principal cache danger">
+        🏁 Terminer l'entretien
+      </button>
+    </div>
+
+    <!-- Zone de feedback -->
+    <div id="zone-feedback" class="cache">
+      <div class="feedback-score-bloc">
+        <div id="score-cercle">
+          <span id="score-valeur">0</span>
+          <span class="score-sur">/ 100</span>
+        </div>
+        <div class="feedback-texte-bloc">
+          <div id="score-label"></div>
+          <div id="score-message"></div>
+        </div>
+      </div>
+
+      <div id="details-criteres"></div>
+
+      <div class="relance-titre">💬 Question de relance du recruteur :</div>
+      <div id="question-relance"></div>
+    </div>
+
+  </section>
+
+  <!-- ===== ÉCRAN 4 : RAPPORT ===== -->
+  <section id="ecran-rapport" class="ecran">
+    <h1 class="rapport-titre">📄 Rapport de votre entretien</h1>
+
+    <div class="rapport-entete">
+      <div id="rapport-score-cercle">
+        <span class="score-grand">0</span>
+        <span class="score-sur-label">/ 100</span>
+      </div>
+      <div class="rapport-infos">
+        <div class="rapport-info-ligne">📋 <strong>Métier :</strong> <span id="rapport-metier"></span></div>
+        <div class="rapport-info-ligne">🌿 <strong>Niveau :</strong> <span id="rapport-niveau"></span></div>
+        <div class="rapport-info-ligne">👤 <strong>Recruteur :</strong> <span id="rapport-recruteur"></span></div>
+        <div class="rapport-info-ligne">📅 <strong>Date :</strong> <span id="rapport-date"></span></div>
+        <div class="rapport-info-ligne">❓ <strong>Questions répondues :</strong> <span id="rapport-nb-questions"></span></div>
+        <div class="rapport-info-ligne" style="font-size:1.3rem;font-weight:800;">🏆 <strong>Score moyen :</strong> <span id="rapport-score" style="color:#2563eb;"></span></div>
+      </div>
+    </div>
+
+    <div class="rapport-conclusion" id="rapport-conclusion"></div>
+
+    <h2 class="rapport-section-titre">Détail de vos réponses</h2>
+    <div id="rapport-liste-reponses"></div>
+
+    <div class="rapport-actions">
+      <button id="btn-imprimer" class="btn-principal" style="background:#7c3aed;">
+        🖨️ Imprimer le rapport
+      </button>
+      <button id="btn-recommencer" class="btn-principal pret">
+        🔄 Nouvel entretien
+      </button>
+    </div>
+  </section>
+
+  <!-- Scripts — ordre important : data et dépendances avant app.js -->
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/voice.js"></script>
+  <script src="assets/js/evaluation.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+{
+  "criteres": [
+    {
+      "id": "longueur",
+      "nom": "Longueur de la réponse",
+      "poids": 15,
+      "description": "La réponse est assez longue pour être complète.",
+      "niveaux": {
+        "excellent": "La réponse fait plus de 50 mots. C'est bien !",
+        "bien": "La réponse fait entre 20 et 50 mots. C'est correct.",
+        "insuffisant": "La réponse est trop courte. Essayez de dire plus de choses."
+      }
+    },
+    {
+      "id": "exemple",
+      "nom": "Exemple concret",
+      "poids": 25,
+      "description": "La réponse contient un exemple de votre expérience.",
+      "mots_cles_exemple": ["par exemple", "une fois", "j'ai", "quand j'ai travaillé", "dans mon ancien", "j'avais", "j'ai eu", "j'ai vécu", "comme quand", "notamment", "en particulier", "lors de"],
+      "niveaux": {
+        "excellent": "Bravo ! Vous avez donné un exemple concret de votre expérience.",
+        "absent": "Essayez de donner un exemple de votre vie ou de votre travail."
+      }
+    },
+    {
+      "id": "vocabulaire",
+      "nom": "Vocabulaire du métier",
+      "poids": 20,
+      "description": "La réponse utilise des mots du métier.",
+      "niveaux": {
+        "excellent": "Très bien ! Vous utilisez le vocabulaire du métier.",
+        "bien": "Bien. Essayez d'utiliser encore plus de mots du métier.",
+        "insuffisant": "Essayez d'utiliser des mots spécifiques à ce métier."
+      }
+    },
+    {
+      "id": "politesse",
+      "nom": "Politesse et respect",
+      "poids": 15,
+      "description": "La réponse est polie et professionnelle.",
+      "mots_polis": ["bonjour", "merci", "s'il vous plaît", "je vous remercie", "avec plaisir", "je serais ravi", "je serais heureux", "bien sûr", "certainement", "absolument"],
+      "niveaux": {
+        "excellent": "Excellent ! Votre réponse est très polie et professionnelle.",
+        "bien": "Bien. Votre réponse est correcte.",
+        "insuffisant": "Pensez à utiliser des formules polies comme 'Bonjour' ou 'Je vous remercie'."
+      }
+    },
+    {
+      "id": "structure",
+      "nom": "Structure de la réponse",
+      "poids": 15,
+      "description": "La réponse a une introduction, un développement et une conclusion.",
+      "mots_structure": ["premièrement", "d'abord", "ensuite", "puis", "enfin", "pour terminer", "en conclusion", "donc", "ainsi", "car", "parce que", "c'est pourquoi", "en premier lieu", "finalement"],
+      "niveaux": {
+        "excellent": "Votre réponse est bien structurée. C'est excellent !",
+        "bien": "Votre réponse a une bonne structure.",
+        "insuffisant": "Essayez d'organiser votre réponse : d'abord... ensuite... enfin..."
+      }
+    },
+    {
+      "id": "adaptation",
+      "nom": "Adaptation à l'offre",
+      "poids": 10,
+      "description": "La réponse montre que vous connaissez le poste.",
+      "niveaux": {
+        "excellent": "Très bien ! Vous montrez que vous connaissez ce poste.",
+        "insuffisant": "Essayez de montrer que vous connaissez bien ce travail."
+      }
+    }
+  ],
+  "feedbacks": {
+    "excellent": {
+      "min_score": 80,
+      "titre": "Excellent entretien !",
+      "message": "Votre réponse est très bonne. Vous avez donné des exemples, utilisé le vocabulaire du métier et vous vous êtes bien exprimé. Continuez comme ça !"
+    },
+    "bien": {
+      "min_score": 60,
+      "titre": "Bon entretien !",
+      "message": "Votre réponse est bonne. Essayez d'ajouter plus d'exemples de votre expérience et d'utiliser plus de mots du métier."
+    },
+    "moyen": {
+      "min_score": 40,
+      "titre": "Réponse correcte",
+      "message": "Votre réponse est correcte mais peut être améliorée. Donnez des exemples concrets et parlez plus longtemps."
+    },
+    "insuffisant": {
+      "min_score": 0,
+      "titre": "Réponse trop courte",
+      "message": "Votre réponse est trop courte ou manque d'informations. Essayez de parler plus et de donner des exemples de votre vie."
+    }
+  },
+  "recruteurs": {
+    "sympathique": {
+      "style": "chaleureux",
+      "introduction": "Bonjour, bienvenue ! Je suis content(e) de vous rencontrer aujourd'hui. Installez-vous confortablement.",
+      "relance_positive": "C'est très intéressant ! Pouvez-vous me dire plus ?",
+      "relance_negative": "Je comprends. Pouvez-vous m'expliquer un peu plus ?",
+      "conclusion": "Merci beaucoup pour cet entretien. C'était très agréable de vous parler !"
+    },
+    "presse": {
+      "style": "direct",
+      "introduction": "Bonjour, asseyez-vous. Allons droit au but. J'ai peu de temps.",
+      "relance_positive": "Bien. Et concrètement ?",
+      "relance_negative": "Soyez plus précis, s'il vous plaît.",
+      "conclusion": "D'accord, merci. On vous recontactera."
+    },
+    "exigeant": {
+      "style": "formel",
+      "introduction": "Bonjour. Asseyez-vous. Je vais vous poser quelques questions. Soyez précis et concret dans vos réponses.",
+      "relance_positive": "Intéressant. Pouvez-vous développer avec un exemple précis ?",
+      "relance_negative": "Ce n'est pas suffisant. Donnez-moi des faits concrets.",
+      "conclusion": "Bien. Nous avons d'autres candidats à voir. Nous vous ferons part de notre décision."
+    }
+  }
+}
