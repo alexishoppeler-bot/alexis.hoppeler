@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raccourcis Clavier</title>
+  <style>
+    :root {
+      --vert: #3a8c4a;
+      --vert-clair: #4caf60;
+      --vert-bg: #e8f5eb;
+      --gris-clair: #f1f5f9;
+      --texte: #1e293b;
+      --blanc: #ffffff;
+      --police: 'Segoe UI', Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--police);
+      background: var(--gris-clair);
+      color: var(--texte);
+      font-size: 16px;
+      line-height: 1.5;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 260px;
+      min-width: 220px;
+      background: var(--blanc);
+      border-right: 2px solid #e2e8f0;
+      padding: 28px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-imprimer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px 14px;
+      margin-top: 8px;
+      background: var(--vert);
+      color: var(--blanc);
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-imprimer:hover {
+      background: #2d7a3a;
+    }
+
+    @media print {
+      .sidebar { display: none; }
+      .contenu { padding: 0; max-width: 100%; }
+      .page-titre { font-size: 1.4rem; }
+      tbody tr:hover { background: none; }
+    }
+
+    .sidebar-titre {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--vert);
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--vert-bg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--texte);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.actif {
+      background: var(--vert-bg);
+      color: var(--vert);
+    }
+
+    .sidebar a .emoji {
+      margin-right: 8px;
+    }
+
+    /* ===== CONTENU PRINCIPAL ===== */
+    .contenu {
+      flex: 1;
+      padding: 36px 40px;
+      max-width: 960px;
+    }
+
+    .page-titre {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--vert);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-titre {
+      background: var(--vert);
+      color: var(--blanc);
+      font-size: 1.25rem;
+      font-weight: 700;
+      padding: 14px 20px;
+      border-radius: 10px 10px 0 0;
+      letter-spacing: 0.02em;
+    }
+
+    /* ===== TABLES ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--blanc);
+      border-radius: 0 0 10px 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    thead tr {
+      background: #d4edda;
+    }
+
+    thead th {
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: left;
+      color: #1a5c28;
+      border-bottom: 2px solid var(--vert);
+    }
+
+    thead th:first-child {
+      width: 45%;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e9f5ea;
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: #f0faf1;
+    }
+
+    td {
+      padding: 11px 18px;
+      font-size: 0.95rem;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    td:not(:first-child) {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #374151;
+    }
+
+    .kbd {
+      display: inline-block;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-bottom: 2px solid #9ca3af;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.82rem;
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 700px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; padding: 14px; }
+      .sidebar-titre { width: 100%; }
+      .contenu { padding: 20px 12px; }
+      .page-titre { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <nav class="sidebar">
+    <div class="sidebar-titre">⌨️ Raccourcis Clavier</div>
+    <a href="#basiques"><span class="emoji">🔑</span>Raccourcis basiques</a>
+    <a href="#edition"><span class="emoji">✏️</span>Édition de texte</a>
+    <a href="#curseur"><span class="emoji">🖱️</span>Curseur & Sélection</a>
+    <a href="#navigateurs"><span class="emoji">🌐</span>Navigateurs web</a>
+    <a href="#fenetres"><span class="emoji">🪟</span>Fenêtres & Onglets</a>
+    <a href="#windows10"><span class="emoji">💻</span>Windows 10</a>
+    <button class="btn-imprimer" onclick="window.print()">🖨️ Imprimer</button>
+  </nav>
+
+  <!-- ===== CONTENU ===== -->
+  <main class="contenu">
+    <h1 class="page-titre">⌨️ Raccourcis Clavier</h1>
+
+    <!-- BASIQUES -->
+    <div class="section" id="basiques">
+      <div class="section-titre">🔑 Raccourcis claviers basiques</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows</th>
+            <th>Mac</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Accéder au menu "édition"</td><td><span class="kbd">Alt + E</span></td><td><span class="kbd">Ctrl + F2 + F</span></td></tr>
+          <tr><td>Accéder au menu "fichier"</td><td><span class="kbd">Alt + F</span></td><td><span class="kbd">Ctrl + F2 + E</span></td></tr>
+          <tr><td>Accéder au menu "affichage"</td><td><span class="kbd">Alt + V</span></td><td><span class="kbd">Ctrl + F2 + V</span></td></tr>
+          <tr><td>Tout sélectionner</td><td><span class="kbd">Ctrl + A</span></td><td><span class="kbd">Cmd + A</span></td></tr>
+          <tr><td>Copier un texte</td><td><span class="kbd">Ctrl + C</span></td><td><span class="kbd">Cmd + C</span></td></tr>
+          <tr><td>Rechercher un texte</td><td><span class="kbd">Ctrl + F</span></td><td><span class="kbd">Cmd + F</span></td></tr>
+          <tr><td>Rechercher et remplacer du texte</td><td><span class="kbd">Ctrl + H</span></td><td><span class="kbd">Cmd + F</span></td></tr>
+          <tr><td>Ouvrir un nouveau document</td><td><span class="kbd">Ctrl + N</span></td><td><span class="kbd">Cmd + N</span></td></tr>
+          <tr><td>Ouvrir un fichier</td><td><span class="kbd">Ctrl + O</span></td><td><span class="kbd">Cmd + O</span></td></tr>
+          <tr><td>Options d'impression</td><td><span class="kbd">Ctrl + P</span></td><td><span class="kbd">Cmd + P</span></td></tr>
+          <tr><td>Enregistrer un fichier</td><td><span class="kbd">Ctrl + S</span></td><td><span class="kbd">Cmd + S</span></td></tr>
+          <tr><td>Supprimer définitivement un fichier</td><td><span class="kbd">Shift + Suppr</span></td><td><span class="kbd">Cmd + Suppr</span></td></tr>
+          <tr><td>Coller un texte</td><td><span class="kbd">Ctrl + V</span></td><td><span class="kbd">Cmd + V</span></td></tr>
+          <tr><td>Couper un texte</td><td><span class="kbd">Ctrl + X</span></td><td><span class="kbd">Cmd + X</span></td></tr>
+          <tr><td>Annuler une action</td><td><span class="kbd">Ctrl + Z</span></td><td><span class="kbd">Cmd + Z</span></td></tr>
+          <tr><td>Rétablir (annuler Ctrl+Z)</td><td><span class="kbd">Ctrl + Y</span></td><td><span class="kbd">Cmd + Y</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ÉDITION -->
+    <div class="section" id="edition">
+      <div class="section-titre">✏️ Édition de texte</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows</th>
+            <th>Mac</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Mettre du texte en gras</td><td><span class="kbd">Ctrl + B</span></td><td><span class="kbd">Cmd + B</span></td></tr>
+          <tr><td>Mettre du texte en italique</td><td><span class="kbd">Ctrl + I</span></td><td><span class="kbd">Cmd + I</span></td></tr>
+          <tr><td>Souligner du texte</td><td><span class="kbd">Ctrl + U</span></td><td><span class="kbd">Cmd + U</span></td></tr>
+          <tr><td>Effacer du texte à gauche</td><td><span class="kbd">Retour</span></td><td><span class="kbd">Retour</span></td></tr>
+          <tr><td>Effacer du texte à droite</td><td><span class="kbd">Suppr</span></td><td><span class="kbd">Fn + Retour</span></td></tr>
+          <tr><td>Effacer le mot de droite</td><td><span class="kbd">Ctrl + Suppr</span></td><td><span class="kbd">Cmd + Retour</span></td></tr>
+          <tr><td>Effacer le mot de gauche</td><td><span class="kbd">Ctrl + Retour</span></td><td><span class="kbd">Cmd + Fn + Retour</span></td></tr>
+          <tr><td>Sélectionner le mot suivant</td><td><span class="kbd">Tab</span></td><td><span class="kbd">Tab</span></td></tr>
+          <tr><td>Sélectionner le mot précédent</td><td><span class="kbd">Shift + Tab</span></td><td><span class="kbd">Shift + Tab</span></td></tr>
+          <tr><td>Rechercher ou coller un lien</td><td><span class="kbd">Ctrl + K</span></td><td><span class="kbd">Cmd + K</span></td></tr>
+          <tr><td>Rechercher dans la fenêtre</td><td><span class="kbd">Ctrl + G</span></td><td><span class="kbd">Cmd + G</span></td></tr>
+          <tr><td>Annuler une action</td><td><span class="kbd">Ctrl + Z</span></td><td><span class="kbd">Cmd + Z</span></td></tr>
+          <tr><td>Rétablir (annuler Ctrl+Z)</td><td><span class="kbd">Ctrl + Y</span></td><td><span class="kbd">Cmd + Y</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CURSEUR & SÉLECTION -->
+    <div class="section" id="curseur">
+      <div class="section-titre">🖱️ Déplacer le curseur & Sélection de texte</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows</th>
+            <th>Mac</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Aller au début du document</td><td><span class="kbd">Ctrl + Home</span></td><td><span class="kbd">Cmd + ↑</span></td></tr>
+          <tr><td>Aller à la fin du document</td><td><span class="kbd">Ctrl + Fin</span></td><td><span class="kbd">Cmd + ↓</span></td></tr>
+          <tr><td>Retourner au mot précédent</td><td><span class="kbd">Ctrl + ←</span></td><td><span class="kbd">Option + ←</span></td></tr>
+          <tr><td>Aller au mot suivant</td><td><span class="kbd">Ctrl + →</span></td><td><span class="kbd">Option + →</span></td></tr>
+          <tr><td>Aller au début d'un paragraphe</td><td><span class="kbd">Ctrl + ↑</span></td><td><span class="kbd">Cmd + ←</span></td></tr>
+          <tr><td>Aller à la fin d'un paragraphe</td><td><span class="kbd">Ctrl + ↓</span></td><td><span class="kbd">Cmd + →</span></td></tr>
+          <tr><td>Sélectionner tout le texte</td><td><span class="kbd">Ctrl + A</span></td><td><span class="kbd">Cmd + A</span></td></tr>
+          <tr><td>Sélectionner le caractère de gauche</td><td><span class="kbd">Shift + ←</span></td><td><span class="kbd">Shift + ←</span></td></tr>
+          <tr><td>Sélectionner le caractère de droite</td><td><span class="kbd">Shift + →</span></td><td><span class="kbd">Shift + →</span></td></tr>
+          <tr><td>Sélectionner la ligne du dessus</td><td><span class="kbd">Shift + ↑</span></td><td><span class="kbd">Shift + ↑</span></td></tr>
+          <tr><td>Sélectionner la ligne du dessous</td><td><span class="kbd">Shift + ↓</span></td><td><span class="kbd">Shift + ↓</span></td></tr>
+          <tr><td>Sélectionner le mot de gauche</td><td><span class="kbd">Shift + Ctrl + ←</span></td><td><span class="kbd">Shift + Alt + ←</span></td></tr>
+          <tr><td>Sélectionner le mot de droite</td><td><span class="kbd">Shift + Ctrl + →</span></td><td><span class="kbd">Shift + Alt + →</span></td></tr>
+          <tr><td>Sélectionner le paragraphe de gauche</td><td><span class="kbd">Shift + Ctrl + ↑</span></td><td><span class="kbd">Shift + Alt + ↑</span></td></tr>
+          <tr><td>Sélectionner le paragraphe entier</td><td><span class="kbd">Shift + Ctrl + ↓</span></td><td><span class="kbd">Shift + Alt + ↓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- NAVIGATEURS -->
+    <div class="section" id="navigateurs">
+      <div class="section-titre">🌐 Navigateurs web — Navigation (Chrome, Firefox, Safari, Edge)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows</th>
+            <th>Mac</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Aller à la fin d'une page</td><td><span class="kbd">Fin / End</span></td><td><span class="kbd">Cmd + ↓</span></td></tr>
+          <tr><td>Aller au début d'une page</td><td><span class="kbd">Home</span></td><td><span class="kbd">Cmd + ↑</span></td></tr>
+          <tr><td>Rafraîchir une page</td><td><span class="kbd">F5</span></td><td><span class="kbd">Cmd + R</span></td></tr>
+          <tr><td>Rafraîchir sans cache</td><td><span class="kbd">Ctrl + F5</span></td><td><span class="kbd">Cmd + Shift + R</span></td></tr>
+          <tr><td>Mode plein-écran</td><td><span class="kbd">F11</span></td><td><span class="kbd">Cmd + Shift + F</span></td></tr>
+          <tr><td>Zoomer</td><td><span class="kbd">Ctrl + +</span></td><td><span class="kbd">Cmd + +</span></td></tr>
+          <tr><td>Dézoomer</td><td><span class="kbd">Ctrl + -</span></td><td><span class="kbd">Cmd + -</span></td></tr>
+          <tr><td>Zoom 100% (défaut)</td><td><span class="kbd">Ctrl + 0</span></td><td><span class="kbd">Cmd + 0</span></td></tr>
+          <tr><td>Rechercher du texte</td><td><span class="kbd">Ctrl + F</span></td><td><span class="kbd">Cmd + F</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FENÊTRES & ONGLETS -->
+    <div class="section" id="fenetres">
+      <div class="section-titre">🪟 Gestion des fenêtres, onglets et favoris</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Windows</th>
+            <th>Mac</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Ouvrir un nouvel onglet</td><td><span class="kbd">Ctrl + T</span></td><td><span class="kbd">Cmd + T</span></td></tr>
+          <tr><td>Fermer l'onglet actif</td><td><span class="kbd">Ctrl + W</span></td><td><span class="kbd">Cmd + W</span></td></tr>
+          <tr><td>Fermer tous les onglets</td><td><span class="kbd">Ctrl + Shift + W</span></td><td><span class="kbd">Cmd + Q</span></td></tr>
+          <tr><td>Fermer tous les onglets sauf l'actif</td><td><span class="kbd">Ctrl + Alt + F4</span></td><td><span class="kbd">Cmd + Opt + W</span></td></tr>
+          <tr><td>Aller au prochain onglet</td><td><span class="kbd">Ctrl + Tab</span></td><td><span class="kbd">Control + Tab</span></td></tr>
+          <tr><td>Aller à l'onglet précédent</td><td><span class="kbd">Ctrl + Shift + Tab</span></td><td><span class="kbd">Shift + Ctrl + Tab</span></td></tr>
+          <tr><td>Aller au dernier onglet</td><td><span class="kbd">Ctrl + 9</span></td><td><span class="kbd">Cmd + 9</span></td></tr>
+          <tr><td>Rouvrir le dernier onglet fermé</td><td><span class="kbd">Ctrl + Shift + T</span></td><td><span class="kbd">Cmd + Shift + T</span></td></tr>
+          <tr><td>Ouvrir une nouvelle fenêtre</td><td><span class="kbd">Ctrl + N</span></td><td><span class="kbd">Cmd + N</span></td></tr>
+          <tr><td>Navigation privée</td><td><span class="kbd">Ctrl + Maj + N</span></td><td><span class="kbd">Cmd + Maj + N</span></td></tr>
+          <tr><td>Fermer la fenêtre actuelle</td><td><span class="kbd">Alt + F4</span></td><td><span class="kbd">Cmd + W</span></td></tr>
+          <tr><td>Changer de fenêtre</td><td><span class="kbd">Alt + Tab</span></td><td><span class="kbd">Cmd + Tab</span></td></tr>
+          <tr><td>Aller à la fenêtre précédente</td><td><span class="kbd">Alt + Shift + Tab</span></td><td><span class="kbd">Cmd + Shift + Tab</span></td></tr>
+          <tr><td>Rouvrir la dernière fenêtre fermée</td><td><span class="kbd">Ctrl + Shift + N</span></td><td>—</td></tr>
+          <tr><td>Gestionnaire des téléchargements</td><td><span class="kbd">Ctrl + J</span></td><td><span class="kbd">Cmd + J</span></td></tr>
+          <tr><td>Ouvrir un lien dans un nouvel onglet</td><td><span class="kbd">Ctrl + Clic</span></td><td><span class="kbd">Cmd + Clic</span></td></tr>
+          <tr><td>Imprimer la page web</td><td><span class="kbd">Ctrl + P</span></td><td><span class="kbd">Cmd + P</span></td></tr>
+          <tr><td>Enregistrer la page</td><td><span class="kbd">Ctrl + S</span></td><td><span class="kbd">Cmd + S</span></td></tr>
+          <tr><td>Ajouter une page en favoris</td><td><span class="kbd">Ctrl + D</span></td><td><span class="kbd">Cmd + D</span></td></tr>
+          <tr><td>Ajouter tous les onglets aux favoris</td><td><span class="kbd">Ctrl + Shift + D</span></td><td><span class="kbd">Cmd + Shift + D</span></td></tr>
+          <tr><td>Recherche Google</td><td><span class="kbd">Ctrl + E</span></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- WINDOWS 10 -->
+    <div class="section" id="windows10">
+      <div class="section-titre">💻 Raccourcis Windows 10</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Raccourci</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Changer d'application</td><td><span class="kbd">Alt + Tab</span></td></tr>
+          <tr><td>Fermer les applications</td><td><span class="kbd">Alt + F4</span></td></tr>
+          <tr><td>Afficher ou masquer le bureau</td><td><span class="kbd">Win + D</span></td></tr>
+          <tr><td>Réduire une fenêtre</td><td><span class="kbd">Win + ← / Win + →</span></td></tr>
+          <tr><td>Ouvrir la vue des tâches</td><td><span class="kbd">Win + Tab</span></td></tr>
+          <tr><td>Ouvrir le menu Démarrer</td><td><span class="kbd">Ctrl + Échap</span></td></tr>
+          <tr><td>Renommer</td><td><span class="kbd">F2</span></td></tr>
+          <tr><td>Verrouiller votre ordinateur</td><td><span class="kbd">Win + L</span></td></tr>
+          <tr><td>Ouvrir les paramètres</td><td><span class="kbd">Win + I</span></td></tr>
+          <tr><td>Recherche dans Windows</td><td><span class="kbd">Win + S</span></td></tr>
+          <tr><td>Enregistrer une capture d'écran</td><td><span class="kbd">Win + Impr écran</span></td></tr>
+          <tr><td>Ouvrir les options de la session</td><td><span class="kbd">Ctrl + Alt + Suppr</span></td></tr>
+          <tr><td>Commencer à parler à Cortana</td><td><span class="kbd">Win + C</span></td></tr>
+          <tr><td>Ajouter un nouveau bureau virtuel</td><td><span class="kbd">Win + Ctrl + D</span></td></tr>
+          <tr><td>Ouvrir le menu caché</td><td><span class="kbd">Win + X</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    // Surligne le lien actif dans la sidebar selon le scroll
+    const sections = document.querySelectorAll('.section');
+    const liens = document.querySelectorAll('.sidebar a');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          liens.forEach(l => l.classList.remove('actif'));
+          const lien = document.querySelector(`.sidebar a[href="#${entry.target.id}"]`);
+          if (lien) lien.classList.add('actif');
+        }
+      });
+    }, { threshold: 0.3 });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>

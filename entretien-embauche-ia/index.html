@@ -16,7 +16,7 @@
     <div class="accueil-chips">
       <span class="chip">🎙️ Voix</span>
       <span class="chip">📊 Score /100</span>
-      <span class="chip">💬 Feedback</span>
+      <span class="chip">✅ Choix guidés</span>
       <span class="chip">📄 Rapport</span>
       <span class="chip">💾 Sauvegarde auto</span>
     </div>
@@ -165,17 +165,17 @@
 
     <!-- Zone de réponse -->
     <div class="zone-reponse-cont">
-      <label class="reponse-label" for="zone-reponse">✏️ Votre réponse :</label>
-      <textarea id="zone-reponse" placeholder="Écrivez votre réponse ici...
-Conseil : donnez des exemples de votre expérience.
-Exemple : &quot;J'ai déjà travaillé dans... et j'ai appris à...&quot;"></textarea>
-      <p class="reponse-aide">💡 Astuce : Ctrl + Entrée pour soumettre votre réponse</p>
+      <div class="reponse-label">Choisissez la meilleure réponse :</div>
+      <div id="choix-reponses" class="choix-reponses" role="radiogroup" aria-label="Choix de réponse">
+        <!-- Rempli par app.js -->
+      </div>
+      <p class="reponse-aide">Comparez le contenu et la formulation : la meilleure réponse n'est pas forcément la plus longue.</p>
     </div>
 
     <!-- Boutons d'action -->
     <div class="nav-entretien">
       <button id="btn-soumettre" class="btn-principal">
-        ✅ Soumettre ma réponse
+        ✅ Valider mon choix
       </button>
       <button id="btn-suivant" class="btn-principal cache" style="background:#7c3aed;">
         ➡️ Question suivante
@@ -199,9 +199,6 @@ Exemple : &quot;J'ai déjà travaillé dans... et j'ai appris à...&quot;"></tex
       </div>
 
       <div id="details-criteres"></div>
-
-      <div class="relance-titre">💬 Question de relance du recruteur :</div>
-      <div id="question-relance"></div>
     </div>
 
   </section>

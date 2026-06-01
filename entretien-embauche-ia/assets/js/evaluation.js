@@ -2,6 +2,56 @@
 
 const Evaluation = {
 
+  // Évalue une réponse choisie parmi trois niveaux prédéfinis
+  evaluerChoix(choix) {
+    const evaluations = {
+      mauvaise: {
+        score: 25,
+        titre: 'Réponse mauvaise',
+        message: 'Cette réponse est trop courte, trop négative ou ne donne pas assez confiance au recruteur.',
+        couleur: '#e74c3c',
+        details: {
+          pertinence: { score: 1, max: 4, feedback: 'La réponse ne répond pas vraiment à la question.' },
+          precision: { score: 1, max: 3, feedback: 'Il manque des faits ou un exemple concret.' },
+          attitude: { score: 1, max: 3, feedback: 'Le ton n\'est pas assez professionnel.' }
+        }
+      },
+      acceptable: {
+        score: 60,
+        titre: 'Réponse acceptable',
+        message: 'Cette réponse peut fonctionner, mais elle reste générale. Elle serait meilleure avec un exemple précis.',
+        couleur: '#e67e22',
+        details: {
+          pertinence: { score: 3, max: 4, feedback: 'La réponse va dans le bon sens.' },
+          precision: { score: 1, max: 3, feedback: 'Elle manque encore de détails concrets.' },
+          attitude: { score: 2, max: 3, feedback: 'Le ton est correct et respectueux.' }
+        }
+      },
+      bien: {
+        score: 90,
+        titre: 'Bonne réponse',
+        message: 'Cette réponse est claire, professionnelle et concrète. Elle montre une bonne attitude pour l\'entretien.',
+        couleur: '#27ae60',
+        details: {
+          pertinence: { score: 4, max: 4, feedback: 'La réponse répond directement à la question.' },
+          precision: { score: 3, max: 3, feedback: 'Elle donne une explication ou un exemple utile.' },
+          attitude: { score: 3, max: 3, feedback: 'Le ton donne confiance au recruteur.' }
+        }
+      }
+    };
+
+    const resultat = evaluations[choix?.niveau] || evaluations.mauvaise;
+    return {
+      score: resultat.score,
+      details: resultat.details,
+      feedback: {
+        titre: resultat.titre,
+        message: resultat.message,
+        couleur: resultat.couleur
+      }
+    };
+  },
+
   // Évalue une réponse et retourne un objet avec score et feedbacks détaillés
   evaluer(reponse, metier, criteres) {
     const texte = reponse.trim().toLowerCase();
@@ -143,53 +193,5 @@ const Evaluation = {
         couleur: '#e74c3c'
       };
     }
-  },
-
-  // Choisit une question de relance selon le type de recruteur et le score
-  choisirRelance(metier, typeRecruteur, score, criteres) {
-    const relances = {
-      sympathique: {
-        bon: [
-          "C'est très intéressant ! Pouvez-vous me dire encore plus sur cette expérience ?",
-          "Excellent ! Et qu'est-ce que vous avez appris de cette situation ?",
-          "Formidable ! Comment avez-vous développé cette compétence ?"
-        ],
-        moyen: [
-          "Je comprends. Pouvez-vous me donner un exemple concret ?",
-          "Intéressant ! Pouvez-vous développer un peu plus ?",
-          "Pouvez-vous me parler d'une situation réelle ?"
-        ]
-      },
-      presse: {
-        bon: [
-          "Bien. Et concrètement, quel résultat ?",
-          "D'accord. Un exemple précis ?",
-          "Et dans votre dernier emploi ?"
-        ],
-        moyen: [
-          "Soyez plus précis, s'il vous plaît.",
-          "Un exemple concret, vite.",
-          "Fait ou pas fait ?"
-        ]
-      },
-      exigeant: {
-        bon: [
-          "Intéressant. Pouvez-vous développer avec un exemple précis et chiffré ?",
-          "Bien. Quel a été l'impact de votre action sur l'équipe ?",
-          "Je vois. Et comment avez-vous mesuré vos résultats ?"
-        ],
-        moyen: [
-          "Ce n'est pas suffisant. Donnez-moi des faits concrets.",
-          "Je ne vois pas d'exemple concret dans votre réponse.",
-          "Pouvez-vous prouver ce que vous dites avec des faits ?"
-        ]
-      }
-    };
-
-    const type = typeRecruteur || 'sympathique';
-    const niveau = score >= 60 ? 'bon' : 'moyen';
-    const options = relances[type]?.[niveau] || relances.sympathique.moyen;
-
-    return options[Math.floor(Math.random() * options.length)];
   }
 };
