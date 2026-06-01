@@ -391,6 +391,12 @@
         icon: '📧',
         desc: 'Choisissez un sujet, completez les champs, puis copiez et envoyez votre e-mail.',
         href: 'simulateur-email/simulateur-email.html'
+      },
+      {
+        name: 'Raccourcis clavier',
+        icon: '⌨️',
+        desc: 'Tous les raccourcis clavier essentiels : Windows, Mac, navigateurs et bureautique.',
+        href: '../entretien-embauche-ia/raccourcis-clavier.html'
       }
     ]
   };
