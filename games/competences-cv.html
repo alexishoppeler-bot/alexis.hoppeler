@@ -653,18 +653,6 @@ function renderHome(c) {
 <div class="card">
   <h2>Bienvenue dans le mini-manuel</h2>
   <p>Ce manuel interactif vous aide à connaître vos <strong>compétences techniques</strong> et vos <strong>qualités personnelles</strong> pour préparer votre CV, votre lettre de motivation et votre entretien d'embauche.</p>
-  <div class="home-grid">
-    <label>Votre niveau de français
-      <div class="level-group" id="levelGroup">
-        ${['A1','A2','B1'].map(l=>`<div class="level-chip${state.level_choice===l?' sel':''}" onclick="selectLevel('${l}')">${l}</div>`).join('')}
-      </div>
-    </label>
-    <label>Votre métier cible
-      <select id="jobSelect" onchange="state.job_choice=this.value;saveState()">
-        ${METIERS.map(m=>`<option value="${esc(m.m)}"${state.job_choice===m.m?' selected':''}>${esc(m.m)}</option>`).join('')}
-      </select>
-    </label>
-  </div>
   <div class="btn-row">
     <button class="btn btn-primary" onclick="showSection('theory')">📖 Commencer — Théorie</button>
     <button class="btn btn-outline" onclick="showSection('exercises')">🧩 Aller aux exercices</button>
