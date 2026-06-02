@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compétences & Qualités — Mini-manuel CV</title>
+<style>
+:root {
+  --c-bg: #f4f6fa;
+  --c-card: #ffffff;
+  --c-primary: #2563eb;
+  --c-primary-dark: #1d4ed8;
+  --c-secondary: #7c3aed;
+  --c-success: #16a34a;
+  --c-error: #dc2626;
+  --c-warn: #d97706;
+  --c-text: #1e293b;
+  --c-muted: #64748b;
+  --c-border: #e2e8f0;
+  --c-xp: #f59e0b;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;display:flex;flex-direction:column}
+button{cursor:pointer;font-family:inherit}
+
+/* ── TOP BAR ── */
+#topbar{background:var(--c-card);border-bottom:1px solid var(--c-border);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+#topbar h1{font-size:1.1rem;font-weight:700;color:var(--c-primary);flex:1;white-space:nowrap}
+#xpBar{display:flex;align-items:center;gap:8px;font-size:.85rem}
+#xpBar .xp-val{font-weight:700;color:var(--c-xp)}
+#xpTrack{width:140px;height:10px;background:var(--c-border);border-radius:99px;overflow:hidden}
+#xpFill{height:100%;background:var(--c-xp);border-radius:99px;transition:width .5s}
+#levelBadge{background:var(--c-primary);color:#fff;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:600}
+.top-btn{padding:7px 14px;border-radius:8px;border:1px solid var(--c-border);background:#fff;font-size:.82rem;color:var(--c-text)}
+.top-btn:hover{background:var(--c-bg)}
+
+/* ── LAYOUT ── */
+#shell{display:flex;flex:1}
+#sidebar{width:220px;background:var(--c-card);border-right:1px solid var(--c-border);padding:12px 0;display:flex;flex-direction:column;gap:2px;min-height:calc(100vh - 55px)}
+#sidebar button{display:flex;align-items:center;gap:10px;padding:11px 18px;border:none;background:none;font-size:.9rem;color:var(--c-text);text-align:left;border-radius:0;transition:background .15s;width:100%}
+#sidebar button:hover{background:var(--c-bg)}
+#sidebar button.active{background:#eff6ff;color:var(--c-primary);font-weight:600}
+#sidebar button .nav-icon{width:22px;text-align:center}
+#sidebar button .nav-badge{margin-left:auto;background:var(--c-success);color:#fff;font-size:.7rem;padding:2px 6px;border-radius:99px}
+#content{flex:1;padding:28px 32px;max-width:900px}
+
+/* ── CARDS ── */
+.card{background:var(--c-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px;margin-bottom:20px}
+.card h2{font-size:1.25rem;margin-bottom:10px;color:var(--c-primary)}
+.card h3{font-size:1.05rem;margin:14px 0 8px;color:var(--c-secondary)}
+.card p{line-height:1.65;color:var(--c-muted);margin-bottom:8px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:10px;border:none;font-size:.95rem;font-weight:600;transition:all .15s}
+.btn-primary{background:var(--c-primary);color:#fff}
+.btn-primary:hover{background:var(--c-primary-dark)}
+.btn-success{background:var(--c-success);color:#fff}
+.btn-outline{background:#fff;color:var(--c-primary);border:2px solid var(--c-primary)}
+.btn-outline:hover{background:#eff6ff}
+.btn-sm{padding:8px 16px;font-size:.85rem}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+/* ── HOME ── */
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.home-grid label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.9rem}
+.home-grid select,.home-grid input[type=radio]{margin-top:4px}
+select{padding:10px;border:1px solid var(--c-border);border-radius:8px;font-size:.95rem;background:#fff;width:100%}
+.level-group{display:flex;gap:10px;margin-top:6px}
+.level-chip{flex:1;padding:10px;border:2px solid var(--c-border);border-radius:10px;text-align:center;cursor:pointer;font-weight:600;transition:all .15s}
+.level-chip.sel{border-color:var(--c-primary);background:#eff6ff;color:var(--c-primary)}
+
+/* ── THEORY ── */
+.theory-nav{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.theory-nav button{padding:8px 14px;border:1px solid var(--c-border);border-radius:8px;background:#fff;font-size:.85rem}
+.theory-nav button.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+.theory-page{display:none}
+.theory-page.show{display:block}
+.theory-example{background:#f0fdf4;border-left:4px solid var(--c-success);padding:12px 16px;border-radius:8px;margin:10px 0;font-style:italic}
+.theory-note{background:#eff6ff;border-left:4px solid var(--c-primary);padding:12px 16px;border-radius:8px;margin:10px 0}
+
+/* ── VOCAB ── */
+.vocab-tabs{display:flex;gap:8px;margin-bottom:14px}
+.vocab-tabs button{padding:8px 18px;border:1px solid var(--c-border);border-radius:8px;background:#fff;font-size:.88rem}
+.vocab-tabs button.active{background:var(--c-secondary);color:#fff;border-color:var(--c-secondary)}
+.word-grid{display:flex;flex-wrap:wrap;gap:8px}
+.word-chip{padding:8px 14px;border:1px solid var(--c-border);border-radius:8px;cursor:pointer;background:#fff;font-size:.9rem;transition:all .15s}
+.word-chip:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.word-chip.comp{border-color:#2563eb;background:#eff6ff;color:#1d4ed8}
+.word-chip.qual{border-color:#7c3aed;background:#f5f3ff;color:#6d28d9}
+#wordModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+#wordModal.show{display:flex}
+#wordModalBox{background:#fff;border-radius:var(--radius);padding:28px;max-width:480px;width:90%;position:relative}
+#wordModalBox h3{font-size:1.3rem;margin-bottom:10px}
+.modal-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.4rem;color:var(--c-muted)}
+
+/* ── GRAMMAR ── */
+.rule-card{background:#f8fafc;border:1px solid var(--c-border);border-radius:10px;padding:16px;margin-bottom:12px}
+.rule-card .formula{font-size:1.05rem;font-weight:700;color:var(--c-primary);margin-bottom:6px}
+.masc-fem-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.mf-row{display:flex;justify-content:space-between;padding:8px 12px;background:#fff;border:1px solid var(--c-border);border-radius:8px;font-size:.9rem}
+
+/* ── EXERCISES ── */
+.ex-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.ex-counter{font-size:.9rem;color:var(--c-muted)}
+.ex-progress{flex:1;height:8px;background:var(--c-border);border-radius:99px;overflow:hidden}
+.ex-progress-fill{height:100%;background:var(--c-primary);border-radius:99px;transition:width .4s}
+.ex-score{font-weight:700;color:var(--c-success)}
+.question-card{background:var(--c-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px}
+.question-card .q-type{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--c-muted);margin-bottom:6px}
+.question-card .q-text{font-size:1.1rem;font-weight:600;margin-bottom:20px;line-height:1.5}
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice-btn{padding:13px 18px;border:2px solid var(--c-border);border-radius:10px;background:#fff;font-size:.95rem;text-align:left;transition:all .15s}
+.choice-btn:hover:not(:disabled){border-color:var(--c-primary);background:#eff6ff}
+.choice-btn.correct{border-color:var(--c-success);background:#f0fdf4;color:var(--c-success)}
+.choice-btn.wrong{border-color:var(--c-error);background:#fef2f2;color:var(--c-error)}
+.feedback{margin-top:14px;padding:12px 16px;border-radius:8px;font-size:.9rem;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#f0fdf4;color:var(--c-success)}
+.feedback.ko{background:#fef2f2;color:var(--c-error)}
+.fill-input{width:100%;padding:12px;border:2px solid var(--c-border);border-radius:8px;font-size:1rem;margin-bottom:12px}
+.fill-input:focus{outline:none;border-color:var(--c-primary)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.col-header{font-weight:700;text-align:center;padding:10px;border-radius:8px;margin-bottom:8px}
+.col-header.comp{background:#eff6ff;color:var(--c-primary)}
+.col-header.qual{background:#f5f3ff;color:var(--c-secondary)}
+.classify-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.classify-drop{min-height:80px;border:2px dashed var(--c-border);border-radius:10px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+.classify-drop.over{border-color:var(--c-primary);background:#eff6ff}
+.drag-item{padding:8px 14px;background:#fff;border:1px solid var(--c-border);border-radius:8px;cursor:grab;font-size:.9rem;user-select:none}
+.drag-item:active{cursor:grabbing}
+.offer-box{background:#f8fafc;border:1px solid var(--c-border);border-radius:10px;padding:16px;font-size:.95rem;line-height:1.7;margin-bottom:16px}
+.profile-picks{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pick-item{padding:8px 14px;border:2px solid var(--c-border);border-radius:8px;cursor:pointer;background:#fff;font-size:.88rem}
+.pick-item.picked-q{border-color:var(--c-secondary);background:#f5f3ff;color:var(--c-secondary)}
+.pick-item.picked-c{border-color:var(--c-primary);background:#eff6ff;color:var(--c-primary)}
+.profile-result{background:#f0fdf4;border:1px solid var(--c-success);border-radius:10px;padding:16px;font-size:.95rem;line-height:1.7;margin-top:12px;display:none}
+
+/* ── BADGES ── */
+.badge-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.badge{padding:10px 16px;border-radius:10px;background:#fff;border:2px solid var(--c-border);font-size:.85rem;display:flex;align-items:center;gap:8px;opacity:.4}
+.badge.unlocked{opacity:1;border-color:var(--c-xp);background:#fffbeb}
+
+/* ── RESULTS ── */
+.result-score{font-size:3rem;font-weight:800;color:var(--c-primary);text-align:center;margin:16px 0 4px}
+.result-label{text-align:center;font-size:1.1rem;color:var(--c-muted);margin-bottom:20px}
+.stat-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--c-border);font-size:.9rem}
+.stat-row:last-child{border-bottom:none}
+.bonus-card{background:#fffbeb;border:1px solid var(--c-xp);border-radius:10px;padding:16px;margin-bottom:12px}
+.bonus-card h4{color:var(--c-warn);margin-bottom:6px}
+
+/* ── TEST FINAL ── */
+.test-intro{text-align:center;padding:20px}
+.test-intro .big{font-size:3rem;margin-bottom:10px}
+
+/* ── CONFETTI ── */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:999}
+
+/* ── FEEDBACK TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:.9rem;transform:translateY(60px);opacity:0;transition:all .3s;z-index:300}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ── STREAK ── */
+#streakBadge{background:var(--c-error);color:#fff;padding:4px 10px;border-radius:99px;font-size:.8rem;font-weight:700;display:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  #sidebar{display:none}
+  #content{padding:16px}
+  .home-grid{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <h1>🏅 Compétences &amp; Qualités — CV</h1>
+  <div id="xpBar">
+    <span class="xp-val" id="xpVal">0</span><span style="color:var(--c-muted);font-size:.8rem">XP</span>
+    <div id="xpTrack"><div id="xpFill" style="width:0%"></div></div>
+    <span id="levelBadge">Débutant</span>
+    <span id="streakBadge">🔥 0</span>
+  </div>
+  <button class="top-btn" id="soundBtn" title="Son">🔔 Son</button>
+  <button class="top-btn" onclick="exportResults()">⬇ Exporter</button>
+  <button class="top-btn" onclick="resetAll()" style="color:var(--c-error)">↺ Réinitialiser</button>
+</div>
+
+<!-- SHELL -->
+<div id="shell">
+  <nav id="sidebar">
+    <button onclick="showSection('home')" id="nav-home" class="active"><span class="nav-icon">🏠</span>Accueil</button>
+    <button onclick="showSection('theory')" id="nav-theory"><span class="nav-icon">📖</span>Théorie</button>
+    <button onclick="showSection('vocab')" id="nav-vocab"><span class="nav-icon">💬</span>Vocabulaire</button>
+    <button onclick="showSection('grammar')" id="nav-grammar"><span class="nav-icon">✏️</span>Grammaire</button>
+    <button onclick="showSection('exercises')" id="nav-exercises"><span class="nav-icon">🧩</span>Exercices</button>
+    <button onclick="showSection('test')" id="nav-test"><span class="nav-icon">📝</span>Test final</button>
+    <button onclick="showSection('results')" id="nav-results"><span class="nav-icon">🏆</span>Résultats</button>
+  </nav>
+
+  <main id="content"></main>
+</div>
+
+<!-- WORD MODAL -->
+<div id="wordModal" onclick="closeModal(event)">
+  <div id="wordModalBox">
+    <button class="modal-close" onclick="closeWordModal()">✕</button>
+    <div id="modalCat" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;color:var(--c-muted)"></div>
+    <h3 id="modalWord"></h3>
+    <p id="modalDef" style="margin:8px 0;line-height:1.6"></p>
+    <div class="theory-example" id="modalEx"></div>
+    <div class="theory-note" style="margin-top:10px;font-size:.88rem" id="modalCV"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+<!-- CONFETTI CANVAS -->
+<canvas id="confetti"></canvas>
+
+<script>
+'use strict';
+/* ═══════════════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════════════ */
+const COMPETENCES = [
+  { w:'nettoyer des locaux',     def:'Laver, balayer et entretenir les espaces de travail.', ex:'Je sais nettoyer des locaux après le travail.', cv:'Compétent(e) dans le nettoyage de locaux professionnels.' },
+  { w:'utiliser une caisse',     def:'Encaisser les paiements et rendre la monnaie.', ex:'Je sais utiliser une caisse enregistreuse.', cv:'Maîtrise de la caisse enregistreuse et des paiements.' },
+  { w:'préparer une commande',   def:'Rassembler les articles pour une commande client.', ex:'Je sais préparer une commande rapidement.', cv:'Expérience dans la préparation de commandes.' },
+  { w:'servir un client',        def:'Accueillir, conseiller et satisfaire un client.', ex:'Je sais servir un client avec le sourire.', cv:'Compétent(e) dans le service client.' },
+  { w:'ranger un stock',         def:'Organiser et classer les marchandises dans un dépôt.', ex:'Je sais ranger un stock de manière logique.', cv:'Expérience dans la gestion et le rangement de stock.' },
+  { w:'utiliser Word',           def:'Créer et modifier des documents avec Microsoft Word.', ex:'Je sais utiliser Word pour rédiger des lettres.', cv:'Maîtrise de Microsoft Word.' },
+  { w:'utiliser Excel',          def:'Créer des tableaux et calculs avec Microsoft Excel.', ex:'Je sais utiliser Excel pour des listes simples.', cv:'Connaissance de Microsoft Excel.' },
+  { w:'répondre au téléphone',   def:'Décrocher, accueillir et rediriger les appels.', ex:'Je sais répondre au téléphone de façon professionnelle.', cv:'Compétent(e) dans la communication téléphonique.' },
+  { w:'conduire un véhicule',    def:'Conduire un véhicule de livraison ou de service.', ex:'Je sais conduire un véhicule léger ou utilitaire.', cv:'Permis de conduire B. Expérience en conduite professionnelle.' },
+  { w:'lire une consigne',       def:'Comprendre et appliquer des instructions écrites.', ex:'Je sais lire et respecter les consignes de sécurité.', cv:'Capacité à lire et appliquer des consignes techniques.' },
+  { w:'respecter une procédure', def:'Suivre les étapes d\'un processus dans l\'ordre correct.', ex:'Je sais respecter les procédures de l\'entreprise.', cv:'Rigoureux(se) dans le respect des procédures qualité.' },
+  { w:'préparer un repas',       def:'Cuisiner des plats chauds ou froids selon un menu.', ex:'Je sais préparer un repas pour plusieurs personnes.', cv:'Expérience en préparation culinaire collective.' },
+  { w:'contrôler une livraison', def:'Vérifier que les marchandises reçues correspondent à la commande.', ex:'Je sais contrôler une livraison et signaler les erreurs.', cv:'Compétent(e) dans le contrôle de livraisons.' },
+  { w:'porter des charges',      def:'Transporter des objets lourds en toute sécurité.', ex:'Je sais porter des charges dans le respect des règles de sécurité.', cv:'Capacité à porter des charges lourdes (jusqu\'à X kg).' },
+  { w:'accueillir un client',    def:'Recevoir et orienter un client avec professionnalisme.', ex:'Je sais accueillir un client et l\'orienter dans le magasin.', cv:'Compétence en accueil clientèle.' },
+  { w:'gérer les déchets',       def:'Trier et évacuer les déchets selon les règles en vigueur.', ex:'Je sais gérer les déchets selon les normes du lieu.', cv:'Connaissance des normes de tri et d\'évacuation des déchets.' },
+  { w:'désinfecter une surface', def:'Nettoyer une surface avec des produits désinfectants.', ex:'Je sais désinfecter une surface de manière sécurisée.', cv:'Maîtrise des techniques de désinfection des surfaces.' },
+  { w:'organiser un rayon',      def:'Ranger et mettre en valeur les produits dans un rayon.', ex:'Je sais organiser un rayon pour que les clients trouvent facilement.', cv:'Expérience dans la mise en rayon et le réassort.' },
+  { w:'scanner des articles',    def:'Passer les articles devant un lecteur de code-barres.', ex:'Je sais scanner des articles rapidement à la caisse.', cv:'Maîtrise des scanners et lecteurs de codes-barres.' },
+  { w:'faire un inventaire',     def:'Compter et lister les stocks disponibles.', ex:'Je sais faire un inventaire complet du stock.', cv:'Expérience dans la réalisation d\'inventaires.' },
+];
+
+const QUALITES = [
+  { w:'ponctuel',     fem:'ponctuelle',  def:'Arriver à l\'heure, toujours à l\'heure convenue.', ex:'Je suis ponctuel(le) : j\'arrive toujours à l\'heure.', cv:'Reconnu(e) pour ma ponctualité.' },
+  { w:'organisé',     fem:'organisée',   def:'Savoir planifier et ranger son travail.', ex:'Je suis organisé(e) dans mes tâches quotidiennes.', cv:'Capacité à organiser efficacement mon travail.' },
+  { w:'motivé',       fem:'motivée',     def:'Avoir envie de travailler et de s\'améliorer.', ex:'Je suis très motivé(e) pour ce poste.', cv:'Grande motivation pour apprendre et progresser.' },
+  { w:'sérieux',      fem:'sérieuse',    def:'Travailler avec application et conscience professionnelle.', ex:'Je suis sérieux(se) dans tout ce que je fais.', cv:'Reconnu(e) pour mon sérieux et mon application.' },
+  { w:'fiable',       fem:'fiable',      def:'Être digne de confiance, tenir ses engagements.', ex:'Je suis fiable : on peut compter sur moi.', cv:'Collaborateur(trice) fiable sur qui on peut compter.' },
+  { w:'autonome',     fem:'autonome',    def:'Travailler sans avoir besoin d\'aide constante.', ex:'Je suis capable de travailler de manière autonome.', cv:'Grande autonomie dans l\'exécution des tâches.' },
+  { w:'patient',      fem:'patiente',    def:'Garder son calme dans les situations difficiles.', ex:'Je suis patient(e) avec les clients et mes collègues.', cv:'Capacité à rester patient(e) sous pression.' },
+  { w:'souriant',     fem:'souriante',   def:'Avoir une attitude positive et agréable.', ex:'Je suis toujours souriant(e) avec les clients.', cv:'Accueil chaleureux et attitude positive.' },
+  { w:'discret',      fem:'discrète',    def:'Respecter la confidentialité et ne pas divulguer d\'informations.', ex:'Je suis discret(ète) sur les informations sensibles.', cv:'Grand sens de la discrétion professionnelle.' },
+  { w:'respectueux',  fem:'respectueuse',def:'Traiter les autres avec considération et politesse.', ex:'Je suis respectueux(se) envers mes collègues.', cv:'Respectueux(se) des règles et des personnes.' },
+  { w:'dynamique',    fem:'dynamique',   def:'Être énergique et actif dans son travail.', ex:'Je suis dynamique et j\'aime aller vite.', cv:'Profil dynamique, actif(ve) et réactif(ve).' },
+  { w:'flexible',     fem:'flexible',    def:'S\'adapter aux changements et aux horaires variables.', ex:'Je suis flexible sur les horaires si nécessaire.', cv:'Grande flexibilité horaire et d\'adaptation.' },
+  { w:'calme',        fem:'calme',       def:'Garder son sang-froid dans les situations stressantes.', ex:'Je reste calme même quand le travail est difficile.', cv:'Capacité à travailler avec calme sous pression.' },
+  { w:'soigneux',     fem:'soigneuse',   def:'Faire son travail avec soin et précision.', ex:'Je suis soigneux(se) : je fais attention aux détails.', cv:'Travail soigné et attentif aux détails.' },
+  { w:'rapide',       fem:'rapide',      def:'Travailler efficacement sans perdre de temps.', ex:'Je suis rapide sans sacrifier la qualité.', cv:'Capable de travailler rapidement et efficacement.' },
+  { w:'poli',         fem:'polie',       def:'Utiliser les formules de politesse et être courtois.', ex:'Je suis toujours poli(e) avec les clients.', cv:'Excellente politesse et savoir-vivre professionnel.' },
+  { w:'responsable',  fem:'responsable', def:'Prendre en charge ses missions et assumer ses erreurs.', ex:'Je suis responsable de mes tâches et de mon travail.', cv:'Sens des responsabilités développé.' },
+  { w:'attentif',     fem:'attentive',   def:'Être concentré et faire attention aux détails.', ex:'Je suis attentif(ve) aux consignes et aux besoins.', cv:'Grande attention portée aux détails et aux consignes.' },
+  { w:'persévérant',  fem:'persévérante',def:'Continuer même quand c\'est difficile, ne pas abandonner.', ex:'Je suis persévérant(e) : je ne donne pas facilement.', cv:'Persévérant(e) face aux défis professionnels.' },
+  { w:'efficace',     fem:'efficace',    def:'Obtenir de bons résultats avec le minimum d\'efforts inutiles.', ex:'Je suis efficace dans l\'organisation de mon travail.', cv:'Profil efficace, orienté(e) résultats.' },
+];
+
+const METIERS = [
+  { m:'Nettoyage',             comps:['nettoyer des locaux','désinfecter une surface','gérer les déchets','respecter une procédure'], quals:['soigneux','rigoureux','ponctuel','autonome'] },
+  { m:'Cuisine',               comps:['préparer un repas','respecter une procédure','gérer les déchets','faire un inventaire'], quals:['soigneux','rapide','organisé','fiable'] },
+  { m:'Vente',                 comps:['servir un client','utiliser une caisse','organiser un rayon','scanner des articles'], quals:['souriant','poli','dynamique','patient'] },
+  { m:'Livraison',             comps:['conduire un véhicule','contrôler une livraison','porter des charges','lire une consigne'], quals:['ponctuel','fiable','responsable','autonome'] },
+  { m:'Bâtiment',              comps:['porter des charges','lire une consigne','respecter une procédure','faire un inventaire'], quals:['soigneux','responsable','autonome','attentif'] },
+  { m:'EMS/aide à la personne',comps:['respecter une procédure','répondre au téléphone','lire une consigne','désinfecter une surface'], quals:['patient','discret','respectueux','calme'] },
+  { m:'Administration',        comps:['utiliser Word','utiliser Excel','répondre au téléphone','lire une consigne'], quals:['organisé','fiable','discret','attentif'] },
+  { m:'Hôtellerie',            comps:['accueillir un client','servir un client','préparer un repas','répondre au téléphone'], quals:['souriant','poli','dynamique','flexible'] },
+  { m:'Employé de rayon',      comps:['organiser un rayon','scanner des articles','ranger un stock','faire un inventaire'], quals:['organisé','soigneux','rapide','attentif'] },
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   EXERCISES DATA
+═══════════════════════════════════════════════════════════════ */
+// Type A: Compétence ou qualité?
+const EX_A = [
+  ...COMPETENCES.map(c => ({ type:'A', word:c.w, answer:'compétence', explain:'C\'est ce que vous savez faire concrètement.' })),
+  ...QUALITES.map(q => ({ type:'A', word:q.w, answer:'qualité', explain:'C\'est votre manière de travailler.' })),
+];
+
+// Type C: Compléter les phrases (fill blank)
+const EX_C = [
+  { type:'C', sentence:'Je ___ utiliser une caisse enregistreuse.', answer:'sais', options:['suis','sais','peux'], explain:'"Je sais + infinitif" = une compétence que vous maîtrisez.' },
+  { type:'C', sentence:'Je ___ ponctuel(le) et sérieux(se).', answer:'suis', options:['suis','sais','peux'], explain:'"Je suis + qualité" = une caractéristique personnelle.' },
+  { type:'C', sentence:'Je ___ travailler en équipe.', answer:'peux', options:['suis','sais','peux'], explain:'"Je peux + infinitif" = une capacité.' },
+  { type:'C', sentence:"J'ai de l'expérience ___ le nettoyage.", answer:'dans', options:['en','dans','pour'], explain:'"J\'ai de l\'expérience dans..." pour un domaine précis.' },
+  { type:'C', sentence:'Je ___ capable de respecter les consignes.', answer:'suis', options:['suis','sais','peux'], explain:'"Je suis capable de + infinitif" = une capacité.' },
+  { type:'C', sentence:'Je ___ organiser un rayon efficacement.', answer:'sais', options:['suis','sais','peux'], explain:'"Je sais + infinitif" = une compétence.' },
+  { type:'C', sentence:'Je ___ patient(e) avec les clients difficiles.', answer:'suis', options:['suis','sais','peux'], explain:'"Je suis + qualité personnelle".' },
+  { type:'C', sentence:'Je ___ préparer une commande rapidement.', answer:'sais', options:['suis','sais','peux'], explain:'"Je sais + infinitif" = compétence technique.' },
+  { type:'C', sentence:"J'ai de l'expérience ___ la vente.", answer:'dans', options:['en','dans','pour'], explain:'"J\'ai de l\'expérience dans..." + domaine.' },
+  { type:'C', sentence:'Je ___ flexible sur les horaires.', answer:'suis', options:['suis','sais','peux'], explain:'"Je suis + qualité personnelle".' },
+  { type:'C', sentence:'Je ___ répondre au téléphone en français.', answer:'sais', options:['suis','sais','peux'], explain:'"Je sais + infinitif" = compétence.' },
+  { type:'C', sentence:'Je ___ travailler le week-end si nécessaire.', answer:'peux', options:['suis','sais','peux'], explain:'"Je peux + infinitif" = disponibilité.' },
+  { type:'C', sentence:"J'ai de l'expérience ___ la cuisine.", answer:'dans', options:['en','dans','pour'], explain:'"J\'ai de l\'expérience dans..." + domaine.' },
+  { type:'C', sentence:'Je ___ dynamique et motivé(e).', answer:'suis', options:['suis','sais','peux'], explain:'"Je suis + qualité personnelle".' },
+  { type:'C', sentence:'Je ___ capable de porter des charges lourdes.', answer:'suis', options:['suis','sais','peux'], explain:'"Je suis capable de + infinitif".' },
+];
+
+// Type D: Corriger les erreurs
+const EX_D = [
+  { type:'D', wrong:'Je suis utiliser une caisse.', correct:'Je sais utiliser une caisse.', explain:'"Je suis" est suivi d\'un adjectif. Pour une compétence, utilisez "Je sais + infinitif".' },
+  { type:'D', wrong:'Je peux ponctuel.', correct:'Je suis ponctuel.', explain:'Avec une qualité, on utilise "Je suis + qualité".' },
+  { type:'D', wrong:'Je sais organisé.', correct:'Je suis organisé.', explain:'"Je sais" est suivi d\'un verbe à l\'infinitif, pas d\'un adjectif.' },
+  { type:'D', wrong:"J'ai d'expérience dans le nettoyage.", correct:"J'ai de l'expérience dans le nettoyage.", explain:'"J\'ai de l\'expérience" est la formule correcte.' },
+  { type:'D', wrong:'Je suis conduire un véhicule.', correct:'Je sais conduire un véhicule.', explain:'Pour une compétence, utilisez "Je sais + infinitif".' },
+  { type:'D', wrong:'Je suis capable scanner des articles.', correct:'Je suis capable de scanner des articles.', explain:'"Je suis capable de + infinitif" — il ne faut pas oublier "de".' },
+  { type:'D', wrong:'Je suis sais préparer un repas.', correct:'Je sais préparer un repas.', explain:'Ne mélangez pas "Je suis" et "Je sais".' },
+  { type:'D', wrong:'Je peux sérieux dans mon travail.', correct:'Je suis sérieux dans mon travail.', explain:'"Je peux" est suivi d\'un infinitif, pas d\'un adjectif.' },
+  { type:'D', wrong:"J'ai de l'expérience pour le bâtiment.", correct:"J'ai de l'expérience dans le bâtiment.", explain:'On dit "dans le bâtiment", pas "pour le bâtiment".' },
+  { type:'D', wrong:'Je suis capable de suis organisé.', correct:'Je suis capable de travailler de manière organisée.', explain:'"Je suis capable de + infinitif". On ne répète pas "suis".' },
+];
+
+// Type E: Masculin / féminin
+const EX_E = [
+  { type:'E', masc:'Il est motivé.',     fem:'Elle est ___.',     answer:'motivée',     explain:'motivé → motivée : on ajoute -e.' },
+  { type:'E', masc:'Il est organisé.',   fem:'Elle est ___.',     answer:'organisée',   explain:'organisé → organisée : on ajoute -e.' },
+  { type:'E', masc:'Il est ponctuel.',   fem:'Elle est ___.',     answer:'ponctuelle',  explain:'ponctuel → ponctuelle : on double le -l et on ajoute -e.' },
+  { type:'E', masc:'Il est sérieux.',    fem:'Elle est ___.',     answer:'sérieuse',    explain:'sérieux → sérieuse : -eux devient -euse.' },
+  { type:'E', masc:'Il est travailleur.',fem:'Elle est ___.',     answer:'travailleuse',explain:'travailleur → travailleuse : -eur devient -euse.' },
+  { type:'E', masc:'Il est discret.',    fem:'Elle est ___.',     answer:'discrète',    explain:'discret → discrète : on ajoute un accent et -e.' },
+  { type:'E', masc:'Il est patient.',    fem:'Elle est ___.',     answer:'patiente',    explain:'patient → patiente : on ajoute -e.' },
+  { type:'E', masc:'Il est souriant.',   fem:'Elle est ___.',     answer:'souriante',   explain:'souriant → souriante : on ajoute -e.' },
+  { type:'E', masc:'Il est attentif.',   fem:'Elle est ___.',     answer:'attentive',   explain:'attentif → attentive : -if devient -ive.' },
+  { type:'E', masc:'Il est responsable.',fem:'Elle est ___.',     answer:'responsable', explain:'responsable → responsable : pas de changement.' },
+  { type:'E', masc:'Il est fiable.',     fem:'Elle est ___.',     answer:'fiable',      explain:'fiable → fiable : pas de changement.' },
+  { type:'E', masc:'Il est autonome.',   fem:'Elle est ___.',     answer:'autonome',    explain:'autonome → autonome : pas de changement.' },
+  { type:'E', masc:'Il est dynamique.',  fem:'Elle est ___.',     answer:'dynamique',   explain:'dynamique → dynamique : pas de changement.' },
+  { type:'E', masc:'Il est persévérant.',fem:'Elle est ___.',     answer:'persévérante',explain:'persévérant → persévérante : on ajoute -e.' },
+  { type:'E', masc:'Il est soigneux.',   fem:'Elle est ___.',     answer:'soigneuse',   explain:'soigneux → soigneuse : -eux devient -euse.' },
+  { type:'E', masc:'Il est rapide.',     fem:'Elle est ___.',     answer:'rapide',      explain:'rapide → rapide : pas de changement.' },
+  { type:'E', masc:'Il est calme.',      fem:'Elle est ___.',     answer:'calme',       explain:'calme → calme : pas de changement.' },
+  { type:'E', masc:'Il est poli.',       fem:'Elle est ___.',     answer:'polie',       explain:'poli → polie : on ajoute -e.' },
+  { type:'E', masc:'Il est efficace.',   fem:'Elle est ___.',     answer:'efficace',    explain:'efficace → efficace : pas de changement.' },
+  { type:'E', masc:'Il est flexible.',   fem:'Elle est ___.',     answer:'flexible',    explain:'flexible → flexible : pas de changement.' },
+];
+
+// Type F: Métier + compétence
+const EX_F = [
+  { type:'F', job:'Nettoyage',             q:'Quelle compétence est la plus importante ?', correct:'nettoyer des locaux',    options:['utiliser Excel','nettoyer des locaux','servir un client'] },
+  { type:'F', job:'Cuisine',               q:'Quelle compétence est essentielle ?',         correct:'préparer un repas',       options:['conduire un véhicule','préparer un repas','scanner des articles'] },
+  { type:'F', job:'Vente',                 q:'Quelle compétence est nécessaire ?',           correct:'utiliser une caisse',     options:['utiliser une caisse','désinfecter une surface','faire un inventaire'] },
+  { type:'F', job:'Livraison',             q:'Quelle compétence est indispensable ?',        correct:'conduire un véhicule',    options:['préparer un repas','conduire un véhicule','utiliser Word'] },
+  { type:'F', job:'EMS/aide à la personne',q:'Quelle compétence est la plus utile ?',       correct:'respecter une procédure', options:['scanner des articles','respecter une procédure','organiser un rayon'] },
+  { type:'F', job:'Administration',        q:'Quelle compétence est essentielle ?',          correct:'utiliser Word',           options:['porter des charges','utiliser Word','gérer les déchets'] },
+  { type:'F', job:'Hôtellerie',            q:'Quelle compétence est la plus importante ?',  correct:'accueillir un client',    options:['accueillir un client','faire un inventaire','conduire un véhicule'] },
+  { type:'F', job:'Employé de rayon',      q:'Quelle compétence est nécessaire ?',           correct:'organiser un rayon',      options:['organiser un rayon','répondre au téléphone','préparer un repas'] },
+  { type:'F', job:'Bâtiment',              q:'Quelle compétence est utile sur un chantier ?',correct:'porter des charges',      options:['porter des charges','utiliser Excel','servir un client'] },
+  { type:'F', job:'Livraison',             q:'Pour vérifier les marchandises reçues :',      correct:'contrôler une livraison', options:['contrôler une livraison','désinfecter une surface','préparer un repas'] },
+];
+
+// Type G: Métier + qualité
+const EX_G = [
+  { type:'G', job:'EMS/aide à la personne',q:'Quelle qualité est la plus importante ?', correct:'patient',      options:['patient','rapide','dynamique'] },
+  { type:'G', job:'Vente',                 q:'Quelle qualité est essentielle ?',         correct:'souriant',     options:['discret','souriant','autonome'] },
+  { type:'G', job:'Administration',        q:'Quelle qualité est indispensable ?',        correct:'organisé',     options:['dynamique','organisé','rapide'] },
+  { type:'G', job:'Nettoyage',             q:'Quelle qualité est la plus utile ?',        correct:'soigneux',     options:['soigneux','souriant','flexible'] },
+  { type:'G', job:'Livraison',             q:'Quelle qualité est nécessaire ?',            correct:'ponctuel',     options:['patient','ponctuel','discret'] },
+  { type:'G', job:'Cuisine',               q:'Quelle qualité est essentielle en cuisine ?',correct:'soigneux',    options:['soigneux','discret','poli'] },
+  { type:'G', job:'Hôtellerie',            q:'Quelle qualité est la plus appréciée ?',    correct:'poli',         options:['poli','autonome','rapide'] },
+  { type:'G', job:'Bâtiment',              q:'Quelle qualité est importante sur chantier ?',correct:'responsable',options:['responsable','souriant','patient'] },
+  { type:'G', job:'EMS/aide à la personne',q:'Pour respecter la vie privée des résidents :', correct:'discret', options:['discret','dynamique','rapide'] },
+  { type:'G', job:'Employé de rayon',      q:'Pour travailler efficacement seul :',        correct:'autonome',    options:['autonome','souriant','patient'] },
+];
+
+// Type H: Lire une mini-offre d'emploi
+const EX_H = [
+  {
+    type:'H',
+    offer:'Nous cherchons un(e) employé(e) de nettoyage. Vous devez savoir désinfecter les surfaces et gérer les déchets. Nous cherchons une personne sérieuse et ponctuelle.',
+    comps:['désinfecter les surfaces','gérer les déchets'],
+    quals:['sérieuse','ponctuelle'],
+    allOptions:{ comps:['désinfecter les surfaces','gérer les déchets','travailler en équipe','être motivé'], quals:['sérieuse','ponctuelle','rapide','organisée'] }
+  },
+  {
+    type:'H',
+    offer:'Notre magasin recrute un(e) vendeur(se). Vous devez utiliser une caisse et organiser le rayon. Nous cherchons quelqu\'un de souriant et dynamique.',
+    comps:['utiliser une caisse','organiser le rayon'],
+    quals:['souriant','dynamique'],
+    allOptions:{ comps:['utiliser une caisse','organiser le rayon','conduire un véhicule','préparer un repas'], quals:['souriant','dynamique','discret','patient'] }
+  },
+  {
+    type:'H',
+    offer:'Nous recrutons un(e) aide-soignant(e) en EMS. Vous devez respecter les procédures médicales et répondre au téléphone. Nous cherchons une personne patiente et discrète.',
+    comps:['respecter les procédures','répondre au téléphone'],
+    quals:['patiente','discrète'],
+    allOptions:{ comps:['respecter les procédures','répondre au téléphone','faire un inventaire','conduire un véhicule'], quals:['patiente','discrète','dynamique','rapide'] }
+  },
+  {
+    type:'H',
+    offer:'Livreur(se) recherché(e). Vous devez conduire un véhicule et contrôler les livraisons. Nous cherchons une personne fiable et responsable.',
+    comps:['conduire un véhicule','contrôler les livraisons'],
+    quals:['fiable','responsable'],
+    allOptions:{ comps:['conduire un véhicule','contrôler les livraisons','utiliser Word','préparer un repas'], quals:['fiable','responsable','souriant','patient'] }
+  },
+];
+
+// Type I: Construire un mini-profil CV
+const EX_I = [
+  { type:'I', label:'Construisez votre mini-profil CV' }
+];
+
+// Merge all exercises for the exercise bank (excluding type I for separate handling)
+function buildExBank() {
+  const pool = [];
+  // A: 40 total (20 comp + 20 qual) — use all
+  EX_A.forEach(e => pool.push(e));
+  // C: 15
+  EX_C.forEach(e => pool.push(e));
+  // D: 10
+  EX_D.forEach(e => pool.push(e));
+  // E: 20
+  EX_E.forEach(e => pool.push(e));
+  // F: 10
+  EX_F.forEach(e => pool.push(e));
+  // G: 10
+  EX_G.forEach(e => pool.push(e));
+  // H: 4
+  EX_H.forEach(e => pool.push(e));
+  // B (classify): generate 12 classify exercises
+  for (let i = 0; i < 12; i++) {
+    const sc = shuffle([...COMPETENCES]).slice(0,3).map(x=>x.w);
+    const sq = shuffle([...QUALITES]).slice(0,3).map(x=>x.w);
+    pool.push({ type:'B', comps:sc, quals:sq });
+  }
+  return shuffle(pool);
+}
+
+// Test final: 30 questions from types A,C,D,E,F,G,H
+function buildTestFinal() {
+  const pool = [
+    ...shuffle(EX_A).slice(0,8),
+    ...shuffle(EX_C).slice(0,5),
+    ...shuffle(EX_D).slice(0,4),
+    ...shuffle(EX_E).slice(0,6),
+    ...shuffle(EX_F).slice(0,3),
+    ...shuffle(EX_G).slice(0,3),
+    EX_H[Math.floor(Math.random()*EX_H.length)],
+  ];
+  return shuffle(pool).slice(0,30);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════ */
+const KEY = 'compCV_';
+let state = {
+  xp: 0,
+  level: 0,
+  streak: 0,
+  badges: {},
+  exDone: 0,
+  exCorrect: 0,
+  testDone: false,
+  testScore: 0,
+  level_choice: 'A2',
+  job_choice: 'Vente',
+  theoryPage: 0,
+  bonusUnlocked: [],
+  soundOn: true,
+};
+function saveState() { try { localStorage.setItem(KEY+'state', JSON.stringify(state)); } catch(e){} }
+function loadState() {
+  try {
+    const s = localStorage.getItem(KEY+'state');
+    if (s) state = Object.assign(state, JSON.parse(s));
+  } catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   XP / LEVELS / BADGES
+═══════════════════════════════════════════════════════════════ */
+const LEVELS = [
+  { xp:0,    name:'Débutant' },
+  { xp:100,  name:'Apprenti' },
+  { xp:300,  name:'En progrès' },
+  { xp:600,  name:'Autonome' },
+  { xp:1000, name:'Prêt pour le CV' },
+  { xp:1500, name:'Champion' },
+];
+const BADGES_DEF = [
+  { id:'first',    icon:'🌟', name:'Première réussite',         cond: s => s.exCorrect >= 1 },
+  { id:'streak5',  icon:'🔥', name:'5 bonnes réponses de suite', cond: s => s.streak >= 5 },
+  { id:'expQual',  icon:'💜', name:'Expert des qualités',        cond: s => s.exCorrect >= 20 },
+  { id:'expComp',  icon:'💙', name:'Expert des compétences',     cond: s => s.exCorrect >= 40 },
+  { id:'gram',     icon:'✏️', name:'Grammaire solide',           cond: s => s.exCorrect >= 60 },
+  { id:'cv',       icon:'📄', name:'CV prêt',                    cond: s => s.xp >= 1000 },
+  { id:'test',     icon:'🏆', name:'Test final réussi',          cond: s => s.testDone && s.testScore >= 21 },
+];
+const BONUSES = [
+  { xp:200,  id:'vocab',  name:'Bonus Vocabulaire', desc:'Exercice vocabulaire supplémentaire débloqué.' },
+  { xp:500,  id:'cv_b',   name:'Bonus CV',          desc:'Fiche révision CV débloquée.' },
+  { xp:800,  id:'gram_b', name:'Bonus Grammaire',   desc:'Exercice grammaire avancé débloqué.' },
+  { xp:1000, id:'test_b', name:'Bonus Test Blanc',  desc:'Test blanc supplémentaire débloqué.' },
+];
+
+function currentLevel() {
+  let lv = LEVELS[0];
+  for (const l of LEVELS) { if (state.xp >= l.xp) lv = l; }
+  return lv;
+}
+function nextLevel() {
+  return LEVELS.find(l => l.xp > state.xp) || null;
+}
+function updateXpBar() {
+  const cur = currentLevel();
+  const nxt = nextLevel();
+  const xpInLevel = state.xp - cur.xp;
+  const needed = nxt ? nxt.xp - cur.xp : 1;
+  const pct = nxt ? Math.min(100, (xpInLevel / needed) * 100) : 100;
+  document.getElementById('xpVal').textContent = state.xp;
+  document.getElementById('xpFill').style.width = pct + '%';
+  document.getElementById('levelBadge').textContent = cur.name;
+  const sb = document.getElementById('streakBadge');
+  if (state.streak >= 3) { sb.style.display='inline'; sb.textContent='🔥 '+state.streak; }
+  else sb.style.display='none';
+}
+function awardXP(amount, label) {
+  state.xp += amount;
+  checkBonuses();
+  checkBadges();
+  updateXpBar();
+  showToast('+' + amount + ' XP — ' + label);
+  saveState();
+}
+function checkBadges() {
+  let changed = false;
+  for (const b of BADGES_DEF) {
+    if (!state.badges[b.id] && b.cond(state)) {
+      state.badges[b.id] = true;
+      changed = true;
+      setTimeout(() => showToast('🏅 Badge débloqué : ' + b.name), 600);
+    }
+  }
+  if (changed) saveState();
+}
+function checkBonuses() {
+  for (const b of BONUSES) {
+    if (!state.bonusUnlocked.includes(b.id) && state.xp >= b.xp) {
+      state.bonusUnlocked.push(b.id);
+      showToast('🎁 ' + b.name + ' débloqué !');
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════════════ */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+function playSound(type) {
+  if (!state.soundOn) return;
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type==='ok')  { o.frequency.value=660; g.gain.setValueAtTime(.3,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.3); }
+    if (type==='ko')  { o.frequency.value=180; g.gain.setValueAtTime(.2,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.5); }
+    if (type==='xp')  { o.frequency.value=880; g.gain.setValueAtTime(.15,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.2); }
+    o.start(); o.stop(ctx.currentTime+.6);
+  } catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONFETTI
+═══════════════════════════════════════════════════════════════ */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx2 = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const pieces = Array.from({length:120}, ()=>({
+    x: Math.random()*canvas.width, y: -10,
+    w: 8+Math.random()*8, h: 6+Math.random()*6,
+    r: Math.random()*Math.PI*2, dr: (Math.random()-.5)*.2,
+    vy: 2+Math.random()*4, vx: (Math.random()-.5)*3,
+    color: ['#2563eb','#7c3aed','#16a34a','#f59e0b','#dc2626','#0ea5e9'][Math.floor(Math.random()*6)],
+    alpha: 1
+  }));
+  let frame;
+  function draw() {
+    ctx2.clearRect(0,0,canvas.width,canvas.height);
+    let alive = false;
+    for (const p of pieces) {
+      p.y += p.vy; p.x += p.vx; p.r += p.dr; p.alpha -= .008;
+      if (p.alpha > 0 && p.y < canvas.height) { alive=true; }
+      ctx2.save(); ctx2.globalAlpha=Math.max(0,p.alpha); ctx2.translate(p.x,p.y); ctx2.rotate(p.r);
+      ctx2.fillStyle=p.color; ctx2.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx2.restore();
+    }
+    if (alive) frame = requestAnimationFrame(draw);
+    else ctx2.clearRect(0,0,canvas.width,canvas.height);
+  }
+  if (frame) cancelAnimationFrame(frame);
+  draw();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════════ */
+let currentSection = 'home';
+function showSection(id) {
+  currentSection = id;
+  document.querySelectorAll('#sidebar button').forEach(b => b.classList.toggle('active', b.id==='nav-'+id));
+  const c = document.getElementById('content');
+  switch(id) {
+    case 'home':      renderHome(c); break;
+    case 'theory':    renderTheory(c); break;
+    case 'vocab':     renderVocab(c); break;
+    case 'grammar':   renderGrammar(c); break;
+    case 'exercises': renderExercises(c); break;
+    case 'test':      renderTest(c); break;
+    case 'results':   renderResults(c); break;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME
+═══════════════════════════════════════════════════════════════ */
+function renderHome(c) {
+  c.innerHTML = `
+<div class="card">
+  <h2>Bienvenue dans le mini-manuel</h2>
+  <p>Ce manuel interactif vous aide à connaître vos <strong>compétences techniques</strong> et vos <strong>qualités personnelles</strong> pour préparer votre CV, votre lettre de motivation et votre entretien d'embauche.</p>
+  <div class="home-grid">
+    <label>Votre niveau de français
+      <div class="level-group" id="levelGroup">
+        ${['A1','A2','B1'].map(l=>`<div class="level-chip${state.level_choice===l?' sel':''}" onclick="selectLevel('${l}')">${l}</div>`).join('')}
+      </div>
+    </label>
+    <label>Votre métier cible
+      <select id="jobSelect" onchange="state.job_choice=this.value;saveState()">
+        ${METIERS.map(m=>`<option value="${esc(m.m)}"${state.job_choice===m.m?' selected':''}>${esc(m.m)}</option>`).join('')}
+      </select>
+    </label>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showSection('theory')">📖 Commencer — Théorie</button>
+    <button class="btn btn-outline" onclick="showSection('exercises')">🧩 Aller aux exercices</button>
+    <button class="btn btn-outline" onclick="showSection('test')">📝 Test final</button>
+  </div>
+</div>
+<div class="card">
+  <h3>Votre progression</h3>
+  <div class="stat-row"><span>XP total</span><strong>${state.xp} XP</strong></div>
+  <div class="stat-row"><span>Niveau</span><strong>${currentLevel().name}</strong></div>
+  <div class="stat-row"><span>Exercices terminés</span><strong>${state.exDone}</strong></div>
+  <div class="stat-row"><span>Bonnes réponses</span><strong>${state.exCorrect}</strong></div>
+  <div class="stat-row"><span>Test final</span><strong>${state.testDone?'Terminé — '+state.testScore+'/30':'Non commencé'}</strong></div>
+</div>
+<div class="card">
+  <h3>Badges débloqués</h3>
+  <div class="badge-grid">
+    ${BADGES_DEF.map(b=>`<div class="badge${state.badges[b.id]?' unlocked':''}">${b.icon} ${esc(b.name)}</div>`).join('')}
+  </div>
+</div>`;
+}
+function selectLevel(l) {
+  state.level_choice = l;
+  saveState();
+  document.querySelectorAll('.level-chip').forEach(c=>c.classList.toggle('sel', c.textContent===l));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   THEORY
+═══════════════════════════════════════════════════════════════ */
+const THEORY_PAGES = [
+  {
+    title:"Qu'est-ce qu'une compétence technique ?",
+    body:`<p>Une <strong>compétence technique</strong> est quelque chose que vous <strong>savez faire concrètement</strong>.</p>
+<p>C'est une action, un savoir-faire appris par la pratique ou la formation.</p>
+<div class="theory-example">Exemples : Je sais utiliser une caisse. Je sais préparer un repas. Je sais conduire un véhicule.</div>
+<div class="theory-note"><strong>Formule clé :</strong> Je sais + <em>verbe à l'infinitif</em></div>
+<p>Les compétences techniques montrent ce que vous êtes capable de faire dans votre métier.</p>`
+  },
+  {
+    title:"Qu'est-ce qu'une qualité personnelle ?",
+    body:`<p>Une <strong>qualité personnelle</strong> décrit votre <strong>manière de travailler</strong> et votre personnalité professionnelle.</p>
+<p>Ce n'est pas une action précise, mais une caractéristique de votre façon d'être au travail.</p>
+<div class="theory-example">Exemples : Je suis ponctuel(le). Je suis organisé(e). Je suis motivé(e).</div>
+<div class="theory-note"><strong>Formule clé :</strong> Je suis + <em>adjectif</em></div>
+<p>Les qualités personnelles montrent comment vous travaillez avec les autres et comment vous gérez votre travail.</p>`
+  },
+  {
+    title:"Quelle est la différence ?",
+    body:`<p>La différence principale est simple :</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+  <div style="background:#eff6ff;padding:14px;border-radius:10px">
+    <strong style="color:var(--c-primary)">Compétence technique</strong>
+    <p style="margin-top:8px">Ce que je <strong>sais faire</strong>.<br>Une action concrète.</p>
+    <div class="theory-example">Je sais nettoyer des locaux.</div>
+  </div>
+  <div style="background:#f5f3ff;padding:14px;border-radius:10px">
+    <strong style="color:var(--c-secondary)">Qualité personnelle</strong>
+    <p style="margin-top:8px">Ma <strong>façon de travailler</strong>.<br>Un trait de caractère.</p>
+    <div class="theory-example">Je suis soigneux(se).</div>
+  </div>
+</div>
+<p>Un bon CV combine les deux : ce que vous <em>savez faire</em> et comment vous <em>le faites</em>.</p>`
+  },
+  {
+    title:"À quoi ça sert dans un CV ?",
+    body:`<p>Dans un CV, les compétences et les qualités montrent rapidement à l'employeur ce que vous pouvez apporter.</p>
+<h3>Exemple de section CV</h3>
+<div style="background:#f8fafc;border:1px solid var(--c-border);border-radius:10px;padding:16px;font-size:.95rem">
+  <strong>Compétences techniques :</strong>
+  <ul style="margin:8px 0 12px 18px;line-height:2">
+    <li>Nettoyage et entretien de locaux</li>
+    <li>Désinfection des surfaces</li>
+    <li>Gestion des déchets</li>
+  </ul>
+  <strong>Qualités personnelles :</strong>
+  <ul style="margin:8px 0 0 18px;line-height:2">
+    <li>Soigneux(se) et attentif(ve)</li>
+    <li>Ponctuel(le) et fiable</li>
+  </ul>
+</div>
+<div class="theory-note" style="margin-top:12px">Le recruteur lit votre CV en 30 secondes. Choisissez 3 à 5 compétences et 3 qualités les plus importantes pour le poste.</div>`
+  },
+  {
+    title:"À quoi ça sert dans une lettre de motivation ?",
+    body:`<p>Dans une lettre de motivation, vous expliquez pourquoi vous correspondez au poste en développant vos compétences et qualités.</p>
+<h3>Exemple de phrases pour une lettre</h3>
+<div class="theory-example">Je suis une personne sérieuse, motivée et organisée. Je sais nettoyer des locaux et désinfecter les surfaces conformément aux normes en vigueur. Je suis capable de travailler de manière autonome et de respecter les consignes.</div>
+<p>La lettre de motivation est plus personnelle que le CV. Donnez des exemples concrets de vos compétences si possible.</p>
+<div class="theory-note">Choisissez les compétences et qualités qui correspondent exactement à ce que demande l'offre d'emploi.</div>`
+  },
+  {
+    title:"À quoi ça sert dans un entretien ?",
+    body:`<p>Lors d'un entretien d'embauche, le recruteur vous posera des questions sur vos compétences et vos qualités.</p>
+<h3>Questions fréquentes</h3>
+<div style="display:flex;flex-direction:column;gap:10px">
+  <div style="background:#f8fafc;border-radius:8px;padding:12px"><strong>Question :</strong> Quelles sont vos compétences principales ?<br><strong>Réponse :</strong> <em>Je sais utiliser une caisse, organiser un rayon et servir les clients.</em></div>
+  <div style="background:#f8fafc;border-radius:8px;padding:12px"><strong>Question :</strong> Quelles sont vos qualités ?<br><strong>Réponse :</strong> <em>Je suis ponctuel(le), dynamique et fiable.</em></div>
+  <div style="background:#f8fafc;border-radius:8px;padding:12px"><strong>Question :</strong> Pourquoi êtes-vous fait(e) pour ce poste ?<br><strong>Réponse :</strong> <em>Je suis motivé(e), j'ai de l'expérience dans la vente et je suis capable de travailler en équipe.</em></div>
+</div>
+<div class="theory-note" style="margin-top:12px">Préparez 3 compétences et 3 qualités à citer. Entraînez-vous à les dire à voix haute.</div>`
+  },
+  {
+    title:"Exemples par métier",
+    body:`<p>Voici quelques exemples de compétences et qualités selon le métier :</p>
+${METIERS.slice(0,5).map(m=>`<div style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:10px">
+  <strong>🔹 ${esc(m.m)}</strong>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:.9rem">
+    <div><em style="color:var(--c-primary)">Compétences :</em><br>${m.comps.slice(0,2).map(c=>'• '+c).join('<br>')}</div>
+    <div><em style="color:var(--c-secondary)">Qualités :</em><br>${m.quals.slice(0,2).map(q=>'• '+q).join('<br>')}</div>
+  </div>
+</div>`).join('')}
+<p style="color:var(--c-muted);font-size:.88rem">Allez dans la section <strong>Vocabulaire</strong> pour voir tous les mots et leurs exemples.</p>`
+  },
+];
+
+function renderTheory(c) {
+  const pg = state.theoryPage;
+  const p = THEORY_PAGES[pg];
+  c.innerHTML = `
+<div class="card">
+  <div class="theory-nav">
+    ${THEORY_PAGES.map((p,i)=>`<button class="${i===pg?'active':''}" onclick="goTheory(${i})">${i+1}</button>`).join('')}
+  </div>
+  <h2>${esc(p.title)}</h2>
+  ${p.body}
+  <div class="btn-row" style="margin-top:20px">
+    ${pg>0?`<button class="btn btn-outline btn-sm" onclick="goTheory(${pg-1})">← Précédent</button>`:''}
+    ${pg<THEORY_PAGES.length-1?`<button class="btn btn-primary btn-sm" onclick="goTheory(${pg+1})">Suivant →</button>`:`<button class="btn btn-success btn-sm" onclick="showSection('vocab')">Continuer : Vocabulaire →</button>`}
+  </div>
+  <div style="margin-top:10px;font-size:.82rem;color:var(--c-muted)">Page ${pg+1} / ${THEORY_PAGES.length}</div>
+</div>`;
+}
+function goTheory(i) {
+  state.theoryPage = i;
+  saveState();
+  if (i === THEORY_PAGES.length - 1) { awardXP(100, 'Théorie terminée !'); }
+  showSection('theory');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VOCAB
+═══════════════════════════════════════════════════════════════ */
+let vocabTab = 'comp';
+function renderVocab(c) {
+  c.innerHTML = `
+<div class="card">
+  <h2>Vocabulaire interactif</h2>
+  <p>Cliquez sur un mot pour voir sa définition, un exemple et comment l'utiliser dans un CV.</p>
+  <div class="vocab-tabs">
+    <button class="${vocabTab==='comp'?'active':''}" onclick="switchVocab('comp')">💙 Compétences techniques (${COMPETENCES.length})</button>
+    <button class="${vocabTab==='qual'?'active':''}" onclick="switchVocab('qual')">💜 Qualités personnelles (${QUALITES.length})</button>
+  </div>
+  <div class="word-grid" id="wordGrid">
+    ${vocabTab==='comp'
+      ? COMPETENCES.map((w,i)=>`<div class="word-chip comp" onclick="openWord('comp',${i})">${esc(w.w)}</div>`).join('')
+      : QUALITES.map((w,i)=>`<div class="word-chip qual" onclick="openWord('qual',${i})">${esc(w.w)}</div>`).join('')
+    }
+  </div>
+</div>`;
+}
+function switchVocab(tab) { vocabTab=tab; showSection('vocab'); }
+function openWord(type, i) {
+  const w = type==='comp' ? COMPETENCES[i] : QUALITES[i];
+  document.getElementById('modalCat').textContent = type==='comp' ? '💙 Compétence technique' : '💜 Qualité personnelle';
+  document.getElementById('modalWord').textContent = w.w;
+  document.getElementById('modalDef').textContent = w.def;
+  document.getElementById('modalEx').textContent = w.ex;
+  document.getElementById('modalCV').innerHTML = '📄 CV : ' + esc(w.cv);
+  document.getElementById('wordModal').classList.add('show');
+}
+function closeModal(e) { if (e.target.id==='wordModal') closeWordModal(); }
+function closeWordModal() { document.getElementById('wordModal').classList.remove('show'); }
+
+/* ═══════════════════════════════════════════════════════════════
+   GRAMMAR
+═══════════════════════════════════════════════════════════════ */
+function renderGrammar(c) {
+  c.innerHTML = `
+<div class="card">
+  <h2>Grammaire — Les formules essentielles</h2>
+  ${[
+    { f:'Je suis + qualité', ex:['Je suis ponctuel.','Je suis ponctuelle.','Je suis organisé(e) et fiable.'] },
+    { f:'Je sais + infinitif', ex:['Je sais utiliser une caisse.','Je sais préparer un repas.','Je sais répondre au téléphone.'] },
+    { f:'Je peux + infinitif', ex:['Je peux travailler en équipe.','Je peux travailler le week-end.','Je peux commencer rapidement.'] },
+    { f:"J'ai de l'expérience en / dans", ex:["J'ai de l'expérience dans le nettoyage.","J'ai de l'expérience en cuisine.","J'ai de l'expérience dans la vente."] },
+    { f:'Je suis capable de + infinitif', ex:['Je suis capable de respecter les consignes.','Je suis capable de travailler seul(e).','Je suis capable de m\'adapter rapidement.'] },
+  ].map(r=>`<div class="rule-card">
+    <div class="formula">📌 ${esc(r.f)}</div>
+    ${r.ex.map(e=>`<div class="theory-example">${esc(e)}</div>`).join('')}
+  </div>`).join('')}
+</div>
+<div class="card">
+  <h2>Masculin et féminin des qualités</h2>
+  <p>En français, les adjectifs changent selon le genre (masculin/féminin).</p>
+  <div class="masc-fem-grid">
+    <div style="font-weight:700;text-align:center;padding:8px;background:var(--c-bg);border-radius:8px">Masculin (il est...)</div>
+    <div style="font-weight:700;text-align:center;padding:8px;background:var(--c-bg);border-radius:8px">Féminin (elle est...)</div>
+    ${EX_E.slice(0,10).map(e=>`
+      <div class="mf-row"><span>${esc(e.masc.replace('Il est ',''))}</span></div>
+      <div class="mf-row"><span>${esc(e.answer)}</span></div>
+    `).join('')}
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary btn-sm" onclick="showSection('exercises')">Pratiquer avec des exercices →</button>
+  </div>
+</div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXERCISES ENGINE
+═══════════════════════════════════════════════════════════════ */
+let exBank = [];
+let exIdx = 0;
+let exAnswered = false;
+let exFirstTry = true;
+let hAnswers = { comps:[], quals:[] };
+let profilePicks = { quals:[], comps:[] };
+
+function renderExercises(c) {
+  if (exBank.length === 0) exBank = buildExBank();
+  if (exIdx >= exBank.length) exIdx = 0;
+  const ex = exBank[exIdx];
+  const pct = Math.round((exIdx / exBank.length) * 100);
+  c.innerHTML = `
+<div class="ex-header">
+  <span class="ex-counter">${exIdx+1} / ${exBank.length}</span>
+  <div class="ex-progress"><div class="ex-progress-fill" style="width:${pct}%"></div></div>
+  <span class="ex-score">${state.exCorrect} ✓</span>
+</div>
+<div id="exContainer">${buildExHTML(ex)}</div>
+<div class="btn-row" id="exNav" style="margin-top:16px">
+  ${exIdx>0?`<button class="btn btn-outline btn-sm" onclick="exGo(-1)">← Précédent</button>`:''}
+  <button class="btn btn-outline btn-sm" onclick="skipEx()">Passer →</button>
+</div>`;
+}
+
+function buildExHTML(ex) {
+  if (ex.type==='A') return buildTypeA(ex);
+  if (ex.type==='B') return buildTypeB(ex);
+  if (ex.type==='C') return buildTypeC(ex);
+  if (ex.type==='D') return buildTypeD(ex);
+  if (ex.type==='E') return buildTypeE(ex);
+  if (ex.type==='F') return buildTypeF(ex);
+  if (ex.type==='G') return buildTypeG(ex);
+  if (ex.type==='H') return buildTypeH(ex);
+  if (ex.type==='I') return buildTypeI(ex);
+  return '<p>Exercice non disponible.</p>';
+}
+
+function buildTypeA(ex) {
+  return `<div class="question-card">
+    <div class="q-type">Type A — Compétence ou qualité ?</div>
+    <div class="q-text">Le mot suivant est-il une <strong>compétence technique</strong> ou une <strong>qualité personnelle</strong> ?<br><br><span style="font-size:1.3rem;font-weight:700">"${esc(ex.word)}"</span></div>
+    <div class="choices">
+      <button class="choice-btn" onclick="answerA(this,'compétence','${esc(JSON.stringify(ex))}')">💙 Compétence technique</button>
+      <button class="choice-btn" onclick="answerA(this,'qualité','${esc(JSON.stringify(ex))}')">💜 Qualité personnelle</button>
+    </div>
+    <div class="feedback" id="fb"></div>
+  </div>`;
+}
+
+function buildTypeC(ex) {
+  const opts = shuffle(ex.options);
+  return `<div class="question-card">
+    <div class="q-type">Type C — Compléter la phrase</div>
+    <div class="q-text">${esc(ex.sentence)}</div>
+    <div class="choices">
+      ${opts.map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+  </div>`;
+}
+function buildTypeD(ex) {
+  const opts = shuffle([ex.correct, ex.wrong]);
+  return `<div class="question-card">
+    <div class="q-type">Type D — Corriger l'erreur</div>
+    <div class="q-text">Quelle phrase est correcte ?</div>
+    <div class="choices">
+      ${opts.map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}"><input type="hidden" id="ex_explain" value="${esc(ex.explain)}">
+  </div>`;
+}
+function buildTypeE(ex) {
+  const opts = shuffle([ex.answer, ...getWrongFem(ex.answer)]);
+  return `<div class="question-card">
+    <div class="q-type">Type E — Masculin / Féminin</div>
+    <div class="q-text">${esc(ex.masc)}<br><br>${esc(ex.fem)}</div>
+    <div class="choices">
+      ${opts.map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <input type="hidden" id="ex_answer" value="${esc(ex.answer)}"><input type="hidden" id="ex_explain" value="${esc(ex.explain)}">
+  </div>`;
+}
+function getWrongFem(correct) {
+  const all = QUALITES.map(q=>q.fem).filter(f=>f!==correct);
+  return shuffle(all).slice(0,2);
+}
+function buildTypeF(ex) {
+  return `<div class="question-card">
+    <div class="q-type">Type F — Métier et compétence</div>
+    <div class="q-text">Métier : <strong>${esc(ex.job)}</strong><br>${esc(ex.q)}</div>
+    <div class="choices">
+      ${shuffle(ex.options).map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}"><input type="hidden" id="ex_explain" value="La compétence '${esc(ex.correct)}' est essentielle dans ce métier.">
+  </div>`;
+}
+function buildTypeG(ex) {
+  return `<div class="question-card">
+    <div class="q-type">Type G — Métier et qualité</div>
+    <div class="q-text">Métier : <strong>${esc(ex.job)}</strong><br>${esc(ex.q)}</div>
+    <div class="choices">
+      ${shuffle(ex.options).map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}"><input type="hidden" id="ex_explain" value="La qualité '${esc(ex.correct)}' est très appréciée dans ce métier.">
+  </div>`;
+}
+function buildTypeH(ex) {
+  hAnswers = { comps:[], quals:[] };
+  return `<div class="question-card">
+    <div class="q-type">Type H — Lire une offre d'emploi</div>
+    <div class="q-text">Lisez cette offre et cochez 2 compétences techniques et 2 qualités personnelles.</div>
+    <div class="offer-box">${esc(ex.offer)}</div>
+    <p style="font-weight:600;margin-bottom:8px">Compétences techniques (choisissez 2) :</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      ${ex.allOptions.comps.map(o=>`<button class="choice-btn" style="flex:none" onclick="toggleH(this,'comp','${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <p style="font-weight:600;margin-bottom:8px">Qualités personnelles (choisissez 2) :</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      ${ex.allOptions.quals.map(o=>`<button class="choice-btn" style="flex:none" onclick="toggleH(this,'qual','${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="submitH()">Valider mes réponses</button>
+    <div class="feedback" id="fb"></div>
+    <input type="hidden" id="ex_h_comps" value="${esc(JSON.stringify(ex.comps))}">
+    <input type="hidden" id="ex_h_quals" value="${esc(JSON.stringify(ex.quals))}">
+  </div>`;
+}
+function toggleH(btn, col, val) {
+  if (exAnswered) return;
+  const arr = col==='comp' ? hAnswers.comps : hAnswers.quals;
+  const i = arr.indexOf(val);
+  if (i>=0) { arr.splice(i,1); btn.classList.remove('correct'); }
+  else { arr.push(val); btn.style.borderColor='var(--c-primary)'; btn.style.background='#eff6ff'; }
+}
+function submitH() {
+  if (exAnswered) return;
+  const ex = exBank[exIdx];
+  const correctComps = JSON.parse(document.getElementById('ex_h_comps').value);
+  const correctQuals = JSON.parse(document.getElementById('ex_h_quals').value);
+  const cOk = correctComps.every(c=>hAnswers.comps.some(h=>h.toLowerCase().includes(c.split(' ')[0].toLowerCase())));
+  const qOk = correctQuals.every(q=>hAnswers.quals.some(h=>h.toLowerCase().includes(q.split(' ')[0].toLowerCase())));
+  const ok = cOk && qOk;
+  handleResult(ok, ok?'Parfait ! Vous avez bien identifié les compétences et les qualités.':'Relisez l\'offre. Les compétences sont des actions (sais faire), les qualités sont des traits de personnalité.');
+}
+function buildTypeB(ex) {
+  const allWords = shuffle([...ex.comps.map(w=>({w,t:'comp'})),...ex.quals.map(w=>({w,t:'qual'}))]);
+  return `<div class="question-card">
+    <div class="q-type">Type B — Classer les mots</div>
+    <div class="q-text">Cliquez sur chaque mot pour le placer dans la bonne colonne.</div>
+    <div class="classify-pool" id="pool">${allWords.map(w=>`<div class="drag-item" data-word="${esc(w.w)}" data-type="${w.t}" onclick="classifyClick(this)">${esc(w.w)}</div>`).join('')}</div>
+    <div class="two-col">
+      <div>
+        <div class="col-header comp">💙 Compétences techniques</div>
+        <div class="classify-drop" id="dropComp"></div>
+      </div>
+      <div>
+        <div class="col-header qual">💜 Qualités personnelles</div>
+        <div class="classify-drop" id="dropQual"></div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="submitB()">Valider</button></div>
+    <div class="feedback" id="fb"></div>
+  </div>`;
+}
+// classify: click cycles pool → comp → qual → pool
+let classifyState = {};
+function classifyClick(el) {
+  if (exAnswered) return;
+  const w = el.dataset.word;
+  if (!classifyState[w]) classifyState[w]=0;
+  classifyState[w]=(classifyState[w]+1)%3;
+  const pool=document.getElementById('pool');
+  const dc=document.getElementById('dropComp');
+  const dq=document.getElementById('dropQual');
+  if(classifyState[w]===1){dc.appendChild(el);el.style.borderColor='var(--c-primary)';el.style.background='#eff6ff';}
+  else if(classifyState[w]===2){dq.appendChild(el);el.style.borderColor='var(--c-secondary)';el.style.background='#f5f3ff';}
+  else{pool.appendChild(el);el.style.borderColor='';el.style.background='';}
+}
+
+function submitB() {
+  if (exAnswered) return;
+  const ex = exBank[exIdx];
+  const dc = document.getElementById('dropComp');
+  const dq = document.getElementById('dropQual');
+  let ok = true;
+  dc.querySelectorAll('.drag-item').forEach(el=>{if(el.dataset.type!=='comp')ok=false;});
+  dq.querySelectorAll('.drag-item').forEach(el=>{if(el.dataset.type!=='qual')ok=false;});
+  if(dc.children.length!==ex.comps.length||dq.children.length!==ex.quals.length)ok=false;
+  handleResult(ok, ok?'Parfait ! Vous avez bien classé tous les mots.':'Vérifiez : les compétences sont des actions, les qualités sont des traits de personnalité.');
+}
+
+function buildTypeI(ex) {
+  profilePicks = { quals:[], comps:[] };
+  return `<div class="question-card">
+    <div class="q-type">Type I — Construire un mini-profil CV</div>
+    <div class="q-text">Choisissez <strong>3 qualités personnelles</strong> et <strong>3 compétences techniques</strong> pour créer votre mini-profil CV.</div>
+    <p style="font-weight:600;margin-bottom:8px;color:var(--c-secondary)">💜 Choisissez 3 qualités :</p>
+    <div class="profile-picks" id="pickQual">
+      ${shuffle(QUALITES).slice(0,8).map(q=>`<div class="pick-item" data-w="${esc(q.w)}" data-f="${esc(q.fem)}" onclick="pickProfile(this,'qual')">${esc(q.w)}</div>`).join('')}
+    </div>
+    <p style="font-weight:600;margin-bottom:8px;color:var(--c-primary)">💙 Choisissez 3 compétences :</p>
+    <div class="profile-picks" id="pickComp">
+      ${shuffle(COMPETENCES).slice(0,8).map(c=>`<div class="pick-item" data-w="${esc(c.w)}" onclick="pickProfile(this,'comp')">${esc(c.w)}</div>`).join('')}
+    </div>
+    <div class="btn-row"><button class="btn btn-primary btn-sm" onclick="generateProfile()">Générer mon profil</button></div>
+    <div class="profile-result" id="profileResult"></div>
+    <div class="feedback" id="fb"></div>
+  </div>`;
+}
+function pickProfile(el, type) {
+  const arr = type==='qual' ? profilePicks.quals : profilePicks.comps;
+  const w = el.dataset.w;
+  const cls = type==='qual'?'picked-q':'picked-c';
+  const max = 3;
+  if (el.classList.contains(cls)) { el.classList.remove(cls); arr.splice(arr.indexOf(w),1); }
+  else if (arr.length < max) { el.classList.add(cls); arr.push(w); }
+  else showToast('Vous avez déjà choisi ' + max + ' ' + (type==='qual'?'qualités':'compétences') + '.');
+}
+function generateProfile() {
+  if (profilePicks.quals.length<3||profilePicks.comps.length<3) { showToast('Choisissez 3 qualités et 3 compétences.'); return; }
+  const q = profilePicks.quals;
+  const c = profilePicks.comps;
+  // Find fem forms for display
+  const qFem = q.map(w=>{ const found=QUALITES.find(x=>x.w===w); return found?found.fem:w; });
+  const pr = document.getElementById('profileResult');
+  pr.innerHTML = `<strong>📄 Votre mini-profil CV :</strong><br><br>
+Je suis une personne <em>${q[0]}</em>, <em>${q[1]}</em> et <em>${q[2]}</em>. Je sais ${c[0]}, ${c[1]} et ${c[2]}.
+<br><br><em style="color:var(--c-muted);font-size:.88rem">Variante féminine : Je suis une personne ${qFem[0]}, ${qFem[1]} et ${qFem[2]}.</em>`;
+  pr.style.display='block';
+  awardXP(30, 'Profil CV créé !');
+  playSound('ok');
+  state.exDone++;
+  state.exCorrect++;
+  state.streak++;
+  saveState();
+  updateXpBar();
+}
+
+/* Generic answer handler for multiple choice */
+function answerChoice(btn, chosen) {
+  if (exAnswered) return;
+  const ex = exBank[exIdx];
+  let correct, explain;
+  if (ex.type==='C') { correct=ex.answer; explain=ex.explain; }
+  else if (ex.type==='D') { correct=document.getElementById('ex_answer').value; explain=document.getElementById('ex_explain').value; }
+  else if (ex.type==='E') { correct=document.getElementById('ex_answer').value; explain=document.getElementById('ex_explain').value; }
+  else if (ex.type==='F'||ex.type==='G') { correct=document.getElementById('ex_answer').value; explain=document.getElementById('ex_explain').value; }
+  const ok = chosen === correct;
+  const correctBtn = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>b.textContent.trim()===correct);
+  markAnswer(btn, ok, correctBtn, explain);
+}
+function answerA(btn, choice) {
+  if (exAnswered) return;
+  const ex = exBank[exIdx];
+  const ok = choice === ex.answer;
+  const correctBtn = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>ok?b===btn:b!==btn);
+  markAnswer(btn, ok, correctBtn, ex.explain);
+}
+
+function markAnswer(chosenBtn, ok, correctBtn, explain) {
+  exAnswered = true;
+  chosenBtn.classList.add(ok?'correct':'wrong');
+  chosenBtn.parentElement.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+  if (!ok && correctBtn) correctBtn.classList.add('correct');
+  const fb = document.getElementById('fb');
+  if (fb) {
+    fb.className = 'feedback show ' + (ok?'ok':'ko');
+    fb.textContent = (ok?'✓ Correct ! ':'✗ Incorrect. ') + (explain||'');
+  }
+  handleResult(ok, explain);
+}
+
+function handleResult(ok, explain) {
+  exAnswered = true;
+  state.exDone++;
+  if (ok) {
+    state.exCorrect++;
+    state.streak++;
+    let bonus = 10;
+    if (exFirstTry) bonus += 5;
+    if (state.streak===5) { bonus+=20; showToast('🔥 Série de 5 ! +20 XP bonus'); }
+    if (state.streak===10) { bonus+=50; showToast('🔥🔥 Série de 10 ! +50 XP bonus'); }
+    awardXP(bonus, 'Bonne réponse');
+    playSound('ok');
+    checkBadges();
+  } else {
+    state.streak = 0;
+    playSound('ko');
+  }
+  exFirstTry = true;
+  saveState();
+  updateXpBar();
+  // Auto-next after 2s
+  setTimeout(()=>{
+    if (currentSection==='exercises') { exIdx++; exAnswered=false; exFirstTry=true; showSection('exercises'); }
+  }, 2200);
+}
+
+function skipEx() { exIdx++; exAnswered=false; exFirstTry=true; showSection('exercises'); }
+function exGo(d) { exIdx=Math.max(0,exIdx+d); exAnswered=false; exFirstTry=true; showSection('exercises'); }
+
+/* ═══════════════════════════════════════════════════════════════
+   TEST FINAL
+═══════════════════════════════════════════════════════════════ */
+let testQuestions = [];
+let testIdx = 0;
+let testScore = 0;
+let testAnswers = [];
+let testDone = false;
+let testAnswered = false;
+
+function renderTest(c) {
+  if (state.testDone) { renderTestResult(c); return; }
+  if (testQuestions.length === 0) {
+    testQuestions = buildTestFinal();
+    testIdx = 0; testScore = 0; testAnswers = []; testDone = false;
+  }
+  if (testIdx >= testQuestions.length) { finishTest(c); return; }
+  const ex = testQuestions[testIdx];
+  const pct = Math.round((testIdx/testQuestions.length)*100);
+  c.innerHTML = `
+<div class="card test-intro" style="text-align:left;padding:16px 20px">
+  <strong>Test final</strong> — Question ${testIdx+1} / ${testQuestions.length} &nbsp;|&nbsp; Score : ${testScore}
+  <div class="ex-progress" style="margin-top:8px"><div class="ex-progress-fill" style="width:${pct}%"></div></div>
+</div>
+<div id="testContainer">${buildTestQ(ex)}</div>`;
+}
+
+function buildTestQ(ex) {
+  // Reuse exercise builders but adapt for test context
+  if (ex.type==='A') return buildTestA(ex);
+  if (ex.type==='C') return buildTestMC(ex, ex.options||[], ex.answer, ex.sentence, 'Complétez la phrase :', 'Type C');
+  if (ex.type==='D') return buildTestMC(ex, [ex.correct,ex.wrong], ex.correct, 'Quelle phrase est correcte ?', 'Type D');
+  if (ex.type==='E') return buildTestMC(ex, [ex.answer,...getWrongFem(ex.answer)], ex.answer, ex.masc+'\n'+ex.fem, 'Type E');
+  if (ex.type==='F') return buildTestMC(ex, ex.options, ex.correct, 'Métier : '+ex.job+'\n'+ex.q, 'Type F');
+  if (ex.type==='G') return buildTestMC(ex, ex.options, ex.correct, 'Métier : '+ex.job+'\n'+ex.q, 'Type G');
+  if (ex.type==='H') return buildTestH(ex);
+  return '<p>Question</p>';
+}
+function buildTestA(ex) {
+  return `<div class="question-card">
+    <div class="q-type">Compétence ou qualité ?</div>
+    <div class="q-text">Le mot suivant est-il une <strong>compétence technique</strong> ou une <strong>qualité personnelle</strong> ?<br><br><span style="font-size:1.3rem;font-weight:700">"${esc(ex.word)}"</span></div>
+    <div class="choices">
+      <button class="choice-btn" onclick="testAnswer(this,'compétence')">💙 Compétence technique</button>
+      <button class="choice-btn" onclick="testAnswer(this,'qualité')">💜 Qualité personnelle</button>
+    </div>
+    <div class="feedback" id="tfb"></div>
+    <input type="hidden" id="t_ans" value="${esc(ex.answer)}"><input type="hidden" id="t_exp" value="${esc(ex.explain||'')}">
+  </div>`;
+}
+function buildTestMC(ex, opts, correct, qtext, qtype) {
+  const shuffled = shuffle([...new Set(opts)]);
+  return `<div class="question-card">
+    <div class="q-type">${esc(qtype)}</div>
+    <div class="q-text">${esc(qtext)}</div>
+    <div class="choices">
+      ${shuffled.map(o=>`<button class="choice-btn" onclick="testAnswer(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="feedback" id="tfb"></div>
+    <input type="hidden" id="t_ans" value="${esc(correct)}"><input type="hidden" id="t_exp" value="${esc(ex.explain||'')}">
+  </div>`;
+}
+function buildTestH(ex) {
+  return `<div class="question-card">
+    <div class="q-type">Lire une offre d'emploi</div>
+    <div class="q-text">Lisez cette offre et identifiez les compétences et qualités recherchées.</div>
+    <div class="offer-box">${esc(ex.offer)}</div>
+    <p style="font-weight:600;margin-bottom:8px">Quelle est une compétence technique mentionnée ?</p>
+    <div class="choices">
+      ${shuffle([ex.comps[0],...ex.allOptions.quals.slice(0,2)]).map(o=>`<button class="choice-btn" onclick="testAnswer(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    </div>
+    <div class="feedback" id="tfb"></div>
+    <input type="hidden" id="t_ans" value="${esc(ex.comps[0])}"><input type="hidden" id="t_exp" value="C'est une action concrète : une compétence technique.">
+  </div>`;
+}
+
+function testAnswer(btn, chosen) {
+  if (testAnswered) return;
+  testAnswered = true;
+  const correct = document.getElementById('t_ans').value;
+  const explain = document.getElementById('t_exp').value;
+  const ok = chosen === correct;
+  btn.classList.add(ok?'correct':'wrong');
+  btn.parentElement.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+  if (!ok) {
+    const cb = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>b.textContent.trim()===correct);
+    if (cb) cb.classList.add('correct');
+  }
+  const fb = document.getElementById('tfb');
+  if (fb) { fb.className='feedback show '+(ok?'ok':'ko'); fb.textContent=(ok?'✓ Correct ! ':'✗ Incorrect. ')+explain; }
+  if (ok) testScore++;
+  testAnswers.push({ q:testIdx, ok });
+  playSound(ok?'ok':'ko');
+  setTimeout(()=>{
+    testIdx++;
+    testAnswered=false;
+    if (testIdx>=testQuestions.length) finishTest(document.getElementById('content'));
+    else showSection('test');
+  }, 2000);
+}
+
+function finishTest(c) {
+  state.testDone = true;
+  state.testScore = testScore;
+  const pct = Math.round((testScore/testQuestions.length)*100);
+  let lbl, col;
+  if (pct>=85){lbl='Très bien acquis 🌟';col=var_c('--c-success');}
+  else if(pct>=70){lbl='Acquis ✓';col=var_c('--c-primary');}
+  else if(pct>=50){lbl='En cours…';col=var_c('--c-warn');}
+  else{lbl='À revoir';col=var_c('--c-error');}
+  if (pct>=70) { awardXP(300, 'Test final réussi !'); checkBadges(); launchConfetti(); }
+  saveState();
+  c.innerHTML = `
+<div class="card" style="text-align:center">
+  <h2>Test final terminé !</h2>
+  <div class="result-score" style="color:${col}">${testScore} / ${testQuestions.length}</div>
+  <div class="result-label">${pct}% — ${esc(lbl)}</div>
+  ${pct>=70?`<div style="background:#f0fdf4;padding:14px;border-radius:10px;margin:10px 0"><strong>Points forts :</strong> Vous maîtrisez bien les compétences et qualités professionnelles.</div>`:''}
+  ${pct<70?`<div style="background:#fef2f2;padding:14px;border-radius:10px;margin:10px 0"><strong>À revoir :</strong> Revoyez la section Théorie et pratiquez les exercices de type C (compléter) et E (masculin/féminin).</div>`:''}
+  <div class="btn-row" style="justify-content:center;margin-top:16px">
+    <button class="btn btn-primary" onclick="showSection('results')">Voir mes résultats →</button>
+    <button class="btn btn-outline" onclick="restartTest()">Recommencer le test</button>
+  </div>
+</div>`;
+}
+function renderTestResult(c) {
+  const pct = Math.round((state.testScore/30)*100);
+  c.innerHTML = `<div class="card">
+    <h2>Test final déjà complété</h2>
+    <div class="result-score">${state.testScore} / 30</div>
+    <div class="result-label">${pct}%</div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="restartTest()">Recommencer le test</button>
+      <button class="btn btn-primary" onclick="showSection('results')">Voir mes résultats</button>
+    </div>
+  </div>`;
+}
+function restartTest() {
+  state.testDone=false; testQuestions=[]; testIdx=0; testScore=0; testAnswers=[]; testDone=false; testAnswered=false;
+  saveState(); showSection('test');
+}
+function var_c(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESULTS
+═══════════════════════════════════════════════════════════════ */
+function renderResults(c) {
+  const pct = state.exDone>0 ? Math.round((state.exCorrect/state.exDone)*100) : 0;
+  const unlocked = BONUSES.filter(b=>state.bonusUnlocked.includes(b.id));
+  c.innerHTML = `
+<div class="card">
+  <h2>Mes résultats</h2>
+  <div class="stat-row"><span>XP total</span><strong>${state.xp} XP</strong></div>
+  <div class="stat-row"><span>Niveau</span><strong>${currentLevel().name}</strong></div>
+  <div class="stat-row"><span>Exercices terminés</span><strong>${state.exDone}</strong></div>
+  <div class="stat-row"><span>Bonnes réponses</span><strong>${state.exCorrect} (${pct}%)</strong></div>
+  <div class="stat-row"><span>Meilleure série</span><strong>${state.streak} 🔥</strong></div>
+  <div class="stat-row"><span>Test final</span><strong>${state.testDone?state.testScore+'/30 ('+Math.round(state.testScore/30*100)+'%)':'Non commencé'}</strong></div>
+</div>
+<div class="card">
+  <h3>Badges débloqués (${Object.values(state.badges).filter(Boolean).length} / ${BADGES_DEF.length})</h3>
+  <div class="badge-grid">
+    ${BADGES_DEF.map(b=>`<div class="badge${state.badges[b.id]?' unlocked':''}">${b.icon} ${esc(b.name)}</div>`).join('')}
+  </div>
+</div>
+${unlocked.length>0?`<div class="card"><h3>Bonus débloqués</h3>${unlocked.map(b=>`<div class="bonus-card"><h4>🎁 ${esc(b.name)}</h4><p>${esc(b.desc)}</p></div>`).join('')}</div>`:''}
+<div class="card">
+  <h3>Exporter mes résultats</h3>
+  <p>Téléchargez un fichier avec tous vos résultats.</p>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="exportResults()">⬇ Exporter en JSON</button>
+    <button class="btn btn-outline" onclick="exportTxt()">⬇ Exporter en texte</button>
+  </div>
+</div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT / RESET
+═══════════════════════════════════════════════════════════════ */
+function exportResults() {
+  const data = { date: new Date().toLocaleDateString('fr-CH'), ...state };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='resultats-cv.json'; a.click();
+}
+function exportTxt() {
+  const lines = [
+    'RÉSULTATS — Compétences & Qualités CV',
+    'Date : ' + new Date().toLocaleDateString('fr-CH'),
+    '',
+    'Niveau : ' + currentLevel().name,
+    'XP total : ' + state.xp,
+    'Exercices terminés : ' + state.exDone,
+    'Bonnes réponses : ' + state.exCorrect,
+    'Test final : ' + (state.testDone ? state.testScore+'/30' : 'Non commencé'),
+    '',
+    'Badges :',
+    ...BADGES_DEF.map(b=>(state.badges[b.id]?'✓ ':'✗ ')+b.name),
+  ];
+  const blob = new Blob([lines.join('\n')], {type:'text/plain'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='resultats-cv.txt'; a.click();
+}
+function resetAll() {
+  if (!confirm('Réinitialiser toute la progression ? Cette action est irréversible.')) return;
+  localStorage.removeItem(KEY+'state');
+  state = { xp:0,level:0,streak:0,badges:{},exDone:0,exCorrect:0,testDone:false,testScore:0,level_choice:'A2',job_choice:'Vente',theoryPage:0,bonusUnlocked:[],soundOn:true };
+  exBank=[]; exIdx=0; testQuestions=[]; testIdx=0; testScore=0;
+  updateXpBar();
+  showSection('home');
+  showToast('Progression réinitialisée.');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SOUND TOGGLE
+═══════════════════════════════════════════════════════════════ */
+document.getElementById('soundBtn').addEventListener('click', function() {
+  state.soundOn = !state.soundOn;
+  this.textContent = state.soundOn ? '🔔 Son' : '🔕 Son';
+  saveState();
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+loadState();
+updateXpBar();
+document.getElementById('soundBtn').textContent = state.soundOn ? '🔔 Son' : '🔕 Son';
+showSection('home');
+</script>
+</body>
+</html>

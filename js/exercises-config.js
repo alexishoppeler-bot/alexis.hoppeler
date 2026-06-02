@@ -397,6 +397,12 @@
         icon: '⌨️',
         desc: 'Tous les raccourcis clavier essentiels : Windows, Mac, navigateurs et bureautique.',
         href: '../entretien-embauche-ia/raccourcis-clavier.html'
+      },
+      {
+        name: 'Compétences & CV',
+        icon: '🏅',
+        desc: 'Mini-manuel interactif : compétences techniques, qualités personnelles, grammaire, exercices, test final et badges.',
+        href: 'competences-cv.html'
       }
     ]
   };
