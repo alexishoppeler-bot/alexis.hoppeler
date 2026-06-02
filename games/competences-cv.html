@@ -915,15 +915,22 @@ function buildExHTML(ex) {
   return '<p>Exercice non disponible.</p>';
 }
 
+/* Render a safe choice button using data-choice to avoid apostrophe issues in onclick */
+function choiceBtn(value, label, extra) {
+  return `<button class="choice-btn" data-choice="${esc(value)}" ${extra||''}>${esc(label||value)}</button>`;
+}
+
 function buildTypeA(ex) {
   return `<div class="question-card">
     <div class="q-type">Type A — Compétence ou qualité ?</div>
     <div class="q-text">Le mot suivant est-il une <strong>compétence technique</strong> ou une <strong>qualité personnelle</strong> ?<br><br><span style="font-size:1.3rem;font-weight:700">"${esc(ex.word)}"</span></div>
-    <div class="choices">
-      <button class="choice-btn" onclick="answerA(this,'compétence','${esc(JSON.stringify(ex))}')">💙 Compétence technique</button>
-      <button class="choice-btn" onclick="answerA(this,'qualité','${esc(JSON.stringify(ex))}')">💜 Qualité personnelle</button>
+    <div class="choices" data-mode="A">
+      ${choiceBtn('compétence','💙 Compétence technique')}
+      ${choiceBtn('qualité','💜 Qualité personnelle')}
     </div>
     <div class="feedback" id="fb"></div>
+    <input type="hidden" id="ex_answer" value="${esc(ex.answer)}">
+    <input type="hidden" id="ex_explain" value="${esc(ex.explain||'')}">
   </div>`;
 }
 
@@ -932,10 +939,12 @@ function buildTypeC(ex) {
   return `<div class="question-card">
     <div class="q-type">Type C — Compléter la phrase</div>
     <div class="q-text">${esc(ex.sentence)}</div>
-    <div class="choices">
-      ${opts.map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    <div class="choices" data-mode="choice">
+      ${opts.map(o=>choiceBtn(o)).join('')}
     </div>
     <div class="feedback" id="fb"></div>
+    <input type="hidden" id="ex_answer" value="${esc(ex.answer)}">
+    <input type="hidden" id="ex_explain" value="${esc(ex.explain||'')}">
   </div>`;
 }
 function buildTypeD(ex) {
@@ -943,11 +952,12 @@ function buildTypeD(ex) {
   return `<div class="question-card">
     <div class="q-type">Type D — Corriger l'erreur</div>
     <div class="q-text">Quelle phrase est correcte ?</div>
-    <div class="choices">
-      ${opts.map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    <div class="choices" data-mode="choice">
+      ${opts.map(o=>choiceBtn(o)).join('')}
     </div>
     <div class="feedback" id="fb"></div>
-    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}"><input type="hidden" id="ex_explain" value="${esc(ex.explain)}">
+    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}">
+    <input type="hidden" id="ex_explain" value="${esc(ex.explain||'')}">
   </div>`;
 }
 function buildTypeE(ex) {
@@ -955,11 +965,12 @@ function buildTypeE(ex) {
   return `<div class="question-card">
     <div class="q-type">Type E — Masculin / Féminin</div>
     <div class="q-text">${esc(ex.masc)}<br><br>${esc(ex.fem)}</div>
-    <div class="choices">
-      ${opts.map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    <div class="choices" data-mode="choice">
+      ${opts.map(o=>choiceBtn(o)).join('')}
     </div>
     <div class="feedback" id="fb"></div>
-    <input type="hidden" id="ex_answer" value="${esc(ex.answer)}"><input type="hidden" id="ex_explain" value="${esc(ex.explain)}">
+    <input type="hidden" id="ex_answer" value="${esc(ex.answer)}">
+    <input type="hidden" id="ex_explain" value="${esc(ex.explain||'')}">
   </div>`;
 }
 function getWrongFem(correct) {
@@ -970,22 +981,24 @@ function buildTypeF(ex) {
   return `<div class="question-card">
     <div class="q-type">Type F — Métier et compétence</div>
     <div class="q-text">Métier : <strong>${esc(ex.job)}</strong><br>${esc(ex.q)}</div>
-    <div class="choices">
-      ${shuffle(ex.options).map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    <div class="choices" data-mode="choice">
+      ${shuffle(ex.options).map(o=>choiceBtn(o)).join('')}
     </div>
     <div class="feedback" id="fb"></div>
-    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}"><input type="hidden" id="ex_explain" value="La compétence '${esc(ex.correct)}' est essentielle dans ce métier.">
+    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}">
+    <input type="hidden" id="ex_explain" value="La compétence correcte est '${esc(ex.correct)}'. Elle est essentielle dans ce métier.">
   </div>`;
 }
 function buildTypeG(ex) {
   return `<div class="question-card">
     <div class="q-type">Type G — Métier et qualité</div>
     <div class="q-text">Métier : <strong>${esc(ex.job)}</strong><br>${esc(ex.q)}</div>
-    <div class="choices">
-      ${shuffle(ex.options).map(o=>`<button class="choice-btn" onclick="answerChoice(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+    <div class="choices" data-mode="choice">
+      ${shuffle(ex.options).map(o=>choiceBtn(o)).join('')}
     </div>
     <div class="feedback" id="fb"></div>
-    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}"><input type="hidden" id="ex_explain" value="La qualité '${esc(ex.correct)}' est très appréciée dans ce métier.">
+    <input type="hidden" id="ex_answer" value="${esc(ex.correct)}">
+    <input type="hidden" id="ex_explain" value="La qualité '${esc(ex.correct)}' est très appréciée dans ce métier.">
   </div>`;
 }
 function buildTypeH(ex) {
@@ -995,12 +1008,12 @@ function buildTypeH(ex) {
     <div class="q-text">Lisez cette offre et cochez 2 compétences techniques et 2 qualités personnelles.</div>
     <div class="offer-box">${esc(ex.offer)}</div>
     <p style="font-weight:600;margin-bottom:8px">Compétences techniques (choisissez 2) :</p>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
-      ${ex.allOptions.comps.map(o=>`<button class="choice-btn" style="flex:none" onclick="toggleH(this,'comp','${esc(o)}')">${esc(o)}</button>`).join('')}
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px" data-hcol="comp">
+      ${ex.allOptions.comps.map(o=>`<button class="choice-btn" data-choice="${esc(o)}" data-hcol="comp" style="flex:none">${esc(o)}</button>`).join('')}
     </div>
     <p style="font-weight:600;margin-bottom:8px">Qualités personnelles (choisissez 2) :</p>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
-      ${ex.allOptions.quals.map(o=>`<button class="choice-btn" style="flex:none" onclick="toggleH(this,'qual','${esc(o)}')">${esc(o)}</button>`).join('')}
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px" data-hcol="qual">
+      ${ex.allOptions.quals.map(o=>`<button class="choice-btn" data-choice="${esc(o)}" data-hcol="qual" style="flex:none">${esc(o)}</button>`).join('')}
     </div>
     <button class="btn btn-primary btn-sm" onclick="submitH()">Valider mes réponses</button>
     <div class="feedback" id="fb"></div>
@@ -1008,11 +1021,13 @@ function buildTypeH(ex) {
     <input type="hidden" id="ex_h_quals" value="${esc(JSON.stringify(ex.quals))}">
   </div>`;
 }
-function toggleH(btn, col, val) {
+function toggleH(btn) {
   if (exAnswered) return;
+  const col = btn.dataset.hcol;
+  const val = btn.dataset.choice;
   const arr = col==='comp' ? hAnswers.comps : hAnswers.quals;
   const i = arr.indexOf(val);
-  if (i>=0) { arr.splice(i,1); btn.classList.remove('correct'); }
+  if (i>=0) { arr.splice(i,1); btn.style.borderColor=''; btn.style.background=''; }
   else { arr.push(val); btn.style.borderColor='var(--c-primary)'; btn.style.background='#eff6ff'; }
 }
 function submitH() {
@@ -1119,31 +1134,34 @@ Je suis une personne <em>${q[0]}</em>, <em>${q[1]}</em> et <em>${q[2]}</em>. Je 
   updateXpBar();
 }
 
-/* Generic answer handler for multiple choice */
-function answerChoice(btn, chosen) {
-  if (exAnswered) return;
-  const ex = exBank[exIdx];
-  let correct, explain;
-  if (ex.type==='C') { correct=ex.answer; explain=ex.explain; }
-  else if (ex.type==='D') { correct=document.getElementById('ex_answer').value; explain=document.getElementById('ex_explain').value; }
-  else if (ex.type==='E') { correct=document.getElementById('ex_answer').value; explain=document.getElementById('ex_explain').value; }
-  else if (ex.type==='F'||ex.type==='G') { correct=document.getElementById('ex_answer').value; explain=document.getElementById('ex_explain').value; }
-  const ok = chosen === correct;
-  const correctBtn = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>b.textContent.trim()===correct);
-  markAnswer(btn, ok, correctBtn, explain);
-}
-function answerA(btn, choice) {
-  if (exAnswered) return;
-  const ex = exBank[exIdx];
-  const ok = choice === ex.answer;
-  const correctBtn = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>ok?b===btn:b!==btn);
-  markAnswer(btn, ok, correctBtn, ex.explain);
-}
+/* Central click handler for exercise choice buttons */
+document.getElementById('content').addEventListener('click', function(e) {
+  const btn = e.target.closest('.choice-btn');
+  if (!btn) return;
+  // Type H toggle buttons
+  if (btn.dataset.hcol) { toggleH(btn); return; }
+  // Exercise choices
+  if (!exAnswered && btn.closest('#exContainer')) {
+    const chosen = btn.dataset.choice;
+    if (chosen === undefined) return;
+    const correct = document.getElementById('ex_answer') ? document.getElementById('ex_answer').value : '';
+    const explain = document.getElementById('ex_explain') ? document.getElementById('ex_explain').value : '';
+    const ok = chosen === correct;
+    const correctBtn = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>b.dataset.choice===correct);
+    markAnswer(btn, ok, correctBtn, explain);
+  }
+  // Test final choices
+  if (!testAnswered && btn.closest('#testContainer')) {
+    const chosen = btn.dataset.choice;
+    if (chosen === undefined) return;
+    testAnswerData(btn, chosen);
+  }
+});
 
 function markAnswer(chosenBtn, ok, correctBtn, explain) {
   exAnswered = true;
   chosenBtn.classList.add(ok?'correct':'wrong');
-  chosenBtn.parentElement.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+  chosenBtn.closest('.choices').querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
   if (!ok && correctBtn) correctBtn.classList.add('correct');
   const fb = document.getElementById('fb');
   if (fb) {
@@ -1225,8 +1243,8 @@ function buildTestA(ex) {
     <div class="q-type">Compétence ou qualité ?</div>
     <div class="q-text">Le mot suivant est-il une <strong>compétence technique</strong> ou une <strong>qualité personnelle</strong> ?<br><br><span style="font-size:1.3rem;font-weight:700">"${esc(ex.word)}"</span></div>
     <div class="choices">
-      <button class="choice-btn" onclick="testAnswer(this,'compétence')">💙 Compétence technique</button>
-      <button class="choice-btn" onclick="testAnswer(this,'qualité')">💜 Qualité personnelle</button>
+      <button class="choice-btn" data-choice="compétence">💙 Compétence technique</button>
+      <button class="choice-btn" data-choice="qualité">💜 Qualité personnelle</button>
     </div>
     <div class="feedback" id="tfb"></div>
     <input type="hidden" id="t_ans" value="${esc(ex.answer)}"><input type="hidden" id="t_exp" value="${esc(ex.explain||'')}">
@@ -1238,7 +1256,7 @@ function buildTestMC(ex, opts, correct, qtext, qtype) {
     <div class="q-type">${esc(qtype)}</div>
     <div class="q-text">${esc(qtext)}</div>
     <div class="choices">
-      ${shuffled.map(o=>`<button class="choice-btn" onclick="testAnswer(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+      ${shuffled.map(o=>`<button class="choice-btn" data-choice="${esc(o)}">${esc(o)}</button>`).join('')}
     </div>
     <div class="feedback" id="tfb"></div>
     <input type="hidden" id="t_ans" value="${esc(correct)}"><input type="hidden" id="t_exp" value="${esc(ex.explain||'')}">
@@ -1251,14 +1269,14 @@ function buildTestH(ex) {
     <div class="offer-box">${esc(ex.offer)}</div>
     <p style="font-weight:600;margin-bottom:8px">Quelle est une compétence technique mentionnée ?</p>
     <div class="choices">
-      ${shuffle([ex.comps[0],...ex.allOptions.quals.slice(0,2)]).map(o=>`<button class="choice-btn" onclick="testAnswer(this,'${esc(o)}')">${esc(o)}</button>`).join('')}
+      ${shuffle([ex.comps[0],...ex.allOptions.quals.slice(0,2)]).map(o=>`<button class="choice-btn" data-choice="${esc(o)}">${esc(o)}</button>`).join('')}
     </div>
     <div class="feedback" id="tfb"></div>
     <input type="hidden" id="t_ans" value="${esc(ex.comps[0])}"><input type="hidden" id="t_exp" value="C'est une action concrète : une compétence technique.">
   </div>`;
 }
 
-function testAnswer(btn, chosen) {
+function testAnswerData(btn, chosen) {
   if (testAnswered) return;
   testAnswered = true;
   const correct = document.getElementById('t_ans').value;
@@ -1267,7 +1285,7 @@ function testAnswer(btn, chosen) {
   btn.classList.add(ok?'correct':'wrong');
   btn.parentElement.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
   if (!ok) {
-    const cb = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>b.textContent.trim()===correct);
+    const cb = [...btn.parentElement.querySelectorAll('.choice-btn')].find(b=>b.dataset.choice===correct);
     if (cb) cb.classList.add('correct');
   }
   const fb = document.getElementById('tfb');
