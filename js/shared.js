@@ -31,7 +31,7 @@
   function sectionedLinks() {
     const orderedPages = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.orderedPages) || [];
     const meta = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.meta) || {};
-    const sectionOrder = ['Numérique', 'Emploi & ORP', 'Français'];
+    const sectionOrder = ['Numérique', 'Communication'];
     const sectionMap = {};
     for (const page of orderedPages) {
       const section = (meta[page] && meta[page].section) || 'Autres';
@@ -51,12 +51,11 @@
   }
 
   const GROUP_SECTIONS = [
-    { key: 'Numérique',   label: 'Bureautique', id: 'numerique'  },
-    { key: 'Emploi & ORP', label: 'Emploi',    id: 'emploi'     },
-    { key: 'Français',    label: 'Français',    id: 'francais'   }
+    { key: 'Numérique', label: 'Numérique', id: 'numerique' },
+    { key: 'Communication', label: 'Communication', id: 'communication' }
   ];
 
-  const GROUP_ICONS = { numerique: '💻', emploi: '💼', francais: '📖' };
+  const GROUP_ICONS = { numerique: '💻', communication: '💬' };
 
   function xpLevel(xp) {
     if (xp >= 350) return 'Niv. 4';
@@ -134,13 +133,20 @@
 
     const parts = ['<aside class="sidebar" id="sidebar">'];
     for (const section of sectionedLinks()) {
-      parts.push('<div class="sidebar-section">');
-      parts.push('<div class="sidebar-section-title">' + section.title + '</div>');
+      const sectionOpen = section.links.includes(pageId) || section.title === 'Début' ? ' open' : '';
+      parts.push('<details class="sidebar-section"' + sectionOpen + '>');
+      parts.push(
+        '<summary class="sidebar-section-title">' +
+        '<span>' + escapeHtml(section.title) + '</span>' +
+        '<span class="sidebar-chevron" aria-hidden="true">⌄</span>' +
+        '</summary>'
+      );
+      parts.push('<div class="sidebar-section-list">');
       for (const page of section.links) {
         const m = meta[page] || { name: page, href: page + '.html', icon: '•' };
         const active = page === pageId ? ' active' : '';
         let statusAttr = '';
-        if (window.ScoreManager && ['Bureautique', 'Recherche d\'emploi', 'Français', 'Autres'].includes(section.title)) {
+        if (window.ScoreManager && ['Numérique', 'Communication', 'Autres'].includes(section.title)) {
           const status = window.ScoreManager.readMetrics(page).status;
           statusAttr = ' data-status="' + status + '"';
         }
@@ -152,11 +158,21 @@
         );
       }
       parts.push('</div>');
+      parts.push('</details>');
     }
     const apps = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.apps) || [];
     if (apps.length > 0) {
-      parts.push('<div class="sidebar-section">');
-      parts.push('<div class="sidebar-section-title">Applications</div>');
+      const appsOpen = apps.some(function(app) {
+        return ('/' + app.href).endsWith('/' + pageId + '.html');
+      }) ? ' open' : '';
+      parts.push('<details class="sidebar-section"' + appsOpen + '>');
+      parts.push(
+        '<summary class="sidebar-section-title">' +
+        '<span>Applications</span>' +
+        '<span class="sidebar-chevron" aria-hidden="true">⌄</span>' +
+        '</summary>'
+      );
+      parts.push('<div class="sidebar-section-list">');
       for (const app of apps) {
         const activeApp = ('/' + app.href).endsWith('/' + pageId + '.html') ? ' active' : '';
         parts.push(
@@ -167,6 +183,7 @@
         );
       }
       parts.push('</div>');
+      parts.push('</details>');
     }
 
     parts.push('</aside>');

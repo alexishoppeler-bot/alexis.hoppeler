@@ -210,12 +210,14 @@
                 mémoriser ou préparer une démarche d’emploi.
               </p>
             </div>
-            <div class="activity-dossier-actions" aria-label="Filtrer les activités">
-              <button class="activity-filter active" type="button" data-section="all">Tout</button>
-              <button class="activity-filter" type="button" data-section="Numérique">Numérique</button>
-              <button class="activity-filter" type="button" data-section="Emploi & ORP">Emploi</button>
-              <button class="activity-filter" type="button" data-section="Français">Français</button>
-            </div>
+            <label class="activity-dossier-actions" for="activitySectionFilter">
+              <span>Section</span>
+              <select class="activity-filter-select" id="activitySectionFilter">
+                <option value="all">Toutes</option>
+                <option value="Numérique">Numérique</option>
+                <option value="Communication">Communication</option>
+              </select>
+            </label>
           </div>
           <div class="activity-groups" id="activityGroups"></div>
         </section>
@@ -281,11 +283,10 @@
       const host = document.getElementById('activityGroups');
       if (!host) return;
 
-      const sectionOrder = ['Numérique', 'Emploi & ORP', 'Français'];
+      const sectionOrder = ['Numérique', 'Communication'];
       const sectionLabels = {
         'Numérique': 'Numérique',
-        'Emploi & ORP': 'Emploi & ORP',
-        'Français': 'Français'
+        'Communication': 'Communication'
       };
 
       function escapeHtml(value) {
@@ -344,18 +345,16 @@
         ].join('');
       }).join('');
 
-      document.querySelectorAll('.activity-filter').forEach(function (button) {
-        button.addEventListener('click', function () {
-          const selected = button.getAttribute('data-section') || 'all';
-          document.querySelectorAll('.activity-filter').forEach(function (btn) {
-            btn.classList.toggle('active', btn === button);
-          });
+      const sectionFilter = document.getElementById('activitySectionFilter');
+      if (sectionFilter) {
+        sectionFilter.addEventListener('change', function () {
+          const selected = sectionFilter.value || 'all';
           document.querySelectorAll('.activity-group').forEach(function (group) {
             const visible = selected === 'all' || group.getAttribute('data-section') === selected;
             group.hidden = !visible;
           });
         });
-      });
+      }
     }
   </script>
 </body>

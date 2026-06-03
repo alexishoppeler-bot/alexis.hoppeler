@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Renommer les fichiers de Sofia | Exercice autonomie numérique</title>
+  <meta name="description" content="Renommer des fichiers mal nommés avec des noms clairs, utiles et professionnels.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://alexishoppeler-bot.github.io/alexis.hoppeler/games/Renommer%20les%20fichiers%20de%20sofia.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Renommer les fichiers de Sofia | Exercice autonomie numérique">
+  <meta property="og:description" content="Renommer des fichiers mal nommés avec des noms clairs, utiles et professionnels.">
+  <meta property="og:image" content="https://alexishoppeler-bot.github.io/alexis.hoppeler/assets/logo.png">
+  <meta property="og:locale" content="fr_CH">
+
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    body.rename-page {
+      background: linear-gradient(135deg, #eef6ff, #ffffff);
+    }
+
+    .rename-main {
+      max-width: 1120px;
+    }
+
+    .rename-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .rename-intro {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .rename-steps {
+      margin: 0;
+      padding-left: 22px;
+      color: var(--text2);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .rename-steps strong {
+      color: var(--text);
+    }
+
+    .rename-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .rename-box {
+      border: 1px solid rgba(50,93,169,0.14);
+      border-radius: 10px;
+      background: var(--surface);
+      box-shadow: 0 8px 18px rgba(50,93,169,0.05);
+      padding: 18px;
+    }
+
+    .rename-box h3 {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-family: var(--font-head);
+      font-size: 18px;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .file-list li {
+      border-left: 5px solid rgba(50,93,169,0.45);
+      border-radius: 8px;
+      background: #fbfdff;
+      color: var(--text2);
+      font-family: Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      padding: 9px 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .rename-note {
+      border-left: 5px solid #d69e2e;
+      background: #fffaf0;
+      border-radius: 10px;
+      color: #6b4e16;
+      line-height: 1.6;
+      padding: 16px 18px;
+    }
+
+    .rename-result {
+      margin-top: 18px;
+    }
+
+    .rename-result summary {
+      align-items: center;
+      background: var(--accent);
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 800;
+      gap: 10px;
+      list-style: none;
+      padding: 15px 18px;
+      user-select: none;
+    }
+
+    .rename-result summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .rename-result summary::after {
+      content: "⌄";
+      margin-left: auto;
+      transition: transform 0.18s ease;
+    }
+
+    .rename-result[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .rename-table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    .rename-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      font-size: 14px;
+    }
+
+    .rename-table th,
+    .rename-table td {
+      border: 1px solid rgba(50,93,169,0.14);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .rename-table th {
+      background: var(--surface2);
+      color: var(--text);
+      font-family: var(--font-head);
+      font-weight: 800;
+    }
+
+    .rename-table td {
+      color: var(--text2);
+      font-family: Consolas, "Liberation Mono", monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .rename-finish {
+      align-items: center;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .rename-feedback {
+      color: var(--text2);
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 10px;
+      min-height: 20px;
+      text-align: center;
+    }
+
+    .rename-feedback.ok {
+      color: #1f7a4d;
+    }
+
+    .rename-feedback.info {
+      color: var(--accent);
+    }
+
+    @media (max-width: 760px) {
+      .rename-actions,
+      .rename-finish {
+        display: grid;
+      }
+
+      .rename-actions .btn,
+      .rename-finish .btn {
+        width: 100%;
+      }
+
+      .rename-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="rename-page">
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main rename-main">
+      <div class="page-header fade-up">
+        <div class="page-icon">📁</div>
+        <h1>Renommer les fichiers de Sofia</h1>
+        <p>Transformer des noms confus en noms de fichiers clairs, propres et faciles à retrouver.</p>
+      </div>
+
+      <div class="rename-actions fade-up delay-1">
+        <a class="btn btn-primary" href="Fichiers%20-%20renommer%20les%20fichiers%20de%20sofia.zip" download>Télécharger les fichiers</a>
+        <button class="btn btn-success" type="button" onclick="completeRenameFiles()">Valider</button>
+      </div>
+
+      <section class="card card-accent rename-intro fade-up delay-1">
+        <div class="card-title">Mission</div>
+        <p>
+          Sofia a récupéré plusieurs fichiers depuis son ancien ordinateur, son téléphone et une clé USB.
+          Beaucoup de fichiers sont mal nommés : noms trop vagues, fautes, mots collés, versions finales répétées
+          ou extensions manquantes.
+        </p>
+        <p>
+          Votre mission : ouvrir le dossier téléchargé, observer les fichiers, puis les renommer avec des noms
+          clairs et utiles.
+        </p>
+      </section>
+
+      <section class="card mb-24 fade-up delay-2">
+        <div class="card-title">Objectifs</div>
+        <ol class="rename-steps">
+          <li>Comprendre à quoi sert le nom d’un fichier.</li>
+          <li>Renommer un fichier sans supprimer son extension.</li>
+          <li>Utiliser des noms professionnels et lisibles.</li>
+          <li>Éviter les noms vagues comme <strong>nouveau</strong>, <strong>fichier</strong>, <strong>final_final</strong> ou <strong>copie</strong>.</li>
+          <li>Corriger les fautes simples dans les noms de fichiers.</li>
+        </ol>
+      </section>
+
+      <section class="card mb-24 fade-up delay-2">
+        <div class="card-title">Consignes</div>
+        <ol class="rename-steps">
+          <li>Téléchargez les fichiers avec le bouton en haut de la page.</li>
+          <li>Décompressez le dossier <strong>Fichiers - renommer les fichiers de sofia</strong>.</li>
+          <li>Lisez chaque nom de fichier et repérez ce qui ne va pas.</li>
+          <li>Renommez les fichiers avec les noms attendus, ou avec des noms équivalents bien écrits.</li>
+          <li>Gardez les extensions visibles : <strong>.docx</strong>, <strong>.pdf</strong>, <strong>.jpg</strong>, <strong>.xlsx</strong>, <strong>.txt</strong> ou <strong>.pptx</strong>.</li>
+        </ol>
+      </section>
+
+      <div class="rename-note mb-24 fade-up delay-2">
+        Exemple : <strong>cvversion3new.docx</strong> peut devenir <strong>CV_Sofia_Martins.docx</strong>.
+        Le nom devient clair, mais l’extension <strong>.docx</strong> reste à la fin.
+      </div>
+
+      <section class="card mb-24 fade-up delay-3">
+        <div class="card-title">Fichiers à corriger</div>
+        <div class="rename-grid">
+          <div class="rename-box">
+            <h3>Documents</h3>
+            <ul class="file-list">
+              <li>cv_2026_definitif_final.docx</li>
+              <li>lettre_motivation_NEW.docx</li>
+              <li>document1.docx</li>
+              <li>document2.docx</li>
+              <li>certificat_travaile.pdf</li>
+              <li>contrattravailfinalfinal.pdf</li>
+            </ul>
+          </div>
+          <div class="rename-box">
+            <h3>Recherche d’emploi</h3>
+            <ul class="file-list">
+              <li>recherche_demploie.docx</li>
+              <li>recherche-emploi-final.docx</li>
+              <li>couriel_client.docx</li>
+              <li>EmailClient.docx</li>
+              <li>LM</li>
+              <li>CV</li>
+            </ul>
+          </div>
+          <div class="rename-box">
+            <h3>Vie quotidienne</h3>
+            <ul class="file-list">
+              <li>facture_jenvier.pdf</li>
+              <li>facture_fevier.pdf</li>
+              <li>facture_marss.pdf</li>
+              <li>horraire_juin.xlsx</li>
+              <li>ListeCourseNouveau.xlsx</li>
+              <li>rdv_orp_25_13_2026.txt</li>
+            </ul>
+          </div>
+          <div class="rename-box">
+            <h3>Photos et présentations</h3>
+            <ul class="file-list">
+              <li>photo_vacanses.jpg</li>
+              <li>PHOTOETE2025.jpg</li>
+              <li>Presentationentreprize.pptx</li>
+              <li>pres_final_finale.pptx</li>
+              <li>image</li>
+              <li>presentation</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card mb-24 fade-up delay-3">
+        <div class="card-title">Règles importantes</div>
+        <ul class="rename-steps">
+          <li>Un bon nom explique le contenu du fichier.</li>
+          <li>Les mots peuvent être séparés par des tirets bas : <strong>Facture_internet_mars.pdf</strong>.</li>
+          <li>La date doit être lisible, par exemple <strong>2026-06</strong> ou <strong>juin_2026</strong>.</li>
+          <li>Les mots comme <strong>copie</strong>, <strong>nouveau</strong> et <strong>final_final</strong> doivent disparaître si possible.</li>
+          <li>Si un fichier n’a pas d’extension, ajoutez l’extension seulement si vous savez de quel type de fichier il s’agit.</li>
+        </ul>
+      </section>
+
+      <details class="rename-result fade-up delay-3">
+        <summary>Afficher une correction possible</summary>
+        <div class="rename-table-wrap">
+          <table class="rename-table">
+            <thead>
+              <tr>
+                <th>Nom reçu</th>
+                <th>Nom possible</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>cv_2026_definitif_final.docx</td><td>CV_Sofia_Martins_2026.docx</td></tr>
+              <tr><td>cv_jhon.docx</td><td>CV_John.docx</td></tr>
+              <tr><td>cvversion3new.docx</td><td>CV_Sofia_Martins.docx</td></tr>
+              <tr><td>CV</td><td>CV_Sofia_Martins.docx</td></tr>
+              <tr><td>lettre_motivation_NEW.docx</td><td>Lettre_motivation_Sofia_Martins.docx</td></tr>
+              <tr><td>LM</td><td>Lettre_motivation.docx</td></tr>
+              <tr><td>lettre</td><td>Lettre_candidature.docx</td></tr>
+              <tr><td>recherche_demploie.docx</td><td>Recherche_emploi.docx</td></tr>
+              <tr><td>recherche-emploi-final.docx</td><td>Recherche_emploi.docx</td></tr>
+              <tr><td>recherche</td><td>Recherche_emploi.docx</td></tr>
+              <tr><td>couriel_client.docx</td><td>Courriel_client.docx</td></tr>
+              <tr><td>EmailClient.docx</td><td>Email_client.docx</td></tr>
+              <tr><td>mail_importan.txt</td><td>Mail_important.txt</td></tr>
+              <tr><td>document1.docx</td><td>Notes_entretien.docx</td></tr>
+              <tr><td>document2.docx</td><td>Compte_rendu_rendez_vous.docx</td></tr>
+              <tr><td>nouveau</td><td>Nouveau_document.docx</td></tr>
+              <tr><td>fichier</td><td>Document_a_identifier.docx</td></tr>
+              <tr><td>contrattravailfinalfinal.pdf</td><td>Contrat_travail.pdf</td></tr>
+              <tr><td>contrat_travail_v2.pdf</td><td>Contrat_travail.pdf</td></tr>
+              <tr><td>contrat</td><td>Contrat_travail.pdf</td></tr>
+              <tr><td>certificat_travaile.pdf</td><td>Certificat_travail.pdf</td></tr>
+              <tr><td>certificattravailcopie.pdf</td><td>Certificat_travail.pdf</td></tr>
+              <tr><td>certifficat</td><td>Certificat_travail.pdf</td></tr>
+              <tr><td>facture_jenvier.pdf</td><td>Facture_janvier.pdf</td></tr>
+              <tr><td>facture_fevier.pdf</td><td>Facture_fevrier.pdf</td></tr>
+              <tr><td>facture_marss.pdf</td><td>Facture_mars.pdf</td></tr>
+              <tr><td>Facture</td><td>Facture_a_identifier.pdf</td></tr>
+              <tr><td>liste_course.xlsx</td><td>Liste_courses.xlsx</td></tr>
+              <tr><td>ListeCourseNouveau.xlsx</td><td>Liste_courses.xlsx</td></tr>
+              <tr><td>liste</td><td>Liste_courses.xlsx</td></tr>
+              <tr><td>horraire_juin.xlsx</td><td>Horaire_juin.xlsx</td></tr>
+              <tr><td>horaire</td><td>Horaire_travail.xlsx</td></tr>
+              <tr><td>Horaires</td><td>Horaires_travail.xlsx</td></tr>
+              <tr><td>rendez_vou_banque.txt</td><td>Rendez_vous_banque.txt</td></tr>
+              <tr><td>rendez</td><td>Rendez_vous.txt</td></tr>
+              <tr><td>rdv_orp_25_13_2026.txt</td><td>Rendez_vous_ORP_2026.txt</td></tr>
+              <tr><td>mot_de_passe.txt</td><td>Mots_de_passe.txt</td></tr>
+              <tr><td>mots_de_pases.txt</td><td>Mots_de_passe.txt</td></tr>
+              <tr><td>motdepassecopie.txt</td><td>Mots_de_passe.txt</td></tr>
+              <tr><td>photo_vacanses.jpg</td><td>Photo_vacances.jpg</td></tr>
+              <tr><td>PHOTOETE2025.jpg</td><td>Photo_ete_2025.jpg</td></tr>
+              <tr><td>photo</td><td>Photo_a_classer.jpg</td></tr>
+              <tr><td>image</td><td>Image_a_classer.jpg</td></tr>
+              <tr><td>Presentationentreprize.pptx</td><td>Presentation_entreprise.pptx</td></tr>
+              <tr><td>pres_final_finale.pptx</td><td>Presentation_finale.pptx</td></tr>
+              <tr><td>presentation</td><td>Presentation_entreprise.pptx</td></tr>
+              <tr><td>recete_lasagne.docx</td><td>Recette_lasagne.docx</td></tr>
+              <tr><td>recette_tiramissu.docx</td><td>Recette_tiramisu.docx</td></tr>
+              <tr><td>gateau_anniversairee.docx</td><td>Gateau_anniversaire.docx</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <div class="rename-finish">
+        <a class="btn btn-primary" href="Fichiers%20-%20renommer%20les%20fichiers%20de%20sofia.zip" download>Télécharger les fichiers</a>
+        <button class="btn btn-success" type="button" onclick="completeRenameFiles()">Valider</button>
+      </div>
+      <div class="rename-feedback" id="renameFeedback" aria-live="polite"></div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+    'use strict';
+
+    const PAGE_ID = 'Renommer les fichiers de sofia';
+    const DONE_KEY = 'renommerFichiersSofiaDone';
+
+    function setRenameFeedback(message, kind) {
+      const feedback = document.getElementById('renameFeedback');
+      if (!feedback) return;
+      feedback.textContent = message;
+      feedback.className = 'rename-feedback ' + (kind || '');
+    }
+
+    function completeRenameFiles() {
+      const alreadyDone = localStorage.getItem(DONE_KEY) === '1';
+      if (alreadyDone) {
+        setRenameFeedback('Activité déjà validée. Les XP ont déjà été ajoutés.', 'info');
+        return;
+      }
+
+      if (window.ScoreManager) {
+        window.ScoreManager.updateMetrics(PAGE_ID, { correct: 1, typed: 1, xp: 5 });
+        window.ScoreManager.promoteStatus(PAGE_ID, 'completed');
+      }
+      localStorage.setItem(DONE_KEY, '1');
+      setRenameFeedback('Activité validée : +5 XP.', 'ok');
+    }
+
+    if (window.ScoreManager) {
+      window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+    }
+  </script>
+</body>
+</html>

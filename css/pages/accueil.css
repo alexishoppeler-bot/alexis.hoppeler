@@ -411,28 +411,34 @@
 
 .activity-dossier-actions {
   display: inline-flex;
+  align-items: center;
   gap: 8px;
-  padding: 5px;
+  padding: 7px 8px 7px 12px;
   border: 1px solid rgba(50,93,169,0.12);
   border-radius: 10px;
   background: var(--surface);
   box-shadow: 0 8px 20px rgba(50,93,169,0.06);
-}
-
-.activity-filter {
-  min-height: 40px;
-  padding: 8px 13px;
-  border-radius: 8px;
-  background: transparent;
   color: var(--text2);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
 }
 
-.activity-filter:hover,
-.activity-filter.active {
-  background: var(--accent);
-  color: #fff;
+.activity-filter-select {
+  min-height: 40px;
+  min-width: 190px;
+  padding: 8px 38px 8px 13px;
+  border-radius: 8px;
+  border: 1px solid rgba(50,93,169,0.16);
+  background: #fff;
+  color: var(--text2);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.activity-filter-select:focus {
+  outline: 3px solid rgba(50,93,169,0.18);
+  border-color: var(--accent);
 }
 
 .activity-groups {
@@ -825,7 +831,12 @@
 
   .activity-dossier-actions {
     width: 100%;
-    overflow-x: auto;
+    justify-content: space-between;
+  }
+
+  .activity-filter-select {
+    flex: 1;
+    min-width: 0;
   }
 
   .andragogy-strip {
