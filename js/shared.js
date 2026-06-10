@@ -44,10 +44,25 @@
     Object.keys(sectionMap).forEach((s) => {
       if (!sectionOrder.includes(s)) exerciseSections.push({ title: s, links: sectionMap[s] });
     });
-    return [
-      { title: 'Début', links: ['accueil', 'evaluations', 'regles', 'donnees', 'autoevaluation'] },
-      ...exerciseSections
-    ];
+    return exerciseSections;
+  }
+
+  function startLinks() {
+    return ['accueil', 'evaluations', 'regles', 'donnees', 'autoevaluation'];
+  }
+
+  function renderLink(page, sectionTitle, pageId, meta) {
+    const m = meta[page] || { name: page, href: page + '.html', icon: '•' };
+    const active = page === pageId ? ' active' : '';
+    let statusAttr = '';
+    if (window.ScoreManager && ['Numérique', 'Communication', 'Autres'].includes(sectionTitle)) {
+      const status = window.ScoreManager.readMetrics(page).status;
+      statusAttr = ' data-status="' + status + '"';
+    }
+    return '<a class="sidebar-link' + active + '" href="' + escapeHtml(m.href) + '"' + statusAttr + '>' +
+      '<span class="icon">' + escapeHtml(m.icon || '•') + '</span>' +
+      '<span>' + escapeHtml(m.name || page) + '</span>' +
+      '</a>';
   }
 
   const GROUP_SECTIONS = [
@@ -56,6 +71,7 @@
   ];
 
   const GROUP_ICONS = { numerique: '💻', communication: '💬' };
+  const SECTION_ICONS = { 'Numérique': '💻', 'Communication': '💬', 'Autres': '📌' };
 
   function xpLevel(xp) {
     if (xp >= 350) return 'Niv. 4';
@@ -96,6 +112,16 @@
   function renderHeader() {
     const slot = document.getElementById('header-slot');
     if (!slot) return;
+    const pageId = currentPageId();
+    const meta = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.meta) || {};
+    const headerNavLinks = startLinks().map(function(page) {
+      const m = meta[page] || { name: page, href: page + '.html', icon: '•' };
+      const active = page === pageId ? ' active' : '';
+      return '<a class="header-menu-link' + active + '" href="' + escapeHtml(m.href) + '" title="' + escapeHtml(m.name || page) + '">' +
+        '<span aria-hidden="true">' + escapeHtml(m.icon || '•') + '</span>' +
+        '<span>' + escapeHtml(m.name || page) + '</span>' +
+        '</a>';
+    }).join('');
     var groups = GROUP_SECTIONS.map(function(g) {
       return '<div class="hstat-sep"></div>' +
         stat('groupFill-' + g.id, 'groupPct-' + g.id, GROUP_ICONS[g.id] || '', g.label, false);
@@ -115,7 +141,10 @@
             '<span class="hxp-lvl" id="headerXpLevel">Niv. 1</span>' +
           '</div>' +
           '<div class="header-right">' +
-            '<button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Menu">☰</button>' +
+            '<nav class="header-nav" aria-label="Accueil et suivi">' +
+              headerNavLinks +
+            '</nav>' +
+            '<button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Ouvrir les activités" title="Activités">☰</button>' +
           '</div>' +
         '</div>' +
         '<div class="header-row2">' +
@@ -132,45 +161,44 @@
     const meta = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.meta) || {};
 
     const parts = ['<aside class="sidebar" id="sidebar">'];
-    for (const section of sectionedLinks()) {
-      const sectionOpen = section.links.includes(pageId) || section.title === 'Début' ? ' open' : '';
-      parts.push('<details class="sidebar-section"' + sectionOpen + '>');
+    const exerciseSections = sectionedLinks();
+
+    parts.push(
+      '<div class="sidebar-heading">' +
+      '<strong>Activités</strong>' +
+      '<span>Choisissez un exercice</span>' +
+      '</div>'
+    );
+
+    parts.push('<div class="sidebar-section-list sidebar-activity-groups">');
+
+    for (const section of exerciseSections) {
+      const activeGroup = section.links.includes(pageId) ? ' active-group' : '';
+      parts.push('<section class="sidebar-section sidebar-group' + activeGroup + '">');
       parts.push(
-        '<summary class="sidebar-section-title">' +
-        '<span>' + escapeHtml(section.title) + '</span>' +
-        '<span class="sidebar-chevron" aria-hidden="true">⌄</span>' +
-        '</summary>'
+        '<div class="sidebar-section-title sidebar-group-title">' +
+        '<span><span class="sidebar-section-icon" aria-hidden="true">' + escapeHtml(SECTION_ICONS[section.title] || '📌') + '</span>' + escapeHtml(section.title) + '</span>' +
+        '</div>'
       );
       parts.push('<div class="sidebar-section-list">');
       for (const page of section.links) {
-        const m = meta[page] || { name: page, href: page + '.html', icon: '•' };
-        const active = page === pageId ? ' active' : '';
-        let statusAttr = '';
-        if (window.ScoreManager && ['Numérique', 'Communication', 'Autres'].includes(section.title)) {
-          const status = window.ScoreManager.readMetrics(page).status;
-          statusAttr = ' data-status="' + status + '"';
-        }
-        parts.push(
-          '<a class="sidebar-link' + active + '" href="' + m.href + '"' + statusAttr + '>' +
-          '<span class="icon">' + (m.icon || '•') + '</span>' +
-          '<span>' + (m.name || page) + '</span>' +
-          '</a>'
-        );
+        parts.push(renderLink(page, section.title, pageId, meta));
       }
       parts.push('</div>');
-      parts.push('</details>');
+      parts.push('</section>');
     }
+    parts.push('</div>');
+
     const apps = (window.EXERCISE_CONFIG && window.EXERCISE_CONFIG.apps) || [];
     if (apps.length > 0) {
-      const appsOpen = apps.some(function(app) {
+      const activeApps = apps.some(function(app) {
         return ('/' + app.href).endsWith('/' + pageId + '.html');
-      }) ? ' open' : '';
-      parts.push('<details class="sidebar-section"' + appsOpen + '>');
+      }) ? ' active-group' : '';
+      parts.push('<section class="sidebar-section sidebar-group' + activeApps + '">');
       parts.push(
-        '<summary class="sidebar-section-title">' +
-        '<span>Applications</span>' +
-        '<span class="sidebar-chevron" aria-hidden="true">⌄</span>' +
-        '</summary>'
+        '<div class="sidebar-section-title sidebar-group-title">' +
+        '<span><span class="sidebar-section-icon" aria-hidden="true">✦</span>Applications</span>' +
+        '</div>'
       );
       parts.push('<div class="sidebar-section-list">');
       for (const app of apps) {
@@ -183,7 +211,7 @@
         );
       }
       parts.push('</div>');
-      parts.push('</details>');
+      parts.push('</section>');
     }
 
     parts.push('</aside>');
@@ -228,18 +256,23 @@
     brief.setAttribute('aria-label', 'Repères de l activité');
     brief.innerHTML = [
       '<div class="game-brief-main">',
-      '  <div class="game-brief-eyebrow">' + escapeHtml(section) + '</div>',
-      '  <h2>' + escapeHtml(summary) + '</h2>',
-      '  <div class="game-brief-tags">' + themes.map(function(theme) {
+      '  <div class="game-brief-line">',
+      '    <span class="game-brief-eyebrow">' + escapeHtml(section) + '</span>',
+      '    <h2>' + escapeHtml(summary) + '</h2>',
+      '  </div>',
+      '  <div class="game-brief-tags" aria-label="Thèmes">' + themes.map(function(theme) {
         return '<span>' + escapeHtml(theme) + '</span>';
       }).join('') + '</div>',
       '</div>',
-      '<dl class="game-brief-grid">',
-      '  <div><dt>Objectif</dt><dd>' + escapeHtml(objective) + '</dd></div>',
-      '  <div><dt>Travaille</dt><dd>' + escapeHtml(practice) + '</dd></div>',
-      '  <div><dt>Moment utile</dt><dd>' + escapeHtml(useWhen) + '</dd></div>',
-      xpRule ? '  <div><dt>Points</dt><dd>' + escapeHtml(xpRule) + '</dd></div>' : '',
-      '</dl>'
+      '<details class="game-brief-more">',
+      '  <summary>Voir les détails</summary>',
+      '  <dl class="game-brief-grid">',
+      '    <div><dt>Objectif</dt><dd>' + escapeHtml(objective) + '</dd></div>',
+      '    <div><dt>Travaille</dt><dd>' + escapeHtml(practice) + '</dd></div>',
+      '    <div><dt>Moment utile</dt><dd>' + escapeHtml(useWhen) + '</dd></div>',
+      xpRule ? '    <div><dt>Points</dt><dd>' + escapeHtml(xpRule) + '</dd></div>' : '',
+      '  </dl>',
+      '</details>'
     ].join('');
 
     header.insertAdjacentElement('afterend', brief);
@@ -621,6 +654,87 @@
     btn.addEventListener('click', () => {
       const open = sidebar.classList.toggle('open');
       btn.classList.toggle('active', open);
+      try {
+        localStorage.setItem('ah:sidebar-open:v1', open ? '1' : '0');
+      } catch (_) {}
+    });
+  }
+
+  function initSidebarPersistence() {
+    const sidebar = document.getElementById('sidebar');
+    const btn = document.getElementById('sidebarToggle');
+    if (!sidebar) return;
+
+    try {
+      const savedTop = Number(localStorage.getItem('ah:sidebar-scroll:v1')) || 0;
+      if (savedTop > 0) sidebar.scrollTop = savedTop;
+
+      const savedOpen = localStorage.getItem('ah:sidebar-open:v1') === '1';
+      if (savedOpen) {
+        sidebar.classList.add('open');
+        if (btn) btn.classList.add('active');
+      }
+    } catch (_) {}
+
+    let scrollTimer = null;
+    sidebar.addEventListener('scroll', () => {
+      window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        try {
+          localStorage.setItem('ah:sidebar-scroll:v1', String(sidebar.scrollTop));
+        } catch (_) {}
+      }, 80);
+    });
+
+    sidebar.addEventListener('click', (event) => {
+      const link = event.target.closest && event.target.closest('a.sidebar-link');
+      if (!link) return;
+      try {
+        localStorage.setItem('ah:sidebar-scroll:v1', String(sidebar.scrollTop));
+        localStorage.setItem('ah:sidebar-open:v1', sidebar.classList.contains('open') ? '1' : '0');
+      } catch (_) {}
+    });
+  }
+
+  function initFocusMode() {
+    const storageKey = 'ah:focus-mode:v1';
+    let btn = document.getElementById('focusModeToggle');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'focusModeToggle';
+      btn.className = 'focus-mode-toggle';
+      btn.type = 'button';
+      document.body.appendChild(btn);
+    }
+
+    function readEnabled() {
+      try {
+        return localStorage.getItem(storageKey) === '1';
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function writeEnabled(enabled) {
+      try {
+        localStorage.setItem(storageKey, enabled ? '1' : '0');
+      } catch (_) {}
+    }
+
+    function applyState(enabled) {
+      document.body.classList.toggle('focus-mode', enabled);
+      btn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      btn.setAttribute('aria-label', enabled ? 'Désactiver le mode focus' : 'Activer le mode focus');
+      btn.innerHTML = enabled
+        ? '<span aria-hidden="true">●</span><strong>Focus actif</strong>'
+        : '<span aria-hidden="true">◎</span><strong>Focus</strong>';
+    }
+
+    applyState(readEnabled());
+    btn.addEventListener('click', () => {
+      const enabled = !document.body.classList.contains('focus-mode');
+      writeEnabled(enabled);
+      applyState(enabled);
     });
   }
 
@@ -633,6 +747,8 @@
     renderGameBrief();
     updateHeaderProgress();
     initSidebarToggle();
+    initSidebarPersistence();
+    initFocusMode();
 
     document.addEventListener('score:updated', () => {
       updateHeaderProgress();
