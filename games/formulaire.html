@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/utilities.css">
-  <link rel="stylesheet" href="../css/formulaire.css">
+  <link rel="stylesheet" href="../css/pages/formulaire.css">
 </head>
 <body>
   <div id="header-slot"></div>
@@ -34,10 +34,10 @@
         </div>
 
         <div class="kpi-grid fade-up delay-1">
-          <div class="kpi-card"><div class="kpi-value" id="kpiCorrect">0</div><div class="kpi-label">Justes</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiCorrect">0</div><div class="kpi-label">Corrects</div></div>
           <div class="kpi-card"><div class="kpi-value" id="kpiErrors">0</div><div class="kpi-label">Erreurs</div></div>
-          <div class="kpi-card"><div class="kpi-value" id="kpiXP">0</div><div class="kpi-label">Points</div></div>
-          <div class="kpi-card"><div class="kpi-value" id="kpiProgress">0%</div><div class="kpi-label">Avance</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiXP">0</div><div class="kpi-label">XP gagné</div></div>
+          <div class="kpi-card"><div class="kpi-value" id="kpiProgress">0%</div><div class="kpi-label">Avancement</div></div>
         </div>
 
         <div class="game-zone fade-up delay-2" id="gameZone">
@@ -49,12 +49,6 @@
 
             <div class="series-progress">
               <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-            </div>
-
-            <div class="mission-strip" aria-live="polite">
-              <div class="mission-item"><span>1</span><strong>Lisez le profil à gauche.</strong></div>
-              <div class="mission-item"><span>2</span><strong>Copiez les mêmes informations à droite.</strong></div>
-              <div class="mission-item"><span>3</span><strong>Vérifiez, puis passez au profil suivant.</strong></div>
             </div>
 
             <div class="session-strip" aria-live="polite">

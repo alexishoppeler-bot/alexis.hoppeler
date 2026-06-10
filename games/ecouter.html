@@ -1,10 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr-CH">
 <head>
   <meta charset="UTF-8">
   <link rel="icon" href="../assets/logo.png" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Écouter | Exercice français pratique</title>
   <meta name="description" content="Écouter une consigne ou une phrase, puis choisir la bonne réponse.">
   <meta name="robots" content="index, follow">
@@ -14,11 +13,114 @@
   <meta property="og:description" content="Écouter une consigne ou une phrase, puis choisir la bonne réponse.">
   <meta property="og:image" content="https://alexishoppeler-bot.github.io/alexis.hoppeler/assets/logo.png">
   <meta property="og:locale" content="fr_CH">
-<link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/theme.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/utilities.css">
   <link rel="stylesheet" href="../css/pages/ecouter.css">
+  <style>
+    /* ── Mode bar ── */
+    .ec-mode-bar { display: flex; gap: 8px; margin-bottom: 20px; }
+    .ec-mode-btn {
+      flex: 1; padding: 10px 16px;
+      border: 2px solid var(--border); border-radius: 10px;
+      background: var(--surface); color: var(--text2);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.18s;
+    }
+    .ec-mode-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .ec-mode-btn.active {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+      color: var(--accent);
+    }
+
+    /* ── Texte libre mode ── */
+    .tl-shell { display: grid; gap: 18px; }
+    .tl-select-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 14px 18px;
+    }
+    .tl-select-bar select {
+      flex: 1 1 260px;
+      border: 1px solid var(--border); border-radius: var(--r-md);
+      background: var(--surface); color: var(--text);
+      padding: 9px 12px; font-size: 15px; font-weight: 600;
+    }
+    .tl-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: clamp(20px, 3vw, 36px);
+      box-shadow: var(--shadow-sm);
+    }
+    .tl-card-top {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 16px; margin-bottom: 18px;
+    }
+    .tl-card-top h2 { margin: 0; font-size: clamp(20px, 2.5vw, 30px); color: var(--text); }
+    .tl-theme-icon {
+      font-size: 40px; width: 68px; height: 68px;
+      display: grid; place-items: center;
+      border-radius: var(--r-xl); background: var(--bg2);
+      box-shadow: inset 0 0 0 2px var(--border); flex-shrink: 0;
+    }
+    .tl-text-locked {
+      display: grid; grid-template-columns: auto 1fr; gap: 14px;
+      align-items: center; background: var(--bg2);
+      border: 2px dashed color-mix(in srgb, var(--accent) 40%, var(--border));
+      border-radius: var(--r-xl); padding: 18px 20px; margin-bottom: 16px;
+      color: var(--text2);
+    }
+    .tl-lock-icon {
+      width: 52px; height: 52px; display: grid; place-items: center;
+      border-radius: var(--r-lg); background: var(--surface);
+      color: var(--accent); font-size: 28px;
+      box-shadow: inset 0 0 0 2px var(--border);
+    }
+    .tl-text-locked strong { display: block; color: var(--text); font-size: 17px; margin-bottom: 3px; }
+    .tl-text-box {
+      display: none; font-size: clamp(17px, 1.8vw, 24px); line-height: 1.6;
+      background: var(--surface2); border-left: 6px solid var(--accent);
+      padding: 20px; border-radius: var(--r-lg); margin-bottom: 16px;
+    }
+    .tl-text-panel.show .tl-text-box { display: block; }
+    .tl-text-panel.show .tl-text-locked { display: none; }
+    .tl-quiz { display: grid; gap: 14px; margin-bottom: 16px; }
+    .tl-question {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 16px 18px;
+      font-size: clamp(15px, 1.5vw, 19px);
+    }
+    .tl-question strong { color: var(--accent); }
+    .tl-question textarea {
+      width: 100%; min-height: 64px; margin-top: 10px;
+      border-radius: var(--r-md); border: 1px solid var(--border);
+      padding: 10px 12px; font-size: 16px; resize: vertical;
+      box-sizing: border-box; font-family: var(--font-body);
+      background: var(--surface); color: var(--text);
+    }
+    .tl-question textarea:focus { outline: none; border-color: var(--accent); }
+    .tl-answers {
+      display: none; margin-top: 16px;
+      background: color-mix(in srgb, var(--success) 8%, var(--surface));
+      border: 1px solid color-mix(in srgb, var(--success) 35%, var(--border));
+      border-radius: var(--r-lg); padding: 16px 20px;
+      font-size: clamp(15px, 1.4vw, 19px);
+    }
+    .tl-answers.show { display: block; }
+    .tl-answers h3 { margin: 0 0 10px; color: var(--accent2); }
+    .tl-answers li { margin: 8px 0; }
+    .tl-card-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tl-trainer {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 0;
+    }
+    .tl-trainer summary {
+      cursor: pointer; padding: 12px 16px; color: var(--text2);
+      font-size: 14px; font-weight: 700; user-select: none;
+    }
+    .tl-trainer-actions { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 16px 14px; }
+  </style>
 </head>
 <body>
   <div id="header-slot"></div>
@@ -30,88 +132,139 @@
 
         <div class="page-header fade-up">
           <div class="page-icon">🎧</div>
-          <h1>Compréhension orale</h1>
+          <h1>Écouter</h1>
           <p>Écoutez, puis répondez aux questions.</p>
         </div>
 
-        <!-- KPI globaux -->
-        <div class="kpi-row fade-up delay-1">
-          <div class="kpi-pill">✅ <span class="kv" id="kpiCorrect">0</span> corrects</div>
-          <div class="kpi-pill">❌ <span class="kv" id="kpiErrors">0</span> erreurs</div>
-          <div class="kpi-pill">⚡ <span class="kv" id="kpiXP">0</span> XP</div>
-          <div class="kpi-pill">📖 <span class="kv" id="kpiEp">0/0</span> épisodes</div>
+        <!-- Sélecteur de mode -->
+        <div class="ec-mode-bar fade-up delay-1">
+          <button class="ec-mode-btn active" id="btn-mode-qcm"  type="button">🎧 QCM</button>
+          <button class="ec-mode-btn"        id="btn-mode-texte" type="button">📖 Texte libre</button>
         </div>
 
-        <!-- Sélecteur d'épisode -->
-        <div class="ep-select-wrap fade-up delay-1">
-          <select id="epSelect"></select>
-          <button class="btn btn-ghost btn-sm" id="btnPrevEp" type="button" aria-label="Épisode précédent">◀</button>
-          <button class="btn btn-ghost btn-sm" id="btnNextEp" type="button" aria-label="Épisode suivant">▶</button>
-        </div>
+        <!-- ══════════════════ MODE QCM ══════════════════ -->
+        <div id="zone-qcm">
 
-        <!-- Panneau épisode -->
-        <div class="episode-panel fade-up delay-2">
-
-          <!-- En-tête -->
-          <div class="ep-header">
-            <div class="ep-icon" id="epIcon">📖</div>
-            <div class="ep-info">
-              <div class="ep-title" id="epTitle">—</div>
-              <div class="ep-meta" id="epMeta">—</div>
-            </div>
-            <span class="ep-type-badge" id="epTypeBadge"></span>
+          <div class="kpi-row fade-up delay-1">
+            <div class="kpi-pill">✅ <span class="kv" id="kpiCorrect">0</span> corrects</div>
+            <div class="kpi-pill">❌ <span class="kv" id="kpiErrors">0</span> erreurs</div>
+            <div class="kpi-pill">⚡ <span class="kv" id="kpiXP">0</span> XP</div>
+            <div class="kpi-pill">📖 <span class="kv" id="kpiEp">0/0</span> épisodes</div>
           </div>
 
-          <!-- Écoute -->
-          <div class="listen-section">
-            <button class="btn-play" id="btnPlay" type="button" title="Écouter" aria-label="Écouter l'épisode">▶️</button>
-            <div class="listen-info">
-              <div class="listen-title" id="listenTitle">Appuie ▶️ pour écouter</div>
-              <div class="listen-sub" id="listenSub">Écoute bien avant de répondre aux questions.</div>
-              <div class="listen-count" id="listenCount"></div>
-              <div class="listen-controls">
-                <button class="btn btn-ghost btn-sm" id="btnStop" type="button" style="display:none;">⏹ Stop</button>
-                <button class="voice-speed" id="btnSpeed" type="button" aria-label="Changer la vitesse de lecture">🐢 × 0.85</button>
-                <button class="btn btn-ghost btn-sm" id="btnTranscript" type="button" style="display:none;">📝 Afficher les sous-titres</button>
+          <div class="ep-select-wrap fade-up delay-1">
+            <select id="epSelect"></select>
+            <button class="btn btn-ghost btn-sm" id="btnPrevEp" type="button" aria-label="Épisode précédent">◀</button>
+            <button class="btn btn-ghost btn-sm" id="btnNextEp" type="button" aria-label="Épisode suivant">▶</button>
+          </div>
+
+          <div class="episode-panel fade-up delay-2">
+            <div class="ep-header">
+              <div class="ep-icon" id="epIcon">📖</div>
+              <div class="ep-info">
+                <div class="ep-title" id="epTitle">—</div>
+                <div class="ep-meta"  id="epMeta">—</div>
               </div>
-              <div id="transcriptZone" style="display:none;margin-top:12px;padding:12px;background:var(--bg2);border-radius:var(--r-md);"></div>
-              <div class="voice-row" id="voiceRow" style="display:none;">
-                Voix : <select id="voiceSelect"></select>
+              <span class="ep-type-badge" id="epTypeBadge"></span>
+            </div>
+
+            <div class="listen-section">
+              <button class="btn-play" id="btnPlay" type="button" title="Écouter" aria-label="Écouter l'épisode">▶️</button>
+              <div class="listen-info">
+                <div class="listen-title" id="listenTitle">Appuie ▶️ pour écouter</div>
+                <div class="listen-sub"   id="listenSub">Écoute bien avant de répondre aux questions.</div>
+                <div class="listen-count" id="listenCount"></div>
+                <div class="listen-controls">
+                  <button class="btn btn-ghost btn-sm" id="btnStop" type="button" style="display:none;">⏹ Stop</button>
+                  <button class="voice-speed" id="btnSpeed" type="button" aria-label="Changer la vitesse">🐢 × 0.85</button>
+                  <button class="btn btn-ghost btn-sm" id="btnTranscript" type="button" style="display:none;">📝 Afficher les sous-titres</button>
+                </div>
+                <div id="transcriptZone" style="display:none;margin-top:12px;padding:12px;background:var(--bg2);border-radius:var(--r-md);"></div>
+                <div class="voice-row" id="voiceRow" style="display:none;">
+                  Voix : <select id="voiceSelect"></select>
+                </div>
+                <div class="voice-badges" id="voiceBadges" style="display:none;">
+                  <span class="voice-badge f">👩 <span id="badgeVoiceF">—</span></span>
+                  <span class="voice-badge m">👨 <span id="badgeVoiceM">—</span></span>
+                </div>
               </div>
-              <div class="voice-badges" id="voiceBadges" style="display:none;">
-                <span class="voice-badge f">👩 <span id="badgeVoiceF">—</span></span>
-                <span class="voice-badge m">👨 <span id="badgeVoiceM">—</span></span>
+            </div>
+
+            <div class="result-banner" id="resultBanner">
+              <div class="res-emoji" id="resEmoji"></div>
+              <div class="res-title" id="resTitle"></div>
+              <div class="res-sub"   id="resSub"></div>
+              <div class="res-xp"    id="resXP"></div>
+            </div>
+
+            <div class="questions-section">
+              <div class="q-header">
+                <div class="q-title">Questions de compréhension</div>
+                <div class="score-dots" id="scoreDots"></div>
               </div>
+              <div id="questionsContainer"></div>
+            </div>
+
+            <div class="bottom-bar">
+              <button class="btn btn-primary" id="btnReplay" type="button" style="display:none;">↺ Réécouter</button>
+              <button class="btn btn-secondary btn-sm" id="btnReset" type="button">🔄 Recommencer cet épisode</button>
+              <span class="key-hint">
+                <kbd>Espace</kbd> écouter &nbsp;|&nbsp; <kbd>1</kbd>–<kbd>4</kbd> répondre &nbsp;|&nbsp; <kbd>R</kbd> réécouter
+              </span>
             </div>
           </div>
 
-          <!-- Résultat inline -->
-          <div class="result-banner" id="resultBanner">
-            <div class="res-emoji" id="resEmoji"></div>
-            <div class="res-title" id="resTitle"></div>
-            <div class="res-sub"   id="resSub"></div>
-            <div class="res-xp"    id="resXP"></div>
-          </div>
+        </div><!-- /zone-qcm -->
 
-          <!-- Questions -->
-          <div class="questions-section">
-            <div class="q-header">
-              <div class="q-title">Questions de compréhension</div>
-              <div class="score-dots" id="scoreDots"></div>
+        <!-- ══════════════════ MODE TEXTE LIBRE ══════════════════ -->
+        <div id="zone-texte" style="display:none;">
+          <div class="tl-shell fade-up delay-1">
+
+            <div class="tl-select-bar">
+              <strong>Texte :</strong>
+              <select id="tlSelect"></select>
+              <button class="btn btn-ghost btn-sm" id="tlBtnPrev" type="button">◀</button>
+              <button class="btn btn-ghost btn-sm" id="tlBtnNext" type="button">▶</button>
+              <button class="btn btn-primary btn-sm" id="tlBtnPlay" type="button">▶ Écouter</button>
+              <button class="btn btn-ghost btn-sm"   id="tlBtnStop" type="button" style="display:none;">⏹ Stop</button>
             </div>
-            <div id="questionsContainer"></div>
-          </div>
 
-          <!-- Barre actions -->
-          <div class="bottom-bar">
-            <button class="btn btn-primary" id="btnReplay" type="button" style="display:none;">↺ Réécouter</button>
-            <button class="btn btn-secondary btn-sm" id="btnReset" type="button">🔄 Recommencer cet épisode</button>
-            <span class="key-hint">
-              <kbd>Espace</kbd> écouter &nbsp;|&nbsp; <kbd>1</kbd>–<kbd>4</kbd> répondre &nbsp;|&nbsp; <kbd>R</kbd> réécouter
-            </span>
-          </div>
+            <div class="tl-card" id="tlCard">
+              <div class="tl-card-top">
+                <h2 id="tlTitle">—</h2>
+                <div class="tl-theme-icon" id="tlIcon">📖</div>
+              </div>
+              <div class="tl-text-panel" id="tlTextPanel">
+                <div class="tl-text-locked">
+                  <div class="tl-lock-icon">🔒</div>
+                  <div>
+                    <strong>Texte caché</strong>
+                    <span>Écoutez d'abord, répondez, puis affichez le texte avec le code formateur.</span>
+                  </div>
+                </div>
+                <div class="tl-text-box" id="tlTextBox"></div>
+              </div>
+              <div class="tl-quiz" id="tlQuiz"></div>
+              <div class="tl-answers" id="tlAnswers">
+                <h3>Réponses possibles</h3>
+                <ol id="tlAnswerList"></ol>
+              </div>
+              <div class="tl-card-actions">
+                <button class="btn btn-secondary" id="tlBtnAnswers" type="button">Voir les réponses</button>
+                <button class="btn btn-ghost btn-sm" id="tlBtnReset" type="button">Effacer</button>
+              </div>
+            </div>
 
-        </div>
+            <details class="tl-trainer">
+              <summary>Formateur</summary>
+              <div class="tl-trainer-actions">
+                <button class="btn btn-secondary btn-sm" id="tlBtnShowText" type="button">Afficher / cacher texte</button>
+                <button class="btn btn-ghost btn-sm" id="tlBtnSpeakAll" type="button">🔊 Texte + questions</button>
+              </div>
+            </details>
+
+          </div>
+        </div><!-- /zone-texte -->
 
       </div>
     </main>
@@ -128,68 +281,115 @@
   <script>
   'use strict';
 
-  const ALL_EP  = window.ECOUTER_DATA || [];
-  const PAGE_ID = 'ecouter';
+  /* ════════════════════════════════════════════
+     DONNÉES — Texte libre
+  ════════════════════════════════════════════ */
+  const TL_ACTIVITIES = [
+    {
+      title: "Le matin de Karim", icon: "☕",
+      text: "Karim se lève à 6h30 tous les jours de la semaine parce qu'il travaille tôt. Il prend une douche, puis il prépare un café et mange un petit déjeuner simple. Ensuite, il s'habille, prépare son sac et vérifie qu'il a bien ses documents. Il quitte la maison à 7h15 pour prendre le bus. Pendant le trajet, il regarde souvent son téléphone ou écoute de la musique. Il arrive toujours à l'heure au travail, ce qui est très important pour lui.",
+      questions: ["Pourquoi Karim se lève-t-il tôt ?", "Que fait-il avant de quitter la maison ?", "Que fait-il dans le bus ?"],
+      answers:   ["Il se lève tôt parce qu'il travaille tôt.", "Il s'habille, prépare son sac et vérifie ses documents.", "Il regarde son téléphone ou écoute de la musique."]
+    },
+    {
+      title: "Au supermarché", icon: "🛒",
+      text: "Après le travail, Maria va au supermarché pour faire les courses de la semaine. Elle prend un panier et cherche les produits dont elle a besoin, comme du pain, du lait, des légumes et un peu de viande. Elle compare les prix pour économiser de l'argent, car son budget est limité. Parfois, elle regarde aussi les promotions. Ensuite, elle va à la caisse et paie avec sa carte. Une fois à la maison, elle range tout dans le frigo et prépare le repas du soir.",
+      questions: ["Pourquoi Maria compare les prix ?", "Quels produits achète-t-elle ?", "Que fait-elle après les courses ?"],
+      answers:   ["Elle compare les prix pour économiser de l'argent.", "Elle achète du pain, du lait, des légumes et un peu de viande.", "Elle range les courses dans le frigo et prépare le repas du soir."]
+    },
+    {
+      title: "Nouveau travail", icon: "🧹",
+      text: "Ahmed commence un nouveau travail dans une entreprise de nettoyage. Le premier jour, il est un peu stressé car il ne connaît pas encore les lieux ni les collègues. Il écoute attentivement les consignes et observe comment les autres travaillent. Il pose des questions quand il ne comprend pas. Petit à petit, il apprend les tâches et devient plus rapide. Après quelques jours, il se sent plus à l'aise et commence à travailler de manière plus autonome.",
+      questions: ["Pourquoi Ahmed est-il stressé ?", "Que fait-il pour apprendre ?", "Comment évolue-t-il après quelques jours ?"],
+      answers:   ["Il est stressé parce qu'il ne connaît pas encore les lieux ni les collègues.", "Il écoute les consignes, observe et pose des questions.", "Il se sent plus à l'aise et travaille plus autonome."]
+    },
+    {
+      title: "Week-end tranquille", icon: "🏠",
+      text: "Le week-end, Sophie préfère rester à la maison pour se reposer après une semaine de travail fatigante. Elle aime regarder des films, cuisiner des plats simples et écouter de la musique. Parfois, elle invite des amis à dîner ou passe du temps avec sa famille. Elle utilise aussi ce moment pour faire le ménage et organiser sa semaine. Pour elle, le week-end est important pour récupérer de l'énergie.",
+      questions: ["Pourquoi Sophie reste-t-elle à la maison ?", "Que fait-elle pendant le week-end ?", "Pourquoi le week-end est-il important ?"],
+      answers:   ["Elle reste à la maison pour se reposer.", "Elle regarde des films, cuisine, écoute de la musique, voit des amis ou sa famille.", "Le week-end est important pour récupérer de l'énergie."]
+    },
+    {
+      title: "Rendez-vous ORP", icon: "📁",
+      text: "Paul a un rendez-vous à l'ORP avec son conseiller. Il apporte son dossier avec ses CV et ses lettres de motivation. Pendant le rendez-vous, il explique ses recherches et les difficultés qu'il rencontre. Le conseiller lui donne des conseils pour améliorer ses candidatures et lui propose des offres d'emploi. Il lui demande aussi d'envoyer plusieurs candidatures avant la fin de la semaine et de rester motivé.",
+      questions: ["Qu'apporte Paul au rendez-vous ?", "Que fait le conseiller ?", "Que doit faire Paul après ?"],
+      answers:   ["Paul apporte son dossier avec ses CV et ses lettres de motivation.", "Le conseiller donne des conseils et propose des offres d'emploi.", "Paul doit envoyer plusieurs candidatures avant la fin de la semaine."]
+    },
+    {
+      title: "Trajet en train", icon: "🚆",
+      text: "Nadia prend le train chaque matin pour aller travailler dans une autre ville. Le trajet dure environ 45 minutes, ce qui est assez long. Pendant le voyage, elle lit un livre, regarde son téléphone ou écoute de la musique. Cela l'aide à se détendre avant de commencer sa journée. Parfois, le train est en retard, ce qui peut être stressant, mais elle essaie de rester calme.",
+      questions: ["Combien de temps dure le trajet ?", "Que fait Nadia pendant le voyage ?", "Que se passe-t-il parfois ?"],
+      answers:   ["Le trajet dure environ 45 minutes.", "Elle lit, regarde son téléphone ou écoute de la musique.", "Parfois, le train est en retard."]
+    },
+    {
+      title: "Formation informatique", icon: "💻",
+      text: "Jean suit une formation en informatique dans un centre spécialisé. Il apprend à utiliser Word pour écrire des documents, Excel pour faire des tableaux et Internet pour chercher des informations. Il fait des exercices pratiques et demande de l'aide au formateur quand c'est difficile. Au début, il trouve cela compliqué, mais avec le temps, il progresse et gagne en confiance.",
+      questions: ["Où Jean suit-il la formation ?", "Que fait-il quand c'est difficile ?", "Comment évolue-t-il ?"],
+      answers:   ["Il suit la formation dans un centre spécialisé.", "Il demande de l'aide au formateur.", "Il progresse et gagne en confiance."]
+    },
+    {
+      title: "Pause de midi", icon: "🍽️",
+      text: "À midi, les employés mangent ensemble dans une salle commune. Ils discutent de leur travail, de leur famille et de leurs projets. Cette pause est importante pour se détendre et créer de bonnes relations avec les collègues. Certains sortent prendre l'air ou vont marcher un peu. Après une heure, ils retournent travailler avec plus d'énergie.",
+      questions: ["Où mangent-ils ?", "Pourquoi la pause est-elle importante ?", "Que font certains employés ?"],
+      answers:   ["Ils mangent dans une salle commune.", "Elle est importante pour se détendre et créer de bonnes relations.", "Certains sortent prendre l'air ou vont marcher."]
+    },
+    {
+      title: "Recherche d'emploi", icon: "🔎",
+      text: "Fatou cherche un emploi depuis plusieurs semaines. Chaque jour, elle consulte des offres sur Internet, envoie des CV et écrit des lettres de motivation. Parfois, elle reçoit des réponses négatives, ce qui est difficile, mais elle continue ses efforts. Elle participe aussi à des ateliers pour améliorer ses compétences et augmenter ses chances de trouver un travail.",
+      questions: ["Que fait Fatou chaque jour ?", "Comment réagit-elle aux refus ?", "Que fait-elle pour s'améliorer ?"],
+      answers:   ["Elle consulte des offres, envoie des CV et écrit des lettres.", "Elle continue ses efforts malgré les réponses négatives.", "Elle participe à des ateliers pour améliorer ses compétences."]
+    },
+    {
+      title: "Travail au bureau", icon: "📞",
+      text: "Lucas travaille dans un bureau administratif. Il répond aux emails, téléphone aux clients et organise les documents. Il doit être attentif et bien organisé pour ne pas faire d'erreurs. Parfois, il a beaucoup de travail et doit gérer son temps. À la fin de la journée, il termine à 17h et rentre chez lui pour se reposer.",
+      questions: ["Quelles sont les tâches de Lucas ?", "Pourquoi doit-il être organisé ?", "Que fait-il après le travail ?"],
+      answers:   ["Il répond aux emails, téléphone aux clients et organise les documents.", "Il doit être organisé pour ne pas faire d'erreurs.", "Il rentre chez lui pour se reposer."]
+    }
+  ];
 
-  /* ════════════════════════════════════════
-     TTS — voix Google FR uniquement
-     Histoire  : voix Google FR (féminine, pitch 1.0)
-     Dialogue  : même voix Google FR
-                 ♀ pitch 1.05 (féminin)
-                 ♂ pitch 0.75 (masculin, plus grave)
-  ════════════════════════════════════════ */
-  let ttsOk      = false;
-  let googleVoice = null;  // la voix Google FR retenue (unique base)
+  /* ════════════════════════════════════════════
+     TTS commun
+  ════════════════════════════════════════════ */
+  const ALL_EP    = window.ECOUTER_DATA || [];
+  const PAGE_ID_QCM   = 'ecouter';
+  const PAGE_ID_TEXTE = 'compréhension';
+
+  let ttsOk       = false;
+  let googleVoice = null;
   let speaking    = false;
   let audioSpeed  = 0.85;
-
-  const SPEEDS = [0.75, 0.85, 1.0, 1.15];
-
-  // Pitch par genre pour les dialogues
-  const PITCH_F = 1.08;   // légèrement aigu → féminin
-  const PITCH_M = 0.72;   // grave → masculin
-  const PITCH_N = 1.0;    // neutre (histoires)
+  const SPEEDS    = [0.75, 0.85, 1.0, 1.15];
+  const PITCH_F   = 1.08;
+  const PITCH_M   = 0.72;
+  const PITCH_N   = 1.0;
 
   function initTTS() {
     if (!window.speechSynthesis) return;
     ttsOk = true;
-
     function pick() {
       const all = window.speechSynthesis.getVoices();
-
-      // 1. Voix Google fr-CH (idéale)
-      googleVoice = all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-CH')
-        // 2. Voix Google fr-FR
-        || all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-FR')
-        // 3. Toute voix Google française
-        || all.find(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('fr'))
-        // 4. Fallback : meilleure voix FR disponible
-        || all.find(v => v.lang === 'fr-CH')
-        || all.find(v => v.lang === 'fr-FR')
-        || all.find(v => v.lang.startsWith('fr'))
-        || null;
-
+      googleVoice =
+        all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-CH') ||
+        all.find(v => v.name.toLowerCase().includes('google') && v.lang === 'fr-FR') ||
+        all.find(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('fr')) ||
+        all.find(v => v.lang === 'fr-CH') ||
+        all.find(v => v.lang === 'fr-FR') ||
+        all.find(v => v.lang.startsWith('fr')) ||
+        null;
       buildVoiceSelect(all);
       updateVoiceBadges();
     }
-
     pick();
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    if (window.speechSynthesis.onvoiceschanged !== undefined)
       window.speechSynthesis.onvoiceschanged = pick;
-    }
   }
 
   function buildVoiceSelect(all) {
     const sel = document.getElementById('voiceSelect');
     const row = document.getElementById('voiceRow');
     if (!sel) return;
-
-    // N'afficher que les voix Google FR (+ la voix retenue si pas Google)
-    const googleFR = all.filter(v =>
-      v.name.toLowerCase().includes('google') && v.lang.startsWith('fr')
-    );
+    const googleFR = all.filter(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('fr'));
     const pool = googleFR.length ? googleFR : all.filter(v => v.lang.startsWith('fr'));
-
     sel.innerHTML = '';
     pool.forEach((v, i) => {
       const opt = document.createElement('option');
@@ -198,29 +398,22 @@
       if (v === googleVoice) opt.selected = true;
       sel.appendChild(opt);
     });
-
     if (pool.length > 1) row.style.display = 'flex';
-
-    sel.addEventListener('change', () => {
-      googleVoice = pool[+sel.value] || googleVoice;
-      updateVoiceBadges();
-    });
+    sel.addEventListener('change', () => { googleVoice = pool[+sel.value] || googleVoice; updateVoiceBadges(); });
   }
 
-  /* Lire un utterance avec pitch contrôlé */
   function speakOne(text, pitch, onEnd) {
     if (!ttsOk) { if (onEnd) onEnd(); return; }
-    const utt   = new SpeechSynthesisUtterance(text);
-    utt.lang    = googleVoice ? googleVoice.lang : 'fr-CH';
-    utt.rate    = audioSpeed;
-    utt.pitch   = pitch;
-    utt.volume  = 1.0;
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang  = googleVoice ? googleVoice.lang : 'fr-CH';
+    utt.rate  = audioSpeed;
+    utt.pitch = pitch;
+    utt.volume = 1.0;
     if (googleVoice) utt.voice = googleVoice;
     utt.onend = utt.onerror = () => { if (onEnd) onEnd(); };
     window.speechSynthesis.speak(utt);
   }
 
-  /* UI : état bouton lecture */
   function setPlayingUI(on) {
     const btn = document.getElementById('btnPlay');
     if (!btn) return;
@@ -230,46 +423,29 @@
     document.getElementById('btnReplay').style.display = on ? 'none' : '';
   }
 
-  /* Lire le transcript simple (histoires — voix neutre) */
   function speakTranscript(text) {
     window.speechSynthesis.cancel();
     speaking = true;
     setPlayingUI(true);
-    speakOne(text, PITCH_N, () => {
-      speaking = false;
-      setPlayingUI(false);
-    });
+    speakOne(text, PITCH_N, () => { speaking = false; setPlayingUI(false); });
   }
 
-  /* Lire les lignes d'un dialogue en chaîne — pitch H/F */
   function speakDialogue(lines) {
     window.speechSynthesis.cancel();
     speaking = true;
     setPlayingUI(true);
     let i = 0;
-
     function next() {
-      if (!speaking || i >= lines.length) {
-        speaking = false;
-        setPlayingUI(false);
-        highlightLine(-1);
-        return;
-      }
-      const line  = lines[i];
-      const pitch = line.gender === 'm' ? PITCH_M : PITCH_F;
-      highlightLine(i);
-      i++;
-      speakOne(line.text, pitch, next);
+      if (!speaking || i >= lines.length) { speaking = false; setPlayingUI(false); highlightLine(-1); return; }
+      const line = lines[i];
+      highlightLine(i); i++;
+      speakOne(line.text, line.gender === 'm' ? PITCH_M : PITCH_F, next);
     }
-
     next();
   }
 
-  /* Surligner la ligne lue */
   function highlightLine(idx) {
-    document.querySelectorAll('.trs-line').forEach((el, i) => {
-      el.classList.toggle('trs-active', i === idx);
-    });
+    document.querySelectorAll('.trs-line').forEach((el, i) => el.classList.toggle('trs-active', i === idx));
   }
 
   function stopSpeech() {
@@ -277,126 +453,98 @@
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setPlayingUI(false);
     highlightLine(-1);
+    // also update TL stop button
+    document.getElementById('tlBtnStop').style.display = 'none';
+    document.getElementById('tlBtnPlay').style.display = '';
   }
 
-  /* ════════════════════════════════════════
-     ÉTAT
-  ════════════════════════════════════════ */
+  function updateVoiceBadges() {
+    const name = googleVoice ? googleVoice.name.replace(/Microsoft |Google /, '') : '—';
+    const bF = document.getElementById('badgeVoiceF');
+    const bM = document.getElementById('badgeVoiceM');
+    if (bF) bF.textContent = name + ' · ♀ aigu';
+    if (bM) bM.textContent = name + ' · ♂ grave';
+  }
+
+  /* ════════════════════════════════════════════
+     MODE QCM — état
+  ════════════════════════════════════════════ */
   let epIdx       = 0;
   let listenCount = 0;
-  let qStates     = [];   // 'pending' | 'correct' | 'wrong'
+  let qStates     = [];
   let globalOk    = 0, globalErr = 0, globalXP = 0;
   let epDone      = new Set();
   let xpShown     = false;
+  let currentEpisode = null;
 
-  /* ════════════════════════════════════════
-     SÉLECTEUR D'ÉPISODE
-  ════════════════════════════════════════ */
   function buildSelect() {
     const sel = document.getElementById('epSelect');
     sel.innerHTML = '';
     ALL_EP.forEach((ep, i) => {
       const opt = document.createElement('option');
       opt.value = i;
-      const done = epDone.has(ep.id) ? '✓ ' : '';
-      opt.textContent = done + (i + 1) + '. ' + ep.title + ' (' + ep.category + ')';
+      opt.textContent = (epDone.has(ep.id) ? '✓ ' : '') + (i + 1) + '. ' + ep.title + ' (' + ep.category + ')';
       sel.appendChild(opt);
     });
     sel.value = epIdx;
   }
 
-  /* ════════════════════════════════════════
-     CHARGER UN ÉPISODE
-  ════════════════════════════════════════ */
   function loadEpisode(idx) {
     epIdx = Math.max(0, Math.min(idx, ALL_EP.length - 1));
     document.getElementById('epSelect').value = epIdx;
     stopSpeech();
-
     const ep = ALL_EP[epIdx];
     listenCount = 0;
-    qStates     = ep.questions.map(() => 'pending');
-
-    // En-tête
+    qStates = ep.questions.map(() => 'pending');
     document.getElementById('epIcon').textContent  = ep.type === 'dialogue' ? '💬' : '📖';
     document.getElementById('epTitle').textContent = ep.title;
     document.getElementById('epMeta').textContent  = ep.category + ' · ' + ep.questions.length + ' questions';
     const tb = document.getElementById('epTypeBadge');
     tb.textContent = ep.type === 'dialogue' ? '💬 Dialogue' : '📖 Histoire';
     tb.className   = 'ep-type-badge ' + ep.type;
-
-    // Badges voix (visible seulement pour les dialogues)
     const badges = document.getElementById('voiceBadges');
-    if (ep.type === 'dialogue') {
-      badges.style.display = 'flex';
-      updateVoiceBadges();
-    } else {
-      badges.style.display = 'none';
-    }
-
-    // Transcript (construit en arrière-plan pour le surlignage des dialogues)
+    badges.style.display = ep.type === 'dialogue' ? 'flex' : 'none';
+    if (ep.type === 'dialogue') updateVoiceBadges();
     buildTranscriptBox(ep);
-
-    // Écoute
     document.getElementById('listenTitle').textContent = 'Appuie ▶️ pour écouter';
     document.getElementById('listenSub').textContent   = 'Écoute bien avant de répondre aux questions.';
     document.getElementById('listenCount').textContent = '';
-    document.getElementById('btnReplay').style.display = 'none';
-    document.getElementById('btnStop').style.display   = 'none';
-
-    // Phase 5.4: Show transcript button
+    document.getElementById('btnReplay').style.display  = 'none';
+    document.getElementById('btnStop').style.display    = 'none';
     document.getElementById('btnTranscript').style.display = 'inline-block';
     document.getElementById('transcriptZone').style.display = 'none';
     document.getElementById('btnTranscript').textContent = '📝 Afficher les sous-titres';
-
-    // Résultat caché
     document.getElementById('resultBanner').classList.remove('show', 'good', 'mid', 'bad');
-
-    // Questions
     buildQuestions(ep);
     buildDots(ep);
-
     if (!xpShown) { xpShown = true; showXPRules('Écoute'); }
-    promoteExerciseStatus(PAGE_ID, 'in_progress');
+    promoteExerciseStatus(PAGE_ID_QCM, 'in_progress');
     updateGlobalKPIs();
   }
 
-  /* ════════════════════════════════════════
-     CONSTRUIRE LES QUESTIONS
-  ════════════════════════════════════════ */
   function buildQuestions(ep) {
     const container = document.getElementById('questionsContainer');
     container.innerHTML = '';
     const letters = ['A', 'B', 'C', 'D'];
-
     ep.questions.forEach((q, qi) => {
       const item = document.createElement('div');
       item.className = 'q-item' + (qi === 0 ? ' current' : ' locked');
       item.id = 'q-item-' + qi;
-
       const choicesHTML = q.choices.map((c, ci) =>
         `<button class="eq-choice" type="button" data-qi="${qi}" data-ci="${ci}">
            <span class="cl">${letters[ci]}</span><span>${c}</span>
          </button>`
       ).join('');
-
       item.innerHTML = `
         <div class="q-num">Question ${qi + 1} / ${ep.questions.length}</div>
         <div class="q-text">${q.question}</div>
         <div class="eq-choices" id="choices-${qi}">${choicesHTML}</div>
-        <div class="q-feedback"   id="fb-${qi}"></div>
+        <div class="q-feedback"    id="fb-${qi}"></div>
         <div class="q-explication" id="exp-${qi}"></div>`;
-
       container.appendChild(item);
     });
-
-    // Events sur les boutons
     container.querySelectorAll('.eq-choice').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const qi = +btn.dataset.qi;
-        const ci = +btn.dataset.ci;
-        answerQuestion(qi, ci);
-      });
+      btn.addEventListener('click', () => answerQuestion(+btn.dataset.qi, +btn.dataset.ci));
     });
   }
 
@@ -411,94 +559,59 @@
     });
   }
 
-  /* ════════════════════════════════════════
-     RÉPONDRE
-  ════════════════════════════════════════ */
   function answerQuestion(qi, ci) {
     if (qStates[qi] !== 'pending') return;
-
-    const ep   = ALL_EP[epIdx];
-    const q    = ep.questions[qi];
-    const isOk = ci === q.answer;
-
+    const ep = ALL_EP[epIdx], q = ep.questions[qi], isOk = ci === q.answer;
     qStates[qi] = isOk ? 'correct' : 'wrong';
-
-    // Désactiver les boutons de cette question
     document.querySelectorAll(`[data-qi="${qi}"]`).forEach(b => { b.disabled = true; });
-
-    // Colorier
-    const choicesBtns = document.querySelectorAll(`[data-qi="${qi}"]`);
-    choicesBtns[ci].classList.add(isOk ? 'correct' : 'wrong');
-    if (!isOk) choicesBtns[q.answer].classList.add('correct');
-
-    // Feedback + explication
-    const fb  = document.getElementById('fb-'  + qi);
-    const exp = document.getElementById('exp-' + qi);
-    const xp  = isOk ? (listenCount <= 1 ? 4 : 3) : 0;
-
+    const btns = document.querySelectorAll(`[data-qi="${qi}"]`);
+    btns[ci].classList.add(isOk ? 'correct' : 'wrong');
+    if (!isOk) btns[q.answer].classList.add('correct');
+    const fb = document.getElementById('fb-' + qi), exp = document.getElementById('exp-' + qi);
+    const xp = isOk ? (listenCount <= 1 ? 4 : 3) : 0;
     if (isOk) {
       fb.textContent = '✅ Correct !' + (xp > 0 ? ' +' + xp + ' XP' : '');
       fb.className   = 'q-feedback ok';
-      globalOk++;
-      globalXP += xp;
-      recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp });
+      globalOk++; globalXP += xp;
+      recordExerciseProgress(PAGE_ID_QCM, { correct: 1, typed: 1, errors: 0, xp });
     } else {
       fb.textContent = '❌ Incorrect';
       fb.className   = 'q-feedback err';
       globalErr++;
-      recordExerciseProgress(PAGE_ID, { correct: 0, typed: 1, errors: 1, xp: 0 });
+      recordExerciseProgress(PAGE_ID_QCM, { correct: 0, typed: 1, errors: 1, xp: 0 });
     }
     exp.textContent = q.explication;
     exp.className   = 'q-explication ' + (isOk ? 'ok' : 'err');
-
-    // Dot
     const dot = document.getElementById('dot-' + qi);
-    dot.classList.remove('cur');
-    dot.classList.add(isOk ? 'ok' : 'err');
-
-    // Style de la carte
+    dot.classList.remove('cur'); dot.classList.add(isOk ? 'ok' : 'err');
     const item = document.getElementById('q-item-' + qi);
     item.classList.remove('current', 'locked');
     item.classList.add(isOk ? 'answered-ok' : 'answered-err');
-
-    // Débloquer la suivante ou terminer
     const nextQi = qi + 1;
     if (nextQi < ep.questions.length) {
       const nextItem = document.getElementById('q-item-' + nextQi);
-      nextItem.classList.remove('locked');
-      nextItem.classList.add('current');
+      nextItem.classList.remove('locked'); nextItem.classList.add('current');
       const nextDot = document.getElementById('dot-' + nextQi);
       if (nextDot) nextDot.classList.add('cur');
-      // Scroll doux vers la suivante
       setTimeout(() => nextItem.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
     } else {
       finishEpisode();
     }
-
     updateGlobalKPIs();
   }
 
-  /* ════════════════════════════════════════
-     FIN D'ÉPISODE
-  ════════════════════════════════════════ */
   function finishEpisode() {
-    const ep      = ALL_EP[epIdx];
-    const total   = ep.questions.length;
+    const ep = ALL_EP[epIdx], total = ep.questions.length;
     const correct = qStates.filter(s => s === 'correct').length;
-    const xpTotal = qStates.reduce((acc, s, i) =>
-      acc + (s === 'correct' ? (listenCount <= 1 ? 4 : 3) : 0), 0);
-    const pct     = Math.round((correct / total) * 100);
-
+    const xpTotal = qStates.reduce((acc, s) => acc + (s === 'correct' ? (listenCount <= 1 ? 4 : 3) : 0), 0);
+    const pct = Math.round(correct / total * 100);
     epDone.add(ep.id);
-    promoteExerciseStatus(PAGE_ID, 'completed');
-    buildSelect();
-    updateGlobalKPIs();
-
+    promoteExerciseStatus(PAGE_ID_QCM, 'completed');
+    buildSelect(); updateGlobalKPIs();
     let emoji = '📚', title = 'Continue à t\'entraîner !', cls = 'bad';
-    if (pct >= 90) { emoji = '🏆'; title = 'Excellent !';       cls = 'good'; }
-    else if (pct >= 70) { emoji = '🎉'; title = 'Très bien !';  cls = 'good'; }
-    else if (pct >= 50) { emoji = '👍'; title = 'Pas mal !';    cls = 'mid';  }
-
+    if (pct >= 90) { emoji = '🏆'; title = 'Excellent !';     cls = 'good'; }
+    else if (pct >= 70) { emoji = '🎉'; title = 'Très bien !'; cls = 'good'; }
+    else if (pct >= 50) { emoji = '👍'; title = 'Pas mal !';   cls = 'mid'; }
     const banner = document.getElementById('resultBanner');
     document.getElementById('resEmoji').textContent = emoji;
     document.getElementById('resTitle').textContent = title;
@@ -506,21 +619,13 @@
     document.getElementById('resXP').textContent    = '+' + xpTotal + ' XP';
     banner.classList.add('show', cls);
     banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
     if (pct >= 75) launchConfetti();
-
-    // TTS feedback
     if (ttsOk) {
-      const msg = pct >= 70
-        ? 'Bravo ! ' + correct + ' bonnes réponses sur ' + total + '.'
-        : correct + ' bonnes réponses sur ' + total + '. Continue à t\'entraîner !';
+      const msg = pct >= 70 ? 'Bravo ! ' + correct + ' bonnes réponses sur ' + total + '.' : correct + ' bonnes réponses sur ' + total + '. Continue !';
       setTimeout(() => speakOne(msg, PITCH_N, null), 600);
     }
   }
 
-  /* ════════════════════════════════════════
-     KPIs GLOBAUX
-  ════════════════════════════════════════ */
   function updateGlobalKPIs() {
     document.getElementById('kpiCorrect').textContent = globalOk;
     document.getElementById('kpiErrors').textContent  = globalErr;
@@ -528,63 +633,16 @@
     document.getElementById('kpiEp').textContent      = epDone.size + '/' + ALL_EP.length;
   }
 
-  /* ════════════════════════════════════════
-     RACCOURCIS CLAVIER
-  ════════════════════════════════════════ */
-  function getCurrentQ() {
-    return qStates.findIndex(s => s === 'pending');
-  }
-
-  document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-
-    if (e.key === ' ' || e.key === 'Spacebar') {
-      e.preventDefault();
-      if (speaking) stopSpeech(); else onPlay();
-      return;
-    }
-    if (e.key === 'r' || e.key === 'R') {
-      stopSpeech();
-      setTimeout(() => onPlay(), 100);
-      return;
-    }
-    const map = { '1': 0, '2': 1, '3': 2, '4': 3 };
-    if (map[e.key] !== undefined) {
-      const qi = getCurrentQ();
-      if (qi >= 0) answerQuestion(qi, map[e.key]);
-    }
-  });
-
-  function updateVoiceBadges() {
-    const name = googleVoice ? googleVoice.name.replace(/Microsoft |Google /, '') : '—';
-    const bF = document.getElementById('badgeVoiceF');
-    const bM = document.getElementById('badgeVoiceM');
-    // Même voix Google, pitch différent
-    if (bF) bF.textContent = name + ' · ♀ aigu';
-    if (bM) bM.textContent = name + ' · ♂ grave';
-  }
-
-  /* ════════════════════════════════════════
-     TRANSCRIPT VISUEL
-  ════════════════════════════════════════ */
-  // Phase 5.4: Store current episode for transcript rendering
-  let currentEpisode = null;
-
   function buildTranscriptBox(ep) {
-    currentEpisode = ep; // Store for renderTranscript
+    currentEpisode = ep;
     const box = document.getElementById('transcriptZone');
     if (!box) return;
     box.innerHTML = '';
-
     if (ep.type === 'dialogue' && Array.isArray(ep.lines)) {
       ep.lines.forEach((line, i) => {
         const row = document.createElement('div');
-        row.className = 'trs-line';
-        row.id = 'trs-' + i;
-        const icon = line.gender === 'm' ? '👨' : '👩';
-        row.innerHTML =
-          `<span class="trs-speaker trs-${line.gender}">${icon} ${line.speaker}</span>` +
-          `<span class="trs-text">${line.text}</span>`;
+        row.className = 'trs-line'; row.id = 'trs-' + i;
+        row.innerHTML = `<span class="trs-speaker trs-${line.gender}">${line.gender === 'm' ? '👨' : '👩'} ${line.speaker}</span><span class="trs-text">${line.text}</span>`;
         box.appendChild(row);
       });
     } else {
@@ -595,81 +653,162 @@
     }
   }
 
-  // Phase 5.4: Render transcript in transcriptZone
-  function renderTranscript(episode) {
-    if (!episode) return;
-    buildTranscriptBox(episode);
-  }
-
-  /* ════════════════════════════════════════
-     ÉCOUTER
-  ════════════════════════════════════════ */
   function onPlay() {
     const ep = ALL_EP[epIdx];
     listenCount++;
-
-    document.getElementById('listenCount').textContent =
-      listenCount > 1 ? '🔁 Écouté ' + listenCount + ' fois' : '';
-    document.getElementById('listenTitle').textContent =
-      listenCount === 1 ? '🔊 Lecture en cours…' : '🔁 Réécoute en cours…';
-    document.getElementById('listenSub').textContent =
-      listenCount === 1 ? 'Écoute attentivement !' : 'Tu peux répondre pendant ou après l\'écoute.';
-
-    if (ep.type === 'dialogue' && Array.isArray(ep.lines)) {
-      speakDialogue(ep.lines);
-    } else {
-      speakTranscript(ep.transcript || '');
-    }
+    document.getElementById('listenCount').textContent = listenCount > 1 ? '🔁 Écouté ' + listenCount + ' fois' : '';
+    document.getElementById('listenTitle').textContent = listenCount === 1 ? '🔊 Lecture en cours…' : '🔁 Réécoute en cours…';
+    document.getElementById('listenSub').textContent   = listenCount === 1 ? 'Écoute attentivement !' : 'Tu peux répondre pendant ou après l\'écoute.';
+    if (ep.type === 'dialogue' && Array.isArray(ep.lines)) speakDialogue(ep.lines);
+    else speakTranscript(ep.transcript || '');
   }
 
-  /* ════════════════════════════════════════
+  /* Raccourcis clavier — QCM seulement */
+  function getCurrentQ() { return qStates.findIndex(s => s === 'pending'); }
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('zone-qcm').style.display === 'none') return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); if (speaking) stopSpeech(); else onPlay(); return; }
+    if (e.key === 'r' || e.key === 'R') { stopSpeech(); setTimeout(() => onPlay(), 100); return; }
+    const map = { '1': 0, '2': 1, '3': 2, '4': 3 };
+    if (map[e.key] !== undefined) { const qi = getCurrentQ(); if (qi >= 0) answerQuestion(qi, map[e.key]); }
+  });
+
+  /* ════════════════════════════════════════════
+     MODE TEXTE LIBRE
+  ════════════════════════════════════════════ */
+  let tlIdx = 0;
+
+  function tlBuildSelect() {
+    const sel = document.getElementById('tlSelect');
+    sel.innerHTML = '';
+    TL_ACTIVITIES.forEach((a, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = (i + 1) + '. ' + a.title;
+      sel.appendChild(opt);
+    });
+    sel.value = tlIdx;
+  }
+
+  function tlLoad(idx) {
+    tlIdx = Math.max(0, Math.min(idx, TL_ACTIVITIES.length - 1));
+    document.getElementById('tlSelect').value = tlIdx;
+    stopSpeech();
+    const a = TL_ACTIVITIES[tlIdx];
+    document.getElementById('tlTitle').textContent  = (tlIdx + 1) + '. ' + a.title;
+    document.getElementById('tlIcon').textContent   = a.icon;
+    document.getElementById('tlTextBox').textContent = a.text;
+    document.getElementById('tlTextPanel').classList.remove('show');
+    document.getElementById('tlAnswers').classList.remove('show');
+    // Rebuild quiz
+    const quiz = document.getElementById('tlQuiz');
+    quiz.innerHTML = a.questions.map((q, i) =>
+      `<div class="tl-question"><strong>Question ${i + 1} :</strong> ${q}<textarea placeholder="Écris la réponse ici…"></textarea></div>`
+    ).join('');
+    // Rebuild answer list
+    const list = document.getElementById('tlAnswerList');
+    list.innerHTML = a.answers.map(ans => `<li>${ans}</li>`).join('');
+    promoteExerciseStatus(PAGE_ID_TEXTE, 'in_progress');
+    recordExerciseProgress(PAGE_ID_TEXTE, { correct: 1, typed: 1, errors: 0, xp: 3 });
+  }
+
+  function tlPlay() {
+    const a = TL_ACTIVITIES[tlIdx];
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    speaking = true;
+    document.getElementById('tlBtnPlay').style.display = 'none';
+    document.getElementById('tlBtnStop').style.display = '';
+    speakOne(a.text, PITCH_N, () => {
+      speaking = false;
+      document.getElementById('tlBtnStop').style.display = 'none';
+      document.getElementById('tlBtnPlay').style.display = '';
+    });
+  }
+
+  function tlSpeakAll() {
+    const a = TL_ACTIVITIES[tlIdx];
+    const full = a.title + '. ' + a.text + ' ' + a.questions.map((q, i) => 'Question ' + (i + 1) + '. ' + q).join(' ');
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    speaking = true;
+    document.getElementById('tlBtnPlay').style.display = 'none';
+    document.getElementById('tlBtnStop').style.display = '';
+    speakOne(full, PITCH_N, () => {
+      speaking = false;
+      document.getElementById('tlBtnStop').style.display = 'none';
+      document.getElementById('tlBtnPlay').style.display = '';
+    });
+  }
+
+  /* ════════════════════════════════════════════
+     SÉLECTEUR DE MODE
+  ════════════════════════════════════════════ */
+  let currentMode = 'qcm';
+  function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('btn-mode-qcm').classList.toggle('active', mode === 'qcm');
+    document.getElementById('btn-mode-texte').classList.toggle('active', mode === 'texte');
+    document.getElementById('zone-qcm').style.display   = mode === 'qcm'   ? '' : 'none';
+    document.getElementById('zone-texte').style.display = mode === 'texte' ? '' : 'none';
+    stopSpeech();
+  }
+
+  /* ════════════════════════════════════════════
      INIT
-  ════════════════════════════════════════ */
+  ════════════════════════════════════════════ */
   document.addEventListener('DOMContentLoaded', () => {
     initTTS();
+    setupNextExerciseButton(PAGE_ID_QCM);
+
+    // QCM
     buildSelect();
     loadEpisode(0);
-
-    document.getElementById('epSelect').addEventListener('change', e => {
-      loadEpisode(+e.target.value);
-    });
+    document.getElementById('epSelect').addEventListener('change', e => loadEpisode(+e.target.value));
     document.getElementById('btnPrevEp').addEventListener('click', () => loadEpisode(epIdx - 1));
     document.getElementById('btnNextEp').addEventListener('click', () => loadEpisode(epIdx + 1));
-
-    document.getElementById('btnPlay').addEventListener('click', () => {
-      if (speaking) stopSpeech(); else onPlay();
-    });
+    document.getElementById('btnPlay').addEventListener('click', () => { if (speaking) stopSpeech(); else onPlay(); });
     document.getElementById('btnStop').addEventListener('click', stopSpeech);
-    document.getElementById('btnReplay').addEventListener('click', () => {
-      stopSpeech(); setTimeout(() => onPlay(), 80);
-    });
-    document.getElementById('btnReset').addEventListener('click', () => {
-      stopSpeech(); loadEpisode(epIdx);
-    });
-
+    document.getElementById('btnReplay').addEventListener('click', () => { stopSpeech(); setTimeout(() => onPlay(), 80); });
+    document.getElementById('btnReset').addEventListener('click', () => { stopSpeech(); loadEpisode(epIdx); });
     document.getElementById('btnSpeed').addEventListener('click', () => {
       const idx = SPEEDS.indexOf(audioSpeed);
       audioSpeed = SPEEDS[(idx + 1) % SPEEDS.length];
       const icons = ['🐢', '🐢', '🚶', '🏃'];
-      const iSpeed = SPEEDS.indexOf(audioSpeed);
-      document.getElementById('btnSpeed').textContent = icons[iSpeed] + ' × ' + audioSpeed;
+      document.getElementById('btnSpeed').textContent = icons[SPEEDS.indexOf(audioSpeed)] + ' × ' + audioSpeed;
     });
-
-    // Phase 5.4: Transcript toggle
     document.getElementById('btnTranscript').addEventListener('click', () => {
       const zone = document.getElementById('transcriptZone');
-      const btn = document.getElementById('btnTranscript');
-      const isVisible = zone.style.display !== 'none';
-      if (isVisible) {
-        zone.style.display = 'none';
-        btn.textContent = '📝 Afficher les sous-titres';
-      } else {
-        renderTranscript(currentEpisode);
-        zone.style.display = 'block';
-        btn.textContent = '📝 Masquer les sous-titres';
-      }
+      const btn  = document.getElementById('btnTranscript');
+      const vis  = zone.style.display !== 'none';
+      if (vis) { zone.style.display = 'none'; btn.textContent = '📝 Afficher les sous-titres'; }
+      else { buildTranscriptBox(currentEpisode); zone.style.display = 'block'; btn.textContent = '📝 Masquer les sous-titres'; }
     });
 
+    // Texte libre
+    tlBuildSelect();
+    tlLoad(0);
+    document.getElementById('tlSelect').addEventListener('change', e => tlLoad(+e.target.value));
+    document.getElementById('tlBtnPrev').addEventListener('click', () => tlLoad(tlIdx - 1));
+    document.getElementById('tlBtnNext').addEventListener('click', () => tlLoad(tlIdx + 1));
+    document.getElementById('tlBtnPlay').addEventListener('click', tlPlay);
+    document.getElementById('tlBtnStop').addEventListener('click', stopSpeech);
+    document.getElementById('tlBtnAnswers').addEventListener('click', () => {
+      document.getElementById('tlAnswers').classList.toggle('show');
+    });
+    document.getElementById('tlBtnReset').addEventListener('click', () => {
+      document.querySelectorAll('#tlQuiz textarea').forEach(t => t.value = '');
+      document.getElementById('tlAnswers').classList.remove('show');
+    });
+    document.getElementById('tlBtnSpeakAll').addEventListener('click', tlSpeakAll);
+    document.getElementById('tlBtnShowText').addEventListener('click', () => {
+      const code = prompt('Code formateur :');
+      if (code === '1984') document.getElementById('tlTextPanel').classList.toggle('show');
+      else if (code !== null) alert('Code incorrect. Le texte reste caché.');
+    });
+
+    // Mode selector
+    document.getElementById('btn-mode-qcm').addEventListener('click', () => setMode('qcm'));
+    document.getElementById('btn-mode-texte').addEventListener('click', () => setMode('texte'));
   });
   </script>
 </body>

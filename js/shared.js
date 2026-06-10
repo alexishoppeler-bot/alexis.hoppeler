@@ -744,7 +744,6 @@
     renderHeader();
     renderSidebar();
     renderFooter();
-    renderGameBrief();
     updateHeaderProgress();
     initSidebarToggle();
     initSidebarPersistence();

@@ -1201,31 +1201,6 @@ const EXERCISE_INTRO_COPY = {
   }
 };
 
-function buildExerciseMission(page) {
-  const copy = EXERCISE_INTRO_COPY[page];
-  if (!copy || !Array.isArray(copy.steps) || copy.steps.length === 0) return null;
-
-  const mission = document.createElement('div');
-  mission.className = 'exercise-mission fade-up delay-1';
-  copy.steps.forEach((step, index) => {
-    const item = document.createElement('div');
-    item.className = 'exercise-mission-item';
-
-    const badge = document.createElement('span');
-    badge.className = 'exercise-mission-step';
-    badge.textContent = String(index + 1);
-
-    const text = document.createElement('div');
-    text.className = 'exercise-mission-text';
-    text.textContent = step;
-
-    item.appendChild(badge);
-    item.appendChild(text);
-    mission.appendChild(item);
-  });
-  return mission;
-}
-
 function enhanceExerciseIntro() {
   const page = (location.pathname.split('/').pop() || '').replace(/\.html$/i, '');
   const copy = EXERCISE_INTRO_COPY[page];
@@ -1237,14 +1212,6 @@ function enhanceExerciseIntro() {
     if (paragraph) paragraph.textContent = copy.header;
   }
 
-  const existingMission = document.querySelector(
-    '.exercise-mission, .mission-strip, .mail-mission, .alphabet-mission, .route-summary, .target-topline, .mission-card'
-  );
-  if (existingMission || !header) return;
-
-  const mission = buildExerciseMission(page);
-  if (!mission) return;
-  header.insertAdjacentElement('afterend', mission);
 }
 
 document.addEventListener('DOMContentLoaded', enhanceExerciseIntro);

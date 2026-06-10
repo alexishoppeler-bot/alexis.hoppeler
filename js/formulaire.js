@@ -176,6 +176,23 @@ function getRoundTag(round) {
   return round && round.tag ? round.tag : 'Candidature';
 }
 
+const PROFILE_ICONS = {
+  'Nom complet':          '👤',
+  'Date de naissance':    '🎂',
+  'Situation familiale':  '💍',
+  'Age':                  '🔢',
+  'E-mail':               '✉️',
+  'Téléphone':            '📞',
+  'Adresse':              '📍',
+  'Formation':            '🎓',
+  'Expérience':           '💼',
+  'Permis de conduire':   '🚗',
+  'Permis de séjour':     '📋',
+  'Disponibilité':        '📅',
+  'Qualités personnelles':'⭐',
+  'Compétences':          '🔧'
+};
+
 function profileRows(round) {
   const p = round.profile || {};
   const fullName = [p.firstName, p.lastName].filter(Boolean).join(' ');
@@ -243,7 +260,14 @@ function renderRound() {
 
   const profileList = document.getElementById('profileList');
   const rows = profileRows(round);
-  profileList.innerHTML = rows.map(([label, value]) => `<li><strong>${escapeHTML(label)}:</strong> ${escapeHTML(value)}</li>`).join('');
+  profileList.innerHTML = rows.map(([label, value]) => {
+    const icon = PROFILE_ICONS[label] || '•';
+    return `<li>
+      <span class="pf-icon">${icon}</span>
+      <span class="pf-label">${escapeHTML(label)}</span>
+      <span class="pf-value">${escapeHTML(value)}</span>
+    </li>`;
+  }).join('');
 
   const fields = (round.form && Array.isArray(round.form.fields)) ? round.form.fields : [];
 
@@ -264,6 +288,7 @@ function renderRound() {
     input.name = field.name;
     input.type = field.type || 'text';
     input.autocomplete = 'off';
+    input.placeholder = `Recopie le champ « ${field.label} »`;
 
     input.addEventListener('input', () => {
       input.removeAttribute('aria-invalid');

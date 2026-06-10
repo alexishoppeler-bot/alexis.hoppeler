@@ -4,286 +4,244 @@
   <meta charset="UTF-8">
   <link rel="icon" href="../assets/logo.png" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Souris cible | Exercice autonomie numérique</title>
-  <meta name="description" content="Cliquer sur une cible animée pendant un temps limité.">
+  <title>Exercice souris | Autonomie numérique</title>
+  <meta name="description" content="Cliquer sur une cible animée ou parcours en 5 étapes pour maîtriser la souris.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://alexishoppeler-bot.github.io/alexis.hoppeler/games/souris-cible.html">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Souris cible | Exercice autonomie numérique">
-  <meta property="og:description" content="Cliquer sur une cible animée pendant un temps limité.">
+  <meta property="og:title" content="Exercice souris | Autonomie numérique">
+  <meta property="og:description" content="Cliquer sur une cible animée ou parcours en 5 étapes pour maîtriser la souris.">
   <meta property="og:image" content="https://alexishoppeler-bot.github.io/alexis.hoppeler/assets/logo.png">
   <meta property="og:locale" content="fr_CH">
-<link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/theme.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/utilities.css">
+  <link rel="stylesheet" href="../css/pages/cliquer.css">
   <style>
-    :root {
-      --sc-blue: #1565c0;
-      --sc-blue-dark: #0d47a1;
-      --sc-green: #16a34a;
-      --sc-border: #93c5fd;
+    /* ── Mode bar ── */
+    .ec-mode-bar { display: flex; gap: 8px; margin-bottom: 20px; }
+    .ec-mode-btn {
+      flex: 1; padding: 10px 16px;
+      border: 2px solid var(--border); border-radius: 10px;
+      background: var(--surface); color: var(--text2);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.18s;
+    }
+    .ec-mode-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .ec-mode-btn.active {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+      color: var(--accent);
     }
 
-    body.souris-cible-page {
-      background: linear-gradient(135deg, #eef6ff, #ffffff);
-    }
-
-    .sc-main {
-      max-width: 1100px;
-    }
-
-    .sc-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .sc-header h1 {
-      margin: 0 0 6px;
-      font-family: var(--font-head);
-      font-size: clamp(32px, 4vw, 46px);
-      color: var(--text);
-    }
-
-    .sc-header p {
-      margin: 0;
-      font-size: 20px;
-      color: var(--text2);
-    }
-
+    /* ── Souris-cible styles ── */
+    :root { --sc-blue:#1565c0; --sc-blue-dark:#0d47a1; --sc-green:#16a34a; --sc-border:#93c5fd; }
     .sc-tableau {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
+      display: grid; grid-template-columns: repeat(3, minmax(130px, 1fr));
+      gap: 12px; margin-bottom: 18px;
     }
-
     .sc-carte {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 14px 24px;
-      min-width: 140px;
-      text-align: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,.08);
-      color: var(--text2);
-      font-weight: 800;
+      background: white; border: 1px solid #e2e8f0; border-radius: 14px;
+      padding: 12px 18px; text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,.08); color: var(--text2); font-weight: 800;
     }
-
     .sc-carte span {
-      display: block;
-      font-family: var(--font-head);
-      font-size: 36px;
-      font-weight: 900;
-      color: var(--sc-blue);
+      display: block; font-family: var(--font-head);
+      font-size: 32px; font-weight: 900; color: var(--sc-blue);
     }
-
     .sc-controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+      display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
     }
-
-    .sc-button,
-    .sc-select {
-      font-family: inherit;
-      font-size: 18px;
-      padding: 12px 18px;
-      border-radius: 12px;
-      border: 0;
+    .sc-button, .sc-select {
+      font-family: inherit; font-size: 18px; padding: 12px 18px; border-radius: 12px; border: 0;
     }
-
     .sc-button {
-      cursor: pointer;
-      background: var(--sc-blue);
-      color: white;
-      font-weight: 900;
-      transition: background .18s ease, transform .18s ease;
+      cursor: pointer; background: var(--sc-blue); color: white;
+      font-weight: 900; transition: background .18s, transform .18s;
     }
-
-    .sc-button:hover {
-      background: var(--sc-blue-dark);
-      transform: translateY(-1px);
-    }
-
+    .sc-button:hover { background: var(--sc-blue-dark); transform: translateY(-1px); }
     .sc-select {
-      background: white;
-      border: 2px solid #cbd5e1;
-      color: var(--text);
-      font-weight: 800;
+      background: white; border: 2px solid #cbd5e1;
+      color: var(--text); font-weight: 800; width: auto;
     }
-
     .sc-zone {
-      position: relative;
-      height: 430px;
-      border: 4px dashed var(--sc-border);
-      border-radius: 24px;
-      background: white;
-      overflow: hidden;
+      position: relative; height: clamp(360px, 52vh, 520px);
+      border: 4px dashed var(--sc-border); border-radius: 24px;
+      background: white; overflow: hidden;
       box-shadow: inset 0 0 20px rgba(0,0,0,.05), 0 10px 24px rgba(15,23,42,.08);
     }
-
     .sc-message {
-      position: absolute;
-      top: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #eff6ff;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 20px;
-      font-weight: 900;
-      color: #1d4ed8;
-      z-index: 2;
-      white-space: nowrap;
+      position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+      background: #eff6ff; padding: 10px 18px; border-radius: 999px;
+      font-size: 20px; font-weight: 900; color: #1d4ed8; z-index: 2; white-space: nowrap;
     }
-
+    .sc-timebar {
+      position: absolute; top: 68px; left: 24px; right: 24px; height: 8px;
+      border-radius: 999px; background: #e5edf8; overflow: hidden; z-index: 2;
+    }
+    .sc-timebar i {
+      display: block; height: 100%; width: 100%; border-radius: inherit;
+      background: linear-gradient(90deg, var(--sc-green), var(--sc-blue));
+      transition: width .25s linear;
+    }
     .sc-cible {
-      width: 95px;
-      height: 95px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ffffff, #60a5fa 45%, #1d4ed8 100%);
-      position: absolute;
-      left: 40px;
-      top: 120px;
-      cursor: pointer;
+      width: 95px; height: 95px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff, #60a5fa 45%, #1d4ed8 100%);
+      position: absolute; left: 40px; top: 120px; cursor: pointer;
       box-shadow: 0 10px 25px rgba(29,78,216,.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 34px;
-      font-weight: 900;
-      user-select: none;
-      transition: left 1.2s ease-in-out, top 1.2s ease-in-out, transform .15s ease, box-shadow .15s ease;
-      animation: scPulse 1.4s infinite;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 34px; font-weight: 900; user-select: none;
+      transition: left 1.2s ease-in-out, top 1.2s ease-in-out, transform .15s, box-shadow .15s;
+      animation: scPulse 1.4s infinite; outline: none;
     }
-
-    .sc-cible:hover { transform: scale(1.08); }
+    .sc-cible:hover, .sc-cible:focus-visible { transform: scale(1.08); box-shadow: 0 12px 30px rgba(29,78,216,.45); }
     .sc-cible:active { transform: scale(.92); }
-
     .sc-plus {
-      position: absolute;
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--sc-green);
-      pointer-events: none;
-      animation: scMonte .8s ease-out forwards;
+      position: absolute; font-size: 32px; font-weight: 900; color: var(--sc-green);
+      pointer-events: none; animation: scMonte .8s ease-out forwards;
     }
-
     .sc-fin {
-      display: none;
-      position: absolute;
-      inset: 0;
+      display: none; position: absolute; inset: 0;
       background: rgba(255,255,255,.92);
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      z-index: 5;
-      padding: 20px;
+      align-items: center; justify-content: center;
+      text-align: center; z-index: 5; padding: 20px;
     }
-
     .sc-fin.active { display: flex; }
-
     .sc-fin-box {
-      background: white;
-      border-radius: 24px;
-      padding: 30px;
+      background: white; border-radius: 24px; padding: 30px;
       box-shadow: 0 10px 30px rgba(0,0,0,.15);
     }
-
-    .sc-fin-box h2 {
-      font-family: var(--font-head);
-      font-size: 36px;
-      margin: 0 0 10px;
-    }
-
-    .sc-fin-box p {
-      font-size: 24px;
-      color: var(--text);
-    }
-
-    .sc-consignes {
-      margin-top: 20px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 18px;
-      padding: 18px;
-      font-size: 18px;
-      color: var(--text2);
-      line-height: 1.45;
-    }
-
-    .sc-consignes strong { color: var(--sc-blue); }
-
+    .sc-fin-box h2 { font-family: var(--font-head); font-size: 36px; margin: 0 0 10px; }
+    .sc-fin-box p  { font-size: 24px; color: var(--text); }
+    .sc-fin-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .sc-button-secondary { background: #eef4ff; color: var(--sc-blue); }
+    .sc-button-secondary:hover { background: #dbeafe; }
     @keyframes scPulse {
-      0% { box-shadow: 0 0 0 0 rgba(37,99,235,.45); }
+      0%  { box-shadow: 0 0 0 0   rgba(37,99,235,.45); }
       70% { box-shadow: 0 0 0 20px rgba(37,99,235,0); }
-      100% { box-shadow: 0 0 0 0 rgba(37,99,235,0); }
+      100%{ box-shadow: 0 0 0 0   rgba(37,99,235,0); }
     }
-
     @keyframes scMonte {
-      from { opacity: 1; transform: translateY(0) scale(1); }
-      to { opacity: 0; transform: translateY(-45px) scale(1.4); }
+      from { opacity:1; transform: translateY(0) scale(1); }
+      to   { opacity:0; transform: translateY(-45px) scale(1.4); }
     }
-
     @media (max-width: 640px) {
-      .sc-main { padding-left: 14px; padding-right: 14px; }
-      .sc-zone { height: 390px; }
-      .sc-message { font-size: 16px; max-width: calc(100% - 24px); white-space: normal; text-align: center; }
+      .sc-tableau { grid-template-columns: 1fr; }
+      .sc-message { font-size:16px; max-width: calc(100% - 24px); white-space:normal; text-align:center; }
+      .sc-timebar  { top:82px; left:16px; right:16px; }
     }
   </style>
 </head>
-<body class="souris-cible-page">
+<body>
   <div id="header-slot"></div>
   <div id="sidebar-slot"></div>
 
   <div class="layout">
-    <main class="main sc-main">
-      <section class="sc-header">
-        <h1>Exercice souris</h1>
-        <p>Clique sur la cible qui bouge doucement.</p>
-      </section>
+    <main class="main">
+      <div class="container">
 
-      <div class="sc-tableau">
-        <div class="sc-carte">Score<span id="score">0</span></div>
-        <div class="sc-carte">Temps<span id="temps">30</span></div>
-        <div class="sc-carte">Niveau<span id="niveauTexte">Facile</span></div>
-      </div>
-
-      <div class="sc-controls">
-        <button class="sc-button" type="button" onclick="demarrer()">Démarrer</button>
-        <button class="sc-button" type="button" onclick="recommencer()">Recommencer</button>
-        <select class="sc-select" id="niveau" onchange="changerNiveau()">
-          <option value="facile">Facile</option>
-          <option value="moyen">Moyen</option>
-          <option value="rapide">Rapide</option>
-        </select>
-      </div>
-
-      <section class="sc-zone" id="zone">
-        <div class="sc-message" id="message">Clique sur Démarrer</div>
-        <div class="sc-cible" id="cible">🎯</div>
-        <div class="sc-fin" id="fin">
-          <div class="sc-fin-box">
-            <h2>Terminé !</h2>
-            <p>Score : <strong id="scoreFinal">0</strong></p>
-            <button class="sc-button" type="button" onclick="recommencer()">Recommencer</button>
+        <div class="page-header fade-up">
+          <div class="page-icon">🖱️</div>
+          <div>
+            <h1>Exercice souris</h1>
+            <p>Entraîne-toi à cliquer avec précision.</p>
           </div>
         </div>
-      </section>
 
-      <div class="sc-consignes">
-        <strong>Consigne :</strong> regarde la cible, déplace la souris, clique une fois, puis recommence.
+        <!-- Sélecteur de mode -->
+        <div class="ec-mode-bar fade-up delay-1">
+          <button class="ec-mode-btn active" id="btn-mode-cible"   type="button">🎯 Cible mouvante</button>
+          <button class="ec-mode-btn"        id="btn-mode-parcours" type="button">🖱️ Parcours 5 étapes</button>
+        </div>
+
+        <!-- ══════════ MODE CIBLE ══════════ -->
+        <div id="zone-cible">
+          <div class="sc-tableau fade-up delay-1">
+            <div class="sc-carte">Score<span id="score">0</span></div>
+            <div class="sc-carte">Temps<span id="temps">30</span></div>
+            <div class="sc-carte">Niveau<span id="niveauTexte">Facile</span></div>
+          </div>
+
+          <div class="sc-controls fade-up delay-1">
+            <button class="sc-button" id="btnStart" type="button">Démarrer</button>
+            <button class="sc-button" id="btnRecommencer" type="button">Recommencer</button>
+            <select class="sc-select" id="niveau">
+              <option value="facile">Facile</option>
+              <option value="moyen">Moyen</option>
+              <option value="rapide">Rapide</option>
+            </select>
+          </div>
+
+          <section class="sc-zone fade-up delay-2" id="scZone">
+            <div class="sc-message" id="message">Clique sur Démarrer</div>
+            <div class="sc-timebar" aria-hidden="true"><i id="timeFill"></i></div>
+            <div class="sc-cible" id="cible" role="button" tabindex="0" aria-label="Cible à cliquer">🎯</div>
+            <div class="sc-fin" id="fin">
+              <div class="sc-fin-box">
+                <h2>Terminé !</h2>
+                <p>Score : <strong id="scoreFinal">0</strong></p>
+                <p id="resultText">Bon entraînement.</p>
+                <div class="sc-fin-actions">
+                  <button class="sc-button sc-button-secondary" id="btnRecommencer2" type="button">Recommencer</button>
+                  <button class="sc-button" id="btnGoParcours" type="button">Essaie le parcours →</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div><!-- /zone-cible -->
+
+        <!-- ══════════ MODE PARCOURS ══════════ -->
+        <div id="zone-parcours" style="display:none;">
+
+          <div class="kpi-grid fade-up delay-1">
+            <div class="kpi-card"><div class="kpi-val" style="color:var(--success)" id="sc-done">0</div><div class="kpi-lbl">Réussis</div></div>
+            <div class="kpi-card"><div class="kpi-val" style="color:var(--danger)"  id="sc-miss">0</div><div class="kpi-lbl">Ratés</div></div>
+            <div class="kpi-card"><div class="kpi-val" id="sc-xp">0 XP</div><div class="kpi-lbl">XP gagné</div></div>
+          </div>
+
+          <div class="parcours-header fade-up delay-1">
+            <div class="step-indicator" id="step-dots"></div>
+            <span style="font-size:13px;color:var(--text2);" id="step-label">Étape 1/5</span>
+          </div>
+
+          <div class="fade-up delay-2" id="step-zone"></div>
+
+        </div><!-- /zone-parcours -->
+
       </div>
     </main>
     <div id="footer-slot"></div>
   </div>
 
+  <!-- Modal fin d'étape (parcours) -->
+  <div class="modal-overlay" id="modal-step">
+    <div class="modal">
+      <div class="modal-icon" id="stepEmoji">🎉</div>
+      <div class="modal-title" id="stepTitle"></div>
+      <div class="modal-text"  id="stepText"></div>
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary"   id="btn-next-step"  type="button">Étape suivante →</button>
+        <button class="btn btn-secondary" id="btn-retry-step" type="button">Recommencer cette étape</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal fin du parcours -->
+  <div class="modal-overlay" id="modal-fin">
+    <div class="modal">
+      <div class="modal-icon" id="resEmoji">🏆</div>
+      <div class="modal-title" id="resTitle">Parcours terminé !</div>
+      <div class="modal-text"  id="resSubtitle"></div>
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary"   id="btn-restart-parcours" type="button">🔄 Recommencer</button>
+        <button class="btn btn-secondary" id="btnNextExercise"       type="button">Exercice suivant</button>
+        <a href="accueil.html" class="btn btn-secondary">← Accueil</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data/cliquer-data.js"></script>
   <script src="../js/score.js"></script>
   <script src="../js/exercises-config.js"></script>
   <script src="../js/stages.js"></script>
@@ -293,143 +251,555 @@
   <script>
   'use strict';
 
-  const PAGE_ID = 'souris-cible';
-  const cible = document.getElementById('cible');
-  const zone = document.getElementById('zone');
-  const scoreEl = document.getElementById('score');
-  const tempsEl = document.getElementById('temps');
-  const messageEl = document.getElementById('message');
-  const finEl = document.getElementById('fin');
-  const scoreFinalEl = document.getElementById('scoreFinal');
-  const niveauSelect = document.getElementById('niveau');
-  const niveauTexte = document.getElementById('niveauTexte');
+  const PAGE_ID_CIBLE   = 'souris-cible';
+  const PAGE_ID_PARCOURS = 'cliquer';
 
-  let score = 0;
-  let temps = 30;
-  let jeuActif = false;
-  let timer = null;
-  let mouvement = null;
-  let taille = 95;
-  let vitesse = 1700;
-  let transition = 1200;
+  /* ════════════════════════════════════════════
+     SÉLECTEUR DE MODE
+  ════════════════════════════════════════════ */
+  let currentMode = 'cible';
+  function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('btn-mode-cible').classList.toggle('active', mode === 'cible');
+    document.getElementById('btn-mode-parcours').classList.toggle('active', mode === 'parcours');
+    document.getElementById('zone-cible').style.display   = mode === 'cible'   ? '' : 'none';
+    document.getElementById('zone-parcours').style.display = mode === 'parcours' ? '' : 'none';
+    if (mode === 'parcours' && !parcoursStarted) {
+      parcoursStarted = true;
+      showXPRules('Cliquer');
+      loadStep(0);
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     MODE CIBLE — Souris cible
+  ════════════════════════════════════════════ */
+  const cibleEl    = document.getElementById('cible');
+  const scZoneEl   = document.getElementById('scZone');
+  const scoreEl    = document.getElementById('score');
+  const tempsEl    = document.getElementById('temps');
+  const messageEl  = document.getElementById('message');
+  const finEl      = document.getElementById('fin');
+  const scoreFinalEl  = document.getElementById('scoreFinal');
+  const resultTextEl  = document.getElementById('resultText');
+  const timeFillEl    = document.getElementById('timeFill');
+  const niveauSelect  = document.getElementById('niveau');
+  const niveauTexte   = document.getElementById('niveauTexte');
+
+  let scScore = 0;
+  const dureeInitiale = 30;
+  let scTemps = 30, jeuActif = false, scTimer = null, mouvement = null;
+  let taille = 95, vitesse = 1700, transition = 1200;
 
   function changerNiveau() {
-    const niveau = niveauSelect.value;
-    if (niveau === 'facile') {
-      taille = 110;
-      vitesse = 1900;
-      transition = 1400;
-      niveauTexte.textContent = 'Facile';
-    }
-    if (niveau === 'moyen') {
-      taille = 90;
-      vitesse = 1400;
-      transition = 950;
-      niveauTexte.textContent = 'Moyen';
-    }
-    if (niveau === 'rapide') {
-      taille = 70;
-      vitesse = 950;
-      transition = 650;
-      niveauTexte.textContent = 'Rapide';
-    }
-    cible.style.width = taille + 'px';
-    cible.style.height = taille + 'px';
-    cible.style.transition = `left ${transition}ms ease-in-out, top ${transition}ms ease-in-out, transform .15s ease, box-shadow .15s ease`;
-    bougerCible();
+    const n = niveauSelect.value;
+    if (n === 'facile') { taille=110; vitesse=1900; transition=1400; niveauTexte.textContent='Facile'; }
+    if (n === 'moyen')  { taille=90;  vitesse=1400; transition=950;  niveauTexte.textContent='Moyen';  }
+    if (n === 'rapide') { taille=70;  vitesse=950;  transition=650;  niveauTexte.textContent='Rapide'; }
+    cibleEl.style.width  = taille + 'px';
+    cibleEl.style.height = taille + 'px';
+    cibleEl.style.transition = `left ${transition}ms ease-in-out, top ${transition}ms ease-in-out, transform .15s, box-shadow .15s`;
+    if (jeuActif) bougerCible();
   }
-  window.changerNiveau = changerNiveau;
+
+  function updateTimebar() {
+    timeFillEl.style.width = Math.max(0, Math.min(100, scTemps / dureeInitiale * 100)) + '%';
+  }
 
   function bougerCible() {
-    const margeHaut = 70;
-    const maxX = zone.clientWidth - taille - 10;
-    const maxY = zone.clientHeight - taille - 10;
-    const x = Math.random() * Math.max(maxX, 1);
-    const y = margeHaut + Math.random() * Math.max(maxY - margeHaut, 1);
-    cible.style.left = x + 'px';
-    cible.style.top = y + 'px';
+    const maxX = scZoneEl.clientWidth  - taille - 10;
+    const maxY = scZoneEl.clientHeight - taille - 10;
+    cibleEl.style.left = Math.random() * Math.max(maxX, 1) + 'px';
+    cibleEl.style.top  = (70 + Math.random() * Math.max(maxY - 70, 1)) + 'px';
   }
 
   function demarrer() {
     if (jeuActif) return;
-    score = 0;
-    temps = 30;
-    scoreEl.textContent = score;
-    tempsEl.textContent = temps;
+    scScore = 0; scTemps = dureeInitiale;
+    scoreEl.textContent = 0; tempsEl.textContent = scTemps;
+    updateTimebar();
     finEl.classList.remove('active');
     jeuActif = true;
+    cibleEl.style.display = 'flex';
     messageEl.textContent = 'Clique la cible !';
     changerNiveau();
-    if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
+    if (window.ScoreManager) window.ScoreManager.promoteStatus(PAGE_ID_CIBLE, 'in_progress');
     mouvement = setInterval(bougerCible, vitesse);
-    timer = setInterval(function () {
-      temps -= 1;
-      tempsEl.textContent = temps;
-      if (temps <= 0) terminer();
+    scTimer = setInterval(() => {
+      scTemps--;
+      tempsEl.textContent = scTemps;
+      updateTimebar();
+      if (scTemps <= 0) terminer();
     }, 1000);
   }
-  window.demarrer = demarrer;
 
   function terminer() {
     jeuActif = false;
-    clearInterval(timer);
-    clearInterval(mouvement);
-    scoreFinalEl.textContent = score;
+    clearInterval(scTimer); clearInterval(mouvement);
+    scoreFinalEl.textContent = scScore;
+    resultTextEl.textContent = scScore >= 10
+      ? 'Très bien ! Tu peux passer au parcours.'
+      : 'Bien essayé. Recommence une fois pour gagner en précision.';
     messageEl.textContent = "Fin de l'exercice";
     finEl.classList.add('active');
     if (window.ScoreManager) {
-      const xp = Math.max(1, Math.min(20, score));
-      window.ScoreManager.updateMetrics(PAGE_ID, { correct: score, typed: score, xp });
-      if (score >= 10) window.ScoreManager.promoteStatus(PAGE_ID, 'completed');
-      else window.ScoreManager.promoteStatus(PAGE_ID, 'in_progress');
-      window.ScoreManager.pushSessionHistory({ page: PAGE_ID, name: 'Exercice souris', xp, correct: score, typed: score, errors: 0 });
+      const xp = Math.max(1, Math.min(20, scScore));
+      window.ScoreManager.updateMetrics(PAGE_ID_CIBLE, { correct: scScore, typed: scScore, xp });
+      window.ScoreManager.promoteStatus(PAGE_ID_CIBLE, scScore >= 10 ? 'completed' : 'in_progress');
+      window.ScoreManager.pushSessionHistory({ page: PAGE_ID_CIBLE, name: 'Exercice souris', xp, correct: scScore, typed: scScore, errors: 0 });
     }
   }
 
   function recommencer() {
-    clearInterval(timer);
-    clearInterval(mouvement);
-    score = 0;
-    temps = 30;
-    jeuActif = false;
-    scoreEl.textContent = score;
-    tempsEl.textContent = temps;
+    clearInterval(scTimer); clearInterval(mouvement);
+    scScore = 0; scTemps = dureeInitiale; jeuActif = false;
+    scoreEl.textContent = 0; tempsEl.textContent = scTemps;
+    updateTimebar();
     finEl.classList.remove('active');
+    cibleEl.style.display = 'none';
     messageEl.textContent = 'Clique sur Démarrer';
     changerNiveau();
   }
-  window.recommencer = recommencer;
 
   function afficherPlus() {
     const plus = document.createElement('div');
-    plus.className = 'sc-plus';
-    plus.textContent = '+1';
-    plus.style.left = cible.offsetLeft + taille / 2 + 'px';
-    plus.style.top = cible.offsetTop + 'px';
-    zone.appendChild(plus);
+    plus.className = 'sc-plus'; plus.textContent = '+1';
+    plus.style.left = cibleEl.offsetLeft + taille / 2 + 'px';
+    plus.style.top  = cibleEl.offsetTop  + 'px';
+    scZoneEl.appendChild(plus);
     setTimeout(() => plus.remove(), 800);
   }
 
-  cible.addEventListener('click', function () {
+  function cliquerCible() {
     if (!jeuActif) return;
-    score += 1;
-    scoreEl.textContent = score;
+    scScore++;
+    scoreEl.textContent = scScore;
     messageEl.textContent = 'Bien ! Continue';
-    afficherPlus();
-    bougerCible();
-  });
-
-  function runTests() {
-    console.assert(typeof changerNiveau === 'function', 'changerNiveau doit exister');
-    console.assert(typeof demarrer === 'function', 'demarrer doit exister');
-    console.assert(typeof recommencer === 'function', 'recommencer doit exister');
-    console.assert(Boolean(cible), 'La cible existe');
-    console.assert(Boolean(zone), 'La zone existe');
-    console.log('Tests souris cible OK');
+    afficherPlus(); bougerCible();
   }
 
+  document.getElementById('btnStart').addEventListener('click', demarrer);
+  document.getElementById('btnRecommencer').addEventListener('click', recommencer);
+  document.getElementById('btnRecommencer2').addEventListener('click', recommencer);
+  document.getElementById('btnGoParcours').addEventListener('click', () => {
+    finEl.classList.remove('active');
+    setMode('parcours');
+  });
+  niveauSelect.addEventListener('change', changerNiveau);
+  cibleEl.addEventListener('click', cliquerCible);
+  cibleEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cliquerCible(); }
+  });
+
   changerNiveau();
-  runTests();
+  cibleEl.style.display = 'none';
+  updateTimebar();
+
+  /* ════════════════════════════════════════════
+     MODE PARCOURS — Cliquer 5 étapes
+  ════════════════════════════════════════════ */
+  let parcoursStarted = false;
+  let totalDone = 0, totalMiss = 0, totalXP = 0;
+
+  function addGlobalScore(d, m, xp) {
+    totalDone += d; totalMiss += m;
+    totalXP = Math.max(0, totalXP + xp);
+    document.getElementById('sc-done').textContent = totalDone;
+    document.getElementById('sc-miss').textContent = totalMiss;
+    document.getElementById('sc-xp').textContent   = totalXP + ' XP';
+    recordExerciseProgress(PAGE_ID_PARCOURS, { correct: d, typed: d + m, errors: m, xp: Math.max(0, xp) });
+  }
+
+  function makeKeyboardAccessible(el, fn) {
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); }
+    });
+  }
+
+  function rndPos(arenaEl, size = 60) {
+    const w = arenaEl.clientWidth  - size - 10;
+    const h = arenaEl.clientHeight - size - 10;
+    return { x: Math.max(5, Math.floor(Math.random() * w)),
+             y: Math.max(5, Math.floor(Math.random() * h)) };
+  }
+  function spawnMiss(arena, x, y) {
+    const el = document.createElement('div');
+    el.className = 'miss-cross'; el.textContent = '✗';
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    arena.appendChild(el);
+    setTimeout(() => el.remove(), 500);
+  }
+  function pickBalancedDragItems(items, limit) {
+    const byCat = {};
+    [...items].sort(() => Math.random() - 0.5).forEach(item => {
+      if (!byCat[item.cat]) byCat[item.cat] = [];
+      byCat[item.cat].push(item);
+    });
+    const result = [];
+    while (result.length < limit) {
+      const added = Object.keys(byCat).some(cat => {
+        if (!byCat[cat].length || result.length >= limit) return false;
+        result.push(byCat[cat].shift()); return true;
+      });
+      if (!added) break;
+    }
+    return result;
+  }
+
+  const STEPS = [
+    /* ── 1. CLIC GAUCHE ── */
+    { id: 'left', build() {
+      const TOTAL = 12;
+      let remaining, active, reactTimes, shownAt;
+      const html = `<div class="card step-card">
+        <div class="card-title">👆 Étape 1 — Clic gauche</div>
+        <p class="mb-16" style="font-size:13px;color:var(--text2);">Clique sur la cible dès qu'elle apparaît. Évite les faux clics.</p>
+        <div class="arena" id="l-arena">
+          <div class="arena-msg" id="l-msg">Prêt…</div>
+          <div class="target" id="l-tgt" style="background:var(--gradient);">🎯</div>
+          <div class="arena-counter" id="l-cnt"></div>
+        </div>
+        <div class="stat-bar mt-12">
+          <span class="stat-pill">✅ <span id="l-ok">0</span>/${TOTAL}</span>
+          <span class="stat-pill">❌ <span id="l-err">0</span></span>
+          <span class="stat-pill" id="l-react-lbl" style="display:none">⚡ <span id="l-react">—</span> ms moy.</span>
+        </div></div>`;
+      return { html, start() {
+        const arena=document.getElementById('l-arena'), tgt=document.getElementById('l-tgt'),
+              cnt=document.getElementById('l-cnt'), msg=document.getElementById('l-msg'),
+              okEl=document.getElementById('l-ok'), errEl=document.getElementById('l-err'),
+              reactEl=document.getElementById('l-react'), reactLbl=document.getElementById('l-react-lbl');
+        remaining=TOTAL; active=true; reactTimes=[];
+        okEl.textContent=0; errEl.textContent=0; reactLbl.style.display='none';
+        msg.style.display='none'; cnt.textContent='Restants : '+remaining;
+        promoteExerciseStatus(PAGE_ID_PARCOURS,'in_progress');
+        function place() {
+          const p=rndPos(arena); tgt.style.left=p.x+'px'; tgt.style.top=p.y+'px';
+          tgt.style.display='flex'; tgt.style.animation='none'; void tgt.offsetWidth; tgt.style.animation='';
+          shownAt=performance.now();
+        }
+        const handleClick=()=>{
+          if(!active) return;
+          reactTimes.push(Math.round(performance.now()-shownAt));
+          remaining--; okEl.textContent=reactTimes.length; cnt.textContent='Restants : '+remaining;
+          tgt.classList.add('hit'); setTimeout(()=>tgt.classList.remove('hit'),200);
+          addGlobalScore(1,0,2);
+          if(remaining<=0){tgt.style.display='none';finish();} else setTimeout(place,350);
+        };
+        tgt.onclick=e=>{e.stopPropagation();handleClick();};
+        makeKeyboardAccessible(tgt,handleClick);
+        arena.addEventListener('click',e=>{
+          if(!active||e.target===tgt||tgt.contains(e.target)) return;
+          const r=arena.getBoundingClientRect();
+          spawnMiss(arena,e.clientX-r.left-12,e.clientY-r.top-12);
+          errEl.textContent=+errEl.textContent+1; addGlobalScore(0,1,-1);
+        });
+        function finish(){
+          active=false;
+          const avg=reactTimes.length?Math.round(reactTimes.reduce((a,b)=>a+b,0)/reactTimes.length):0;
+          if(avg){reactLbl.style.display='inline-flex';reactEl.textContent=avg;}
+          openStepModal('🎯','Clic gauche maîtrisé !',`Réussis : ${reactTimes.length}/${TOTAL} · Temps moyen : ${avg} ms`,reactTimes.length>=TOTAL*0.5);
+        }
+        place();
+      }};
+    }},
+
+    /* ── 2. CLIC DROIT ── */
+    { id: 'right', build() {
+      const TOTAL=10; let remaining,active;
+      const html=`<div class="card step-card">
+        <div class="card-title">🖱️ Étape 2 — Clic droit</div>
+        <p class="mb-16" style="font-size:13px;color:var(--text2);">Fais un <strong>clic droit</strong> sur la cible. Le menu contextuel est bloqué ici.</p>
+        <div class="arena" id="r-arena">
+          <div class="arena-msg" id="r-msg" style="display:none"></div>
+          <div class="target" id="r-tgt" style="background:linear-gradient(135deg,#f59e0b,#f87171);cursor:context-menu;">🎯</div>
+          <div class="arena-counter" id="r-cnt"></div>
+        </div>
+        <div class="stat-bar mt-12">
+          <span class="stat-pill">✅ <span id="r-ok">0</span>/${TOTAL}</span>
+          <span class="stat-pill">❌ <span id="r-err">0</span></span>
+        </div></div>`;
+      return { html, start() {
+        const arena=document.getElementById('r-arena'),tgt=document.getElementById('r-tgt'),
+              cnt=document.getElementById('r-cnt'),okEl=document.getElementById('r-ok'),errEl=document.getElementById('r-err');
+        remaining=TOTAL; active=true; okEl.textContent=0; errEl.textContent=0;
+        cnt.textContent='Restants : '+remaining;
+        promoteExerciseStatus(PAGE_ID_PARCOURS,'in_progress');
+        function place(){
+          const p=rndPos(arena); tgt.style.left=p.x+'px'; tgt.style.top=p.y+'px';
+          tgt.style.display='flex'; tgt.style.animation='none'; void tgt.offsetWidth; tgt.style.animation='';
+        }
+        arena.addEventListener('contextmenu',e=>{
+          e.preventDefault(); if(!active) return;
+          if(e.target===tgt||tgt.contains(e.target)){
+            remaining--; okEl.textContent=+okEl.textContent+1; cnt.textContent='Restants : '+remaining;
+            addGlobalScore(1,0,2); tgt.classList.add('hit'); setTimeout(()=>tgt.classList.remove('hit'),200);
+            if(remaining<=0) finish(); else setTimeout(place,350);
+          } else {
+            const r=arena.getBoundingClientRect();
+            spawnMiss(arena,e.clientX-r.left-12,e.clientY-r.top-12);
+            errEl.textContent=+errEl.textContent+1; addGlobalScore(0,1,-1);
+          }
+        });
+        function finish(){active=false;const ok=+okEl.textContent;openStepModal('🖱️','Clic droit maîtrisé !',`Réussis : ${ok}/${TOTAL}`,ok>=TOTAL*0.5);}
+        place();
+      }};
+    }},
+
+    /* ── 3. DOUBLE CLIC ── */
+    { id: 'dbl', build() {
+      const TOTAL=8; let done,errs,active;
+      const html=`<div class="card step-card">
+        <div class="card-title">⚡ Étape 3 — Double clic</div>
+        <p class="mb-16" style="font-size:13px;color:var(--text2);">Double-clique sur la cible.</p>
+        <div class="arena" id="d-arena" style="display:flex;align-items:center;justify-content:center;">
+          <div class="target" id="d-tgt" style="position:static;background:linear-gradient(135deg,#7c5ff5,#4f8ef7);width:90px;height:90px;font-size:32px;">⚡</div>
+          <div class="arena-msg" id="d-msg" style="display:none;"></div>
+          <div class="arena-counter" id="d-cnt"></div>
+        </div>
+        <div class="stat-bar mt-12">
+          <span class="stat-pill">✅ <span id="d-ok">0</span>/${TOTAL}</span>
+          <span class="stat-pill">❌ <span id="d-err">0</span></span>
+        </div></div>`;
+      return { html, start() {
+        const tgt=document.getElementById('d-tgt'),msg=document.getElementById('d-msg'),
+              cnt=document.getElementById('d-cnt'),okEl=document.getElementById('d-ok'),errEl=document.getElementById('d-err');
+        done=0; errs=0; active=true; let singleTimer=null;
+        okEl.textContent=0; errEl.textContent=0;
+        promoteExerciseStatus(PAGE_ID_PARCOURS,'in_progress');
+        function next(){
+          if(done>=TOTAL){finish();return;}
+          msg.style.display='none'; tgt.style.display='flex';
+          tgt.style.animation='none'; void tgt.offsetWidth; tgt.style.animation='';
+          cnt.textContent=`${done+1}/${TOTAL}`;
+          tgt.onclick=()=>{
+            clearTimeout(singleTimer);
+            singleTimer=setTimeout(()=>{
+              if(!active||tgt.style.display==='none') return;
+              errs++; errEl.textContent=errs;
+              msg.style.display='flex'; msg.textContent='Clique deux fois vite sur la même cible.';
+              addGlobalScore(0,1,-1);
+              setTimeout(()=>{if(active)msg.style.display='none';},900);
+            },260);
+          };
+          tgt.ondblclick=()=>{
+            clearTimeout(singleTimer); done++; okEl.textContent=done;
+            tgt.style.display='none'; msg.style.display='flex'; msg.textContent='⚡ Super !';
+            addGlobalScore(1,0,3); setTimeout(next,700);
+          };
+        }
+        function finish(){active=false;openStepModal('⚡','Double clic maîtrisé !',`Réussis : ${done}/${TOTAL} · Ratés : ${errs}`,done>=TOTAL*0.5);}
+        next();
+      }};
+    }},
+
+    /* ── 4. DRAG & DROP ── */
+    { id: 'drag', build() {
+      const ITEMS=window.CLIQUER_DATA.dragItems;
+      const CATEGORIES={
+        identite:{icon:'👤',label:'Identité'},contact:{icon:'📞',label:'Contact'},
+        document:{icon:'📄',label:'Document'},action:{icon:'✅',label:'Action'},
+        emploi:{icon:'💼',label:'Emploi'},transport:{icon:'🚌',label:'Transport'},
+        sante:{icon:'🩺',label:'Santé'},logement:{icon:'🏠',label:'Logement'},banque:{icon:'🏦',label:'Banque'}
+      };
+      let draggingEl,selectedEl,total,placed;
+      const categoryZones=Object.entries(CATEGORIES).map(([cat,meta])=>`
+        <div><div class="drag-zone-label">${meta.icon} ${meta.label}</div>
+        <div class="drag-zone drop-zone" data-cat="${cat}"></div></div>`).join('');
+      const html=`<div class="card step-card">
+        <div class="card-title">🔀 Étape 4 — Glisser-déposer</div>
+        <p class="mb-16" style="font-size:13px;color:var(--text2);">Glisse chaque élément dans sa catégorie. Astuce : tu peux aussi cliquer un élément, puis cliquer une catégorie.</p>
+        <div class="drag-feedback" id="dr-feedback">Choisis un élément à classer.</div>
+        <div class="drag-layout">
+          <div><div class="drag-zone-label">À classer</div><div class="drag-zone drag-source" id="dr-src"></div></div>
+          <div class="drag-category-grid">${categoryZones}</div>
+        </div>
+        <div class="stat-bar mt-12">
+          <span class="stat-pill">✅ <span id="dr-ok">0</span></span>
+          <span class="stat-pill">❌ <span id="dr-err">0</span></span>
+          <span style="font-size:13px;color:var(--text2);" id="dr-remain"></span>
+        </div></div>`;
+      return { html, start() {
+        const src=document.getElementById('dr-src'),zones=document.querySelectorAll('.drop-zone[data-cat]'),
+              okEl=document.getElementById('dr-ok'),errEl=document.getElementById('dr-err'),
+              remEl=document.getElementById('dr-remain'),fbEl=document.getElementById('dr-feedback');
+        draggingEl=null; selectedEl=null;
+        const practiceItems=pickBalancedDragItems(ITEMS,12);
+        total=practiceItems.length; placed=0;
+        okEl.textContent=0; errEl.textContent=0; remEl.textContent=`0/${total} classés`;
+        promoteExerciseStatus(PAGE_ID_PARCOURS,'in_progress');
+        [...practiceItems].sort(()=>Math.random()-0.5).forEach(item=>{
+          const el=document.createElement('div');
+          el.className='drag-item'; el.textContent=item.label; el.draggable=true; el.dataset.cat=item.cat;
+          el.addEventListener('dragstart',e=>{draggingEl=el;el.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+          el.addEventListener('dragend',()=>{if(draggingEl)draggingEl.classList.remove('dragging');draggingEl=null;});
+          el.addEventListener('click',()=>{
+            if(el.classList.contains('correct')||el.classList.contains('wrong')) return;
+            selectedEl=selectedEl===el?null:el;
+            document.querySelectorAll('.drag-item.selected').forEach(i=>i.classList.remove('selected'));
+            if(selectedEl){selectedEl.classList.add('selected');fbEl.textContent='Sélectionné : '+selectedEl.textContent+'. Clique maintenant la bonne catégorie.';}
+            else fbEl.textContent='Choisis un élément à classer.';
+          });
+          src.appendChild(el);
+        });
+        function placeItem(itemEl,zone){
+          if(!itemEl||itemEl.dataset.placed==='1') return;
+          const correct=zone.dataset.cat===itemEl.dataset.cat;
+          itemEl.classList.remove('dragging','selected'); itemEl.dataset.placed='1'; itemEl.draggable=false;
+          if(correct){itemEl.classList.add('correct');okEl.textContent=+okEl.textContent+1;fbEl.textContent='Bien classé : '+itemEl.textContent;addGlobalScore(1,0,2);}
+          else{itemEl.classList.add('wrong');errEl.textContent=+errEl.textContent+1;fbEl.textContent='Classé ici. La prochaine fois, vérifie la catégorie.';addGlobalScore(0,1,-1);}
+          zone.appendChild(itemEl); draggingEl=null; selectedEl=null;
+          placed++; remEl.textContent=`${placed}/${total} classés`;
+          if(placed>=total){const ok=+okEl.textContent,err=+errEl.textContent;openStepModal('🔀','Classement terminé !',`${ok} corrects · ${err} erreurs`,ok>=total*0.5);}
+        }
+        zones.forEach(zone=>{
+          zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+          zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+          zone.addEventListener('click',()=>placeItem(selectedEl,zone));
+          zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('over');placeItem(draggingEl,zone);});
+        });
+      }};
+    }},
+
+    /* ── 5. SÉLECTION DE TEXTE ── */
+    { id: 'sel', build() {
+      const PLAIN='La souris est un outil très utile. Elle sert à cliquer sur des éléments et à sélectionner du texte.';
+      const TASKS=[
+        {label:'Sélectionne le mot « souris »',check:sel=>norm(sel)==='souris'},
+        {label:'Sélectionne les mots « cliquer sur des éléments »',check:sel=>norm(sel)==='cliquer sur des éléments'},
+        {label:'Sélectionne tout le texte (Ctrl+A ou cliquer-glisser)',check:sel=>norm(sel)===norm(PLAIN)}
+      ];
+      function norm(s){return s.replace(/\s+/g,' ').trim().replace(/[’‘]/g,"'");}
+      let step,okCount,cooldown,selTimer,wrongCooldown,onSelectionChange;
+      const html=`<div class="card step-card">
+        <div class="card-title">✍️ Étape 5 — Sélection de texte</div>
+        <p class="mb-16" style="font-size:13px;color:var(--text2);">Clique et glisse pour sélectionner du texte. Suis les consignes.</p>
+        <div class="sel-consigne" id="sel-badge"><span class="badge" id="sel-num">1</span><span id="sel-task">…</span></div>
+        <div class="sel-wrap" id="sel-block" tabindex="0">La souris est un outil très utile. Elle sert à <mark id="sel-m1" class="sel-target-word">cliquer sur des éléments</mark> et à sélectionner du texte.</div>
+        <div class="sel-feedback" id="sel-fb"></div>
+        <div class="stat-bar mt-12">
+          <span class="stat-pill">✅ <span id="sel-ok">0</span>/3</span>
+          <span class="stat-pill" id="sel-step-pill">Sous-tâche <span id="sel-sc">1</span>/3</span>
+        </div></div>`;
+      return { html, start() {
+        const block=document.getElementById('sel-block'),taskEl=document.getElementById('sel-task'),
+              numEl=document.getElementById('sel-num'),fbEl=document.getElementById('sel-fb'),
+              okEl=document.getElementById('sel-ok'),scEl=document.getElementById('sel-sc');
+        step=0; okCount=0; cooldown=false; wrongCooldown=false; okEl.textContent=0;
+        promoteExerciseStatus(PAGE_ID_PARCOURS,'in_progress');
+        function showTask(){
+          if(step>=TASKS.length){finish();return;}
+          taskEl.textContent=TASKS[step].label; numEl.textContent=step+1; scEl.textContent=step+1;
+          fbEl.textContent=''; window.getSelection().removeAllRanges();
+        }
+        function check(){
+          if(cooldown) return;
+          const sel=window.getSelection();
+          if(!sel||sel.rangeCount===0||sel.toString().trim()==='') return;
+          const range=sel.getRangeAt(0);
+          if(!block.contains(range.commonAncestorContainer)) return;
+          const selStr=sel.toString();
+          if(TASKS[step].check(selStr)){
+            cooldown=true; okCount++; okEl.textContent=okCount; addGlobalScore(1,0,3);
+            fbEl.textContent='✅ Parfait !'; block.classList.add('flash');
+            setTimeout(()=>block.classList.remove('flash'),450);
+            step++; setTimeout(()=>{cooldown=false;showTask();},900);
+          } else if(!wrongCooldown){
+            wrongCooldown=true; addGlobalScore(0,1,-1);
+            fbEl.textContent='Sélection actuelle : « '+norm(selStr)+' ». Ajuste le début et la fin.';
+            fbEl.className='sel-feedback err';
+            setTimeout(()=>{wrongCooldown=false;fbEl.className='sel-feedback';},1100);
+          }
+        }
+        block.addEventListener('mouseup',()=>{clearTimeout(selTimer);selTimer=setTimeout(check,60);});
+        onSelectionChange=()=>{clearTimeout(selTimer);selTimer=setTimeout(check,80);};
+        document.addEventListener('selectionchange',onSelectionChange);
+        block.addEventListener('keydown',e=>{
+          if((e.ctrlKey||e.metaKey)&&e.key==='a'){
+            e.preventDefault();
+            const r=document.createRange(); r.selectNodeContents(block);
+            const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+            setTimeout(check,80);
+          }
+        });
+        function finish(){
+          promoteExerciseStatus(PAGE_ID_PARCOURS,'completed');
+          document.removeEventListener('selectionchange',onSelectionChange);
+          openFinalModal();
+        }
+        showTask();
+      }};
+    }}
+  ];
+
+  /* ── Moteur parcours ── */
+  let currentStep = 0;
+  const stepZone  = document.getElementById('step-zone');
+  const dotsEl    = document.getElementById('step-dots');
+  const labelEl   = document.getElementById('step-label');
+  const modalStep = document.getElementById('modal-step');
+  const modalFin  = document.getElementById('modal-fin');
+
+  STEPS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'step-dot'; d.id = 'dot-' + i;
+    dotsEl.appendChild(d);
+  });
+
+  function updateDots() {
+    STEPS.forEach((_, i) => {
+      document.getElementById('dot-'+i).className =
+        'step-dot' + (i < currentStep ? ' done' : i === currentStep ? ' current' : '');
+    });
+    labelEl.textContent = `Étape ${currentStep+1}/${STEPS.length}`;
+  }
+
+  function loadStep(idx) {
+    currentStep = idx; updateDots();
+    const obj = STEPS[idx].build();
+    stepZone.innerHTML = obj.html;
+    requestAnimationFrame(() => obj.start());
+  }
+
+  function openStepModal(icon, title, text, confetti) {
+    document.getElementById('stepEmoji').textContent = icon;
+    document.getElementById('stepTitle').textContent = title;
+    document.getElementById('stepText').textContent  = text;
+    modalStep.classList.add('show');
+    if (confetti) launchConfetti();
+  }
+
+  function openFinalModal() {
+    modalFin.classList.add('show');
+    document.getElementById('resEmoji').textContent    = '🏆';
+    document.getElementById('resTitle').textContent   = 'Parcours terminé !';
+    document.getElementById('resSubtitle').textContent = `${totalDone} réussis · ${totalMiss} ratés · ${totalXP} XP gagnés`;
+    launchConfetti();
+  }
+
+  document.getElementById('btn-next-step').addEventListener('click', () => {
+    modalStep.classList.remove('show');
+    const next = currentStep + 1;
+    if (next < STEPS.length) loadStep(next); else openFinalModal();
+  });
+  document.getElementById('btn-retry-step').addEventListener('click', () => {
+    modalStep.classList.remove('show'); loadStep(currentStep);
+  });
+  document.getElementById('btn-restart-parcours').addEventListener('click', () => {
+    modalFin.classList.remove('show');
+    totalDone=totalMiss=totalXP=0;
+    document.getElementById('sc-done').textContent=0;
+    document.getElementById('sc-miss').textContent=0;
+    document.getElementById('sc-xp').textContent='0 XP';
+    loadStep(0);
+  });
+  setupNextExerciseButton(PAGE_ID_PARCOURS);
+
+  /* ── Mode bar events ── */
+  document.getElementById('btn-mode-cible').addEventListener('click',    () => setMode('cible'));
+  document.getElementById('btn-mode-parcours').addEventListener('click', () => setMode('parcours'));
   </script>
 </body>
 </html>

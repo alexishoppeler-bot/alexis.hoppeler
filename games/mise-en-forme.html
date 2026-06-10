@@ -44,11 +44,6 @@
 
           <div class="format-board">
             <section class="format-card">
-              <div class="format-label">Texte brut</div>
-              <div class="raw-box" id="rawBox"></div>
-            </section>
-
-            <section class="format-card">
               <div class="format-label">Votre version</div>
               <textarea class="work-box" id="workBox" spellcheck="true"></textarea>
             </section>
@@ -186,7 +181,6 @@
   function loadEmail(index) {
     currentIndex = Math.max(0, Math.min(EMAILS.length - 1, Number(index) || 0));
     const item = EMAILS[currentIndex];
-    document.getElementById('rawBox').textContent = item.raw;
     document.getElementById('modelBox').textContent = item.model;
     document.getElementById('workBox').value = item.raw;
     document.getElementById('resultZone').classList.remove('show');

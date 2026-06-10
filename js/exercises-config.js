@@ -11,23 +11,20 @@
    */
   const entries = [
     { page: 'accueil',     name: 'Accueil',                  icon: '🏠', cat: 'Navigation',   section: null,                 themes: [] },
+    { page: 'souris-cible', name: 'Exercice souris',            icon: '🖱️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'souris', 'précision', 'emploi', 'transports'] },
+    { page: 'clavier',     name: 'Clavier',                   icon: '⌨️', cat: 'Langue',        section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
+    { page: 'copier-coller', name: 'Copier-coller',            icon: '📋', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'clavier'] },
     { page: 'formulaire',  name: 'Formulaire',                icon: '📝', cat: 'Candidature',  section: 'Numérique',          themes: ['numérique', 'emploi', 'orp'] },
     { page: 'email-ecrire',name: 'Écrire un e-mail',          icon: '✉️', cat: 'Communication',section: 'Communication',      themes: ['numérique', 'emploi'] },
+    { page: 'email-pro',   name: 'E-mails professionnels',    icon: '📧', cat: 'Communication',section: 'Communication',      themes: ['numérique', 'emploi', 'orp'] },
     { page: 'mise-en-forme', name: 'Mise en forme',            icon: '🧾', cat: 'Communication',section: 'Numérique',          themes: ['numérique', 'emploi', 'français'] },
     { page: 'lettres-google-docs', name: 'Lettres Google Docs', icon: '📨', cat: 'Communication',section: 'Numérique',          themes: ['numérique', 'emploi', 'administration', 'logement'] },
-    { page: 'email-pro',   name: 'E-mails professionnels',    icon: '📧', cat: 'Communication',section: 'Communication',      themes: ['numérique', 'emploi', 'orp'] },
     { page: 'retaper',     name: 'Retaper',                   icon: '✍️', cat: 'Communication',section: 'Numérique',          themes: ['numérique', 'emploi'] },
     { page: 'alphabet',    name: 'Alphabet',                  icon: '🔤', cat: 'Langue',        section: null,           themes: ['numérique', 'emploi', 'transports', 'orp', 'logement'] },
     { page: 'vocabulaire-metier', name: 'Vocabulaire métier',  icon: '💬', cat: 'Langue',        section: 'Communication',      themes: ['emploi', 'français', 'métiers'] },
-    { page: 'compréhension', name: 'Écouter 2',                icon: '🎧', cat: 'Langue',        section: 'Communication',      themes: ['français', 'emploi', 'orp', 'écoute'] },
-    { page: 'clavier',     name: 'Clavier',                   icon: '⌨️', cat: 'Langue',        section: 'Numérique',          themes: ['numérique', 'emploi', 'transports', 'orp'] },
-    { page: 'ecouter',     name: 'Écouter',                   icon: '🎧', cat: 'Langue',        section: 'Communication',      themes: ['numérique', 'orp', 'transports'] },
-    { page: 'cliquer',     name: 'Cliquer',                   icon: '🖱️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'transports'] },
-    { page: 'souris-cible', name: 'Souris cible',              icon: '🎯', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'souris', 'précision'] },
-    { page: 'copier-coller', name: 'Copier-coller',            icon: '📋', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'clavier'] },
-    { page: 'copier-mots', name: 'Copier plusieurs mots',      icon: '✂️', cat: 'Compétences',   section: 'Numérique',          themes: ['numérique', 'emploi', 'lecture'] },
-    { page: "L'ordinateur de Sofia", name: "L'ordinateur de Sofia", icon: '💻', cat: 'Compétences', section: 'Numérique', themes: ['numérique', 'fichiers', 'dossiers', 'organisation'], href: "L'ordinateur de Sofia.html" },
-    { page: 'Renommer les fichiers de sofia', name: 'Renommer les fichiers', icon: '📁', cat: 'Compétences', section: 'Numérique', themes: ['numérique', 'fichiers', 'organisation'], href: 'Renommer les fichiers de sofia.html' },
+    { page: 'ecouter',     name: 'Écouter',                   icon: '🎧', cat: 'Langue',        section: 'Communication',      themes: ['numérique', 'orp', 'transports', 'écoute'] },
+    { page: 'ordinateur-sofia', name: "L'ordinateur de Sofia", icon: '💻', cat: 'Compétences', section: 'Numérique', themes: ['numérique', 'fichiers', 'dossiers', 'organisation'] },
+    { page: 'renommer-sofia', name: 'Renommer les fichiers', icon: '📁', cat: 'Compétences', section: 'Numérique', themes: ['numérique', 'fichiers', 'organisation'] },
     { page: 'cherche-clique',name:'Cherche & clique',          icon: '🔎', cat: 'Compétences',   section: null,          themes: ['numérique', 'emploi', 'transports', 'orp'] },
     { page: 'completer',   name: 'Compléter',                 icon: '🧩', cat: 'Compétences',   section: 'Communication',      themes: ['numérique', 'emploi', 'orp', 'transports', 'santé', 'logement'] },
     { page: 'orientation', name: 'Orientation',               icon: '🗺️', cat: 'Jeu',           section: null,          themes: ['numérique', 'transports'] },
@@ -47,7 +44,7 @@
     { page: 'quiz',        name: 'Quiz',                      icon: '❓', cat: 'Jeu',           section: 'Communication',      themes: ['emploi', 'orp', 'numérique', 'transports'] },
     { page: 'trier',           name: 'Trier',                icon: '🗂️', cat: 'Jeu',           section: 'Numérique',          themes: ['emploi', 'numérique', 'transports'] },
     { page: 'securite-travail', name: 'Sécurité au travail', icon: '🦺', cat: 'Jeu',           section: 'Communication',      themes: ['emploi', 'sécurité', 'orp'] },
-    { page: 'simulations-dialogues', name: 'Simulation d’entretien', icon: '💬', cat: 'Communication', section: null, themes: ['emploi', 'orp', 'communication'] },
+    { page: 'simulations-dialogues', name: "Simulation d'entretien", icon: '💬', cat: 'Communication', section: null, themes: ['emploi', 'orp', 'communication'] },
     { page: 'entretien-embauche-ia', name: 'Entretien IA', icon: '🎯', cat: 'Communication', section: 'Communication', themes: ['emploi', 'orp', 'communication', 'entretien'], href: '../entretien-embauche-ia/index.html' },
     { page: 'paire',       name: 'Paires',                    icon: '🃏', cat: 'Jeu',           section: 'Communication',      themes: ['numérique', 'emploi', 'transports'] },
     { page: 'evaluations', name: 'XP',                        icon: '📈', cat: 'Suivi',         section: null,                 themes: [] },
@@ -69,11 +66,11 @@
     'ecouter':         '+4 XP (1re écoute), +3 XP (2e écoute+).',
     'pendu':           '+5 XP sans indice, +3 XP avec indice.',
     'cliquer':         '+2-3 XP par action correcte.',
-    'souris-cible':    '+1 XP par cible cliquée, jusqu’à 20 XP par partie.',
+    'souris-cible':    "+1 XP par cible cliquée, jusqu'à 20 XP par partie.",
     'copier-coller':   '+2 XP par texte copié correctement.',
     'copier-mots':     '+3 XP par sélection de mots correcte.',
-    "L'ordinateur de Sofia": '+5 XP quand la structure de dossiers est réalisée.',
-    'Renommer les fichiers de sofia': '+5 XP quand les fichiers sont renommés correctement.',
+    'ordinateur-sofia': '+5 XP quand la structure de dossiers est réalisée.',
+    'renommer-sofia': '+5 XP quand les fichiers sont renommés correctement.',
     'classement':      '+5 XP par classement parfait.',
     'quiz':            '+3 XP par bonne réponse + bonus de serie.',
     'vrai-faux':       '+2 XP par bonne réponse + bonus de serie.',
@@ -107,7 +104,7 @@
       useWhen: 'Avant une démarche ORP, une inscription ou une postulation.'
     },
     'email-ecrire': {
-      summary: 'Choisir l’e-mail adapté à une situation simple et comprendre le ton attendu.',
+      summary: "Choisir l'e-mail adapté à une situation simple et comprendre le ton attendu.",
       objective: 'Reconnaître une reponse claire, polie et utile.',
       practice: 'Objet, formule de politesse, message court, demande précise.',
       useWhen: 'Pour préparer les premiers e-mails de candidature.'
@@ -116,19 +113,19 @@
       summary: 'Transformer un e-mail brut en message clair avec objet, lignes et ponctuation.',
       objective: 'Apprendre à rendre un message professionnel plus lisible.',
       practice: 'Objet, salutation, paragraphes, ponctuation, formule finale.',
-      useWhen: 'Avant d’écrire ou relire un e-mail important.'
+      useWhen: "Avant d'écrire ou relire un e-mail important."
     },
     'lettres-google-docs': {
       summary: 'Choisir parmi 50 situations réalistes et rédiger une lettre complète dans Google Docs.',
-      objective: 'S’entraîner à structurer une lettre administrative, professionnelle ou personnelle.',
+      objective: "S'entraîner à structurer une lettre administrative, professionnelle ou personnelle.",
       practice: 'Expéditeur, destinataire, date, objet, paragraphes, ton adapté, signature et nommage du fichier.',
-      useWhen: 'Pour préparer des démarches d’emploi, logement, administration, assurance, formation ou consommation.'
+      useWhen: "Pour préparer des démarches d'emploi, logement, administration, assurance, formation ou consommation."
     },
     'email-pro': {
       summary: 'Lire un e-mail professionnel et choisir une reponse correcte.',
       objective: 'Répondre avec calme, précision et respect du contexte.',
       practice: 'Compréhension, priorités, ton professionnel, informations importantes.',
-      useWhen: 'Pour s’entraîner aux messages ORP, employeur ou formation.'
+      useWhen: "Pour s'entraîner aux messages ORP, employeur ou formation."
     },
     'retaper': {
       summary: 'Recopier un message avec attention pour travailler la saisie et la précision.',
@@ -137,7 +134,7 @@
       useWhen: 'Quand la personne veut gagner en confiance au clavier.'
     },
     'alphabet': {
-      summary: 'Remettre des mots dans l’ordre alphabétique.',
+      summary: "Remettre des mots dans l'ordre alphabétique.",
       objective: 'Se repérer dans une liste, un classement ou un répertoire.',
       practice: 'Lettres, ordre, comparaison de mots, lecture attentive.',
       useWhen: 'Avant les activités de recherche, classement ou vocabulaire.'
@@ -146,16 +143,10 @@
       summary: 'Choisir le bon verbe conjugué dans des phrases liées aux métiers.',
       objective: 'Renforcer le vocabulaire professionnel et les temps de base.',
       practice: 'Présent, imparfait, passé composé, passé récent, futur proche et futur simple.',
-      useWhen: 'Pour préparer une séquence sur les métiers, les stages ou l’emploi.'
-    },
-    'compréhension': {
-      summary: 'Écouter un texte A2, répondre aux questions, puis afficher le texte avec le code formateur.',
-      objective: 'Développer la compréhension écrite et orale à partir de situations simples du quotidien.',
-      practice: 'Écoute, lecture, repérage d’informations, réponses courtes, correction guidée.',
-      useWhen: 'Pour travailler le français en groupe, avec lecture cachée puis vérification.'
+      useWhen: "Pour préparer une séquence sur les métiers, les stages ou l'emploi."
     },
     'clavier': {
-      summary: 'S’entraîner a trouver les touches et a taper plus régulièrement.',
+      summary: "S'entraîner a trouver les touches et a taper plus régulièrement.",
       objective: 'Construire des automatismes simples sur le clavier.',
       practice: 'Lettres, chiffres, touches utiles, rythme de frappe.',
       useWhen: 'En début de parcours numérique ou avant les e-mails.'
@@ -166,17 +157,11 @@
       practice: 'Attention auditive, mots-clés, consignes, reformulation.',
       useWhen: 'Pour préparer un appel, un accueil ou un rendez-vous.'
     },
-    'cliquer': {
-      summary: 'Pointer, cliquer et valider des éléments visibles à l’écran.',
-      objective: 'Rendre le geste de la souris plus fluide et plus sûr.',
-      practice: 'Clic simple, observation, précision, sélection.',
-      useWhen: 'Comme échauffement numérique ou avec les débutants.'
-    },
     'souris-cible': {
-      summary: 'Cliquer sur une cible animée pendant un temps limité.',
-      objective: 'Améliorer la précision, la coordination main-souris et la confiance avec le clic.',
-      practice: 'Déplacement de la souris, clic simple, suivi visuel, rythme et précision.',
-      useWhen: 'Comme échauffement avant les exercices de navigation, formulaires ou recherche visuelle.'
+      summary: 'Cliquer sur une cible animée ou parcourir 5 étapes pour maîtriser la souris.',
+      objective: 'Améliorer la précision et la fluidité avec la souris : clic gauche, droit, double clic, glisser-déposer et sélection.',
+      practice: 'Cible mouvante avec timer, puis clic gauche, clic droit, double clic, drag & drop, sélection de texte.',
+      useWhen: 'Comme échauffement numérique, avant les formulaires, e-mails ou exercices de navigation.'
     },
     'copier-coller': {
       summary: 'Copier des phrases complètes et les coller exactement dans une zone de réponse.',
@@ -184,21 +169,15 @@
       practice: 'Sélection de texte, Ctrl+C, Ctrl+V, accents, ponctuation et espaces.',
       useWhen: 'Avant les e-mails, formulaires, CV ou exercices de saisie professionnelle.'
     },
-    'copier-mots': {
-      summary: 'Sélectionner seulement les mots demandés dans une phrase puis les coller.',
-      objective: 'Affiner la précision de sélection et la lecture des consignes.',
-      practice: 'Sélection partielle, mots non contigus, copie, collage, vérification.',
-      useWhen: 'Après le copier-coller simple, pour travailler la sélection fine à la souris.'
-    },
-    "L'ordinateur de Sofia": {
+    'ordinateur-sofia': {
       summary: 'Créer une arborescence de dossiers et ranger des fichiers dans les bons emplacements.',
       objective: 'Apprendre à organiser des documents personnels, professionnels et administratifs sur un ordinateur.',
       practice: 'Création de dossiers, classement de fichiers, renommage, copie et corbeille.',
       useWhen: 'Pour travailler la gestion des fichiers avant les démarches numériques et administratives.'
     },
-    'Renommer les fichiers de sofia': {
+    'renommer-sofia': {
       summary: 'Renommer des fichiers mal nommés avec des noms clairs, utiles et professionnels.',
-      objective: 'Apprendre à identifier le contenu d’un fichier et à choisir un nom lisible sans perdre l’extension.',
+      objective: "Apprendre à identifier le contenu d'un fichier et à choisir un nom lisible sans perdre l'extension.",
       practice: 'Renommage, correction de fautes, extensions de fichiers, dates et noms de documents.',
       useWhen: 'Après la découverte des dossiers ou avant un travail sur CV, e-mails et documents administratifs.'
     },
@@ -223,8 +202,8 @@
     'vaud-express': {
       summary: 'Lire une étape de voyage, retrouver une ville vaudoise sur une vraie carte, puis mémoriser le parcours.',
       objective: 'Renforcer le repérage sur plan, la précision de la souris et la mémoire de séquence.',
-      practice: 'Zoom, déplacement de carte, clic précis, lecture de noms de villes, ordre d’un trajet.',
-      useWhen: 'Pour travailler les transports, les rendez-vous et l’orientation dans le canton de Vaud.'
+      practice: "Zoom, déplacement de carte, clic précis, lecture de noms de villes, ordre d'un trajet.",
+      useWhen: "Pour travailler les transports, les rendez-vous et l'orientation dans le canton de Vaud."
     },
     'maths-pratiques': {
       summary: 'Résoudre de petits calculs lies au travail et au quotidien.',
@@ -239,7 +218,7 @@
       useWhen: 'Pour préparer un atelier bureautique, un emploi administratif ou un suivi de candidatures.'
     },
     'scenarios-word-excel': {
-      summary: 'Réaliser 15 scénarios Word et Excel liés à la vie quotidienne, au travail et à la recherche d’emploi.',
+      summary: "Réaliser 15 scénarios Word et Excel liés à la vie quotidienne, au travail et à la recherche d'emploi.",
       objective: 'Produire des documents utiles à partir de situations réalistes.',
       practice: 'Lettre, affiche, CV, compte rendu, budget, planning, suivi, graphique et fichiers mixtes.',
       useWhen: 'Pour un atelier bureautique contextualisé ou une séquence de documents professionnels.'
@@ -258,7 +237,7 @@
     },
     'pendu': {
       summary: 'Deviner un mot lettre par lettre avec un nombre limité d erreurs.',
-      objective: 'Stimuler la mémoire des mots et l’attention aux lettres.',
+      objective: "Stimuler la mémoire des mots et l'attention aux lettres.",
       practice: 'Orthographe, vocabulaire, hypothèses, persévérance.',
       useWhen: 'En consolidation, quand le vocabulaire est déjà rencontre.'
     },
@@ -295,7 +274,7 @@
     'traces-voleur': {
       summary: 'Lire des énigmes, retrouver des villes du monde sur une carte, puis reconstruire le trajet.',
       objective: 'Travailler la compréhension écrite, les indices culturels et le repérage géographique.',
-      practice: 'Lecture d’indices, déduction, clic sur carte, continents, capitales et mémoire chronologique.',
+      practice: "Lecture d'indices, déduction, clic sur carte, continents, capitales et mémoire chronologique.",
       useWhen: 'Pour une activité de français orientée monde, voyage, discussion et culture générale.'
     },
     'quiz': {
@@ -311,20 +290,20 @@
       useWhen: 'Pour passer de la compréhension a l action.'
     },
     'entretien-embauche-ia': {
-      summary: 'Répondre à des questions d’entretien par écrit, avec voix, score sur 100 et rapport imprimable.',
-      objective: 'S’entraîner à formuler des réponses complètes, polies et structurées face à un recruteur.',
-      practice: 'Exemples concrets, vocabulaire métier, longueur, structure, politesse et adaptation à l’offre.',
-      useWhen: 'Avant un entretien d’embauche, pour travailler l’expression orale ou préparer un entretien blanc.'
+      summary: "Répondre à des questions d'entretien par écrit, avec voix, score sur 100 et rapport imprimable.",
+      objective: "S'entraîner à formuler des réponses complètes, polies et structurées face à un recruteur.",
+      practice: "Exemples concrets, vocabulaire métier, longueur, structure, politesse et adaptation à l'offre.",
+      useWhen: "Avant un entretien d'embauche, pour travailler l'expression orale ou préparer un entretien blanc."
     },
     'simulations-dialogues': {
-      summary: 'S’entraîner a choisir une reponse dans un dialogue d entretien.',
+      summary: "S'entraîner a choisir une reponse dans un dialogue d entretien.",
       objective: 'Preparer les reactions professionnelles dans un echange oral.',
       practice: 'Posture, formulation, ecoute, priorités, entretien.',
       useWhen: 'Avant un entretien, un rendez-vous ORP ou une simulation en groupe.'
     },
     'paire': {
       summary: 'Retourner des cartes et retrouver les paires correspondantes.',
-      objective: 'Mémoriser du vocabulaire en mobilisant l’attention visuelle.',
+      objective: "Mémoriser du vocabulaire en mobilisant l'attention visuelle.",
       practice: 'Memoire, association, concentration, vocabulaire.',
       useWhen: 'Pour finir une séquence sur une note active.'
     },
@@ -332,7 +311,7 @@
       summary: 'Remettre les mots dans le bon ordre pour former une règle de sécurité au travail.',
       objective: 'Mémoriser les consignes essentielles en milieu professionnel.',
       practice: 'Ordre des mots, vocabulaire sécurité, consignes, EPI, gestes corrects.',
-      useWhen: 'En préparation d’un stage, d’un job ou d’une formation pratique.'
+      useWhen: "En préparation d'un stage, d'un job ou d'une formation pratique."
     }
   };
 

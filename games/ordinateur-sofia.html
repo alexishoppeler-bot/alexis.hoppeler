@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr-CH">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'ordinateur de Sofia | Exercice autonomie numérique</title>
+  <meta name="description" content="Créer une arborescence de dossiers et ranger les fichiers de l'ordinateur de Sofia.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://alexishoppeler-bot.github.io/alexis.hoppeler/games/ordinateur-sofia.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="L'ordinateur de Sofia | Exercice autonomie numérique">
+  <meta property="og:description" content="Créer une arborescence de dossiers et ranger les fichiers de l'ordinateur de Sofia.">
+  <meta property="og:image" content="https://alexishoppeler-bot.github.io/alexis.hoppeler/assets/logo.png">
+  <meta property="og:locale" content="fr_CH">
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/utilities.css">
+  <style>
+    /* ── Layout ── */
+    .sf-main { max-width: 1100px; }
+
+    /* ── Progress strip ── */
+    .sf-progress-strip {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;
+    }
+    .sf-progress-bar-wrap {
+      flex: 1; height: 10px; background: var(--border); border-radius: 999px; overflow: hidden;
+    }
+    .sf-progress-fill {
+      height: 100%; border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #4ade80);
+      transition: width 0.35s ease;
+    }
+    .sf-progress-label { font-size: 14px; font-weight: 700; color: var(--text2); white-space: nowrap; }
+    .sf-progress-label span { color: var(--accent); }
+
+    /* ── Actions ── */
+    .sf-actions {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px;
+    }
+
+    /* ── Consigne ── */
+    .sf-steps {
+      margin: 0; padding-left: 22px;
+      color: var(--text2); font-size: 15px; line-height: 1.8;
+    }
+    .sf-steps strong { color: var(--text); }
+
+    /* ── Tree ── */
+    .sf-tree { display: grid; gap: 10px; }
+
+    .sf-folder {
+      border: 1px solid rgba(50,93,169,0.13);
+      border-radius: 12px;
+      background: var(--surface);
+      box-shadow: 0 4px 12px rgba(50,93,169,0.05);
+      overflow: hidden;
+      transition: box-shadow 0.18s;
+    }
+    .sf-folder.done { border-color: rgba(74,222,128,0.35); background: color-mix(in srgb, #4ade80 5%, var(--surface)); }
+    .sf-folder.done > summary { color: var(--success); }
+    .sf-folder.done > summary .sf-check { opacity: 1; }
+    .sf-folder:hover { box-shadow: 0 6px 18px rgba(50,93,169,0.10); }
+
+    .sf-folder > summary {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 18px; cursor: pointer;
+      color: var(--text); font-family: var(--font-head);
+      font-size: 17px; font-weight: 800;
+      list-style: none; user-select: none;
+    }
+    .sf-folder > summary::-webkit-details-marker { display: none; }
+    .sf-folder > summary::after {
+      content: "⌄"; margin-left: auto; color: var(--accent);
+      font-size: 17px; transition: transform 0.18s ease;
+    }
+    .sf-folder[open] > summary::after { transform: rotate(180deg); }
+    .sf-folder > summary:hover { background: var(--surface2); }
+
+    /* nested */
+    .sf-folder .sf-folder {
+      margin: 0 18px 12px 40px;
+      box-shadow: none; background: #fbfdff;
+    }
+    .sf-folder .sf-folder > summary {
+      padding: 10px 14px; font-size: 15px;
+    }
+
+    /* ── Check button ── */
+    .sf-check {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid var(--border); background: var(--surface2);
+      cursor: pointer; font-size: 14px; flex-shrink: 0;
+      opacity: 0.55; transition: opacity 0.15s, border-color 0.15s, background 0.15s;
+      margin-left: auto; margin-right: 6px;
+      z-index: 2; position: relative;
+    }
+    .sf-folder.done .sf-check {
+      opacity: 1; border-color: var(--success);
+      background: color-mix(in srgb, var(--success) 15%, var(--surface2));
+      color: var(--success);
+    }
+
+    /* ── Files list ── */
+    .sf-files {
+      margin: 0; padding: 4px 18px 14px 58px;
+      color: var(--text2); font-size: 14px; line-height: 1.75;
+    }
+    .sf-files li { margin: 3px 0; }
+    .sf-rename { color: #9b5a10; font-weight: 700; }
+    .sf-copy   { color: #1f7a4d; font-weight: 700; }
+    .sf-legend-row { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+    .sf-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Special folders ── */
+    .sf-folder-archive { border-left: 4px solid #1f9d63; }
+    .sf-folder-trash   { border-left: 4px solid #c0392b; background: #fff8f8; }
+
+    /* ── Modal ── */
+    .sf-modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 999;
+      align-items: center; justify-content: center;
+    }
+    .sf-modal-overlay.show { display: flex; }
+    .sf-modal {
+      background: var(--surface); border-radius: 20px; padding: 36px 32px;
+      text-align: center; max-width: 420px; width: 92%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .sf-modal h2 { font-family: var(--font-head); font-size: 24px; margin: 12px 0 8px; }
+    .sf-modal p  { color: var(--text2); font-size: 15px; margin-bottom: 20px; }
+    .sf-modal-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 720px) {
+      .sf-actions { display: grid; }
+      .sf-actions .btn { width: 100%; }
+      .sf-folder .sf-folder { margin-left: 16px; margin-right: 12px; }
+      .sf-files { padding-left: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-slot"></div>
+  <div id="sidebar-slot"></div>
+
+  <div class="layout">
+    <main class="main sf-main">
+      <div class="container">
+
+        <div class="page-header fade-up">
+          <div class="page-icon">💻</div>
+          <div>
+            <h1>L'ordinateur de Sofia</h1>
+            <p>Créer une structure de dossiers, ranger les fichiers, renommer certains documents et vider la corbeille.</p>
+          </div>
+        </div>
+
+        <!-- Progression -->
+        <div class="sf-progress-strip fade-up delay-1" id="sfProgressStrip">
+          <div class="sf-progress-bar-wrap"><div class="sf-progress-fill" id="sfFill" style="width:0%"></div></div>
+          <div class="sf-progress-label"><span id="sfDone">0</span> / <span id="sfTotal">0</span> dossiers</div>
+        </div>
+
+        <!-- Consigne -->
+        <section class="card card-accent fade-up delay-1" aria-labelledby="sfConsigneTitle">
+          <h2 class="card-title" id="sfConsigneTitle">Consigne</h2>
+          <ol class="sf-steps">
+            <li>Créer un dossier nommé <strong>Ordinateur de Sofia</strong> sur le Bureau.</li>
+            <li>Télécharger le dossier <strong>Fichiers - ordinateur de Sofia</strong> ci-dessous.</li>
+            <li>Créer la structure de dossiers montrée ici à l'intérieur.</li>
+            <li>Ranger chaque fichier au bon endroit, puis renommer ou copier les documents indiqués.</li>
+            <li>Coche chaque dossier au fur et à mesure pour suivre ta progression.</li>
+          </ol>
+        </section>
+
+        <!-- Boutons -->
+        <div class="sf-actions fade-up delay-2">
+          <a class="btn btn-primary" href="Fichiers%20-%20ordinateur%20de%20Sofia.zip" download>⬇️ Télécharger les fichiers</a>
+          <button class="btn btn-secondary" type="button" id="btnOpenAll">📂 Tout ouvrir</button>
+          <button class="btn btn-secondary" type="button" id="btnCloseAll">📁 Tout fermer</button>
+          <button class="btn btn-success"   type="button" id="btnComplete">✓ Marquer terminé</button>
+        </div>
+
+        <!-- Arborescence -->
+        <section class="sf-tree fade-up delay-2" aria-label="Structure de dossiers à créer" id="sfTree">
+
+          <!-- Documents personnels -->
+          <details class="sf-folder" data-sf-id="docs-perso" open>
+            <summary>📂 Documents personnels<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+
+            <details class="sf-folder" data-sf-id="identite">
+              <summary>📂 Identité<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 carte_identite.pdf</li>
+                <li>📄 passeport.pdf</li>
+                <li>📄 permis_sejour.pdf</li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="logement">
+              <summary>📂 Logement<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 bail_renens.pdf</li>
+                <li>📄 ancien_bail_lausanne.pdf</li>
+                <li>📄 etat_des_lieux.pdf</li>
+                <li>📄 quittance_loyer.pdf</li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="assurances">
+              <summary>📂 Assurances<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 assurance_maladie.pdf</li>
+                <li>📄 assurance_menage.pdf</li>
+                <li>📄 assurance_rc.pdf</li>
+                <li>📄 courrier_caisse_maladie.pdf</li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="banque">
+              <summary>📂 Banque<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 releve_bancaire_janvier.pdf</li>
+                <li>📄 releve_bancaire_fevrier.pdf</li>
+                <li>📄 releve_bancaire_mars.pdf</li>
+                <li>📄 facture_electricite.pdf</li>
+                <li>📄 facture_internet.pdf</li>
+                <li>📄 facture_telephone.pdf</li>
+              </ul>
+            </details>
+          </details>
+
+          <!-- Recherche d'emploi -->
+          <details class="sf-folder" data-sf-id="emploi">
+            <summary>📂 Recherche d'emploi<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+
+            <details class="sf-folder" data-sf-id="cv">
+              <summary>📂 CV<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li class="sf-rename">📄 cv nouveau.pdf → <strong>cv_sofia_garcia.pdf</strong></li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="lettres">
+              <summary>📂 Lettres de motivation<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 lm_nettoyage.docx</li>
+                <li>📄 lm_employe_polyvalent.docx</li>
+                <li>📄 lm_restaurant.docx</li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="certificats">
+              <summary>📂 Certificats<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 certificat_travail_ecole.pdf</li>
+                <li>📄 attestation_formation.pdf</li>
+                <li>📄 certificat_stage.pdf</li>
+              </ul>
+            </details>
+          </details>
+
+          <!-- Travail -->
+          <details class="sf-folder" data-sf-id="travail">
+            <summary>📂 Travail<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+
+            <details class="sf-folder" data-sf-id="contrats">
+              <summary>📂 Contrats<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li class="sf-rename">📄 papier.pdf → <strong>contrat_travail.pdf</strong></li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="salaires">
+              <summary>📂 Fiches de salaire<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 salaire_janvier.pdf</li>
+                <li>📄 salaire_fevrier.pdf</li>
+                <li class="sf-rename">📄 salaire dernier.pdf → <strong>salaire_mars.pdf</strong></li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="formations">
+              <summary>📂 Formations<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 formation_securite.pdf</li>
+                <li>📄 formation_hygiene.pdf</li>
+              </ul>
+            </details>
+          </details>
+
+          <!-- Photos -->
+          <details class="sf-folder" data-sf-id="photos">
+            <summary>📂 Photos<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+
+            <details class="sf-folder" data-sf-id="appartement">
+              <summary>📂 Appartement<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li class="sf-rename">🖼️ photo1.jpg → <strong>appartement_salon.jpg</strong></li>
+                <li>🖼️ appartement_cuisine.jpg</li>
+                <li>🖼️ appartement_chambre.jpg</li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="famille">
+              <summary>📂 Famille<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>🖼️ anniversaire.jpg</li>
+                <li>🖼️ noel.jpg</li>
+                <li>🖼️ famille_lac.jpg</li>
+                <li>🖼️ cousin_anniversaire.jpg</li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="vacances">
+              <summary>📂 Vacances<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>🖼️ espagne_1.jpg</li>
+                <li>🖼️ espagne_2.jpg</li>
+                <li>🖼️ montagne.jpg</li>
+                <li>🖼️ vacances_italie.jpg</li>
+                <li>🖼️ vacances_espagne.jpg</li>
+              </ul>
+            </details>
+          </details>
+
+          <!-- Administratif -->
+          <details class="sf-folder" data-sf-id="admin">
+            <summary>📂 Administratif<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+
+            <details class="sf-folder" data-sf-id="impots">
+              <summary>📂 Impôts<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 impots_2024.pdf</li>
+                <li>📄 impots_2025.pdf</li>
+              </ul>
+            </details>
+
+            <details class="sf-folder" data-sf-id="courriers">
+              <summary>📂 Courriers<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+              <ul class="sf-files">
+                <li>📄 courrier_regie.pdf</li>
+                <li>📄 courrier_assurance.pdf</li>
+                <li>📄 courrier_commune.pdf</li>
+                <li>📄 courrier_orp.pdf</li>
+                <li>📄 document_a_classer.pdf</li>
+                <li>📄 document_important.pdf</li>
+                <li>📄 note_rendez_vous.docx</li>
+              </ul>
+            </details>
+          </details>
+
+          <!-- Archives -->
+          <details class="sf-folder sf-folder-archive" data-sf-id="archives">
+            <summary>📂 Archives<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+            <ul class="sf-files">
+              <li>📄 archive_2022.pdf</li>
+              <li>📄 archive_2021.pdf</li>
+              <li>📄 archive_2020.pdf</li>
+              <li class="sf-copy">📄 Copier aussi ici : <strong>cv_sofia_garcia.pdf</strong></li>
+            </ul>
+          </details>
+
+          <!-- Corbeille -->
+          <details class="sf-folder sf-folder-trash" data-sf-id="corbeille">
+            <summary>🗑️ Corbeille (à vider)<button class="sf-check" aria-label="Marquer comme fait" type="button">✓</button></summary>
+            <ul class="sf-files">
+              <li>📄 test.docx</li>
+              <li>📄 essai.docx</li>
+              <li>📄 note_temporaire.txt</li>
+              <li>📄 copie_copie.pdf</li>
+              <li>📄 sans_titre.docx</li>
+              <li>📄 nouveau_document.docx</li>
+              <li>📄 brouillon.docx</li>
+              <li>📄 liste_courses.docx</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- Légende -->
+        <section class="card fade-up delay-3" style="margin-top:16px;" aria-label="Légende">
+          <h2 class="card-title">Légende</h2>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+            <div class="sf-legend-row"><div class="sf-dot" style="background:#9b5a10;"></div><span class="sf-rename">Orange = fichier à renommer</span></div>
+            <div class="sf-legend-row"><div class="sf-dot" style="background:#1f7a4d;"></div><span class="sf-copy">Vert = fichier à copier dans un deuxième dossier</span></div>
+            <div class="sf-legend-row"><div class="sf-dot" style="background:#1f9d63;"></div><span>Bordure verte = dossier Archives</span></div>
+            <div class="sf-legend-row"><div class="sf-dot" style="background:#c0392b;"></div><span>Bordure rouge = Corbeille (vider après le rangement)</span></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+    <div id="footer-slot"></div>
+  </div>
+
+  <!-- Modal fin -->
+  <div class="sf-modal-overlay" id="sfModal">
+    <div class="sf-modal">
+      <div style="font-size:52px;" id="sfModalEmoji">🎉</div>
+      <h2 id="sfModalTitle">Activité terminée !</h2>
+      <p id="sfModalText">Tu as bien organisé l'ordinateur de Sofia.</p>
+      <div class="sf-modal-actions">
+        <button class="btn btn-ghost btn-sm" type="button" id="sfModalClose">Fermer</button>
+        <button class="btn btn-primary" type="button" id="btnNextExercise">Exercice suivant</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/score.js"></script>
+  <script src="../js/exercises-config.js"></script>
+  <script src="../js/stages.js"></script>
+  <script src="../js/exercise-utils.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/ui.js"></script>
+  <script>
+  'use strict';
+
+  const PAGE_ID = 'ordinateur-sofia';
+
+  /* ── Progress tracking ── */
+  const folders = Array.from(document.querySelectorAll('[data-sf-id]'));
+  const totalEl = document.getElementById('sfTotal');
+  const doneEl  = document.getElementById('sfDone');
+  const fillEl  = document.getElementById('sfFill');
+  totalEl.textContent = folders.length;
+
+  const STORAGE_KEY = 'sofia_done_ordinateur-sofia';
+  const doneSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+
+  function persistDone() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...doneSet]));
+  }
+
+  function updateProgress() {
+    const count = doneSet.size;
+    doneEl.textContent = count;
+    fillEl.style.width = (count / folders.length * 100) + '%';
+  }
+
+  function applyDoneStates() {
+    folders.forEach(el => {
+      if (doneSet.has(el.dataset.sfId)) el.classList.add('done');
+    });
+    updateProgress();
+  }
+
+  folders.forEach(folderEl => {
+    const id  = folderEl.dataset.sfId;
+    const btn = folderEl.querySelector('.sf-check');
+
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (doneSet.has(id)) {
+        doneSet.delete(id);
+        folderEl.classList.remove('done');
+      } else {
+        doneSet.add(id);
+        folderEl.classList.add('done');
+      }
+      persistDone();
+      updateProgress();
+    });
+  });
+
+  applyDoneStates();
+  promoteExerciseStatus(PAGE_ID, 'in_progress');
+
+  /* ── Buttons ── */
+  document.getElementById('btnOpenAll').addEventListener('click', () => {
+    document.querySelectorAll('#sfTree details').forEach(d => d.open = true);
+  });
+  document.getElementById('btnCloseAll').addEventListener('click', () => {
+    document.querySelectorAll('#sfTree details').forEach(d => d.open = false);
+  });
+
+  function completeSofia() {
+    recordExerciseProgress(PAGE_ID, { correct: 1, typed: 1, errors: 0, xp: 5 });
+    promoteExerciseStatus(PAGE_ID, 'completed');
+    launchConfetti();
+    const pct = Math.round(doneSet.size / folders.length * 100);
+    document.getElementById('sfModalText').textContent =
+      `Tu as coché ${doneSet.size} dossier${doneSet.size > 1 ? 's' : ''} sur ${folders.length} (${pct} %). Bravo !`;
+    document.getElementById('sfModal').classList.add('show');
+  }
+
+  document.getElementById('btnComplete').addEventListener('click', completeSofia);
+  document.getElementById('sfModalClose').addEventListener('click', () => {
+    document.getElementById('sfModal').classList.remove('show');
+  });
+
+  setupNextExerciseButton(PAGE_ID);
+  </script>
+</body>
+</html>

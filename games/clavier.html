@@ -51,14 +51,9 @@
                 <option value="tous">Tous les niveaux</option>
               </select>
             </label>
-            <button class="btn btn-ghost btn-sm" id="btn-session-size" type="button">Session courte : oui</button>
+            <button class="btn btn-ghost btn-sm" id="btn-session-size" type="button">Session courte</button>
           </div>
           <div class="keyboard-option-note" id="level-note">Phrases courtes pour commencer. Change de niveau quand tu veux.</div>
-          <div class="keyboard-flow" aria-label="Déroulement">
-            <span><strong>1</strong> Lis</span>
-            <span><strong>2</strong> Tape</span>
-            <span><strong>3</strong> Corrige</span>
-          </div>
         </div>
 
         <!-- KPI -->
@@ -83,7 +78,7 @@
             <div class="kpi-val" id="sc-xp">0 XP</div>
             <div class="kpi-lbl">XP gagné</div>
           </div>
-          <div class="kpi-card">
+          <div class="kpi-card is-hidden">
             <div class="kpi-val" id="sc-skipped">0</div>
             <div class="kpi-lbl">Passées</div>
           </div>
@@ -108,8 +103,8 @@
         <div class="exercise-zone keyboard-practice fade-up delay-2">
           <div class="practice-head">
             <div>
-              <div class="practice-kicker">Phrase à taper</div>
-              <div class="practice-title">Copie exactement le texte affiché</div>
+              <div class="practice-title">Copie la phrase ci-dessous</div>
+              <div class="practice-subtitle">Lis d'abord, puis tape lettre par lettre dans le champ ↓</div>
             </div>
             <div id="wpm-live"></div>
           </div>
@@ -117,12 +112,13 @@
           <div class="exercise-phrase" id="phrase-display"></div>
           <div class="typing-target-row" aria-live="polite">
             <span><small>Prochaine touche</small><strong id="next-char-display">—</strong></span>
-            <span><small>Doigt conseillé</small><strong id="finger-guide-display">—</strong></span>
-            <span><small>Caractères restants</small><strong id="remaining-char-display">0</strong></span>
+            <span class="finger-cell"><small>Doigt conseillé</small><strong id="finger-guide-display">—</strong></span>
+            <span><small>Restants</small><strong id="remaining-char-display">0</strong></span>
           </div>
-          <input type="text" id="typing-input" placeholder="Votre texte apparaît ici…"
+          <div id="typing-cta" class="typing-cta">👆 Clique ici et commence à taper</div>
+          <input type="text" id="typing-input" placeholder="Tape la phrase ici, lettre par lettre…"
             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-          <div class="input-helper">En cas d'erreur, la saisie revient au dernier caractère juste.</div>
+          <div class="input-helper">La touche bleue sur le clavier montre la prochaine lettre à taper. En cas d'erreur, tu reviens à la dernière lettre juste.</div>
           <div id="shift-hint"></div>
           <div class="practice-actions">
             <button class="btn btn-secondary btn-sm" id="btn-skip" type="button">Passer</button>
@@ -239,13 +235,6 @@
           </div>
         </div>
 
-        <!-- Conseil -->
-        <div class="alert alert-info mt-16 fade-up delay-4">
-          <span>💡</span>
-          <div>La touche attendue est mise en évidence en <strong>bleu</strong>. Tape exactement le texte affiché, majuscules et ponctuation comprises. Le WPM se calcule en temps réel.</div>
-        </div>
-
-
       </div>
     </main>
     <div id="footer-slot"></div>
@@ -269,7 +258,7 @@
       <div class="modal-text" id="resSubtitle"></div>
       <div class="keyboard-result-details" id="keyboard-result-details"></div>
       <div class="keyboard-result-actions">
-        <a href="cliquer.html" class="btn btn-primary" id="btnNextExercise">Exercice suivant</a>
+        <a href="copier-coller.html" class="btn btn-primary" id="btnNextExercise">Continuer vers Copier-coller</a>
         <button class="btn btn-secondary" id="modal-restart" type="button">Rejouer</button>
         <a href="accueil.html" class="btn btn-secondary">&larr; Accueil</a>
       </div>
@@ -708,11 +697,14 @@
     errorByExpectedChar = {};
     inputEl.value = '';
     inputEl.classList.remove('correct', 'wrong');
+    inputEl.classList.add('idle');
+    const cta = document.getElementById('typing-cta');
+    if (cta) cta.classList.remove('hidden');
     feedbackEl.textContent = '\u00a0';
     wpmEl.textContent      = '';
     document.getElementById('progressFill').style.width = '0%';
     document.getElementById('modal-success').classList.remove('show');
-    document.getElementById('btn-session-size').textContent = shortSession ? 'Session courte : oui' : 'Session courte : non';
+    document.getElementById('btn-session-size').textContent = shortSession ? 'Session courte ✓' : 'Session longue';
     document.getElementById('level-select').value = currentLevel;
     document.getElementById('level-note').textContent = LEVEL_NOTES[currentLevel] || LEVEL_NOTES.debutant;
     promoteExerciseStatus(PAGE_ID, 'in_progress');
@@ -747,11 +739,20 @@
     advancePhrase('Phrase passée. On continue doucement.');
   }
 
+  /* ── CTA / idle pulse ── */
+  function activateInput() {
+    const cta = document.getElementById('typing-cta');
+    if (cta) cta.classList.add('hidden');
+    inputEl.classList.remove('idle');
+  }
+
   /* ── Boot ── */
   document.addEventListener('DOMContentLoaded', () => {
     setupNextExerciseButton(PAGE_ID);
     restart();
-    inputEl.addEventListener('input', onInput);
+    inputEl.classList.add('idle');
+    inputEl.addEventListener('input', e => { activateInput(); onInput(e); });
+    inputEl.addEventListener('focus', activateInput, { once: true });
 
     document.getElementById('btn-skip').addEventListener('click', skipCurrentPhrase);
 
@@ -759,6 +760,7 @@
     document.getElementById('modal-restart').addEventListener('click', restart);
     document.getElementById('btn-session-size').addEventListener('click', () => {
       shortSession = !shortSession;
+      document.getElementById('btn-session-size').textContent = shortSession ? 'Session courte ✓' : 'Session longue';
       restart();
     });
     document.getElementById('level-select').addEventListener('change', e => {

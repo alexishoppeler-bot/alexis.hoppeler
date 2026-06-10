@@ -1,0 +1,158 @@
+/* ===== FORMULAIRE.CSS ===== */
+
+.form-game-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Barre de progression ── */
+.quiz-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.quiz-progress-label { font-size: 14px; font-weight: 600; color: var(--text2); }
+.series-progress {
+  width: 100%; height: 5px;
+  background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.progress-bar { width: 100%; height: 100%; background: transparent; }
+.progress-fill { height: 100%; background: var(--gradient); transition: width 0.35s ease; border-radius: 3px; }
+
+/* ── Strip statut ── */
+.session-strip {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.session-strip span {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px;
+  color: var(--text2); font-size: 12px; font-weight: 600;
+}
+.session-strip strong { color: var(--accent); margin-left: 4px; }
+
+/* ── Badge ── */
+.badge { display: inline-block; padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-blue { background: rgba(50,93,169,0.12); color: var(--accent); }
+
+/* ── Layout 2 colonnes ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Carte profil ── */
+.profile-card {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 84px;
+  align-self: start;
+}
+.profile-card h2 {
+  font-size: 17px; font-weight: 800; color: var(--accent);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.profile-intro { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+
+.profile-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.profile-list li {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 15px; line-height: 1.5; color: var(--text);
+  padding: 8px 10px;
+  background: var(--bg2); border-radius: 8px;
+}
+.profile-list .pf-icon { font-size: 14px; flex-shrink: 0; }
+.profile-list .pf-label {
+  font-weight: 700; color: var(--text2);
+  font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.4px; flex-shrink: 0; min-width: 100px;
+}
+.profile-list .pf-value { color: var(--text); font-weight: 600; font-size: 15px; }
+
+/* ── Carte formulaire ── */
+.application-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+.application-card h2 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.form-intro { font-size: 13px; color: var(--text3); margin-bottom: 16px; }
+
+.form-fields { display: flex; flex-direction: column; gap: 12px; }
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-field label {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 6px;
+}
+.form-input {
+  padding: 11px 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--surface);
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(50,93,169,0.10); }
+.form-input[aria-invalid="false"] { border-color: var(--success); box-shadow: 0 0 0 3px rgba(52,211,153,0.12); }
+.form-input[aria-invalid="true"]  { border-color: var(--danger);  box-shadow: 0 0 0 3px rgba(248,113,113,0.12); }
+.form-input:read-only { background: var(--bg2); cursor: default; }
+
+/* ── Feedback ── */
+.form-feedback {
+  padding: 14px 16px;
+  background: var(--bg2);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.form-feedback.success-state { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.30); }
+.form-feedback.error-state   { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.25); }
+.feedback-item { padding: 5px 0; line-height: 1.5; }
+.feedback-item.success { color: var(--success); font-weight: 600; }
+.feedback-item.error   { color: var(--danger);  font-weight: 600; }
+
+/* ── Actions ── */
+.form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+/* ── Zone résultat ── */
+.result-zone { margin-top: 20px; }
+.card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; box-shadow: var(--shadow-md); }
+.card-accent { border-color: var(--accent); background: linear-gradient(135deg, rgba(50,93,169,0.04), rgba(131,189,69,0.04)); }
+.card-lg { padding: 32px; }
+
+/* ── KPI ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-card { background: var(--surface); border-radius: 10px; padding: 14px; text-align: center; border: 1px solid var(--border); }
+.kpi-value { font-size: 22px; font-weight: 700; color: var(--accent); }
+.kpi-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* ── Responsive ── */
+@media (min-width: 1200px) {
+  .form-grid { grid-template-columns: minmax(340px, 0.9fr) minmax(0, 1.3fr); gap: 24px; }
+  .form-input { font-size: 17px; }
+  .profile-list li { font-size: 16px; }
+  .profile-list .pf-value { font-size: 16px; }
+}
+
+@media (max-width: 860px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .profile-card { position: static; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 520px) {
+  .form-actions { flex-direction: column; }
+  .form-actions .btn { width: 100%; }
+}

@@ -358,7 +358,6 @@
   z-index: 900;
   padding: 14px 0 48px;
   transition: transform 0.3s;
-  animation: sidebarIn 0.28s ease-out both;
 }
 
 @keyframes sidebarIn {
@@ -378,7 +377,6 @@
   margin: 0 16px 16px;
   padding: 0 0 14px;
   border-bottom: 1px solid var(--border);
-  animation: sidebarItemIn 0.24s 0.04s ease-out both;
 }
 
 @keyframes sidebarItemIn {
@@ -406,7 +404,6 @@
 
 .sidebar-section {
   margin-bottom: 2px;
-  animation: sidebarItemIn 0.22s ease-out both;
 }
 
 .sidebar-section-title {
@@ -461,7 +458,6 @@
 
 .sidebar-section-list {
   padding-bottom: 4px;
-  animation: sectionReveal 0.2s ease-out both;
 }
 
 @keyframes sectionReveal {
